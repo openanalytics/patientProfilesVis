@@ -1,0 +1,5 @@
+*.project
+original/
+data/
+documentation/
+*.html
