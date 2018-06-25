@@ -48,12 +48,25 @@ output: rmarkdown::pdf_document
 
 ```
 
-```{r}
+```{r createPlotModuleOfInterest}
+
+	## subject information (metadata)
+	dmPlots <- subjectProfileTextPlot(
+		data = dataList$DM,
+		vars = c("SEX", "AGE", "RACE", "COUNTRY", "ARM")
+	)
+	
+	## medical history
+	dmPlots <- subjectProfileTextPlot(
+		data = dataList$MH,
+		paramVar = "MHDECOD",
+		paramValueVar = "MHOCCUR"
+	)
 
 	## adverse event: range
+	
 	head(dataList$AE)
 	# AEPTCD: preferred term code
-
 	aePlots <- subjectProfileRangePlot(
 		data = dataList$AE,
 		paramVar = "AETERM",
@@ -82,7 +95,16 @@ output: rmarkdown::pdf_document
 		colorVar = "LBNRIND",
 		labelVars = labelVars	
 	)
-	
 
 ```
+
+```{r createReportWithAllModules}
+
+	createReport(
+			
+	)
+
+```
+
+
 
