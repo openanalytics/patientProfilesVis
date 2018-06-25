@@ -50,18 +50,39 @@ output: rmarkdown::pdf_document
 
 ```{r}
 
-	# adverse event
+	## adverse event: range
 	head(dataList$AE)
 	# AEPTCD: preferred term code
 
-	subjectProfileRange(
+	aePlots <- subjectProfileRangePlot(
 		data = dataList$AE,
 		paramVar = "AETERM",
 		subjectVar = "USUBJID",
 		startVar = "AESTDY",
 		endVar = "AEENDY",
-		colorVar = "AESEV"
+		colorVar = "AESEV",
+		labelVars = labelVars
 	)
+	
+	## laboratory data
+	
+	head(dataList$LB)
+	
+	# prepare data for plots:
+	dataLB <- dataList$LB
+	# sort the categories (empty values '' becomes NA)
+	dataLB$LBNRIND <- factor(dataLB$LBNRIND, levels = c("LOW", "NORMAL", "HIGH"))
+	
+	# create plot
+	lbPlots <- subjectProfileEventPlot(
+		data = dataLB,
+		paramVar = "LBTEST",
+		subjectVar = "USUBJID",
+		timeVar = "LBDY",
+		colorVar = "LBNRIND",
+		labelVars = labelVars	
+	)
+	
 
 ```
 

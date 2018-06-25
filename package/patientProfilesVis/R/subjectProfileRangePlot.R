@@ -1,17 +1,17 @@
 #' Create plot of subject profiles with segments for range of parameters 
 #' @param data data.frame with data
-#' @param paramVar variable of \code{data} with parameter (used in the y-axis)
-#' @param paramLab label for \code{paramVar}
-#' @param subjectVar variable of \code{data} with subject ID
-#' @param startVar variable of \code{data} with start of range
-#' @param endVar variable of \code{data} with end of range
+#' @param paramVar string, variable of \code{data} with parameter (used in the y-axis)
+#' @param paramLab string, label for \code{paramVar}
+#' @param subjectVar string, variable of \code{data} with subject ID
+#' @param startVar string, variable of \code{data} with start of range
+#' @param endVar string, variable of \code{data} with end of range
 #' @param rangeLim vector of length 2 with limits for the range (x-axis).
 #' If not specified, extracted from the minimum \code{startVar} and maximum \code{endVar}
-#' @param xLab label for the x-axis
-#' @param yLab label for the y-axis
-#' @param colorVar variable of \code{data} with color
-#' @param colorLab label for \code{colorVar}
-#' @param title title for the plot
+#' @param xLab string, label for the x-axis
+#' @param yLab string, label for the y-axis
+#' @param colorVar string, variable of \code{data} with color
+#' @param colorLab string, label for \code{colorVar}
+#' @param title string, title for the plot
 #' @inheritParams glpgUtility::getLabelVar
 #' @return list of \code{\link[ggplot2]{ggplot2} objects}
 #' @author Laure Cougnaud
@@ -22,9 +22,9 @@
 subjectProfileRangePlot <- function(
 	data,
 	paramVar, paramLab = getLabelVar(paramVar, labelVars = labelVars),
-	subjectVar,
 	startVar,
 	endVar,
+	subjectVar = "USUBJID",
 	rangeLim = with(data, c(min(get(startVar), na.rm = TRUE), max(get(startVar), na.rm = TRUE))),
 	xLab = paste(getLabelVar(c(startVar, endVar), labelVars = labelVars), collapse = "/"),
 	yLab = "",
@@ -56,7 +56,7 @@ subjectProfileRangePlot <- function(
 			labs(title = title, x = xLab, y = yLab)
 	
 		# change name for color scale
-		if(!is.null(colorVar))
+		if(!is.null(colorLab))
 			gg <- gg + scale_colour_discrete(name = colorLab)
 
 	})
