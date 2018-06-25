@@ -3,3 +3,4 @@ original/
 data/
 documentation/
 *.html
+tests/

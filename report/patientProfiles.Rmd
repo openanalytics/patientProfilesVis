@@ -6,6 +6,12 @@ date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output: rmarkdown::pdf_document
 ---
 
+```{r loadPackages}
+
+	library(patientProfilesVis)
+
+```
+
 ```{r loadData}
 
 	pathData <- file.path(
@@ -57,15 +63,16 @@ output: rmarkdown::pdf_document
 	)
 	
 	## medical history
-	dmPlots <- subjectProfileTextPlot(
+	mhPlots <- subjectProfileTextPlot(
 		data = dataList$MH,
 		paramVar = "MHDECOD",
-		paramValueVar = "MHOCCUR"
+		paramValueVar = "MHOCCUR",
+		title = "Medical History"
 	)
 
 	## adverse event: range
 	
-	head(dataList$AE)
+#	head(dataList$AE)
 	# AEPTCD: preferred term code
 	aePlots <- subjectProfileRangePlot(
 		data = dataList$AE,
@@ -79,7 +86,7 @@ output: rmarkdown::pdf_document
 	
 	## laboratory data
 	
-	head(dataList$LB)
+#	head(dataList$LB)
 	
 	# prepare data for plots:
 	dataLB <- dataList$LB
@@ -100,8 +107,8 @@ output: rmarkdown::pdf_document
 
 ```{r createReportWithAllModules}
 
-	createReport(
-			
+	createSubjectProfileReport(
+		listPlots = list(dmPlots, mhPlots, aePlots, lbPlots)	
 	)
 
 ```
