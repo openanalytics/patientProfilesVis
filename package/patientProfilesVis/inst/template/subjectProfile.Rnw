@@ -1,0 +1,14 @@
+\documentclass{article}
+
+\usepackage{amsmath} \usepackage{amscd} \usepackage[tableposition=top]{caption}
+\usepackage{ifthen} \usepackage[utf8]{inputenc}
+
+\begin{document}
+
+<<includePlots>>=
+
+	
+
+@
+
+\end{document}
