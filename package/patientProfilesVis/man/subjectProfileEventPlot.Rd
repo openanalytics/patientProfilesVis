@@ -9,7 +9,8 @@ subjectProfileEventPlot(data, paramVar, paramLab = getLabelVar(paramVar,
   labelVars = labelVars), shapeVar = colorVar,
   shapeLab = getLabelVar(shapeVar, labelVars = labelVars), timeVar,
   subjectVar = "USUBJID", xLab = getLabelVar(timeVar, labelVars =
-  labelVars), yLab = "", title = paramLab, labelVars = NULL)
+  labelVars), yLab = "", timeLim = NULL, title = paramLab,
+  labelVars = NULL)
 }
 \arguments{
 \item{data}{data.frame with data}
@@ -34,12 +35,16 @@ subjectProfileEventPlot(data, paramVar, paramLab = getLabelVar(paramVar,
 
 \item{yLab}{string, label for the y-axis}
 
+\item{timeLim}{(optional) vector of length 2 with time limits (x-axis)
+If not specified, extracted from the minimum \code{startVar} and maximum \code{endVar}}
+
 \item{title}{string, title for the plot}
 
 \item{labelVars}{named string with variable labels (names are the variable code)}
 }
 \value{
-list of \code{\link[ggplot2]{ggplot2} objects}
+list of \code{\link[ggplot2]{ggplot2} objects}, 
+also of class \code{subjectProfileTextPlot}
 }
 \description{
 Create plot of subject profiles for events

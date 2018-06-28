@@ -5,18 +5,19 @@
 #' @param subjectVar string, variable of \code{data} with subject ID
 #' @param startVar string, variable of \code{data} with start of range
 #' @param endVar string, variable of \code{data} with end of range
-#' @param rangeLim vector of length 2 with limits for the range (x-axis).
+#' @param timeLim (optional) vector of length 2 with time limits (x-axis)
 #' If not specified, extracted from the minimum \code{startVar} and maximum \code{endVar}
-#' @param rangeSimilarStartEn numeric, if a record has the same
+#' @param rangeSimilarStartEnd numeric, if a record has the same
 #' \code{startVar} and \code{endVar}, what should be the range of the segment?
-#' By default, a thousandth of the range of \code{rangeLim}.
+#' By default, a thousandth of the range of \code{timeLim}.
 #' @param xLab string, label for the x-axis
 #' @param yLab string, label for the y-axis
 #' @param colorVar string, variable of \code{data} with color
 #' @param colorLab string, label for \code{colorVar}
 #' @param title string, title for the plot
 #' @inheritParams glpgUtility::getLabelVar
-#' @return list of \code{\link[ggplot2]{ggplot2} objects}
+#' @return list of \code{\link[ggplot2]{ggplot2} objects}, 
+#' also of class \code{subjectProfileTextPlot}
 #' @author Laure Cougnaud
 #' @importFrom glpgUtility getLabelVar
 #' @import ggplot2
@@ -28,8 +29,8 @@ subjectProfileRangePlot <- function(
 	startVar,
 	endVar,
 	subjectVar = "USUBJID",
-	rangeLim = with(data, c(min(get(startVar), na.rm = TRUE), max(get(startVar), na.rm = TRUE))),
-	rangeSimilarStartEnd = diff(rangeLim)/1000,
+	timeLim = with(data, c(min(get(startVar), na.rm = TRUE), max(get(startVar), na.rm = TRUE))),
+	rangeSimilarStartEnd = diff(timeLim)/1000,
 	xLab = paste(getLabelVar(c(startVar, endVar), labelVars = labelVars), collapse = "/"),
 	yLab = "",
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
@@ -45,7 +46,7 @@ subjectProfileRangePlot <- function(
 	# if no end date: take last time in dataset
 	idxMissingEnd <- is.na(data[, endVar])
 	if(any(idxMissingEnd))
-		data[idxMissingEnd, endVar] <- rangeLim[2]
+		data[idxMissingEnd, endVar] <- timeLim[2]
 	
 	# if same start/end, data not included by geom_segment
 	# so jitter the start/end in this case (proportion of the total x-range)
@@ -80,6 +81,12 @@ subjectProfileRangePlot <- function(
 		# change name for color scale
 		if(!is.null(colorLab))
 			gg <- gg + scale_colour_discrete(name = colorLab)
+		
+		gg <- gg + coord_cartesian(timeLim = timeLim)
+		
+		class(gg) <- c("subjectProfileEventPlot", class(gg))
+		
+		gg
 
 	})
 

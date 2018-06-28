@@ -1,13 +1,43 @@
-\documentclass{article}
+\documentclass[a4paper]{article}
 
-\usepackage{amsmath} \usepackage{amscd} \usepackage[tableposition=top]{caption}
-\usepackage{ifthen} \usepackage[utf8]{inputenc}
+%\pagenumbering{gobble}
+
+\usepackage{\Sexpr{ifelse(landscape, "rotating", "graphicx")}}
 
 \begin{document}
 
-<<includePlots>>=
+<<optionsChunks, echo = FALSE, cache = FALSE, message = FALSE, warning = FALSE>>=
 
+	library(knitr)
+
+	knitr::opts_chunk$set(
+		echo = FALSE, 
+		message = FALSE,
+		cache = FALSE,
+		warning = FALSE,
+		error = FALSE, # stop-on-error
+		results = "asis",
+		fig.align = "center"
+	)
 	
+	options(warn = 1, width = 200)
+	
+@
+
+<<includePlots, echo = FALSE>>=
+
+	figHeightInches <- sapply(listPlotsPerSubject, getSizeGTable, dim = "height", outputUnit = "inches")
+#	figWidthInches <- sapply(listPlotsPerSubject, getSizeGTable, dim = "width", outputUnit = "inches")
+	
+#	textHeightPt <- ifelse(landscape, 345, 598)
+	textWidthInches <- 14 #ifelse(landscape, 598, 345)/72
+#	figHeightInches <- paste0("'", round(textHeightPt/figHeightPt, 2), "\\textheight'")
+	knitPrintListPlotsKnitr(
+		plotsList = listPlotsPerSubject,
+		out.width = "'\\textwidth'",
+		fig.height = figHeightInches,
+		fig.width = textWidthInches
+	)
 
 @
 
