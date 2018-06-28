@@ -1,7 +1,32 @@
 
-createSubjectProfileReport <- function(listPlots){
+createSubjectProfileReport <- function(listPlots, 
+	timeLim = getXLimSubjectProfilePlots(listPlots),
+	landscape = FALSE,
+	outputFile = "subjectProfile.pdf"){
 	
-	listPlotsCombine <- subjectProfileCombine(listPlots)
+	# combine
+	listPlotsPerSubject <- subjectProfileCombine(listPlots, timeLim = timeLim)
+	
+	pathTemplate <- getPathTemplate("subjectProfile.Rnw")
+	
+	## convert Rnw -> tex
+	outputFileKnitr <- knitr::knit(input = pathTemplate)
+	
+	## convert tex -> pdf
+	
+	# texi2pdf cannot deal with space in name and file should be in current directory
+	oldwd <- getwd()
+	setwd(outputDir)
+	
+	# convert to pdf
+	texi2pdf(file = outputFileKnitr, clean = TRUE)
+	
+	# rename output file
+	outputTexi2pdf <- paste0(file_path_sans_ext(outputFileKnitr), ".pdf")
+	pdfPath <- file.path(pathFiguresPdf, paste0(pathCaptionShort, ".pdf"))
+	file.rename(outputTexi2pdf, to = outputFile)
+	
+	setwd(oldwd)
 	
 }
 
@@ -9,22 +34,25 @@ createSubjectProfileReport <- function(listPlots){
 #' @param listPlots list of \code{\link[ggplot2]{ggplot2} objects}
 #' @return a list of \code{subjectProfilePlot} object, containing the combined
 #' profile plots for each subject.
-#' This is in essence only a \code{\link[gtable]{gtable}} object,
-#' wrapped within a \code{subjectProfilePlot} class for dedicated
-#' 'print' function.
-#' @importFrom gridExtra gtable_combine
+#' This is in essence only a \code{\link[ggplot2]{ggplot2}} objects,
+#' (with the additional attribute 'nLinesYAxis')
+#' @importFrom cowplot plot_grid ggdraw draw_label
 #' @importFrom ggplot2 ggplotGrob ggplot_build
-#' @importFrom grid unit
-#' @importFrom gridExtra gtable_combine
+#' @inheritParams subjectProfileRangePlot
 #' @author Laure Cougnaud
 #' @export
-subjectProfileCombine <- function(listPlots){
+subjectProfileCombine <- function(listPlots, 
+	timeLim = getXLimSubjectProfilePlots(listPlots)){
 	
 	# extract all subjects for which at least one plot is available
 	subjects <- sort(unique(unlist(lapply(listPlots, names))))
 	
 	# create empty element in the list if the plot is not available for a certain subject
-	listPlotsAll <- lapply(listPlots, function(x) x[subjects])
+	listPlotsAll <- lapply(listPlots, function(x){
+		list <- x[subjects]
+		names(list) <- subjects # in case plot not available for one subject
+		list
+	})
 	
 	## combine plots
 	
@@ -35,49 +63,103 @@ subjectProfileCombine <- function(listPlots){
 		listGgPlotsToCombine <- listGgPlotsToCombine[!sapply(listGgPlotsToCombine, is.null)] # remove empty plots
 		if(length(listGgPlotsToCombine) > 0){
 			
-			listGrobPlots <- lapply(listGgPlotsToCombine, function(gg){
-					
-				# convert ggplot2 -> gtable 
-				ggGrob <- ggplotGrob(gg) 
-				
-				## scale each plot to have height set to the number of lines in the y-axis
-				
-				# extract number of lines in the y-axis
-				nLinesYAxis <- nrow(ggplot_build(gg)$data[[1]])
-				# get vertical index of panel
-				idxVPanel <- ggGrob$layout[ggGrob$layout$name == "panel", "t"]
-				# set the height of the panel to the number of lines in the plot
-				ggGrob$heights[[idxVPanel]] <- unit(nLinesYAxis, "lines")
-				
-				colnames(ggGrob) <- paste0(seq_len(ncol(ggGrob)))
-				ggGrob
-				
+			# set same limits for the time/x-axis
+			listGgPlotsToCombine <- lapply(listGgPlotsToCombine, function(gg){
+				if(!inherits(gg, "subjectProfileTextPlot"))		
+					gg <- gg + coord_cartesian(x = timeLim)
+				gg				
 			})
 	
-			plot <- do.call(gtable_combine, c(listGrobPlots, list(along = 2)))
+			# extract number of lines in the y-axis
+			nLinesYAxis <- sapply(listGgPlotsToCombine, function(gg)
+				length(unique(ggplot_build(gg)$data[[1]]$y))
+			)
+			# relative height of each plot
+			relHeights <- nLinesYAxis/sum(nLinesYAxis)
+			
+			# combine all plots
+			plot <- do.call(plot_grid,
+				c(
+					listGgPlotsToCombine,
+					list(align = "v", ncol = 1, axis = "lr",
+						rel_heights = relHeights
+					)
+				)
+			)
+			
+			# store the number of lines in the y-axis (used to adapt size during export)
+			# TODO: add plots title?
+			attributes(plot) <- c(attributes(plot), list(nLinesYAxis = sum(nLinesYAxis)))
+			
 			class(plot) <- c("subjectProfilePlot", class(plot))
+			
 			plot
+			
 		}
 		
 	}
 	
 	# combine all plots per subject
 	# this returns a list of 'gtable' object
-	listPlotsPerSubject <- do.call(mapply, c(list(FUN = combineGGPlots), listPlotsAll))
-	
+	listPlotsPerSubject <- do.call(mapply, 
+		c(
+			list(FUN = combineGGPlots, SIMPLIFY = FALSE),
+			listPlotsAll
+		)
+	)
+		
+	# add title
+	listPlotsPerSubject <- sapply(names(listPlotsPerSubject), function(subject){
+		
+		# create a ggplot for title only
+		title <- ggdraw() + 
+			draw_label(paste("Patient:", subject), fontface = 'bold', 
+				x = 0, hjust = 0, lineheight = 2
+			)
+		
+		plotSubject <- listPlotsPerSubject[[subject]]
+		# extract number of lines in main plot...
+		nLinesYAxisPlot <- attr(plotSubject, "nLinesYAxis")
+		# to get relative height of title/main plot
+		relHeights <- c(2, nLinesYAxisPlot)/(2+nLinesYAxisPlot)
+		
+		# combine title and plot
+		plotSubjectWithTitle <- plot_grid(title, plotSubject, ncol = 1, rel_heights = relHeights)
+		
+		# store the number of lines in the y-axis (used to adapt size during export)
+		attributes(plotSubjectWithTitle) <- c(
+			attributes(plotSubjectWithTitle), 
+			list(nLinesYAxis = nLinesYAxis))
+		class(plotSubjectWithTitle) <- c("subjectProfilePlot", class(plotSubjectWithTitle))
+		
+		plotSubjectWithTitle
+		
+	})
+
 	return(listPlotsPerSubject)
 	
 }
 
-#' convenience function to print a subject profile plot (of class \code{gtable}).
-#' This plot is printed with the \code{grid.draw} function
-#' @param x object of class \code{subjectProfilePlot}
-#' @param ... additional arguments, currently not used
-#' @return no returned value, a plot is drawn in the current window
-#' @importFrom grid grid.newpage grid.draw
-#' @S3method print subjectProfilePlot
-#' @export
+#' Get limits for a list of plots.
+#' 
+#' These limits are extracted from the maximal range
+#' of the x-coordinates across all plots
+#' @param listPlots list of \code{subjectProfile[X]Plot} plots
+#' @return vector of length 2 with limits for the x-axis
+#' @importFrom ggplot2 ggplot_build
 #' @author Laure Cougnaud
-print.subjectProfilePlot <- function(x, ...){
-	grid.newpage();grid.draw(x)
+#' @export
+getXLimSubjectProfilePlots <- function(listPlots){
+	
+	xlimList <- lapply(listPlots, function(list)
+		lapply(list, function(gg) 
+			if(!inherits(gg, "subjectProfileTextPlot"))
+				range(ggplot_build(gg)$data[[1]]$x)
+		)
+	)
+	
+	timeLim <- range(unlist(xlimList, recursive = TRUE), na.rm = TRUE)
+	
+	return(timeLim)
+	
 }

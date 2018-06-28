@@ -3,7 +3,8 @@
 #' @param shapeVar string, variable of \code{data} for shape of the points
 #' @param shapeLab string, label for \code{shapeVar}
 #' @inheritParams subjectProfileRangePlot
-#' @return list of \code{\link[ggplot2]{ggplot2} objects}
+#' @return list of \code{\link[ggplot2]{ggplot2} objects}, 
+#' also of class \code{subjectProfileTextPlot}
 #' @author Laure Cougnaud
 #' @importFrom glpgUtility getLabelVar
 #' @import ggplot2
@@ -18,6 +19,7 @@ subjectProfileEventPlot <- function(
 	subjectVar = "USUBJID",
 	xLab = getLabelVar(timeVar, labelVars = labelVars),
 	yLab = "",
+	timeLim = NULL,
 	title = paramLab,
 	labelVars = NULL
 ){
@@ -55,6 +57,13 @@ subjectProfileEventPlot <- function(
 		# change name for color scale
 		if(!is.null(shapeLab))
 			gg <- gg + scale_shape_discrete(name = shapeLab)
+		
+		if(!is.null(timeLim))
+			gg <- gg + coord_cartesian(timeLim = timeLim)
+		
+		class(gg) <- c("subjectProfileEventPlot", class(gg))
+		
+		gg
 		
 	})
 	

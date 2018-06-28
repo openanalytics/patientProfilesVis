@@ -6,9 +6,10 @@
 \usage{
 subjectProfileRangePlot(data, paramVar, paramLab = getLabelVar(paramVar,
   labelVars = labelVars), startVar, endVar, subjectVar = "USUBJID",
-  rangeLim = with(data, c(min(get(startVar), na.rm = TRUE), max(get(startVar),
-  na.rm = TRUE))), xLab = paste(getLabelVar(c(startVar, endVar), labelVars =
-  labelVars), collapse = "/"), yLab = "", colorVar = NULL,
+  timeLim = with(data, c(min(get(startVar), na.rm = TRUE), max(get(startVar),
+  na.rm = TRUE))), rangeSimilarStartEnd = diff(timeLim)/1000,
+  xLab = paste(getLabelVar(c(startVar, endVar), labelVars = labelVars),
+  collapse = "/"), yLab = "", colorVar = NULL,
   colorLab = getLabelVar(colorVar, labelVars = labelVars), title = paramLab,
   labelVars = NULL)
 }
@@ -25,8 +26,12 @@ subjectProfileRangePlot(data, paramVar, paramLab = getLabelVar(paramVar,
 
 \item{subjectVar}{string, variable of \code{data} with subject ID}
 
-\item{rangeLim}{vector of length 2 with limits for the range (x-axis).
+\item{timeLim}{(optional) vector of length 2 with time limits (x-axis)
 If not specified, extracted from the minimum \code{startVar} and maximum \code{endVar}}
+
+\item{rangeSimilarStartEnd}{numeric, if a record has the same
+\code{startVar} and \code{endVar}, what should be the range of the segment?
+By default, a thousandth of the range of \code{timeLim}.}
 
 \item{xLab}{string, label for the x-axis}
 
@@ -41,7 +46,8 @@ If not specified, extracted from the minimum \code{startVar} and maximum \code{e
 \item{labelVars}{named string with variable labels (names are the variable code)}
 }
 \value{
-list of \code{\link[ggplot2]{ggplot2} objects}
+list of \code{\link[ggplot2]{ggplot2} objects}, 
+also of class \code{subjectProfileTextPlot}
 }
 \description{
 Create plot of subject profiles with segments for range of parameters

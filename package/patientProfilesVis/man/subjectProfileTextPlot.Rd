@@ -26,7 +26,8 @@ subjectProfileTextPlot(data, vars, paramVar, paramValueVar,
 \item{labelVars}{named string with variable labels (names are the variable code)}
 }
 \value{
-list of \code{\link[ggplot2]{ggplot2} objects}
+list of \code{\link[ggplot2]{ggplot2} objects}, also of class
+\code{subjectProfileTextPlot}
 }
 \description{
 Create plot of subject profiles for events
