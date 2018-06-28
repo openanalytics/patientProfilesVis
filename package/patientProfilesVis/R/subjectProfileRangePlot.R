@@ -7,6 +7,9 @@
 #' @param endVar string, variable of \code{data} with end of range
 #' @param rangeLim vector of length 2 with limits for the range (x-axis).
 #' If not specified, extracted from the minimum \code{startVar} and maximum \code{endVar}
+#' @param rangeSimilarStartEn numeric, if a record has the same
+#' \code{startVar} and \code{endVar}, what should be the range of the segment?
+#' By default, a thousandth of the range of \code{rangeLim}.
 #' @param xLab string, label for the x-axis
 #' @param yLab string, label for the y-axis
 #' @param colorVar string, variable of \code{data} with color
@@ -26,6 +29,7 @@ subjectProfileRangePlot <- function(
 	endVar,
 	subjectVar = "USUBJID",
 	rangeLim = with(data, c(min(get(startVar), na.rm = TRUE), max(get(startVar), na.rm = TRUE))),
+	rangeSimilarStartEnd = diff(rangeLim)/1000,
 	xLab = paste(getLabelVar(c(startVar, endVar), labelVars = labelVars), collapse = "/"),
 	yLab = "",
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
@@ -33,10 +37,28 @@ subjectProfileRangePlot <- function(
 	labelVars = NULL
 ){
 	
+	# filter records without start date
+	idxMissingStart <- is.na(data[, startVar])
+	if(any(idxMissingStart))
+		data <- data[-which(idxMissingStart), ]	
+	
 	# if no end date: take last time in dataset
 	idxMissingEnd <- is.na(data[, endVar])
 	if(any(idxMissingEnd))
 		data[idxMissingEnd, endVar] <- rangeLim[2]
+	
+	# if same start/end, data not included by geom_segment
+	# so jitter the start/end in this case (proportion of the total x-range)
+	idxSameStartEnd <- which(data[, startVar] == data[, endVar])
+	if(length(idxSameStartEnd) > 0){
+		data[idxSameStartEnd, c(startVar, endVar)] <-
+			sweep(
+				x = data[idxSameStartEnd, c(startVar, endVar)], 
+				MARGIN = 2, 
+				STATS = c(-1, 1) * rangeSimilarStartEnd/2,
+				FUN = "+"
+			)
+	}
 	
 	listPlots <- dlply(data, subjectVar, function(dataSubject){	
 		
