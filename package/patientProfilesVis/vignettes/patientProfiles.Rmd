@@ -1,0 +1,142 @@
+---
+title: "Vignette of the `patientProfilesVis` package"
+author: "Laure Cougnaud"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output: rmarkdown::html_document
+vignette: >
+  %\VignetteIndexEntry{patientProfilesVis package}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+# Introduction
+
+```{r options, echo = FALSE}
+	
+	library(knitr)
+	opts_chunk$set(echo = TRUE, results = 'asis', warning = FALSE, 
+		error = FALSE, message = FALSE, cache = FALSE,
+		fig.width = 8, fig.height = 7,
+		#out.width = '0.7\\textwidth', 
+		fig.align = 'center')#, out.height = 0.5\\textwidth', fig.path = 'graphs/') 
+	options(width = 170)#, stringsAsFactors = FALSE
+	options(warn = 1)#instead of warn = 0 by default -> to have place where warnings occur in the call to Sweave function
+	
+```
+
+This package `patientProfilesVis` enables to create report containing subject
+profiles.
+
+```{r loadPackages}
+
+	library(patientProfilesVis)
+	library(pander)
+
+```
+
+## Data format
+
+The input dataset for the workflow should be a data.frame, 
+usually loaded from a _SAS_ data file (`sas7bdat` format).
+The label of the variables stored in the `SAS` datasets is also used
+for title/captions. 
+
+The function `loadDataADaM` can be used to load your custom `SAS` dataset(s) of
+interest. This function is used internally of the `loadExampleData` function.
+This function returns two objects:
+
+* a list of `data.frame` containing the data for each _SAS_ dataset(s), stored
+  in the `$data` slot
+* a vector containing the labels for each column of the data (used e.g. for
+  default titles of the figures), stored in the `$labelVars` slot
+
+A few `sdtm` datasets from the _Pelican_ study are included in the package for
+the demonstration, via the dataset `sdtmDataPelican` and corresponding variable
+labels `labelVarsPelican`.
+
+```{r loadData}	
+	
+	# example dataset(s) formatted as a list of data.frame
+	data(sdtmDataPelican)
+	pander(lapply(sdtmDataPelican, head, 3))
+	
+	# and corresponding labels
+	data(labelVarsPelican)
+	print(head(labelVarsPelican))
+
+```
+
+# Creation of the plot submodules
+
+Three plot types are currently available in the package:
+
+* 'text' module: patient specific information formatted as text, available via
+  the `subjectProfileTextPlot` function
+* 'interval' module: representation of time interval of a certain event,
+  available via the `subjectProfileIntervalPlot` function
+* 'event' module: representation of single event, available via the
+  `subjectProfileEventPlot`
+
+```{r createPlotModuleOfInterest}
+
+	## subject information (metadata)
+	dmPlots <- subjectProfileTextPlot(
+		data = sdtmDataPelican$DM,
+		vars = c("SEX", "AGE", "RACE", "COUNTRY", "ARM"),
+		labelVars = labelVarsPelican
+	)
+	
+	## medical history
+	mhPlots <- subjectProfileTextPlot(
+		data = sdtmDataPelican$MH,
+		paramVar = "MHDECOD",
+		paramValueVar = "MHOCCUR",
+		title = "Medical History",
+		labelVars = labelVarsPelican
+	)
+
+	## adverse event: range
+	
+#	head(dataList$AE)
+	# AEPTCD: preferred term code
+	aePlots <- subjectProfileIntervalPlot(
+		data = sdtmDataPelican$AE,
+		paramVar = "AETERM",
+		subjectVar = "USUBJID",
+		startVar = "AESTDY",
+		endVar = "AEENDY",
+		colorVar = "AESEV",
+		labelVars = labelVarsPelican
+	)
+	
+	## laboratory data
+	
+#	head(dataList$LB)
+	
+	# prepare data for plots:
+	dataLB <- sdtmDataPelican$LB
+	# sort the categories (empty values '' becomes NA)
+	dataLB$LBNRIND <- factor(dataLB$LBNRIND, levels = c("LOW", "NORMAL", "HIGH"))
+	
+	# create plot
+	lbPlots <- subjectProfileEventPlot(
+		data = dataLB,
+		paramVar = "LBTEST",
+		subjectVar = "USUBJID",
+		timeVar = "LBDY",
+		colorVar = "LBNRIND",
+		labelVars = labelVarsPelican
+	)
+
+```
+
+```{r createReportWithAllModules}
+
+	createSubjectProfileReport(
+		listPlots = list(dmPlots, mhPlots, aePlots, lbPlots)	
+	)
+
+```
+
+
+

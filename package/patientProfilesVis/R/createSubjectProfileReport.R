@@ -1,4 +1,13 @@
-
+#' Create subject profile report
+#' @param listPlots list of plots, as returned by the \code{\link{subjectProfileTextPlot}},
+#' \code{\link{subjectProfileEventPlot}} or \code{\link{subjectProfileIntervalPlot}}
+#' @param timeLim vector with time range
+#' @param landscape logical, if TRUE the created report is in landscape format
+#' @param outputFile string, path to the output report
+#' @return no returned value, the report is created at the location
+#' specified by \code{outputFile}
+#' @author Laure Cougnaud
+#' @export
 createSubjectProfileReport <- function(listPlots, 
 	timeLim = getXLimSubjectProfilePlots(listPlots),
 	landscape = FALSE,
@@ -8,6 +17,10 @@ createSubjectProfileReport <- function(listPlots,
 	listPlotsPerSubject <- subjectProfileCombine(listPlots, timeLim = timeLim)
 	
 	pathTemplate <- getPathTemplate("subjectProfile.Rnw")
+	
+	## input parameters for the child document:
+	# listPlotsPerSubject
+	outputDir <- normalizePath(dirname(outputFile), winslash = "/")
 	
 	## convert Rnw -> tex
 	outputFileKnitr <- knitr::knit(input = pathTemplate)
@@ -38,7 +51,7 @@ createSubjectProfileReport <- function(listPlots,
 #' (with the additional attribute 'nLinesYAxis')
 #' @importFrom cowplot plot_grid ggdraw draw_label
 #' @importFrom ggplot2 ggplotGrob ggplot_build
-#' @inheritParams subjectProfileRangePlot
+#' @inheritParams subjectProfileIntervalPlot
 #' @author Laure Cougnaud
 #' @export
 subjectProfileCombine <- function(listPlots, 
@@ -66,7 +79,7 @@ subjectProfileCombine <- function(listPlots,
 			# set same limits for the time/x-axis
 			listGgPlotsToCombine <- lapply(listGgPlotsToCombine, function(gg){
 				if(!inherits(gg, "subjectProfileTextPlot"))		
-					gg <- gg + coord_cartesian(x = timeLim)
+					gg <- gg + coord_cartesian(xlim = timeLim)
 				gg				
 			})
 	
@@ -89,7 +102,9 @@ subjectProfileCombine <- function(listPlots,
 			
 			# store the number of lines in the y-axis (used to adapt size during export)
 			# TODO: add plots title?
-			attributes(plot) <- c(attributes(plot), list(nLinesYAxis = sum(nLinesYAxis)))
+			attributes(plot) <- c(attributes(plot), 
+				list(nLinesYAxis = sum(nLinesYAxis), nSubplots = length(listGgPlotsToCombine))
+			)
 			
 			class(plot) <- c("subjectProfilePlot", class(plot))
 			
@@ -129,12 +144,16 @@ subjectProfileCombine <- function(listPlots,
 		# store the number of lines in the y-axis (used to adapt size during export)
 		attributes(plotSubjectWithTitle) <- c(
 			attributes(plotSubjectWithTitle), 
-			list(nLinesYAxis = nLinesYAxis))
+			list(
+				nLinesYAxis = nLinesYAxisPlot,
+				nSubplots = attr(plotSubject, "nSubplots")
+			)
+		)
 		class(plotSubjectWithTitle) <- c("subjectProfilePlot", class(plotSubjectWithTitle))
 		
 		plotSubjectWithTitle
 		
-	})
+	}, simplify = FALSE)
 
 	return(listPlotsPerSubject)
 	

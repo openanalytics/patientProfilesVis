@@ -2,7 +2,7 @@
 #' @param timeVar string, variable of \code{data} with time
 #' @param shapeVar string, variable of \code{data} for shape of the points
 #' @param shapeLab string, label for \code{shapeVar}
-#' @inheritParams subjectProfileRangePlot
+#' @inheritParams subjectProfileIntervalPlot
 #' @return list of \code{\link[ggplot2]{ggplot2} objects}, 
 #' also of class \code{subjectProfileTextPlot}
 #' @author Laure Cougnaud
@@ -59,7 +59,7 @@ subjectProfileEventPlot <- function(
 			gg <- gg + scale_shape_discrete(name = shapeLab)
 		
 		if(!is.null(timeLim))
-			gg <- gg + coord_cartesian(timeLim = timeLim)
+			gg <- gg + coord_cartesian(xlim = timeLim)
 		
 		class(gg) <- c("subjectProfileEventPlot", class(gg))
 		

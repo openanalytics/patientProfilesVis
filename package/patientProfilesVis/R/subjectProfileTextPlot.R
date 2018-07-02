@@ -1,6 +1,6 @@
 #' Create plot of subject profiles for events
 #' @param vars vector with string names of variables of \code{data} to consider
-#' @inheritParams subjectProfileRangePlot
+#' @inheritParams subjectProfileIntervalPlot
 #' @return list of \code{\link[ggplot2]{ggplot2} objects}, also of class
 #' \code{subjectProfileTextPlot}
 #' @author Laure Cougnaud
@@ -56,7 +56,7 @@ subjectProfileTextPlot <- function(
 				aes(x = 0, y = variable, label = value),
 				hjust = 0
 			) +
-			timeLim(c(0, 1)) +
+			xlim(c(0, 1)) +
 			theme_bw() +
 			theme(
 				panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
