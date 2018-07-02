@@ -7,6 +7,7 @@
 #' @return no returned value, the report is created at the location
 #' specified by \code{outputFile}
 #' @author Laure Cougnaud
+#' @importFrom tools texi2dvi
 #' @export
 createSubjectProfileReport <- function(listPlots, 
 	timeLim = getXLimSubjectProfilePlots(listPlots),
@@ -36,8 +37,7 @@ createSubjectProfileReport <- function(listPlots,
 	
 	# rename output file
 	outputTexi2pdf <- paste0(file_path_sans_ext(outputFileKnitr), ".pdf")
-	pdfPath <- file.path(pathFiguresPdf, paste0(pathCaptionShort, ".pdf"))
-	file.rename(outputTexi2pdf, to = outputFile)
+	file.rename(from = outputTexi2pdf, to = outputFile)
 	
 	setwd(oldwd)
 	
@@ -48,12 +48,11 @@ createSubjectProfileReport <- function(listPlots,
 #' @return a list of \code{subjectProfilePlot} object, containing the combined
 #' profile plots for each subject.
 #' This is in essence only a \code{\link[ggplot2]{ggplot2}} objects,
-#' (with the additional attribute 'nLinesYAxis')
+#' (with the additional attribute 'nLinesPlot')
 #' @importFrom cowplot plot_grid ggdraw draw_label
 #' @importFrom ggplot2 ggplotGrob ggplot_build
 #' @inheritParams subjectProfileIntervalPlot
 #' @author Laure Cougnaud
-#' @export
 subjectProfileCombine <- function(listPlots, 
 	timeLim = getXLimSubjectProfilePlots(listPlots)){
 	
@@ -84,11 +83,15 @@ subjectProfileCombine <- function(listPlots,
 			})
 	
 			# extract number of lines in the y-axis
-			nLinesYAxis <- sapply(listGgPlotsToCombine, function(gg)
-				length(unique(ggplot_build(gg)$data[[1]]$y))
-			)
+			nLinesPlot <- sapply(listGgPlotsToCombine, function(gg){
+				nLinesPlot <- length(unique(ggplot_build(gg)$data[[1]]$y))
+				nLinesTitleAndXAxis <- sum(unlist(lapply(ggplot_build(gg)$plot$labels[c("title", "x")], function(label)
+					if(label != "")	length(unlist(strsplit(label, split = "\n"))) * 2
+				)))
+				nLinesPlot + nLinesTitleAndXAxis
+			})
 			# relative height of each plot
-			relHeights <- nLinesYAxis/sum(nLinesYAxis)
+			relHeights <- nLinesPlot/sum(nLinesPlot)
 			
 			# combine all plots
 			plot <- do.call(plot_grid,
@@ -103,7 +106,7 @@ subjectProfileCombine <- function(listPlots,
 			# store the number of lines in the y-axis (used to adapt size during export)
 			# TODO: add plots title?
 			attributes(plot) <- c(attributes(plot), 
-				list(nLinesYAxis = sum(nLinesYAxis), nSubplots = length(listGgPlotsToCombine))
+				list(nLinesPlot = sum(nLinesPlot), nSubplots = length(listGgPlotsToCombine))
 			)
 			
 			class(plot) <- c("subjectProfilePlot", class(plot))
@@ -128,15 +131,16 @@ subjectProfileCombine <- function(listPlots,
 		
 		# create a ggplot for title only
 		title <- ggdraw() + 
-			draw_label(paste("Patient:", subject), fontface = 'bold', 
+			draw_label(paste(" Subject:", subject), fontface = 'bold', 
 				x = 0, hjust = 0, lineheight = 2
 			)
 		
 		plotSubject <- listPlotsPerSubject[[subject]]
 		# extract number of lines in main plot...
-		nLinesYAxisPlot <- attr(plotSubject, "nLinesYAxis")
+		nLinesPlot <- attr(plotSubject, "nLinesPlot")
 		# to get relative height of title/main plot
-		relHeights <- c(2, nLinesYAxisPlot)/(2+nLinesYAxisPlot)
+		relHeights <- c(4, nLinesPlot)/(4+nLinesPlot)
+#		convertX(ggplot_build(gg)$plot$theme$plot.margin, unitTo = "lines", valueOnly = TRUE)
 		
 		# combine title and plot
 		plotSubjectWithTitle <- plot_grid(title, plotSubject, ncol = 1, rel_heights = relHeights)
@@ -145,7 +149,7 @@ subjectProfileCombine <- function(listPlots,
 		attributes(plotSubjectWithTitle) <- c(
 			attributes(plotSubjectWithTitle), 
 			list(
-				nLinesYAxis = nLinesYAxisPlot,
+					nLinesPlot = nLinesPlot,
 				nSubplots = attr(plotSubject, "nSubplots")
 			)
 		)
@@ -167,7 +171,6 @@ subjectProfileCombine <- function(listPlots,
 #' @return vector of length 2 with limits for the x-axis
 #' @importFrom ggplot2 ggplot_build
 #' @author Laure Cougnaud
-#' @export
 getXLimSubjectProfilePlots <- function(listPlots){
 	
 	xlimList <- lapply(listPlots, function(list)
