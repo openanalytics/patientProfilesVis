@@ -23,7 +23,7 @@ createSubjectProfileReport <- function(listPlots,
 	## input parameters for the child document:
 	# listPlotsPerSubject
 	outputDir <- normalizePath(dirname(outputFile), winslash = "/")
-	landscape <- landscape
+	landscape <- landscape # knitr search for input parameter in the parent envir
 	
 	## convert Rnw -> tex
 	outputFileKnitr <- knitr::knit(input = pathTemplate, quiet = TRUE)
@@ -42,7 +42,7 @@ createSubjectProfileReport <- function(listPlots,
 	file.rename(from = outputTexi2pdf, to = outputFile)
 	
 	# clean output directory
-#	tmp <- file.remove(outputFileKnitr) # remove tex file
+	tmp <- file.remove(outputFileKnitr) # remove tex file
 	if(!exportFigures)
 		unlink(file.path(dirname(outputFile), "figures/"), recursive = TRUE)
 	
@@ -51,13 +51,13 @@ createSubjectProfileReport <- function(listPlots,
 }
 
 #' Combine subject profile plots.
-#' @param listPlots list of \code{\link[ggplot2]{ggplot2} objects}
+#' @param listPlots list of \code{\link[ggplot2]{ggplot2}} objects
 #' @return a list of \code{subjectProfilePlot} object, containing the combined
 #' profile plots for each subject.
 #' This is in essence only a \code{\link[ggplot2]{ggplot2}} objects,
 #' (with the additional attribute 'nLinesPlot')
 #' @importFrom cowplot plot_grid ggdraw draw_label
-#' @importFrom ggplot2 ggplotGrob ggplot_build
+#' @importFrom ggplot2 coord_cartesian
 #' @inheritParams subjectProfileIntervalPlot
 #' @author Laure Cougnaud
 #' @export
@@ -91,13 +91,8 @@ subjectProfileCombine <- function(listPlots,
 			})
 	
 			# extract number of lines in the y-axis
-			nLinesPlot <- sapply(listGgPlotsToCombine, function(gg){
-				nLinesPlot <- length(unique(ggplot_build(gg)$data[[1]]$y))
-				nLinesTitleAndXAxis <- sum(unlist(lapply(ggplot_build(gg)$plot$labels[c("title", "x")], function(label)
-					if(label != "")	length(unlist(strsplit(label, split = "\n"))) * 2
-				)))
-				nLinesPlot + nLinesTitleAndXAxis
-			})
+			nLinesPlot <- sapply(listGgPlotsToCombine, getNLinesYGgplot)
+
 			# relative height of each plot
 			relHeights <- nLinesPlot/sum(nLinesPlot)
 			
@@ -157,7 +152,7 @@ subjectProfileCombine <- function(listPlots,
 		attributes(plotSubjectWithTitle) <- c(
 			attributes(plotSubjectWithTitle), 
 			list(
-					nLinesPlot = nLinesPlot,
+				nLinesPlot = nLinesPlot,
 				nSubplots = attr(plotSubject, "nSubplots")
 			)
 		)

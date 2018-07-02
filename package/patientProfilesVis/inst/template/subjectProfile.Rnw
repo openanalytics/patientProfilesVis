@@ -1,6 +1,10 @@
 \documentclass[a4paper, 10pt]{article}
 
-\tableofcontents
+\usepackage{imakeidx}
+\makeindex
+
+% decrease margins: 1.875 inches wide by default on 10pt
+\usepackage[margin=0.75in]{geometry}
 
 <<echo = FALSE, results = 'asis'>>=
 
@@ -9,7 +13,19 @@
 
 @
 
+% make clickeable table of contents
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+
 \begin{document}
+
+%\tableofcontents
 
 <<optionsChunks, echo = FALSE, cache = FALSE, message = FALSE, warning = FALSE>>=
 
@@ -30,6 +46,8 @@
 	
 @
 
+\section{Subject}
+
 <<includePlots, echo = FALSE>>=
 
 #	figHeightInches <- sapply(listPlotsPerSubject, getSizeGTable, dim = "height", outputUnit = "inches")
@@ -37,9 +55,7 @@
 	
 	figHeightInches <- sapply(listPlotsPerSubject, function(plotSubject)
 		# number of lines in plot panel
-		attr(plotSubject, "nLinesPlot") * 0.14  + 
-		# top (title) and bottom (x-axis) margins for each subplot
-		attr(plotSubject, "nSubplots") * 0.14 * 6 # fontsize: 10pt, 1pt = 0.014 in
+		attr(plotSubject, "nLinesPlot") * 0.14
 	)
 
 #	textHeightPt <- ifelse(landscape, 345, 598)
@@ -49,9 +65,17 @@
 		plotsList = listPlotsPerSubject,
 		out.width = "'\\\\linewidth'",
 		fig.height = figHeightInches,
-		fig.width = textWidthInches
+		fig.width = textWidthInches,
+		sectionTitles = names(listPlotsPerSubject),
+		labels = names(listPlotsPerSubject)
 	)
 
 @
+
+% add table of contents in 'Index'
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{\indexname}
+\printindex
 
 \end{document}

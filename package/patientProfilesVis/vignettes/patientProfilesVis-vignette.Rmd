@@ -2,7 +2,12 @@
 title: "Vignette of the `patientProfilesVis` package"
 author: "Laure Cougnaud"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
-output: rmarkdown::html_document
+output: 
+  rmarkdown::html_document:
+    toc: true
+    toc_float:
+      collapsed: true
+    number_sections: true
 vignette: >
   %\VignetteIndexEntry{patientProfilesVis package}
   %\VignetteEngine{knitr::rmarkdown}
@@ -44,7 +49,7 @@ The label of the variables stored in the `SAS` datasets is also used
 for title/captions. 
 
 The function `loadDataADaM` can be used to load your custom `SAS` dataset(s) of
-interest. This function is used internally of the `loadExampleData` function.
+interest.
 This function returns two objects:
 
 * a list of `data.frame` containing the data for each _SAS_ dataset(s), stored
@@ -64,19 +69,19 @@ labels `labelVarsPelican`.
 	
 	# and corresponding labels
 	data(labelVarsPelican)
-	print(head(labelVarsPelican))
+	pander(head(labelVarsPelican))
 
 ```
 
 # Creation of the plot submodules
 
-Three plot types are currently available in the package:
+Three plot types/modules are currently available in the package:
 
-* 'text' module: patient specific information formatted as text, available via
-  the `subjectProfileTextPlot` function
-* 'interval' module: representation of time interval of a certain event,
+* **'text'** module: patient specific information formatted as text, available
+  via the `subjectProfileTextPlot` function
+* **'interval'** module: representation of time interval of a certain event,
   available via the `subjectProfileIntervalPlot` function
-* 'event' module: representation of single event, available via the
+* **'event'** module: representation of single event, available via the
   `subjectProfileEventPlot`
   
 Each of this function returns a list of plots (`ggplot` object), one for each
@@ -90,7 +95,7 @@ variables/columns of the data (`paramValueVar` only), or by a variable/column
 containing the parameter name (`paramNameVar`) and a variable/column containing
 the parameter value (`paramValueVar`).
 
-```{r exampleTestModule}
+```{r exampleTestModule1}
 
 	# annotate subject demographics meta-data
 	# by specifying a set of variables to include
@@ -100,9 +105,17 @@ the parameter value (`paramValueVar`).
 		labelVars = labelVarsPelican
 	)
 	
+```
+
+```{r exampleTestModule1-include, echo = FALSE, height = getNLinesYGgplot(dmPlots[[1]])*0.14, width = 14}
+
 	cat("Patient:", names(dmPlots)[1])
 	print(dmPlots[[1]])
-	
+
+```
+
+```{r exampleTestModule2}	
+
 	# annotate subject medical history
 	# by specifying a combination of parameter value/name
 	mhPlots <- subjectProfileTextPlot(
@@ -113,9 +126,13 @@ the parameter value (`paramValueVar`).
 		labelVars = labelVarsPelican
 	)
 	
+```
+
+```{r exampleTestModule2-include, echo = FALSE, height = getNLinesYGgplot(mhPlots[[1]])*0.14, width = 14}
+
 	cat("Patient:", names(mhPlots)[1])
 	print(mhPlots[[1]])
-	
+
 ```
 
 ## Interval/Range module
@@ -138,9 +155,13 @@ It is used here to represent the start/end date of the adverse events.
 		labelVars = labelVarsPelican
 	)
 	
+```
+
+```{r exampleIntervalModule-include, echo = FALSE, height = getNLinesYGgplot(aePlots[[1]])*0.14, width = 14}
+
 	cat("Patient:", names(aePlots)[1])
 	print(aePlots[[1]])
-	
+
 ```
 
 ## Event module
@@ -168,6 +189,11 @@ laboratory measurement (and corresponding time).
 #		colorVar = "LBNRIND",
 		labelVars = labelVarsPelican
 	)
+
+```
+
+```{r exampleEventModule-include, echo = FALSE, height = getNLinesYGgplot(lbPlots[[1]])*0.14, width = 14}
+
 	cat("Patient:", names(lbPlots)[1])
 	print(lbPlots[[1]])
 
@@ -184,6 +210,10 @@ laboratory measurement (and corresponding time).
 		colorVar = "LBNRIND",
 		labelVars = labelVarsPelican
 	)
+	
+```
+
+```{r exampleEventModuleWithColor-include, echo = FALSE, height = getNLinesYGgplot(lbPlotsColor[[1]])*0.14, width = 14}
 
 	cat("Patient:", names(lbPlotsColor)[1])
 	print(lbPlotsColor[[1]])
@@ -201,7 +231,7 @@ The function `createSubjectProfileReport` has mainly two purposes:
 ```{r createReportWithAllModules, eval = FALSE}
 
 	createSubjectProfileReport(
-		listPlots = list(dmPlots, mhPlots, aePlots, lbPlots)
+		listPlots = list(dmPlots, mhPlots, aePlots, lbPlotsColor)
 	)
 
 ```
@@ -210,11 +240,8 @@ The function `createSubjectProfileReport` has mainly two purposes:
 
 ## Session information
 
-```{r includeSessionInfo}
+```{r includeSessionInfo, echo = FALSE}
 
 	pander(sessionInfo())
 
 ```
-
-
-

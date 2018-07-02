@@ -5,8 +5,9 @@
 \title{include list of plots with different figure height, size, label in a knitr document}
 \usage{
 knitPrintListPlotsKnitr(plotsList, generalLabel = "plotsList",
-  labels = paste0(generalLabel, seq_along(plotsList)), type = c("ggplot2",
-  "plotly"), includeNewpage = TRUE, ...)
+  sectionTitles = NULL, sectionLevel = 2, labels = paste0(generalLabel,
+  seq_along(plotsList)), type = c("ggplot2", "plotly"),
+  includeNewpage = TRUE, ...)
 }
 \arguments{
 \item{plotsList}{list of plots, e.g. \code{ggplot} objects
@@ -16,6 +17,8 @@ from the \code{ggplot2} package or from the \code{plotly} packags}
 The labels are constructed as '\code{generalLabel}[i]',
 with i the plot number (from sequence spanning the length of \code{plotsList}).
 Only use if \code{labels} is not specified.}
+
+\item{sectionTitles}{(optional) vector with section title(s) corresponding to \code{plotsList}}
 
 \item{labels}{vector with labels for each chunk}
 

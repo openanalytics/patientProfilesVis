@@ -15,14 +15,18 @@
 #' @param labels vector with labels for each chunk
 #' @param type string with plot type, 'ggplot2' or 'plotly'
 #' @param includeNewpage logical, if TRUE include newpage after each plot
+#' @param sectionTitles (optional) vector with section title(s) corresponding to \code{plotsList}
 #' @param ... any chunk parameters, will be replicated if necessary
 #' See \code{\link{knitr}[opts_chunk]} for further details on available options.
 #' @return no returned value, a text is printed with chunk content
 #' @author Laure Cougnaud
 #' @importFrom knitr knit_expand knit
 #' @export
-knitPrintListPlotsKnitr <- function(plotsList, 
+knitPrintListPlotsKnitr <- function(
+	plotsList, 
 	generalLabel = "plotsList",
+	sectionTitles = NULL,
+	sectionLevel = 2,
 	labels = paste0(generalLabel, seq_along(plotsList)), 
 	type = c("ggplot2", "plotly"),
 	includeNewpage = TRUE,
@@ -39,17 +43,22 @@ knitPrintListPlotsKnitr <- function(plotsList,
 		argsChunk[["fig.cap"]] <- paste0("'", argsChunk[["fig.cap"]], "'")
 	}
 	argsChunkTxt <- if(length(argsChunk) > 0)
-		paste0(names(argsChunk), "=", "{{", names(argsChunk), "}}"
+		paste0(names(argsChunk), "=", "^^", names(argsChunk), "$$"
 		)
 	
 	# chunk general template
 	# seems that plot object cannot be passed as argument to knit_expand?
 	chunkTemplate <- paste0(
-		"<<{{label}}", 
+		"<<^^label$$", 
 		if(!is.null(argsChunkTxt)) paste0(", ", toString(argsChunkTxt)),
 		">>=\n",
+		if(!is.null(sectionTitles))	
+			paste0("cat('\\\\", 
+				paste(rep("sub", sectionLevel-1), collapse = ""), 
+				"section{", "^^sectionTitle$$", "}\\n')\n"
+			),
 		if(type == "ggplot2")	"print(", 
-		"plotsList[[{{i}}]]",
+		"plotsList[[^^i$$]]",
 		if(type == "ggplot2")	")", 
 		"\n",
 		if(includeNewpage)	"cat('\\\\newpage\\n')\n",
@@ -61,9 +70,11 @@ knitPrintListPlotsKnitr <- function(plotsList,
 		list(FUN = knit_expand, 
 			text = chunkTemplate,
 			i = seq_along(plotsList), 
-			label = labels
+			label = labels,
+			MoreArgs = list(delim = c("^^", "$$"))
 		),
-		argsChunk
+		argsChunk,
+		if(!is.null(sectionTitles))	list(sectionTitle = sectionTitles)
 	)
 	chunkTxt <- do.call(mapply, argsKnitExpand)
 #	cat(chunkTxt)
