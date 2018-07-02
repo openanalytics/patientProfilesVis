@@ -1,0 +1,81 @@
+\documentclass[a4paper, 10pt]{article}
+
+\usepackage{imakeidx}
+\makeindex
+
+% decrease margins: 1.875 inches wide by default on 10pt
+\usepackage[margin=0.75in]{geometry}
+
+<<echo = FALSE, results = 'asis'>>=
+
+	if(landscape)
+		cat("\n", "\\usepackage[landscape]{geometry}", "\n", sep = "\n")
+
+@
+
+% make clickeable table of contents
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+
+\begin{document}
+
+%\tableofcontents
+
+<<optionsChunks, echo = FALSE, cache = FALSE, message = FALSE, warning = FALSE>>=
+
+	library(knitr)
+
+	knitr::opts_chunk$set(
+		echo = FALSE, 
+		message = FALSE,
+		cache = FALSE,
+		warning = FALSE,
+		error = FALSE, # stop-on-error
+		results = "asis",
+		fig.align = "center",
+		fig.path = file.path(outputDir, "figures/")
+	)
+	
+	options(warn = 1, width = 200)
+	
+@
+
+\section{Subject}
+
+<<includePlots, echo = FALSE>>=
+
+#	figHeightInches <- sapply(listPlotsPerSubject, getSizeGTable, dim = "height", outputUnit = "inches")
+#	figWidthInches <- sapply(listPlotsPerSubject, getSizeGTable, dim = "width", outputUnit = "inches")
+	
+	figHeightInches <- sapply(listPlotsPerSubject, function(plotSubject)
+		# number of lines in plot panel
+		attr(plotSubject, "nLinesPlot") * 0.14
+	)
+
+#	textHeightPt <- ifelse(landscape, 345, 598)
+	textWidthInches <- 14 #ifelse(landscape, 598, 345)/72
+#	figHeightInches <- paste0("'", round(textHeightPt/figHeightPt, 2), "\\textheight'")
+	knitPrintListPlotsKnitr(
+		plotsList = listPlotsPerSubject,
+		out.width = "'\\\\linewidth'",
+		fig.height = figHeightInches,
+		fig.width = textWidthInches,
+		sectionTitles = names(listPlotsPerSubject),
+		labels = names(listPlotsPerSubject)
+	)
+
+@
+
+% add table of contents in 'Index'
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{\indexname}
+\printindex
+
+\end{document}

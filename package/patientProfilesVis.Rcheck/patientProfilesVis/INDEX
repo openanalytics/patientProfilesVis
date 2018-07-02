@@ -1,0 +1,31 @@
+createSubjectProfileReport
+                        Create subject profile report
+getLabelVars            Get label of the variables in ADaM dataset(s)
+getNLinesYGgplot        Get approximately the number of lines in the
+                        y-axis of the plot. Can be used to specify
+                        plot-specific height during the export.
+getPathTemplate         get path of the any 'file' template in the
+                        'CSRFigures' package
+getXLimSubjectProfilePlots
+                        Get limits for a list of plots.
+knitPrintListPlotsKnitr
+                        include list of plots with different figure
+                        height, size, label in a knitr document
+labelVarsPelican        Variable labels extracted from the 'sdtm'
+                        datasets for the Pelican study
+                        ('GLPG2737-CL-202-UNBLINDED/CRG10GLP01_SDTM_2018_06JUN_15_v2').
+                        This corresponds to the 'sdtmDataPelican'
+                        dataset.
+loadDataADaM            Load data from ADaM file(s)
+sdtmDataPelican         Example data for subject profiles, currently
+                        extracted from the 'sdtm' datasets for the
+                        Pelican study
+                        ('GLPG2737-CL-202-UNBLINDED/CRG10GLP01_SDTM_2018_06JUN_15_v2').
+subjectProfileCombine   Combine subject profile plots.
+subjectProfileEventPlot
+                        Create plot of subject profiles for events
+subjectProfileIntervalPlot
+                        Create plot of subject profiles with segments
+                        for range of parameters
+subjectProfileTextPlot
+                        Create plot of subject profiles for events.
