@@ -54,7 +54,8 @@ subjectProfileTextPlot <- function(
 		gg <- ggplot(data = dataSubject) +
 			geom_text(
 				aes(x = 0, y = variable, label = value),
-				hjust = 0
+				hjust = 0,
+				size = rel(3)
 			) +
 			xlim(c(0, 1)) +
 			theme_bw() +
@@ -65,6 +66,13 @@ subjectProfileTextPlot <- function(
 				axis.ticks.x = element_blank()
 			) +
 			labs(title = title, x = xLab, y = yLab)
+	
+		if(xLab == ""){
+			marDefault <- theme_bw()$plot.margin
+			marNew <- margin(t = marDefault[1], r = marDefault[2], 
+				b = 0, l = marDefault[4], unit = "pt")
+			gg <- gg + theme(plot.margin = marNew)
+		}
 	
 		class(gg) <- c("subjectProfileTextPlot", class(gg))
 		

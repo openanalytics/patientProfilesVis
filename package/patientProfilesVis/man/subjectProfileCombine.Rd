@@ -17,7 +17,7 @@ If not specified, extracted from the minimum \code{startVar} and maximum \code{e
 a list of \code{subjectProfilePlot} object, containing the combined
 profile plots for each subject.
 This is in essence only a \code{\link[ggplot2]{ggplot2}} objects,
-(with the additional attribute 'nLinesYAxis')
+(with the additional attribute 'nLinesPlot')
 }
 \description{
 Combine subject profile plots.

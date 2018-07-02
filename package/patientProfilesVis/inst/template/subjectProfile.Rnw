@@ -32,7 +32,7 @@
 	
 	figHeightInches <- sapply(listPlotsPerSubject, function(plotSubject)
 		# number of lines in plot panel
-		attr(plotSubject, "nLinesYAxis") * 0.14  + 
+		attr(plotSubject, "nLinesPlot") * 0.14  + 
 		# top (title) and bottom (x-axis) margins for each subplot
 		attr(plotSubject, "nSubplots") * 0.14 * 6 # fontsize: 10pt, 1pt = 0.014 in
 	)
@@ -42,7 +42,7 @@
 #	figHeightInches <- paste0("'", round(textHeightPt/figHeightPt, 2), "\\textheight'")
 	knitPrintListPlotsKnitr(
 		plotsList = listPlotsPerSubject,
-		out.width = "'\\\\textwidth'",
+		out.width = "'\\\\linewidth'",
 		fig.height = figHeightInches,
 		fig.width = textWidthInches
 	)

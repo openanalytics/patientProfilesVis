@@ -96,8 +96,7 @@ Three plot types are currently available in the package:
 	)
 
 	## adverse event: range
-	
-#	head(dataList$AE)
+
 	# AEPTCD: preferred term code
 	aePlots <- subjectProfileIntervalPlot(
 		data = sdtmDataPelican$AE,

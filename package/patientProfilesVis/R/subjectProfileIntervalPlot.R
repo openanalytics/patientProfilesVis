@@ -29,7 +29,7 @@ subjectProfileIntervalPlot <- function(
 	startVar,
 	endVar,
 	subjectVar = "USUBJID",
-	timeLim = with(data, c(min(get(startVar), na.rm = TRUE), max(get(startVar), na.rm = TRUE))),
+	timeLim =  with(data, c(min(get(startVar), na.rm = TRUE), max(get(startVar), na.rm = TRUE))),
 	rangeSimilarStartEnd = diff(timeLim)/1000,
 	xLab = paste(getLabelVar(c(startVar, endVar), labelVars = labelVars), collapse = "/"),
 	yLab = "",
@@ -72,7 +72,7 @@ subjectProfileIntervalPlot <- function(
 		gg <- ggplot(data = dataSubject) +
 			geom_segment(
 				do.call(aes_string, aesArgs),
-				size = 3
+				size = 2
 			) +
 			scale_y_discrete(drop = TRUE) +
 			theme_bw() +
@@ -82,7 +82,8 @@ subjectProfileIntervalPlot <- function(
 		if(!is.null(colorLab))
 			gg <- gg + scale_colour_discrete(name = colorLab)
 		
-		gg <- gg + coord_cartesian(xlim = timeLim)
+		if(!is.null(timeLim))
+			gg <- gg + coord_cartesian(xlim = timeLim)
 		
 		class(gg) <- c("subjectProfileEventPlot", class(gg))
 		
