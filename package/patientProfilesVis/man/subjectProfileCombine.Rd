@@ -8,7 +8,7 @@ subjectProfileCombine(listPlots,
   timeLim = getXLimSubjectProfilePlots(listPlots))
 }
 \arguments{
-\item{listPlots}{list of \code{\link[ggplot2]{ggplot2} objects}}
+\item{listPlots}{list of \code{\link[ggplot2]{ggplot2}} objects}
 
 \item{timeLim}{(optional) vector of length 2 with time limits (x-axis)
 If not specified, extracted from the minimum \code{startVar} and maximum \code{endVar}}
