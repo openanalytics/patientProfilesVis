@@ -6,3 +6,4 @@ documentation/
 tests/
 *.pdf
 *.tex
+*png

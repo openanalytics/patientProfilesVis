@@ -14,9 +14,11 @@ vignette: >
 ```{r options, echo = FALSE}
 	
 	library(knitr)
-	opts_chunk$set(echo = TRUE, results = 'asis', warning = FALSE, 
+	opts_chunk$set(
+		echo = TRUE, results = 'asis', warning = FALSE, 
 		error = FALSE, message = FALSE, cache = FALSE,
 		fig.width = 8, fig.height = 7,
+		fig.path = "./figures_vignette/",
 		#out.width = '0.7\\textwidth', 
 		fig.align = 'center')#, out.height = 0.5\\textwidth', fig.path = 'graphs/') 
 	options(width = 170)#, stringsAsFactors = FALSE
@@ -76,26 +78,54 @@ Three plot types are currently available in the package:
   available via the `subjectProfileIntervalPlot` function
 * 'event' module: representation of single event, available via the
   `subjectProfileEventPlot`
+  
+Each of this function returns a list of plots (`ggplot` object), one for each
+subject. 
+  
+## Text module
 
-```{r createPlotModuleOfInterest}
+The 'text' module enables to specify meta-information for each subject.
+There are two ways to specify such information, either by specifying a set of
+variables/columns of the data (`paramValueVar` only), or by a variable/column
+containing the parameter name (`paramNameVar`) and a variable/column containing
+the parameter value (`paramValueVar`).
 
-	## subject information (metadata)
+```{r exampleTestModule}
+
+	# annotate subject demographics meta-data
+	# by specifying a set of variables to include
 	dmPlots <- subjectProfileTextPlot(
 		data = sdtmDataPelican$DM,
-		vars = c("SEX", "AGE", "RACE", "COUNTRY", "ARM"),
+		paramValueVar = c("SEX", "AGE", "RACE", "COUNTRY", "ARM"),
 		labelVars = labelVarsPelican
 	)
 	
-	## medical history
+	cat("Patient:", names(dmPlots)[1])
+	print(dmPlots[[1]])
+	
+	# annotate subject medical history
+	# by specifying a combination of parameter value/name
 	mhPlots <- subjectProfileTextPlot(
 		data = sdtmDataPelican$MH,
-		paramVar = "MHDECOD",
+		paramNameVar = "MHDECOD",
 		paramValueVar = "MHOCCUR",
 		title = "Medical History",
 		labelVars = labelVarsPelican
 	)
+	
+	cat("Patient:", names(mhPlots)[1])
+	print(mhPlots[[1]])
+	
+```
 
-	## adverse event: range
+## Interval/Range module
+
+The 'interval' module enables to represent a time interval for
+some parameters/events of interest.
+
+It is used here to represent the start/end date of the adverse events.
+
+```{r exampleIntervalModule}
 
 	# AEPTCD: preferred term code
 	aePlots <- subjectProfileIntervalPlot(
@@ -108,9 +138,21 @@ Three plot types are currently available in the package:
 		labelVars = labelVarsPelican
 	)
 	
-	## laboratory data
+	cat("Patient:", names(aePlots)[1])
+	print(aePlots[[1]])
 	
-#	head(dataList$LB)
+```
+
+## Event module
+
+The 'event' module enables to represent event data.
+
+This is used to represent the presence/absence of a certain
+laboratory measurement (and corresponding time).
+
+```{r exampleEventModule}
+	
+	## laboratory data
 	
 	# prepare data for plots:
 	dataLB <- sdtmDataPelican$LB
@@ -123,17 +165,54 @@ Three plot types are currently available in the package:
 		paramVar = "LBTEST",
 		subjectVar = "USUBJID",
 		timeVar = "LBDY",
+#		colorVar = "LBNRIND",
+		labelVars = labelVarsPelican
+	)
+	cat("Patient:", names(lbPlots)[1])
+	print(lbPlots[[1]])
+
+```
+
+```{r exampleEventModuleWithColor}
+
+	# create plot
+	lbPlotsColor <- subjectProfileEventPlot(
+		data = dataLB,
+		paramVar = "LBTEST",
+		subjectVar = "USUBJID",
+		timeVar = "LBDY",
 		colorVar = "LBNRIND",
 		labelVars = labelVarsPelican
 	)
 
+	cat("Patient:", names(lbPlotsColor)[1])
+	print(lbPlotsColor[[1]])
+
 ```
 
-```{r createReportWithAllModules}
+# Creation of subject report
+
+The function `createSubjectProfileReport` has mainly two purposes:
+
+* combining the plots of each patient across modules (via the
+  `subjectProfileCombine` function)
+* creating a _pdf_ report containing the resulting plots (one page per subject)
+
+```{r createReportWithAllModules, eval = FALSE}
 
 	createSubjectProfileReport(
-		listPlots = list(dmPlots, mhPlots, aePlots, lbPlots)	
+		listPlots = list(dmPlots, mhPlots, aePlots, lbPlots)
 	)
+
+```
+
+# Appendix
+
+## Session information
+
+```{r includeSessionInfo}
+
+	pander(sessionInfo())
 
 ```
 

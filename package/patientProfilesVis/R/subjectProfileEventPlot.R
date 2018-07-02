@@ -24,9 +24,6 @@ subjectProfileEventPlot <- function(
 	labelVars = NULL
 ){
 	
-	if(is.null(colorVar) & is.null(shapeVar))
-		stop("Variable used for coloring and/or for the shape of the points should be specified.")
-	
 	data <- data[with(data, !is.na(get(paramVar)) & !is.na(get(timeVar))), ]
 	
 	if(!is.null(colorVar))	data <- data[!is.na(data[, colorVar]), ]

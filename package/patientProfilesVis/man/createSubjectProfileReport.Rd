@@ -6,7 +6,7 @@
 \usage{
 createSubjectProfileReport(listPlots,
   timeLim = getXLimSubjectProfilePlots(listPlots), landscape = FALSE,
-  outputFile = "subjectProfile.pdf")
+  outputFile = "subjectProfile.pdf", exportFigures = FALSE)
 }
 \arguments{
 \item{listPlots}{list of plots, as returned by the \code{\link{subjectProfileTextPlot}},

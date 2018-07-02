@@ -1,8 +1,13 @@
 \documentclass[a4paper, 10pt]{article}
 
-%\pagenumbering{gobble}
+\tableofcontents
 
-\usepackage{\Sexpr{ifelse(landscape, "rotating", "graphicx")}}
+<<echo = FALSE, results = 'asis'>>=
+
+	if(landscape)
+		cat("\n", "\\usepackage[landscape]{geometry}", "\n", sep = "\n")
+
+@
 
 \begin{document}
 
