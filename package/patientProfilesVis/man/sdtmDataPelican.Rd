@@ -7,11 +7,11 @@
 extracted from the \code{sdtm} datasets for the
 Pelican study ('study').}
 \format{list with data.frame for each dataset}
-\usage{
-sdtmDataPelican
-}
 \description{
 This includes the  adverse event ('ae'), medical history ('mh'), 
 demographics ('dm'), and laboratory ('lb') data.
 }
-\keyword{datasets}
+\author{
+Laure Cougnaud
+}
+\keyword{data}

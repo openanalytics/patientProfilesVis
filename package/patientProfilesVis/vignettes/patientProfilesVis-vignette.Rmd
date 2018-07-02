@@ -65,7 +65,7 @@ labels `labelVarsPelican`.
 	
 	# example dataset(s) formatted as a list of data.frame
 	data(sdtmDataPelican)
-	pander(lapply(sdtmDataPelican, head, 3))
+	pander(lapply(sdtmDataPelican, head, 1))
 	
 	# and corresponding labels
 	data(labelVarsPelican)
@@ -107,9 +107,8 @@ the parameter value (`paramValueVar`).
 	
 ```
 
-```{r exampleTestModule1-include, echo = FALSE, height = getNLinesYGgplot(dmPlots[[1]])*0.14, width = 14}
+```{r exampleTestModule1-include, echo = FALSE, fig.height = getNLinesYGgplot(dmPlots[[1]])*0.14, fig.width = 14, fig.cap = paste("Demographic information with the 'subjectProfileTextPlot' function for patient:", names(dmPlots)[1])}
 
-	cat("Patient:", names(dmPlots)[1])
 	print(dmPlots[[1]])
 
 ```
@@ -128,7 +127,7 @@ the parameter value (`paramValueVar`).
 	
 ```
 
-```{r exampleTestModule2-include, echo = FALSE, height = getNLinesYGgplot(mhPlots[[1]])*0.14, width = 14}
+```{r exampleTestModule2-include, echo = FALSE, fig.height = getNLinesYGgplot(mhPlots[[1]])*0.14, fig.width = 14, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlots)[1])}
 
 	cat("Patient:", names(mhPlots)[1])
 	print(mhPlots[[1]])
@@ -157,7 +156,7 @@ It is used here to represent the start/end date of the adverse events.
 	
 ```
 
-```{r exampleIntervalModule-include, echo = FALSE, height = getNLinesYGgplot(aePlots[[1]])*0.14, width = 14}
+```{r exampleIntervalModule-include, echo = FALSE, fig.height = getNLinesYGgplot(aePlots[[1]])*0.14, fig.width = 14, fig.cap = paste("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", names(aePlots)[1])}
 
 	cat("Patient:", names(aePlots)[1])
 	print(aePlots[[1]])
@@ -186,18 +185,20 @@ laboratory measurement (and corresponding time).
 		paramVar = "LBTEST",
 		subjectVar = "USUBJID",
 		timeVar = "LBDY",
-#		colorVar = "LBNRIND",
 		labelVars = labelVarsPelican
 	)
 
 ```
 
-```{r exampleEventModule-include, echo = FALSE, height = getNLinesYGgplot(lbPlots[[1]])*0.14, width = 14}
+```{r exampleEventModule-include, echo = FALSE, fig.height = getNLinesYGgplot(lbPlots[[1]])*0.14, fig.width = 14, fig.cap = paste("Laboratory data with the 'subjectProfileEventPlot' function for patient:", names(lbPlots)[1])}
 
 	cat("Patient:", names(lbPlots)[1])
 	print(lbPlots[[1]])
 
 ```
+
+The reference range indicator is used to color the presence/absence of the
+laboratory data via the `colorVar` parameter.
 
 ```{r exampleEventModuleWithColor}
 
@@ -213,7 +214,7 @@ laboratory measurement (and corresponding time).
 	
 ```
 
-```{r exampleEventModuleWithColor-include, echo = FALSE, height = getNLinesYGgplot(lbPlotsColor[[1]])*0.14, width = 14}
+```{r exampleEventModuleWithColor-include, echo = FALSE, fig.height = getNLinesYGgplot(lbPlotsColor[[1]])*0.14, fig.width = 14, fig.cap = paste("Laboratory data with the 'subjectProfileEventPlot' function for patient:", names(lbPlotsColor)[1])}
 
 	cat("Patient:", names(lbPlotsColor)[1])
 	print(lbPlotsColor[[1]])
