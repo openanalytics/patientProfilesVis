@@ -20,6 +20,9 @@ Only use if \code{labels} is not specified.}
 
 \item{sectionTitles}{(optional) vector with section title(s) corresponding to \code{plotsList}}
 
+\item{sectionLevel}{integer with section level, 2 by default.
+This is only used if \code{sectionTitles} is specified}
+
 \item{labels}{vector with labels for each chunk}
 
 \item{type}{string with plot type, 'ggplot2' or 'plotly'}

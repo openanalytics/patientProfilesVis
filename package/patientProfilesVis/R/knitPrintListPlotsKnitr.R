@@ -16,6 +16,8 @@
 #' @param type string with plot type, 'ggplot2' or 'plotly'
 #' @param includeNewpage logical, if TRUE include newpage after each plot
 #' @param sectionTitles (optional) vector with section title(s) corresponding to \code{plotsList}
+#' @param sectionLevel integer with section level, 2 by default.
+#' This is only used if \code{sectionTitles} is specified
 #' @param ... any chunk parameters, will be replicated if necessary
 #' See \code{\link{knitr}[opts_chunk]} for further details on available options.
 #' @return no returned value, a text is printed with chunk content

@@ -17,6 +17,9 @@ createSubjectProfileReport(listPlots,
 \item{landscape}{logical, if TRUE the created report is in landscape format}
 
 \item{outputFile}{string, path to the output report}
+
+\item{exportFigures}{logical, if TRUE (FALSE by default) the figures are also exported
+in png format in a 'figures' folder}
 }
 \value{
 no returned value, the report is created at the location

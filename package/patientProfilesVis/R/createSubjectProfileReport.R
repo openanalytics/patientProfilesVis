@@ -4,6 +4,8 @@
 #' @param timeLim vector with time range
 #' @param landscape logical, if TRUE the created report is in landscape format
 #' @param outputFile string, path to the output report
+#' @param exportFigures logical, if TRUE (FALSE by default) the figures are also exported
+#' in png format in a 'figures' folder
 #' @return no returned value, the report is created at the location
 #' specified by \code{outputFile}
 #' @author Laure Cougnaud

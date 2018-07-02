@@ -6,8 +6,8 @@ Date: 2018-07-02
 Author: Laure Cougnaud
 Maintainer: Laure Cougnaud <laure.cougnaud@openanalytics.eu>
 Description: This package enables the creation of report with customizable visualization of patient profiles.
-Imports: ggplot2, plyr, glpgUtility, cowplot, haven, tools, reshape2
-Suggests: pander, knitr
+Imports: ggplot2, plyr, glpgUtility, cowplot, haven, tools, reshape2, knitr
+Suggests: pander
 License: Software for Internal Use at Open Analytics NV
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr

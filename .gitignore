@@ -9,3 +9,4 @@ tests/
 *.png
 *.tar.gz
 *.log
+*.Rcheck

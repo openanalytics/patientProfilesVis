@@ -129,7 +129,6 @@ the parameter value (`paramValueVar`).
 
 ```{r exampleTestModule2-include, echo = FALSE, fig.height = getNLinesYGgplot(mhPlots[[1]])*0.14, fig.width = 14, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlots)[1])}
 
-	cat("Patient:", names(mhPlots)[1])
 	print(mhPlots[[1]])
 
 ```
@@ -158,7 +157,6 @@ It is used here to represent the start/end date of the adverse events.
 
 ```{r exampleIntervalModule-include, echo = FALSE, fig.height = getNLinesYGgplot(aePlots[[1]])*0.14, fig.width = 14, fig.cap = paste("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", names(aePlots)[1])}
 
-	cat("Patient:", names(aePlots)[1])
 	print(aePlots[[1]])
 
 ```
@@ -192,7 +190,6 @@ laboratory measurement (and corresponding time).
 
 ```{r exampleEventModule-include, echo = FALSE, fig.height = getNLinesYGgplot(lbPlots[[1]])*0.14, fig.width = 14, fig.cap = paste("Laboratory data with the 'subjectProfileEventPlot' function for patient:", names(lbPlots)[1])}
 
-	cat("Patient:", names(lbPlots)[1])
 	print(lbPlots[[1]])
 
 ```
@@ -216,7 +213,6 @@ laboratory data via the `colorVar` parameter.
 
 ```{r exampleEventModuleWithColor-include, echo = FALSE, fig.height = getNLinesYGgplot(lbPlotsColor[[1]])*0.14, fig.width = 14, fig.cap = paste("Laboratory data with the 'subjectProfileEventPlot' function for patient:", names(lbPlotsColor)[1])}
 
-	cat("Patient:", names(lbPlotsColor)[1])
 	print(lbPlotsColor[[1]])
 
 ```
@@ -240,6 +236,7 @@ The function `createSubjectProfileReport` has mainly two purposes:
 # Appendix
 
 ## Session information
+
 
 ```{r includeSessionInfo, echo = FALSE}
 
