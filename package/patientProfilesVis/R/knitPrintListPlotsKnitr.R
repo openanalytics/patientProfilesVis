@@ -52,7 +52,7 @@ knitPrintListPlotsKnitr <- function(plotsList,
 		"plotsList[[{{i}}]]",
 		if(type == "ggplot2")	")", 
 		"\n",
-		if(includeNewpage)	"cat('\\\\\\\\newpage\\n')\n",
+		if(includeNewpage)	"cat('\\\\newpage\\n')\n",
 		"@\n"
 	)
 	

@@ -4,3 +4,5 @@ data/
 documentation/
 *.html
 tests/
+*.pdf
+*.tex

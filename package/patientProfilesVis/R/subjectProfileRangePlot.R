@@ -23,7 +23,7 @@
 #' @import ggplot2
 #' @importFrom plyr dlply
 #' @export
-subjectProfileRangePlot <- function(
+subjectProfileIntervalPlot <- function(
 	data,
 	paramVar, paramLab = getLabelVar(paramVar, labelVars = labelVars),
 	startVar,
@@ -82,7 +82,7 @@ subjectProfileRangePlot <- function(
 		if(!is.null(colorLab))
 			gg <- gg + scale_colour_discrete(name = colorLab)
 		
-		gg <- gg + coord_cartesian(timeLim = timeLim)
+		gg <- gg + coord_cartesian(xlim = timeLim)
 		
 		class(gg) <- c("subjectProfileEventPlot", class(gg))
 		
