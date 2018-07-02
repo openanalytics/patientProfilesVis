@@ -1,5 +1,20 @@
-#' Create plot of subject profiles for events
-#' @param vars vector with string names of variables of \code{data} to consider
+#' Create plot of subject profiles for events.
+#' 
+#' There are two ways to specify the variables of interest to include:
+#' \itemize{
+#' \item{by specifying column(s) of interest containing parameter values, passed
+#' to the \code{paramValueVar} parameter
+#' }
+#' \item{by specifying a combination of a variable containing the parameter name
+#' (\code{paramNameVar}), coupled with a variable containing the 
+#' parameter values (\code{paramValueVar})
+#' }
+#' }
+#' @param paramValueVar string, variable of \code{data} containing the parameter
+#' value to represent. This should be of length 1 if used in combination with
+#' \code{paramNameVar}, otherwise multiple are possible.
+#' @param paramNameVar (optional) string, variable of \code{data} with parameter name.
+#' If specified, \code{paramValueVar} should be an unique variable.
 #' @inheritParams subjectProfileIntervalPlot
 #' @return list of \code{\link[ggplot2]{ggplot2} objects}, also of class
 #' \code{subjectProfileTextPlot}
@@ -11,42 +26,40 @@
 #' @export
 subjectProfileTextPlot <- function(
 	data,
-	vars, 
-	paramVar, paramValueVar,
+	paramValueVar,
+	paramNameVar = NULL,
 	subjectVar = "USUBJID",
 	xLab = "",
 	yLab = "",
 	title = "Subject information",
 	labelVars = NULL
 ){
-	
-	if(!missing(vars)){
+		
+	if(is.null(paramNameVar)){
 
 		# transform data from wide to long format
 		dataPlot <- melt(
 			data, id.vars = subjectVar, 
-			measure.vars = vars, 
+			measure.vars = paramValueVar, 
 			variable.name = "variable",
 			value.name = "value"
 		)
 		
 		# use the labels for the names of the variables
 		dataPlot$variable <- if(!is.null(labelVars)){
-			varsLabels <- getLabelVar(vars, labelVars = labelVars)
+			varsLabels <- getLabelVar(paramValueVar, labelVars = labelVars)
 			factor(
 				varsLabels[dataPlot$variable],
-				levels = labelVars[vars]
+				levels = labelVars[paramValueVar]
 			)
-		}else factor(dataPlot$variable, levels = vars)
+		}else factor(dataPlot$variable, levels = paramValueVar)
 
-	}else if(!missing(paramVar) & !missing(paramValueVar)){
+	}else{
 		
-		dataPlot <- data[, c(subjectVar, paramVar, paramValueVar)]
+		dataPlot <- data[, c(subjectVar, paramNameVar, paramValueVar)]
 		colnames(dataPlot) <- c(subjectVar, 'variable', 'value')
 		
-	}else		
-		stop("The text variables should be specified via the parameter 'vars'",
-			"or the combinations of the variables 'paramVar' and 'eventVar'.")
+	}
 		
 	listPlots <- dlply(dataPlot, subjectVar, function(dataSubject){	
 			

@@ -12,3 +12,4 @@ License: Software for Internal Use at Open Analytics NV
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
 LazyData: true
+SystemRequirements: latex

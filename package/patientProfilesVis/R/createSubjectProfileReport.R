@@ -7,12 +7,13 @@
 #' @return no returned value, the report is created at the location
 #' specified by \code{outputFile}
 #' @author Laure Cougnaud
-#' @importFrom tools texi2dvi
+#' @importFrom tools texi2pdf
 #' @export
 createSubjectProfileReport <- function(listPlots, 
 	timeLim = getXLimSubjectProfilePlots(listPlots),
 	landscape = FALSE,
-	outputFile = "subjectProfile.pdf"){
+	outputFile = "subjectProfile.pdf",
+	exportFigures = FALSE){
 	
 	# combine
 	listPlotsPerSubject <- subjectProfileCombine(listPlots, timeLim = timeLim)
@@ -22,9 +23,10 @@ createSubjectProfileReport <- function(listPlots,
 	## input parameters for the child document:
 	# listPlotsPerSubject
 	outputDir <- normalizePath(dirname(outputFile), winslash = "/")
+	landscape <- landscape
 	
 	## convert Rnw -> tex
-	outputFileKnitr <- knitr::knit(input = pathTemplate)
+	outputFileKnitr <- knitr::knit(input = pathTemplate, quiet = TRUE)
 	
 	## convert tex -> pdf
 	
@@ -38,6 +40,11 @@ createSubjectProfileReport <- function(listPlots,
 	# rename output file
 	outputTexi2pdf <- paste0(file_path_sans_ext(outputFileKnitr), ".pdf")
 	file.rename(from = outputTexi2pdf, to = outputFile)
+	
+	# clean output directory
+#	tmp <- file.remove(outputFileKnitr) # remove tex file
+	if(!exportFigures)
+		unlink(file.path(dirname(outputFile), "figures/"), recursive = TRUE)
 	
 	setwd(oldwd)
 	
@@ -53,6 +60,7 @@ createSubjectProfileReport <- function(listPlots,
 #' @importFrom ggplot2 ggplotGrob ggplot_build
 #' @inheritParams subjectProfileIntervalPlot
 #' @author Laure Cougnaud
+#' @export
 subjectProfileCombine <- function(listPlots, 
 	timeLim = getXLimSubjectProfilePlots(listPlots)){
 	
