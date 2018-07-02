@@ -1,6 +1,6 @@
 *.project
 original/
-data/
+/data/
 documentation/
 *.html
 tests/
