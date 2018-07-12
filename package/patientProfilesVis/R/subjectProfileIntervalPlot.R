@@ -15,11 +15,10 @@
 #' @param colorVar string, variable of \code{data} with color
 #' @param colorLab string, label for \code{colorVar}
 #' @param title string, title for the plot
-#' @inheritParams glpgUtility::getLabelVar
+#' @inheritParams getLabelVar
 #' @return list of \code{\link[ggplot2]{ggplot2} objects}, 
 #' also of class \code{subjectProfileTextPlot}
 #' @author Laure Cougnaud
-#' @importFrom glpgUtility getLabelVar
 #' @import ggplot2
 #' @importFrom plyr dlply
 #' @export
@@ -44,6 +43,7 @@ subjectProfileIntervalPlot <- function(
 		data <- data[-which(idxMissingStart), ]	
 	
 	# if no end date: take last time in dataset
+	# TODO per subject
 	idxMissingEnd <- is.na(data[, endVar])
 	if(any(idxMissingEnd))
 		data[idxMissingEnd, endVar] <- timeLim[2]

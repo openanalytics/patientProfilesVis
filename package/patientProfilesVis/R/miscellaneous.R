@@ -21,3 +21,37 @@ getNLinesYGgplot <- function(gg){
 	nLines <- nLinesPlot + nLinesTitleAndXAxis
 	return(nLines)
 }
+
+#' Get label(s) for a variable of the dataset
+#' 
+#' The label(s) are extracted either:
+#' \itemize{
+#' \item{if \code{data} is specified: }{from the 'label' attribute 
+#' of the corresponding column in \code{data}
+#' }
+#' \item{if \code{labelVars} is specified: }{
+#' from the specified vector of labels}
+#' } 
+#' @param var variable of data
+#' @param data data.frame with data
+#' @param labelVars named string with variable labels (names are the variable code)
+#' @return string with label, \code{var} is no label is available
+#' @author Laure Cougnaud
+#' @export
+getLabelVar <- function(var, data = NULL, labelVars = NULL){
+	res <- if(!is.null(var)){
+		if(is.null(data) & is.null(labelVars)){
+			res <- var
+			names(res) <- var
+		}else{
+			#		stop("'data' or 'labelVars' should be specified for the label(s) extraction.")
+			res <- sapply(var, function(x){
+						attrX <- if(!is.null(labelVars))
+									labelVars[x]	else
+									attr(data[, x], "label")
+						ifelse(is.null(attrX), x, attrX)
+					})
+		}
+	}
+	return(res)
+}
