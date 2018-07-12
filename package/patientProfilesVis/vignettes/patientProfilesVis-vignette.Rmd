@@ -120,7 +120,7 @@ the parameter value (`paramValueVar`).
 	mhPlots <- subjectProfileTextPlot(
 		data = sdtmDataPelican$MH,
 		paramNameVar = "MHDECOD",
-		paramValueVar = "MHOCCUR",
+		paramValueVar = "MHENRTPT",
 		title = "Medical History",
 		labelVars = labelVarsPelican
 	)

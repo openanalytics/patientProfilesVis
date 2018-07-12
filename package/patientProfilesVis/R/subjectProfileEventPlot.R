@@ -6,7 +6,6 @@
 #' @return list of \code{\link[ggplot2]{ggplot2} objects}, 
 #' also of class \code{subjectProfileTextPlot}
 #' @author Laure Cougnaud
-#' @importFrom glpgUtility getLabelVar
 #' @import ggplot2
 #' @importFrom plyr dlply
 #' @export
