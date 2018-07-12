@@ -10,8 +10,9 @@ subjectProfileIntervalPlot(data, paramVar, paramLab = getLabelVar(paramVar,
   na.rm = TRUE))), rangeSimilarStartEnd = diff(timeLim)/1000,
   xLab = paste(getLabelVar(c(startVar, endVar), labelVars = labelVars),
   collapse = "/"), yLab = "", colorVar = NULL,
-  colorLab = getLabelVar(colorVar, labelVars = labelVars), title = paramLab,
-  labelVars = NULL)
+  colorLab = getLabelVar(colorVar, labelVars = labelVars), colorPalette = if
+  (!is.null(colorVar)) getPatientColorPalette(x = data[, colorVar]),
+  title = paramLab, labelVars = NULL)
 }
 \arguments{
 \item{data}{data.frame with data}
@@ -37,9 +38,11 @@ By default, a thousandth of the range of \code{timeLim}.}
 
 \item{yLab}{string, label for the y-axis}
 
-\item{colorVar}{string, variable of \code{data} with color}
+\item{colorVar}{string, variable of \code{data} with color.}
 
 \item{colorLab}{string, label for \code{colorVar}}
+
+\item{colorPalette}{named vector with color for \code{colorVar}}
 
 \item{title}{string, title for the plot}
 

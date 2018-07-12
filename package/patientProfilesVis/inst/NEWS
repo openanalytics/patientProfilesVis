@@ -1,6 +1,8 @@
 0.0.3
     o subjectProfileTextPlot: possibility to have multiple paramValueVar in same line, fix ordering
     o subjectProfileTextPlot: paramGroupVar, paramValueVar can be a function
+    o subjectProfile[Interval|Event]Plot: colorPalette and getPatientColorPalette
+    o subjectProfileEventPlot: shapePalette and getPatientShapePalette
 0.0.2
     o remove glpgUtility from the dependencies
 0.0.1

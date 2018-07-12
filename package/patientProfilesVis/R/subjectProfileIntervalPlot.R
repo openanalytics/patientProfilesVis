@@ -12,8 +12,9 @@
 #' By default, a thousandth of the range of \code{timeLim}.
 #' @param xLab string, label for the x-axis
 #' @param yLab string, label for the y-axis
-#' @param colorVar string, variable of \code{data} with color
+#' @param colorVar string, variable of \code{data} with color.
 #' @param colorLab string, label for \code{colorVar}
+#' @param colorPalette named vector with color for \code{colorVar}
 #' @param title string, title for the plot
 #' @inheritParams getLabelVar
 #' @return list of \code{\link[ggplot2]{ggplot2} objects}, 
@@ -33,6 +34,7 @@ subjectProfileIntervalPlot <- function(
 	xLab = paste(getLabelVar(c(startVar, endVar), labelVars = labelVars), collapse = "/"),
 	yLab = "",
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
+	colorPalette = if(!is.null(colorVar))	getPatientColorPalette(x = data[, colorVar]),
 	title = paramLab,
 	labelVars = NULL
 ){
@@ -78,9 +80,12 @@ subjectProfileIntervalPlot <- function(
 			theme_bw() +
 			labs(title = title, x = xLab, y = yLab)
 	
-		# change name for color scale
-		if(!is.null(colorLab))
-			gg <- gg + scale_colour_discrete(name = colorLab)
+		# color palette and name for color legend
+		if(!is.null(colorVar))
+			gg <- gg + scale_colour_manual(
+				name = colorLab, 
+				values = colorPalette, limits = names(colorPalette)
+			)
 		
 		if(!is.null(timeLim))
 			gg <- gg + coord_cartesian(xlim = timeLim)

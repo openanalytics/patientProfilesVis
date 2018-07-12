@@ -194,13 +194,18 @@ the parameter value (`paramValueVar`).
 The 'interval' module enables to represent a time interval for
 some parameters/events of interest.
 
+### Adverse events
+
 It is used here to represent the start/end date of the adverse events.
 
-```{r exampleIntervalModule}
+```{r exampleIntervalModule-ae}
 
 	# AEPTCD: preferred term code
+	dataPlot <- sdtmDataPelican$AE
+	# specify order of value in 'AESEV'
+	dataPlot[, "AESEV"] <- factor(dataPlot[, "AESEV"], levels = c("MILD", "MODERATE"))
 	aePlots <- subjectProfileIntervalPlot(
-		data = sdtmDataPelican$AE,
+		data = dataPlot,
 		paramVar = "AETERM",
 		startVar = "AESTDY",
 		endVar = "AEENDY",
@@ -210,7 +215,7 @@ It is used here to represent the start/end date of the adverse events.
 	
 ```
 
-```{r exampleIntervalModule-include, echo = FALSE, fig.height = getNLinesYGgplot(aePlots[[1]])*0.14, fig.width = 14, fig.cap = paste("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", names(aePlots)[1])}
+```{r exampleIntervalModule-ae-include, echo = FALSE, fig.height = getNLinesYGgplot(aePlots[[1]])*0.14, fig.width = 14, fig.cap = paste("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", names(aePlots)[1])}
 
 	print(aePlots[[1]])
 
@@ -251,6 +256,10 @@ laboratory measurement (and corresponding time).
 
 The reference range indicator is used to color the presence/absence of the
 laboratory data via the `colorVar` parameter.
+This parameter is also used for the symbol via the `shapeVar` variable.
+Symbols specific of this categorization are used via the `shapePalette`
+parameter: bottom/top arrow for low/high measurements, and dot for measurements
+in normal range.
 
 ```{r exampleEventModuleWithColor}
 
@@ -261,7 +270,9 @@ laboratory data via the `colorVar` parameter.
 		subjectVar = "USUBJID",
 		timeVar = "LBDY",
 		colorVar = "LBNRIND",
-		labelVars = labelVarsPelican
+		labelVars = labelVarsPelican,
+		shapeVar = "LBNRIND",
+		shapePalette = c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24)
 	)
 	
 ```

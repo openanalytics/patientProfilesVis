@@ -6,8 +6,10 @@
 \usage{
 subjectProfileEventPlot(data, paramVar, paramLab = getLabelVar(paramVar,
   labelVars = labelVars), colorVar = NULL, colorLab = getLabelVar(colorVar,
-  labelVars = labelVars), shapeVar = colorVar,
-  shapeLab = getLabelVar(shapeVar, labelVars = labelVars), timeVar,
+  labelVars = labelVars), colorPalette = if (!is.null(colorVar))
+  getPatientColorPalette(x = data[, colorVar]), shapeVar = colorVar,
+  shapeLab = getLabelVar(shapeVar, labelVars = labelVars), shapePalette = if
+  (!is.null(shapeVar)) getPatientShapePalette(x = data[, colorVar]), timeVar,
   subjectVar = "USUBJID", xLab = getLabelVar(timeVar, labelVars =
   labelVars), yLab = "", timeLim = NULL, title = paramLab,
   labelVars = NULL)
@@ -19,13 +21,17 @@ subjectProfileEventPlot(data, paramVar, paramLab = getLabelVar(paramVar,
 
 \item{paramLab}{string, label for \code{paramVar}}
 
-\item{colorVar}{string, variable of \code{data} with color}
+\item{colorVar}{string, variable of \code{data} with color.}
 
 \item{colorLab}{string, label for \code{colorVar}}
+
+\item{colorPalette}{named vector with color for \code{colorVar}}
 
 \item{shapeVar}{string, variable of \code{data} for shape of the points}
 
 \item{shapeLab}{string, label for \code{shapeVar}}
+
+\item{shapePalette}{named vector with shape for \code{shapeVar}}
 
 \item{timeVar}{string, variable of \code{data} with time}
 
