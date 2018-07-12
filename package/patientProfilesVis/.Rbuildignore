@@ -1,3 +1,7 @@
 data_raw/
 ^.*\.pdf$
 ^.*\.tex$
+^.*\.tex$
+figures_vignette/
+vignettes/patientProfilesVis-vignette.html
+
