@@ -1,3 +1,6 @@
+0.0.3
+    o subjectProfileTextPlot: possibility to have multiple paramValueVar in same line, fix ordering
+    o subjectProfileTextPlot: paramGroupVar, paramValueVar can be a function
 0.0.2
     o remove glpgUtility from the dependencies
 0.0.1

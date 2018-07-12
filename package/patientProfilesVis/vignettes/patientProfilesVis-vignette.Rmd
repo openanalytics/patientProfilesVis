@@ -95,25 +95,31 @@ variables/columns of the data (`paramValueVar` only), or by a variable/column
 containing the parameter name (`paramNameVar`) and a variable/column containing
 the parameter value (`paramValueVar`).
 
-```{r exampleTestModule1}
+### Wide format
+
+```{r exampleTestModule-wideFormat}
 
 	# annotate subject demographics meta-data
 	# by specifying a set of variables to include
 	dmPlots <- subjectProfileTextPlot(
 		data = sdtmDataPelican$DM,
-		paramValueVar = c("SEX", "AGE", "RACE", "COUNTRY", "ARM"),
+		paramValueVar = c("SEX|AGE", "RACE|COUNTRY", "ARM"),
 		labelVars = labelVarsPelican
 	)
 	
 ```
 
-```{r exampleTestModule1-include, echo = FALSE, fig.height = getNLinesYGgplot(dmPlots[[1]])*0.14, fig.width = 14, fig.cap = paste("Demographic information with the 'subjectProfileTextPlot' function for patient:", names(dmPlots)[1])}
+```{r exampleTestModule-wideFormat-include, echo = FALSE, fig.height = getNLinesYGgplot(dmPlots[[1]])*0.14, fig.width = 14, fig.cap = paste("Demographic information with the 'subjectProfileTextPlot' function for patient:", names(dmPlots)[1])}
 
 	print(dmPlots[[1]])
 
 ```
 
-```{r exampleTestModule2}	
+### Long format
+
+#### No grouping
+
+```{r exampleTestModule-longFormat-noGrouping}	
 
 	# annotate subject medical history
 	# by specifying a combination of parameter value/name
@@ -121,15 +127,65 @@ the parameter value (`paramValueVar`).
 		data = sdtmDataPelican$MH,
 		paramNameVar = "MHDECOD",
 		paramValueVar = "MHENRTPT",
-		title = "Medical History",
+		title = "Medical History: status",
+		labelVars = labelVarsPelican
+	)
+		
+```
+
+```{r exampleTestModule-longFormat-noGrouping-include, echo = FALSE, fig.height = getNLinesYGgplot(mhPlots[[1]])*0.14, fig.width = 14, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlots)[1])}
+
+	print(mhPlots[[1]])
+
+```
+
+### Multiple variables
+
+```{r exampleTestModule-longFormat-multipleVariables}	
+
+	# annotate subject medical history
+	# by specifying a combination of parameter value/name
+	paramValueVarFct <- function(data)
+		with(data, paste0(MHENRTPT, " (start = ", MHSTDTC, 
+			ifelse(MHENDTC != "", paste0(", end = ", MHENDTC, ")"), ")")
+			),
+		)
+	mhPlotsMultipleVars <- subjectProfileTextPlot(
+		data = sdtmDataPelican$MH,
+		paramNameVar = "MHDECOD",
+		paramValueVar = paramValueVarFct,
+		title = "Medical History: status with dates",
+		labelVars = labelVarsPelican
+	)
+		
+```
+
+```{r exampleTestModule-longFormat-multipleVariables-include, echo = FALSE, fig.height = getNLinesYGgplot(mhPlotsMultipleVars[[1]])*0.14, fig.width = 14, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlotsMultipleVars)[1])}
+
+	print(mhPlotsMultipleVars[[1]])
+
+```
+
+### With grouping
+
+```{r exampleTestModule-longFormat-grouping}	
+
+	# annotate subject medical history
+	# by specifying a combination of parameter value/name
+	mhPlotsGroup <- subjectProfileTextPlot(
+		data = sdtmDataPelican$MH,
+		paramNameVar = "MHDECOD",
+		paramValueVar = "MHENRTPT",
+		paramGroupVar = "MHCAT",
+		title = "Medical History: grouped by category",
 		labelVars = labelVarsPelican
 	)
 	
 ```
 
-```{r exampleTestModule2-include, echo = FALSE, fig.height = getNLinesYGgplot(mhPlots[[1]])*0.14, fig.width = 14, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlots)[1])}
+```{r exampleTestModule-longFormat-grouping-include, echo = FALSE, fig.height = getNLinesYGgplot(mhPlotsGroup[[1]])*0.14, fig.width = 14, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlotsGroup)[1])}
 
-	print(mhPlots[[1]])
+	print(mhPlotsGroup[[1]])
 
 ```
 
@@ -146,7 +202,6 @@ It is used here to represent the start/end date of the adverse events.
 	aePlots <- subjectProfileIntervalPlot(
 		data = sdtmDataPelican$AE,
 		paramVar = "AETERM",
-		subjectVar = "USUBJID",
 		startVar = "AESTDY",
 		endVar = "AEENDY",
 		colorVar = "AESEV",

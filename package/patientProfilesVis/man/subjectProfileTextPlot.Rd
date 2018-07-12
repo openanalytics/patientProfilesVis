@@ -5,18 +5,37 @@
 \title{Create plot of subject profiles for events.}
 \usage{
 subjectProfileTextPlot(data, paramValueVar, paramNameVar = NULL,
-  subjectVar = "USUBJID", xLab = "", yLab = "",
-  title = "Subject information", labelVars = NULL)
+  paramGroupVar = NULL, subjectVar = "USUBJID", xLab = "", yLab = "",
+  title = "Subject information", labelVars = NULL, paramVarSep = " - ")
 }
 \arguments{
 \item{data}{data.frame with data}
 
-\item{paramValueVar}{string, variable of \code{data} containing the parameter
-value to represent. This should be of length 1 if used in combination with
-\code{paramNameVar}, otherwise multiple are possible.}
+\item{paramValueVar}{string, variable of \code{data} containing the . 
+Either:
+\itemize{
+\item{if used in combination with \code{paramNameVar}: }{
+\itemize{
+\item{string containing the variable of \code{data} with parameter
+value to represent}
+\item{function taking \code{data} as input and 
+returning a new variable (of length equal to number of rows in \code{data}
+) with parameter value to represent}
+}
+}
+\item{otherwise: }{vector with names of variable(s) (multiple possible) 
+of \code{data} with parameter value to represent. 
+If variables should be concatenated in the same line, 
+they should be specified separated by '|', e.g 'SEX|AGE'.
+}
+}}
 
 \item{paramNameVar}{(optional) string, variable of \code{data} with parameter name.
 If specified, \code{paramValueVar} should be an unique variable.}
+
+\item{paramGroupVar}{(optional) string, variable of \code{data} with grouping.
+If specified, the parameters will be grouped by this variable in the y-axis, and
+\code{paramValueVar} should be an unique variable.}
 
 \item{subjectVar}{string, variable of \code{data} with subject ID}
 
@@ -27,6 +46,9 @@ If specified, \code{paramValueVar} should be an unique variable.}
 \item{title}{string, title for the plot}
 
 \item{labelVars}{named string with variable labels (names are the variable code)}
+
+\item{paramVarSep}{string with character(s) used to concatenate multiple 
+\code{paramNameVar} or \code{paramValueVar}, ' - ' by default.}
 }
 \value{
 list of \code{\link[ggplot2]{ggplot2} objects}, also of class
