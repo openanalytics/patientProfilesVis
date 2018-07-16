@@ -81,7 +81,7 @@ subjectProfileIntervalPlot <- function(
 				size = 2
 			) +
 			scale_y_discrete(drop = TRUE) +
-			theme_bw() +
+			subjectProfileTheme() +
 			labs(title = title, x = xLab, y = yLab)
 	
 		# color palette and name for color legend

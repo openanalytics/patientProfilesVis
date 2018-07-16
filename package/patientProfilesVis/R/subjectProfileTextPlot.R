@@ -119,7 +119,7 @@ subjectProfileTextPlot <- function(
 				size = rel(3)
 			) +
 			xlim(c(0, 1)) +
-			theme_bw() +
+			subjectProfileTheme() +
 			theme(
 				panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
 				axis.ticks = element_blank(),
