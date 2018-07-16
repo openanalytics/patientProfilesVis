@@ -5,14 +5,14 @@
 \title{Create plot of subject profiles for events}
 \usage{
 subjectProfileEventPlot(data, paramVar, paramLab = getLabelVar(paramVar,
-  labelVars = labelVars), colorVar = NULL, colorLab = getLabelVar(colorVar,
-  labelVars = labelVars), colorPalette = if (!is.null(colorVar))
-  getPatientColorPalette(x = data[, colorVar]), shapeVar = colorVar,
-  shapeLab = getLabelVar(shapeVar, labelVars = labelVars), shapePalette = if
-  (!is.null(shapeVar)) getPatientShapePalette(x = data[, colorVar]), timeVar,
-  subjectVar = "USUBJID", xLab = getLabelVar(timeVar, labelVars =
-  labelVars), yLab = "", timeLim = NULL, title = paramLab,
-  label = title, labelVars = NULL)
+  labelVars = labelVars), paramGroupVar = NULL, colorVar = NULL,
+  colorLab = getLabelVar(colorVar, labelVars = labelVars), colorPalette = if
+  (!is.null(colorVar)) getPatientColorPalette(x = data[, colorVar]),
+  shapeVar = colorVar, shapeLab = getLabelVar(shapeVar, labelVars =
+  labelVars), shapePalette = if (!is.null(shapeVar)) getPatientShapePalette(x
+  = data[, colorVar]), timeVar, subjectVar = "USUBJID",
+  xLab = getLabelVar(timeVar, labelVars = labelVars), yLab = "",
+  timeLim = NULL, title = paramLab, label = title, labelVars = NULL)
 }
 \arguments{
 \item{data}{data.frame with data}
@@ -20,6 +20,9 @@ subjectProfileEventPlot(data, paramVar, paramLab = getLabelVar(paramVar,
 \item{paramVar}{string, variable of \code{data} with parameter (used in the y-axis)}
 
 \item{paramLab}{string, label for \code{paramVar}}
+
+\item{paramGroupVar}{(optional) string, variable of \code{data} with grouping.
+If specified, the parameters will be grouped by this variable in the y-axis.}
 
 \item{colorVar}{string, variable of \code{data} with color.}
 

@@ -1,6 +1,8 @@
 #' Create plot of subject profiles with segments for range of parameters 
 #' @param data data.frame with data
 #' @param paramVar string, variable of \code{data} with parameter (used in the y-axis)
+#' @param paramGroupVar (optional) string, variable of \code{data} with grouping.
+#' If specified, the parameters will be grouped by this variable in the y-axis.
 #' @param paramLab string, label for \code{paramVar}
 #' @param subjectVar string, variable of \code{data} with subject ID
 #' @param startVar string, variable of \code{data} with start of range
@@ -29,6 +31,7 @@
 subjectProfileIntervalPlot <- function(
 	data,
 	paramVar, paramLab = getLabelVar(paramVar, labelVars = labelVars),
+	paramGroupVar = NULL,
 	startVar,
 	endVar,
 	subjectVar = "USUBJID",
@@ -66,6 +69,10 @@ subjectProfileIntervalPlot <- function(
 				FUN = "+"
 			)
 	}
+	
+	# if paramGroupVar is specified: change order levels of 'variable'
+	if(!is.null(paramGroupVar))
+		data[, paramVar] <- with(data, reorder(get(paramVar), get(paramGroupVar), unique))
 	
 	listPlots <- dlply(data, subjectVar, function(dataSubject){	
 		

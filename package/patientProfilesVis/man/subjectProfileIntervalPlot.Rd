@@ -5,9 +5,10 @@
 \title{Create plot of subject profiles with segments for range of parameters}
 \usage{
 subjectProfileIntervalPlot(data, paramVar, paramLab = getLabelVar(paramVar,
-  labelVars = labelVars), startVar, endVar, subjectVar = "USUBJID",
-  timeLim = with(data, c(min(get(startVar), na.rm = TRUE), max(get(startVar),
-  na.rm = TRUE))), rangeSimilarStartEnd = diff(timeLim)/1000,
+  labelVars = labelVars), paramGroupVar = NULL, startVar, endVar,
+  subjectVar = "USUBJID", timeLim = with(data, c(min(get(startVar), na.rm =
+  TRUE), max(get(startVar), na.rm = TRUE))),
+  rangeSimilarStartEnd = diff(timeLim)/1000,
   xLab = paste(getLabelVar(c(startVar, endVar), labelVars = labelVars),
   collapse = "/"), yLab = "", colorVar = NULL,
   colorLab = getLabelVar(colorVar, labelVars = labelVars), colorPalette = if
@@ -20,6 +21,9 @@ subjectProfileIntervalPlot(data, paramVar, paramLab = getLabelVar(paramVar,
 \item{paramVar}{string, variable of \code{data} with parameter (used in the y-axis)}
 
 \item{paramLab}{string, label for \code{paramVar}}
+
+\item{paramGroupVar}{(optional) string, variable of \code{data} with grouping.
+If specified, the parameters will be grouped by this variable in the y-axis.}
 
 \item{startVar}{string, variable of \code{data} with start of range}
 
