@@ -6,6 +6,7 @@
     o add label attributes reported in case plot is empty
     o add grouping variable
     o subjectProfileTheme
+    o include support for date/time format
 0.0.2
     o remove glpgUtility from the dependencies
 0.0.1

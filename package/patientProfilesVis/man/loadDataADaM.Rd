@@ -2,12 +2,22 @@
 % Please edit documentation in R/loadDataADAM.R
 \name{loadDataADaM}
 \alias{loadDataADaM}
-\title{Load data from ADaM file(s)}
+\title{Load data from ADaM file(s).}
 \usage{
-loadDataADaM(files)
+loadDataADaM(files, convertToDate = TRUE, dateVars = "DTC$",
+  verbose = TRUE)
 }
 \arguments{
 \item{files}{string with path to ADaM file(s)}
+
+\item{convertToDate}{logical, if TRUE columns with date/time are converted to 
+\code{\link{POSIXct}} format, which stores calendar date/time in R.}
+
+\item{dateVars}{vector of columns in \code{data} containing date/time,
+or pattern for this columns.
+By default all columns ending with 'DTC' are used (dateVars is: 'DTC$').}
+
+\item{verbose}{logical, if TRUE (by default) progress messages are printed during execution}
 }
 \value{
 list with:
@@ -20,7 +30,8 @@ data.frame with data of each ADAM file
 }
 }
 \description{
-Load data from ADaM file(s)
+This converts also date/time variable to R date/time class 
+(see \code{\link{convertToDateTime}}) function.
 }
 \author{
 Laure Cougnaud

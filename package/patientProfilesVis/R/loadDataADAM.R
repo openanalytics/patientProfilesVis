@@ -1,5 +1,14 @@
-#' Load data from ADaM file(s)
+#' Load data from ADaM file(s).
+#' 
+#' This converts also date/time variable to R date/time class 
+#' (see \code{\link{convertToDateTime}}) function.
 #' @param files string with path to ADaM file(s)
+#' @param convertToDate logical, if TRUE columns with date/time are converted to 
+#' \code{\link{POSIXct}} format, which stores calendar date/time in R.
+#' @param dateVars vector of columns in \code{data} containing date/time,
+#' or pattern for this columns.
+#' By default all columns ending with 'DTC' are used (dateVars is: 'DTC$').
+#' @param verbose logical, if TRUE (by default) progress messages are printed during execution
 #' @return list with:
 #' \itemize{
 #' \item{'data': }{list of 
@@ -11,8 +20,11 @@
 #' @author Laure Cougnaud
 #' @importFrom tools file_path_sans_ext
 #' @importFrom haven read_sas
+#' @importFrom plyr colwise
 #' @export
-loadDataADaM <- function(files){
+loadDataADaM <- function(files, 
+	convertToDate = TRUE, dateVars = "DTC$",
+	verbose = TRUE){
 	
 	# extract ADaM name
 	names(files) <- toupper(file_path_sans_ext(basename(files)))
@@ -25,6 +37,9 @@ loadDataADaM <- function(files){
 	# import SAS dataset format into R
 	dataList <- sapply(names(files), function(name){
 				
+		if(verbose)
+			message("Import ", name, " dataset.")
+				
 		# read data
 		data <- as.data.frame(read_sas(files[name]))
 		
@@ -33,10 +48,17 @@ loadDataADaM <- function(files){
 			# save dataset name
 			data <- cbind(data, ADAM = name)
 			
+			if(convertToDate){
+				colsDate <- grep(dateVars, colnames(data), value = TRUE)
+				data[, colsDate] <- lapply(colsDate, function(col){
+					convertToDateTime(data[, col], colName = col)
+				})
+			}
+			
 			# column names in lower case for some datasets
 			colnames(data) <- toupper(colnames(data))
 			
-		}else	warning("Dataset ", name, " is empty.")
+		}else	if(verbose)	warning("Dataset ", name, " is empty.")
 		
 		data
 	}, simplify = FALSE)
@@ -51,6 +73,44 @@ loadDataADaM <- function(files){
 
 	return(res)
 
+}
+
+#' Convert character vector to date/time object
+#' @param x character vector to convert to date/time
+#' @param format string with possible format(s) of the input date/time in the ADaM dataset.
+#' If multiple are specified, each format is tested successively, until at least one
+#' element in the input vector is converted with the specified format
+#' (non missing, following the approach described in
+#' the \code{format} parameter of the \code{\link{strptime}} function).
+#' See the 'Details' section of the help of the function,
+#' for more information about this format.
+#' @param verbose logical, if TRUE (by default) progress messages are printed during execution
+#' @return vector of class \code{\link{POSIXct}}
+#' @author Laure Cougnaud
+#' @export
+convertToDateTime <- function(x, format = c("%Y-%m-%dT%H:%M", "%Y-%m-%d"), 
+	colName = NULL, verbose = TRUE){
+	
+	isEmpty <- function(x) is.na(x) | x == ""
+	
+	newTime <- .POSIXct(rep(NA_real_, length(x))) 
+	for(formatI in format){
+		idxMissingRecords <- which(is.na(newTime) & !isEmpty(x))
+		newTime[idxMissingRecords] <- as.POSIXct(x[idxMissingRecords], format = formatI)
+		if(all(!is.na(newTime[!isEmpty(x)])))
+			break
+	}
+	
+	if(any(is.na(newTime[!isEmpty(x)]))){
+		if(verbose)
+			message("Vector", if(!is.null(colName)) paste0(": ", colName), 
+				" not of specified calendar date format, so is not converted to date/time format.")
+		newTime <- x
+	}else if(verbose)	message("Convert vector", if(!is.null(colName)) paste0(": ", colName), 
+		" to calendar date/time format.")
+	
+	return(newTime)
+	
 }
 
 #' Get label of the variables in ADaM dataset(s)

@@ -148,7 +148,7 @@ the parameter value (`paramValueVar`).
 	paramValueVarFct <- function(data)
 		with(data, paste0(MHENRTPT, " (start = ", MHSTDTC, 
 			ifelse(MHENDTC != "", paste0(", end = ", MHENDTC, ")"), ")")
-			),
+			)
 		)
 	mhPlotsMultipleVars <- subjectProfileTextPlot(
 		data = sdtmDataPelican$MH,
@@ -218,6 +218,23 @@ It is used here to represent the start/end date of the adverse events.
 ```{r exampleIntervalModule-ae-include, echo = FALSE, fig.height = getNLinesYGgplot(aePlots[[1]])*0.14, fig.width = 14, fig.cap = paste("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", names(aePlots)[1])}
 
 	print(aePlots[[1]])
+
+```
+
+<!-- ### Exposure -->
+
+```{r exampleIntervalModule-ax, eval = FALSE}
+	
+	# AEPTCD: preferred term code
+	dataPlot <- sdtmDataPelican$EX
+	exPlots <- subjectProfileIntervalPlot(
+		data = dataPlot,
+		paramVar = "EXTRT",
+		startVar = "EXSTDTC",
+		endVar = "EXENDTC",
+		colorVar = "EXDOSFRM",
+		labelVars = labelVarsPelican
+	)
 
 ```
 
