@@ -6,7 +6,8 @@
 \usage{
 subjectProfileTextPlot(data, paramValueVar, paramNameVar = NULL,
   paramGroupVar = NULL, subjectVar = "USUBJID", xLab = "", yLab = "",
-  title = "Subject information", labelVars = NULL, paramVarSep = " - ")
+  title = "Subject information", label = title, labelVars = NULL,
+  paramVarSep = " - ")
 }
 \arguments{
 \item{data}{data.frame with data}
@@ -44,6 +45,10 @@ If specified, the parameters will be grouped by this variable in the y-axis, and
 \item{yLab}{string, label for the y-axis}
 
 \item{title}{string, title for the plot}
+
+\item{label}{string, label used in the plot.
+This label is used to report the name of the panel 
+in the text when the plots are combined (e.g. if the plot is empty).}
 
 \item{labelVars}{named string with variable labels (names are the variable code)}
 

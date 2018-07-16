@@ -12,7 +12,7 @@ subjectProfileEventPlot(data, paramVar, paramLab = getLabelVar(paramVar,
   (!is.null(shapeVar)) getPatientShapePalette(x = data[, colorVar]), timeVar,
   subjectVar = "USUBJID", xLab = getLabelVar(timeVar, labelVars =
   labelVars), yLab = "", timeLim = NULL, title = paramLab,
-  labelVars = NULL)
+  label = title, labelVars = NULL)
 }
 \arguments{
 \item{data}{data.frame with data}
@@ -45,6 +45,10 @@ subjectProfileEventPlot(data, paramVar, paramLab = getLabelVar(paramVar,
 If not specified, extracted from the minimum \code{startVar} and maximum \code{endVar}}
 
 \item{title}{string, title for the plot}
+
+\item{label}{string, label used in the plot.
+This label is used to report the name of the panel 
+in the text when the plots are combined (e.g. if the plot is empty).}
 
 \item{labelVars}{named string with variable labels (names are the variable code)}
 }

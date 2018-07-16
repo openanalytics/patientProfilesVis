@@ -52,6 +52,7 @@ subjectProfileTextPlot <- function(
 	xLab = "",
 	yLab = "",
 	title = "Subject information",
+	label = title,
 	labelVars = NULL,
 	paramVarSep = " - "
 ){
@@ -139,6 +140,10 @@ subjectProfileTextPlot <- function(
 		gg
 		
 	})
+
+	# metaData:
+	# stored plot label
+	attr(listPlots, 'metaData') <- list(label = label)
 	
 	return(listPlots)
 	

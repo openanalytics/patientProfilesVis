@@ -16,6 +16,9 @@
 #' @param colorLab string, label for \code{colorVar}
 #' @param colorPalette named vector with color for \code{colorVar}
 #' @param title string, title for the plot
+#' @param label string, label used in the plot.
+#' This label is used to report the name of the panel 
+#' in the text when the plots are combined (e.g. if the plot is empty).
 #' @inheritParams getLabelVar
 #' @return list of \code{\link[ggplot2]{ggplot2} objects}, 
 #' also of class \code{subjectProfileTextPlot}
@@ -36,6 +39,7 @@ subjectProfileIntervalPlot <- function(
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
 	colorPalette = if(!is.null(colorVar))	getPatientColorPalette(x = data[, colorVar]),
 	title = paramLab,
+	label = title,
 	labelVars = NULL
 ){
 	
@@ -95,6 +99,10 @@ subjectProfileIntervalPlot <- function(
 		gg
 
 	})
+
+	# metaData:
+	# stored plot label
+	attr(listPlots, 'metaData') <- list(label = label)
 
 	return(listPlots)
 	

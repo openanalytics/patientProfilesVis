@@ -12,7 +12,7 @@ subjectProfileIntervalPlot(data, paramVar, paramLab = getLabelVar(paramVar,
   collapse = "/"), yLab = "", colorVar = NULL,
   colorLab = getLabelVar(colorVar, labelVars = labelVars), colorPalette = if
   (!is.null(colorVar)) getPatientColorPalette(x = data[, colorVar]),
-  title = paramLab, labelVars = NULL)
+  title = paramLab, label = title, labelVars = NULL)
 }
 \arguments{
 \item{data}{data.frame with data}
@@ -45,6 +45,10 @@ By default, a thousandth of the range of \code{timeLim}.}
 \item{colorPalette}{named vector with color for \code{colorVar}}
 
 \item{title}{string, title for the plot}
+
+\item{label}{string, label used in the plot.
+This label is used to report the name of the panel 
+in the text when the plots are combined (e.g. if the plot is empty).}
 
 \item{labelVars}{named string with variable labels (names are the variable code)}
 }
