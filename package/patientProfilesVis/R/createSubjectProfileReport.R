@@ -59,7 +59,7 @@ createSubjectProfileReport <- function(listPlots,
 #' This is in essence only a \code{\link[ggplot2]{ggplot2}} objects,
 #' (with the additional attribute 'nLinesPlot')
 #' @importFrom cowplot plot_grid ggdraw draw_label
-#' @importFrom ggplot2 coord_cartesian
+#' @importFrom ggplot2 coord_cartesian ggplot theme_bw ggtitle
 #' @inheritParams subjectProfileIntervalPlot
 #' @author Laure Cougnaud
 #' @export
@@ -73,16 +73,26 @@ subjectProfileCombine <- function(listPlots,
 	listPlotsAll <- lapply(listPlots, function(x){
 		list <- x[subjects]
 		names(list) <- subjects # in case plot not available for one subject
+		attr(list, 'metaData') <- attr(x, 'metaData')
 		list
 	})
 	
 	## combine plots
 	
 	# wrapper function to combine ggplot2 objects
-	combineGGPlots <- function(...){
+	combineGGPlots <- function(..., labels){
 		
 		listGgPlotsToCombine <- list(...)
-		listGgPlotsToCombine <- listGgPlotsToCombine[!sapply(listGgPlotsToCombine, is.null)] # remove empty plots
+		
+		# 'empty' plot in case a specific plot is not available for this subject
+		isEmpty <- which(sapply(listGgPlotsToCombine, is.null))
+		if(any(isEmpty)){
+			listGgPlotsToCombine[isEmpty] <- lapply(isEmpty, function(i)
+				if(labels[i] != "")
+					ggplot() + theme_bw() + ggtitle(paste("No", labels[i], "available."))
+			)
+		}
+		listGgPlotsToCombine <- listGgPlotsToCombine[!sapply(listGgPlotsToCombine, is.null)]
 		if(length(listGgPlotsToCombine) > 0){
 			
 			# set same limits for the time/x-axis
@@ -124,9 +134,13 @@ subjectProfileCombine <- function(listPlots,
 	
 	# combine all plots per subject
 	# this returns a list of 'gtable' object
+	plotLabels <- sapply(listPlotsAll, function(x){
+		label <- attributes(x)$metaData$label
+		ifelse(is.null(label), "", label)
+	})
 	listPlotsPerSubject <- do.call(mapply, 
 		c(
-			list(FUN = combineGGPlots, SIMPLIFY = FALSE),
+			list(FUN = combineGGPlots, SIMPLIFY = FALSE, MoreArgs = list(labels = plotLabels)),
 			listPlotsAll
 		)
 	)

@@ -23,6 +23,7 @@ subjectProfileEventPlot <- function(
 	yLab = "",
 	timeLim = NULL,
 	title = paramLab,
+	label = title,
 	labelVars = NULL
 ){
 	
@@ -77,6 +78,10 @@ subjectProfileEventPlot <- function(
 		gg
 		
 	})
+
+	# metaData:
+	# stored plot label
+	attr(listPlots, 'metaData') <- list(label = label)
 	
 	return(listPlots)
 	

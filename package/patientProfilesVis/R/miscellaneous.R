@@ -16,7 +16,7 @@ getPathTemplate <- function(file){
 getNLinesYGgplot <- function(gg){
 	nLinesPlot <- length(unique(ggplot_build(gg)$data[[1]]$y))
 	nLinesTitleAndXAxis <- sum(unlist(lapply(ggplot_build(gg)$plot$labels[c("title", "x")], function(label)
-		if(label != "")	length(unlist(strsplit(label, split = "\n"))) * 3
+		if(!is.null(label) && label != "")	length(unlist(strsplit(label, split = "\n"))) * 3
 	)))
 	nLines <- nLinesPlot + nLinesTitleAndXAxis
 	return(nLines)
