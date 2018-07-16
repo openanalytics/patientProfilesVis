@@ -13,6 +13,7 @@
 subjectProfileEventPlot <- function(
 	data,
 	paramVar, paramLab = getLabelVar(paramVar, labelVars = labelVars),
+	paramGroupVar = NULL,
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
 	colorPalette = if(!is.null(colorVar))	getPatientColorPalette(x = data[, colorVar]),
 	shapeVar = colorVar, shapeLab = getLabelVar(shapeVar, labelVars = labelVars),
@@ -31,6 +32,10 @@ subjectProfileEventPlot <- function(
 	
 	if(!is.null(colorVar))	data <- data[!is.na(data[, colorVar]), ]
 	if(!is.null(shapeVar))	data <- data[!is.na(data[, shapeVar]), ]
+	
+	# if paramGroupVar is specified: change order levels of 'variable'
+	if(!is.null(paramGroupVar))
+		data[, paramVar] <- with(data, reorder(get(paramVar), get(paramGroupVar), unique))
 	
 	listPlots <- dlply(data, subjectVar, function(dataSubject){	
 				
