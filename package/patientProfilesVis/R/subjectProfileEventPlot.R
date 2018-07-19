@@ -12,7 +12,7 @@
 #' @export
 subjectProfileEventPlot <- function(
 	data,
-	paramVar, paramLab = getLabelVar(paramVar, labelVars = labelVars),
+	paramVar, paramLab = toString(getLabelVar(paramVar, labelVars = labelVars)),
 	paramGroupVar = NULL,
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
 	colorPalette = if(!is.null(colorVar))	getPatientColorPalette(x = data[, colorVar]),
@@ -28,19 +28,22 @@ subjectProfileEventPlot <- function(
 	labelVars = NULL
 ){
 	
-	data <- data[with(data, !is.na(get(paramVar)) & !is.na(get(timeVar))), ]
+	data[, "yVar"] <- if(length(paramVar) > 1)
+		apply(data[, paramVar], 1, paste, collapse = " ")	else	data[, paramVar]
+	
+	data <- data[with(data, !is.na(yVar) & yVar != "" & !is.na(get(timeVar))), ]
 	
 	if(!is.null(colorVar))	data <- data[!is.na(data[, colorVar]), ]
 	if(!is.null(shapeVar))	data <- data[!is.na(data[, shapeVar]), ]
 	
 	# if paramGroupVar is specified: change order levels of 'variable'
 	if(!is.null(paramGroupVar))
-		data[, paramVar] <- with(data, reorder(get(paramVar), get(paramGroupVar), unique))
+		data[, "yVar"] <- with(data, reorder(yVar, get(paramGroupVar), unique))
 	
 	listPlots <- dlply(data, subjectVar, function(dataSubject){	
 				
 		aesArgs <- c(
-			list(x = timeVar, y = paramVar),
+			list(x = timeVar, y = "yVar"),
 			if(!is.null(colorVar))	list(fill = colorVar, color = colorVar),
 			if(!is.null(shapeVar))	list(shape = shapeVar)
 		)

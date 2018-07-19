@@ -4,11 +4,11 @@
 \alias{subjectProfileIntervalPlot}
 \title{Create plot of subject profiles with segments for range of parameters}
 \usage{
-subjectProfileIntervalPlot(data, paramVar, paramLab = getLabelVar(paramVar,
-  labelVars = labelVars), paramGroupVar = NULL, startVar, endVar,
-  subjectVar = "USUBJID", timeLim = with(data, c(min(get(startVar), na.rm =
-  TRUE), max(get(startVar), na.rm = TRUE))),
-  rangeSimilarStartEnd = diff(timeLim)/1000,
+subjectProfileIntervalPlot(data, paramVar,
+  paramLab = toString(getLabelVar(paramVar, labelVars = labelVars)),
+  paramGroupVar = NULL, startVar, endVar, subjectVar = "USUBJID",
+  timeLim = with(data, c(min(get(startVar), na.rm = TRUE), max(get(startVar),
+  na.rm = TRUE))), rangeSimilarStartEnd = diff(timeLim)/1000,
   xLab = paste(getLabelVar(c(startVar, endVar), labelVars = labelVars),
   collapse = "/"), yLab = "", colorVar = NULL,
   colorLab = getLabelVar(colorVar, labelVars = labelVars), colorPalette = if

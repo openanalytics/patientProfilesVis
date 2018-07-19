@@ -221,17 +221,16 @@ It is used here to represent the start/end date of the adverse events.
 
 ```
 
-<!-- ### Exposure -->
+### Exposure
 
-```{r exampleIntervalModule-ax, eval = FALSE}
-	
-	# AEPTCD: preferred term code
-	dataPlot <- sdtmDataPelican$EX
+```{r exampleIntervalModule-ax}
+
+	# AEPTCD: preferred term codes
 	exPlots <- subjectProfileIntervalPlot(
-		data = dataPlot,
-		paramVar = "EXTRT",
-		startVar = "EXSTDTC",
-		endVar = "EXENDTC",
+		data = sdtmDataPelican$EX,
+		paramVar = c("EXTRT", "EXDOSE", "EXDOSU"),
+		startVar = "EXSTDY",
+		endVar = "EXENDY",
 		colorVar = "EXDOSFRM",
 		labelVars = labelVarsPelican
 	)
@@ -312,7 +311,7 @@ The function `createSubjectProfileReport` has mainly two purposes:
 ```{r createReportWithAllModules, eval = FALSE}
 
 	createSubjectProfileReport(
-		listPlots = list(dmPlots, mhPlots, aePlots, lbPlotsColor)
+		listPlots = list(dmPlots, mhPlots, exPlots, aePlots, lbPlotsColor)
 	)
 
 ```

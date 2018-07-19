@@ -30,7 +30,7 @@
 #' @export
 subjectProfileIntervalPlot <- function(
 	data,
-	paramVar, paramLab = getLabelVar(paramVar, labelVars = labelVars),
+	paramVar, paramLab = toString(getLabelVar(paramVar, labelVars = labelVars)),
 	paramGroupVar = NULL,
 	startVar,
 	endVar,
@@ -70,6 +70,9 @@ subjectProfileIntervalPlot <- function(
 			)
 	}
 	
+	data[, "yVar"] <- if(length(paramVar) > 1)
+		apply(data[, paramVar], 1, paste, collapse = " ")	else	data[, paramVar]
+	
 	# if paramGroupVar is specified: change order levels of 'variable'
 	if(!is.null(paramGroupVar))
 		data[, paramVar] <- with(data, reorder(get(paramVar), get(paramGroupVar), unique))
@@ -77,7 +80,7 @@ subjectProfileIntervalPlot <- function(
 	listPlots <- dlply(data, subjectVar, function(dataSubject){	
 		
 		aesArgs <- c(
-			list(x = startVar, xend = endVar, y = paramVar, yend = paramVar),
+			list(x = startVar, xend = endVar, y = "yVar", yend = "yVar"),
 			if(!is.null(colorVar))	list(color = colorVar)
 		)
 				

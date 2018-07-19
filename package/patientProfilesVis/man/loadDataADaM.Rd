@@ -20,14 +20,8 @@ By default all columns ending with 'DTC' are used (dateVars is: 'DTC$').}
 \item{verbose}{logical, if TRUE (by default) progress messages are printed during execution}
 }
 \value{
-list with:
-\itemize{
-\item{'data': }{list of 
-data.frame with data of each ADAM file
-(if not empty)
-}
-\item{'labelVars': }{named vector with label of the variables}
-}
+list of data.frame with data of each ADAM file (if not empty),
+with special attributes 'labelVars': named vector with label of the variables
 }
 \description{
 This converts also date/time variable to R date/time class 
