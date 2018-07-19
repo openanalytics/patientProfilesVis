@@ -17,7 +17,7 @@
 #' @importFrom plyr colwise
 #' @export
 loadDataADaM <- function(files, 
-	convertToDate = TRUE, dateVars = "DTC$",
+	convertToDate = FALSE, dateVars = "DTC$",
 	verbose = TRUE){
 	
 	# extract ADaM name

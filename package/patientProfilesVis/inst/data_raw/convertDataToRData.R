@@ -15,7 +15,6 @@ dataFiles <- list.files(
 )
 
 data <- loadDataADaM(files = dataFiles)
-dataListWithTime <- setReferenceTime(data = data)
 
 #res <- getTimeVsReference(dataList)
 

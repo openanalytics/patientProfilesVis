@@ -5,14 +5,27 @@
 \title{Create subject profile report}
 \usage{
 createSubjectProfileReport(listPlots,
-  timeLim = getXLimSubjectProfilePlots(listPlots), landscape = FALSE,
-  outputFile = "subjectProfile.pdf", exportFigures = FALSE)
+  timeLim = getXLimSubjectProfilePlots(listPlots), refLines = NULL,
+  landscape = FALSE, outputFile = "subjectProfile.pdf",
+  exportFigures = FALSE)
 }
 \arguments{
 \item{listPlots}{list of plots, as returned by the \code{\link{subjectProfileTextPlot}},
 \code{\link{subjectProfileEventPlot}} or \code{\link{subjectProfileIntervalPlot}}}
 
-\item{timeLim}{vector with time range}
+\item{timeLim}{(optional) vector of length 2 with time limits (x-axis)
+If not specified, extracted from the minimum \code{startVar} and maximum \code{endVar}}
+
+\item{refLines}{(optional) nested list with details for reference line(s).
+Each sublist contains:
+\itemize{
+\item{(required) 'label': }{string with label for the reference line}
+\item{(required) 'time': }{time(x) coordinate for the reference line,
+'dotted' by default}
+\item{(optional) 'color': }{color for the reference line,
+'black' by default}
+\item{(optional) 'linetype': }{linetype for the reference line}
+}}
 
 \item{landscape}{logical, if TRUE the created report is in landscape format}
 

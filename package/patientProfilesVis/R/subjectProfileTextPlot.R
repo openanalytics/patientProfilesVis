@@ -116,7 +116,7 @@ subjectProfileTextPlot <- function(
 			geom_text(
 				aes(x = 0, y = variable, label = value),
 				hjust = 0,
-				size = rel(3)
+				size = rel(2)
 			) +
 			xlim(c(0, 1)) +
 			subjectProfileTheme() +

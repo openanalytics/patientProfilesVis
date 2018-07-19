@@ -1,11 +1,11 @@
 #' Create subject profile report
 #' @param listPlots list of plots, as returned by the \code{\link{subjectProfileTextPlot}},
 #' \code{\link{subjectProfileEventPlot}} or \code{\link{subjectProfileIntervalPlot}}
-#' @param timeLim vector with time range
 #' @param landscape logical, if TRUE the created report is in landscape format
 #' @param outputFile string, path to the output report
 #' @param exportFigures logical, if TRUE (FALSE by default) the figures are also exported
 #' in png format in a 'figures' folder
+#' @inheritParams subjectProfileCombine
 #' @return no returned value, the report is created at the location
 #' specified by \code{outputFile}
 #' @author Laure Cougnaud
@@ -13,12 +13,13 @@
 #' @export
 createSubjectProfileReport <- function(listPlots, 
 	timeLim = getXLimSubjectProfilePlots(listPlots),
+	refLines = NULL,
 	landscape = FALSE,
 	outputFile = "subjectProfile.pdf",
 	exportFigures = FALSE){
 	
 	# combine
-	listPlotsPerSubject <- subjectProfileCombine(listPlots, timeLim = timeLim)
+	listPlotsPerSubject <- subjectProfileCombine(listPlots, timeLim = timeLim, refLines = refLines)
 	
 	pathTemplate <- getPathTemplate("subjectProfile.Rnw")
 	
@@ -54,6 +55,16 @@ createSubjectProfileReport <- function(listPlots,
 
 #' Combine subject profile plots.
 #' @param listPlots list of \code{\link[ggplot2]{ggplot2}} objects
+#' @param refLines (optional) nested list with details for reference line(s).
+#' Each sublist contains:
+#' \itemize{
+#' \item{(required) 'label': }{string with label for the reference line}
+#' \item{(required) 'time': }{time(x) coordinate for the reference line,
+#' 'dotted' by default}
+#' \item{(optional) 'color': }{color for the reference line,
+#' 'black' by default}
+#' \item{(optional) 'linetype': }{linetype for the reference line}
+#' }
 #' @return a list of \code{subjectProfilePlot} object, containing the combined
 #' profile plots for each subject.
 #' This is in essence only a \code{\link[ggplot2]{ggplot2}} objects,
@@ -64,7 +75,8 @@ createSubjectProfileReport <- function(listPlots,
 #' @author Laure Cougnaud
 #' @export
 subjectProfileCombine <- function(listPlots, 
-	timeLim = getXLimSubjectProfilePlots(listPlots)){
+	timeLim = getXLimSubjectProfilePlots(listPlots),
+	refLines = NULL){
 	
 	# extract all subjects for which at least one plot is available
 	subjects <- sort(unique(unlist(lapply(listPlots, names))))
@@ -76,6 +88,16 @@ subjectProfileCombine <- function(listPlots,
 		attr(list, 'metaData') <- attr(x, 'metaData')
 		list
 	})
+
+	# add default for reference lines
+	if(!is.null(refLines)){
+		refLinesLabels <- sapply(refLines, function(x) x$label)
+		refLinesTime <- sapply(refLines, function(x) x$time)
+		refLinesColor <- sapply(refLines, function(x) 
+			ifelse("color" %in% names(x), x$color, "black"))
+		refLinesLinetype <- sapply(refLines, function(x) 
+			ifelse("linetype" %in% names(x), x$linetype, "dotted"))
+	}
 	
 	## combine plots
 	
@@ -88,22 +110,52 @@ subjectProfileCombine <- function(listPlots,
 		isEmpty <- which(sapply(listGgPlotsToCombine, is.null))
 		if(any(isEmpty)){
 			listGgPlotsToCombine[isEmpty] <- lapply(isEmpty, function(i)
-				if(labels[i] != "")
-					ggplot() + theme_bw() + ggtitle(paste("No", labels[i], "available."))
+				if(labels[i] != ""){
+					gg <- ggplot() + theme_bw() + 
+						ggtitle(paste("No", labels[i], "available."))
+					class(gg) <- c("subjectProfileEmptyPlot", class(gg))
+					gg
+				}
 			)
 		}
 		listGgPlotsToCombine <- listGgPlotsToCombine[!sapply(listGgPlotsToCombine, is.null)]
+		
 		if(length(listGgPlotsToCombine) > 0){
 			
-			# set same limits for the time/x-axis
-			listGgPlotsToCombine <- lapply(listGgPlotsToCombine, function(gg){
-				if(!inherits(gg, "subjectProfileTextPlot"))		
+			# set same limits for the time/x-axis and reference lines
+			plotsToModify <-  which(sapply(listGgPlotsToCombine, function(gg)
+				!inherits(gg, "subjectProfileTextPlot") & !inherits(gg, "subjectProfileEmptyPlot")
+			))
+			if(length(plotsToModify) > 0)
+				listGgPlotsToCombine[plotsToModify] <- lapply(listGgPlotsToCombine[plotsToModify], function(gg){
 					gg <- gg + coord_cartesian(xlim = timeLim)
-				gg				
+					if(!is.null(refLines))
+						gg <- gg + geom_vline(
+							xintercept = refLinesTime, 
+							color = refLinesColor,
+							linetype = refLinesLinetype, 
+							alpha = 0.5,
+							size = 1
+						)
+					gg				
 			})
-	
+
 			# extract number of lines in the y-axis
 			nLinesPlot <- sapply(listGgPlotsToCombine, getNLinesYGgplot)
+
+			# add labels of reference lines in last plot
+			if(length(plotsToModify) > 0 & !is.null(refLines)){
+				# add label reference line
+				idxPlotRefLines <- max(plotsToModify)
+				ggWithRefLines <- addLabelReferenceLines(
+					gg = listGgPlotsToCombine[[idxPlotRefLines]], 
+					refLinesLabels = refLinesLabels,
+					refLinesTime = refLinesTime,
+					refLinesColor = refLinesColor
+				)
+				listGgPlotsToCombine[[idxPlotRefLines]] <- ggWithRefLines				
+				nLinesPlot[idxPlotRefLines] <- nLinesPlot[idxPlotRefLines] + attributes(ggWithRefLines)$nLinesLabelRefLines
+			}
 
 			# relative height of each plot
 			relHeights <- nLinesPlot/sum(nLinesPlot)
@@ -119,7 +171,6 @@ subjectProfileCombine <- function(listPlots,
 			)
 			
 			# store the number of lines in the y-axis (used to adapt size during export)
-			# TODO: add plots title?
 			attributes(plot) <- c(attributes(plot), 
 				list(nLinesPlot = sum(nLinesPlot), nSubplots = length(listGgPlotsToCombine))
 			)
@@ -164,11 +215,13 @@ subjectProfileCombine <- function(listPlots,
 		# combine title and plot
 		plotSubjectWithTitle <- plot_grid(title, plotSubject, ncol = 1, rel_heights = relHeights)
 		
+		nLinesPlotTotal <- nLinesPlot + 4
+		
 		# store the number of lines in the y-axis (used to adapt size during export)
 		attributes(plotSubjectWithTitle) <- c(
 			attributes(plotSubjectWithTitle), 
 			list(
-				nLinesPlot = nLinesPlot,
+				nLinesPlot = nLinesPlotTotal,
 				nSubplots = attr(plotSubject, "nSubplots")
 			)
 		)
@@ -202,5 +255,49 @@ getXLimSubjectProfilePlots <- function(listPlots){
 	timeLim <- range(unlist(xlimList, recursive = TRUE), na.rm = TRUE)
 	
 	return(timeLim)
+	
+}
+
+#' Add label of reference lines to a \code{\link[ggplot2]{ggplot}} object
+#' @param gg \code{\link[ggplot2]{ggplot}} object
+#' @param refLinesLabels character vector with label for the reference line(s)
+#' @param refLinesTime numeric vector with time(x) coordinates for the reference line(s)
+#' @param refLinesColor vector with color for the reference line(s)
+#' @return \code{\link[gtable]{gtable}} objects,
+#' with additional attributes 'nLinesLabelRefLines' containing the number of
+#' lines for the label for the reference lines
+#' @import ggplot2
+#' @importFrom grid textGrob gpar
+#' @author Laure Cougnaud
+#' @export
+addLabelReferenceLines <- function(gg, 
+	refLinesLabels, refLinesTime,
+	refLinesColor = "black"){
+	
+	nLinesRefLines <- max(nchar(refLinesLabels))
+	
+	if(length(refLinesColor) == 1)
+		refLinesColor <- rep(refLinesColor, length(refLinesLabels))
+	
+	gg <- gg + theme(plot.margin = unit(c(1, 3, nLinesRefLines + 3, 1), "lines"))
+	for(i in seq_along(refLinesLabels)){
+		x <- refLinesTime[i]
+		gg <- gg + annotation_custom(
+			grob = textGrob(
+				refLinesLabels[i], rot = 90, hjust = 1,
+					gp = gpar(col = refLinesColor[i])
+				), 
+				xmin = x, xmax = x, ymin = -3, ymax = -3
+		)
+	}
+	
+	ggT <- ggplot_gtable(ggplot_build(gg))
+	ggT$layout$clip[ggT$layout$name == "panel"] <- "off"
+	
+	#	grid.draw(ggT)
+	
+	attr(ggT, "nLinesLabelRefLines") <- nLinesRefLines
+	
+	return(ggT)
 	
 }
