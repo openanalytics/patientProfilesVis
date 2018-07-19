@@ -1,8 +1,8 @@
 #' Create plot of subject profiles with segments for range of parameters 
 #' @param data data.frame with data
 #' @param paramVar string, variable of \code{data} with parameter (used in the y-axis)
-#' @param paramGroupVar (optional) string, variable of \code{data} with grouping.
-#' If specified, the parameters will be grouped by this variable in the y-axis.
+#' @param paramGroupVar (optional) character vector with variable(s) of \code{data} with grouping.
+#' If specified, the parameters will be grouped by this(these) variable(s) in the y-axis.
 #' @param paramLab string, label for \code{paramVar}
 #' @param subjectVar string, variable of \code{data} with subject ID
 #' @param startVar string, variable of \code{data} with start of range
@@ -74,11 +74,17 @@ subjectProfileIntervalPlot <- function(
 		apply(data[, paramVar], 1, paste, collapse = " ")	else	data[, paramVar]
 	
 	# if paramGroupVar is specified: change order levels of 'variable'
-	if(!is.null(paramGroupVar))
-		data[, paramVar] <- with(data, reorder(get(paramVar), get(paramGroupVar), unique))
+	if(!is.null(paramGroupVar)){
+		groupVariable <- if(length(paramGroupVar) > 0){
+			interaction(data[, paramGroupVar])
+		}else data[, paramGroupVar]
+		data[, "yVar"] <- reorder(data[, "yVar"], groupVariable, unique)
+	}
 	
 	listPlots <- dlply(data, subjectVar, function(dataSubject){	
 		
+		subject <- unique(dataSubject[, subjectVar])
+				
 		aesArgs <- c(
 			list(x = startVar, xend = endVar, y = "yVar", yend = "yVar"),
 			if(!is.null(colorVar))	list(color = colorVar)
@@ -103,6 +109,8 @@ subjectProfileIntervalPlot <- function(
 		
 		if(!is.null(timeLim))
 			gg <- gg + coord_cartesian(xlim = timeLim)
+		
+		attr(gg, 'metaData') <- list(subjectID = subject)
 		
 		class(gg) <- c("subjectProfileEventPlot", class(gg))
 		

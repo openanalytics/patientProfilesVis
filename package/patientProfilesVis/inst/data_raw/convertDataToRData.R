@@ -3,23 +3,47 @@
 # Author: Laure Cougnaud
 ###############################################################################
 
+library(patientProfilesVis)
+
+## SDTM dataset
+
 pathData <- file.path(
 	"../../../../data/study/SDTM",
 	c("CRG10GLP01_SDTM_2018_06JUN_15_v2", "CRG10GLP01_SDTM_2018_06JUN_19")
 )
 
 dataFiles <- list.files(
-	pattern = "^(ae|dm|lb|mh|ex)\\.sas7bdat$",
+	pattern = "^(ae|dm|lb|mh|ex|sv|tv)\\.sas7bdat$",
 	path = pathData, 
 	full.names = TRUE
 )
 
-data <- loadDataADaM(files = dataFiles)
+dataSDTM <- loadDataADaM(files = dataFiles)
 
 #res <- getTimeVsReference(dataList)
 
-sdtmDataPelican <- data
-save(sdtmDataPelican, file = "../data/sdtmDataPelican.RData")
+SDTMDataPelican <- dataSDTM
+save(SDTMDataPelican, file = "../data/SDTMDataPelican.RData")
 
-labelVarsPelican <- attr(data, "labelVars")
-save(labelVarsPelican, file = "../data/labelVarsPelican.RData")
+labelVarsSDTMPelican <- attr(dataSDTM, "labelVars")
+save(labelVarsSDTMPelican, file = "../data/labelVarsSDTMPelican.RData")
+
+## ADAM dataset
+
+pathData <- "/home/lcougnaud/git/GLPGSAPCysticFibrosis/data/Pelican/ADAM/20180525 study/study_ADAM_2018_06JUN_15_v2"
+
+dataFiles <- list.files(
+	pattern = "^ad(ae|lb|mh|ex|sl)\\.sas7bdat$",
+	path = pathData, 
+	full.names = TRUE
+)
+
+dataADaM <- loadDataADaM(files = dataFiles)
+
+#res <- getTimeVsReference(dataList)
+
+ADaMDataPelican <- dataADaM
+save(ADaMDataPelican, file = "../data/ADaMDataPelican.RData")
+
+labelVarsADaMPelican <- attr(dataADaM, "labelVars")
+save(labelVarsADaMPelican, file = "../data/labelVarsADaMPelican.RData")

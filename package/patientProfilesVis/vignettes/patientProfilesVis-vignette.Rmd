@@ -58,18 +58,18 @@ This function returns two objects:
   default titles of the figures), stored in the `$labelVars` slot
 
 A few `sdtm` datasets from the _Pelican_ study are included in the package for
-the demonstration, via the dataset `sdtmDataPelican` and corresponding variable
-labels `labelVarsPelican`.
+the demonstration, via the dataset `SDTMDataPelican` and corresponding variable
+labels `labelVarsSDTMPelican`.
 
 ```{r loadData}	
 	
 	# example dataset(s) formatted as a list of data.frame
-	data(sdtmDataPelican)
-	pander(lapply(sdtmDataPelican, head, 1))
+	data(SDTMDataPelican)
+	pander(lapply(SDTMDataPelican, head, 1))
 	
 	# and corresponding labels
-	data(labelVarsPelican)
-	pander(head(labelVarsPelican))
+	data(labelVarsSDTMPelican)
+	pander(head(labelVarsSDTMPelican))
 
 ```
 
@@ -102,9 +102,9 @@ the parameter value (`paramValueVar`).
 	# annotate subject demographics meta-data
 	# by specifying a set of variables to include
 	dmPlots <- subjectProfileTextPlot(
-		data = sdtmDataPelican$DM,
+		data = SDTMDataPelican$DM,
 		paramValueVar = c("SEX|AGE", "RACE|COUNTRY", "ARM"),
-		labelVars = labelVarsPelican
+		labelVars = labelVarsSDTMPelican
 	)
 	
 ```
@@ -124,11 +124,11 @@ the parameter value (`paramValueVar`).
 	# annotate subject medical history
 	# by specifying a combination of parameter value/name
 	mhPlots <- subjectProfileTextPlot(
-		data = sdtmDataPelican$MH,
+		data = SDTMDataPelican$MH,
 		paramNameVar = "MHDECOD",
 		paramValueVar = "MHENRTPT",
 		title = "Medical History: status",
-		labelVars = labelVarsPelican
+		labelVars = labelVarsSDTMPelican
 	)
 		
 ```
@@ -151,11 +151,11 @@ the parameter value (`paramValueVar`).
 			)
 		)
 	mhPlotsMultipleVars <- subjectProfileTextPlot(
-		data = sdtmDataPelican$MH,
+		data = SDTMDataPelican$MH,
 		paramNameVar = "MHDECOD",
 		paramValueVar = paramValueVarFct,
 		title = "Medical History: status with dates",
-		labelVars = labelVarsPelican
+		labelVars = labelVarsSDTMPelican
 	)
 		
 ```
@@ -173,12 +173,12 @@ the parameter value (`paramValueVar`).
 	# annotate subject medical history
 	# by specifying a combination of parameter value/name
 	mhPlotsGroup <- subjectProfileTextPlot(
-		data = sdtmDataPelican$MH,
+		data = SDTMDataPelican$MH,
 		paramNameVar = "MHDECOD",
 		paramValueVar = "MHENRTPT",
 		paramGroupVar = "MHCAT",
 		title = "Medical History: grouped by category",
-		labelVars = labelVarsPelican
+		labelVars = labelVarsSDTMPelican
 	)
 	
 ```
@@ -201,7 +201,7 @@ It is used here to represent the start/end date of the adverse events.
 ```{r exampleIntervalModule-ae}
 
 	# AEPTCD: preferred term code
-	dataPlot <- sdtmDataPelican$AE
+	dataPlot <- SDTMDataPelican$AE
 	# specify order of value in 'AESEV'
 	dataPlot[, "AESEV"] <- factor(dataPlot[, "AESEV"], levels = c("MILD", "MODERATE"))
 	aePlots <- subjectProfileIntervalPlot(
@@ -210,7 +210,7 @@ It is used here to represent the start/end date of the adverse events.
 		startVar = "AESTDY",
 		endVar = "AEENDY",
 		colorVar = "AESEV",
-		labelVars = labelVarsPelican,
+		labelVars = labelVarsSDTMPelican,
 		title = "Adverse events"
 	)
 	
@@ -231,12 +231,12 @@ this time interval visualization
 
 	# AEPTCD: preferred term codes
 	exPlots <- subjectProfileIntervalPlot(
-		data = sdtmDataPelican$EX,
+		data = SDTMDataPelican$EX,
 		paramVar = c("EXTRT", "EXDOSE", "EXDOSU"),
 		startVar = "EXSTDY",
 		endVar = "EXENDY",
 		colorVar = "EXDOSFRM",
-		labelVars = labelVarsPelican,
+		labelVars = labelVarsSDTMPelican,
 		title = "Treatment exposure"
 	)
 
@@ -260,7 +260,7 @@ laboratory measurement (and corresponding time).
 	## laboratory data
 	
 	# prepare data for plots:
-	dataLB <- sdtmDataPelican$LB
+	dataLB <- SDTMDataPelican$LB
 	# sort the categories (empty values '' becomes NA)
 	dataLB$LBNRIND <- factor(dataLB$LBNRIND, levels = c("LOW", "NORMAL", "HIGH"))
 	
@@ -269,9 +269,8 @@ laboratory measurement (and corresponding time).
 		data = dataLB,
 		paramVar = "LBTEST",
 		paramGroupVar = "LBSCAT",
-		subjectVar = "USUBJID",
 		timeVar = "LBDY",
-		labelVars = labelVarsPelican,
+		labelVars = labelVarsSDTMPelican,
 		title = "Laboratory test measurements"
 	)
 
@@ -296,10 +295,10 @@ in normal range.
 	lbPlotsColor <- subjectProfileEventPlot(
 		data = dataLB,
 		paramVar = "LBTEST",
-		subjectVar = "USUBJID",
+		paramGroupVar = "LBSCAT",
 		timeVar = "LBDY",
 		colorVar = "LBNRIND",
-		labelVars = labelVarsPelican,
+		labelVars = labelVarsSDTMPelican,
 		shapeVar = "LBNRIND",
 		shapePalette = c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24)
 	)
@@ -320,9 +319,12 @@ The function `createSubjectProfileReport` has mainly two purposes:
   `subjectProfileCombine` function)
 * creating a _pdf_ report containing the resulting plots (one page per subject)
 
-```{r createReportWithAllModules, eval = FALSE}
+## Reference lines for Statistical Analysis Plan
+
+```{r createReportWithAllModules-referenceLinesFromSAP, eval = FALSE}
 
 	# reference lines input parameter
+	library(glpgStyle)
 	refLinesParam <- list(
 		list(
 			label = 'Start screening',
@@ -355,7 +357,92 @@ The function `createSubjectProfileReport` has mainly two purposes:
 	createSubjectProfileReport(
 		listPlots = list(dmPlots, mhPlots, exPlots, aePlots, lbPlotsColor),
 		refLines = refLinesParam,
-		exportFigures = TRUE
+		outputFile = "subjectProfile_SDTM_referenceLinesFromSAP.pdf"
+	)
+
+```
+
+## Reference lines from subject visits
+
+The reference lines are extracted from the subject visits: `SV` dataset.
+
+```{r createReportWithAllModules-referenceLinesFromSV, eval = FALSE}
+
+	# create report
+	createSubjectProfileReport(
+		listPlots = list(dmPlots, mhPlots, exPlots, aePlots, lbPlotsColor),
+		refLinesData = SDTMDataPelican$SV,
+		refLinesTimeVar = "SVSTDY",
+		refLinesLabelVar = "VISIT",
+		outputFile = "subjectProfile_SDTM_referenceLinesFromSV.pdf"
+	)
+
+```
+
+<!-- # Example with the 'ADaM' dataset/format -->
+<!--  -->
+<!-- ADaM dataset can also be used in the same framework. -->
+
+```{r createReportFromADAMDataset, eval = FALSE, echo = FALSE}
+
+	# load example ADaM dataset
+	data(ADaMDataPelican)
+	# ... and corresponding labels
+	data(labelVarsADaMPelican)
+
+	# subject information
+	slPlotsADaM <- subjectProfileTextPlot(
+		ADaMDataPelican$ADSL,
+		paramValueVar = c("SEX|AGE", "RACE|COUNTRY", "ARM"),
+		labelVars = labelVarsADaMPelican
+	)
+	# medical history
+	mhPlotsADaM <- subjectProfileTextPlot(
+		ADaMDataPelican$ADMH,
+		paramNameVar = "MHDECOD",
+		paramValueVar = "MHENRTPT",
+		title = "Medical History: status",
+		labelVars = labelVarsADaMPelican
+	)
+	# exposure
+	exPlotsADaM <- subjectProfileIntervalPlot(
+		data = ADaMDataPelican$ADEX,
+		paramVar = c("EXTRT", "EXDOSE", "EXDOSU"),
+		startVar = "EXSTDY",
+		endVar = "EXENDY",
+		colorVar = "EXDOSFRM",
+		labelVars = labelVarsADaMPelican,
+		title = "Treatment exposure"
+	)
+	# adverse events
+	aePlotsADaM <- subjectProfileIntervalPlot(
+		data = ADaMDataPelican$ADAE,
+		paramVar = "AETERM",
+		startVar = "ASTDY",
+		endVar = "AENDY",
+		colorVar = "AESEV",
+		labelVars = labelVarsADaMPelican,
+		title = "Adverse events"
+	)
+	# laboratory	
+	lbPlotsADaM <- subjectProfileEventPlot(
+		data = ADaMDataPelican$ADLB,
+		paramVar = "PARAM",
+		paramGroupVar = c("PARCAT1", "PARCAT2"),
+		timeVar = "ADY",
+		colorVar = "ANRIND",
+		labelVars = labelVarsSDTMPelican,
+		shapeVar = "ANRIND",
+		shapePalette = c('L' = 25, 'N' = 19, 'H' = 24, 'H+L' = 23)
+	)
+
+	# create report
+	createSubjectProfileReport(
+		listPlots = list(slPlotsADaM, mhPlotsADaM, 
+			exPlotsADaM, aePlotsADaM, lbPlotsADaM),
+		refLinesData = ADaMDataPelican$ADSL,
+		refLines = refLinesParam,
+		outputFile = "subjectProfile_SDTM_referenceLinesFromSAP.pdf"
 	)
 
 ```

@@ -22,8 +22,8 @@ subjectProfileEventPlot(data, paramVar,
 
 \item{paramLab}{string, label for \code{paramVar}}
 
-\item{paramGroupVar}{(optional) string, variable of \code{data} with grouping.
-If specified, the parameters will be grouped by this variable in the y-axis.}
+\item{paramGroupVar}{(optional) character vector with variable(s) of \code{data} with grouping.
+If specified, the parameters will be grouped by this(these) variable(s) in the y-axis.}
 
 \item{colorVar}{string, variable of \code{data} with color.}
 

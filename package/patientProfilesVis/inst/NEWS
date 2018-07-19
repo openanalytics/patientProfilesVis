@@ -8,6 +8,7 @@
     o subjectProfileTheme
     o loadDataADAM: include support for date/time format
     o createSubjectProfileReport/subjectProfileCombine: add refLines parameter
+    o new addReferenceLinesProfilePlot function
 0.0.2
     o remove glpgUtility from the dependencies
 0.0.1

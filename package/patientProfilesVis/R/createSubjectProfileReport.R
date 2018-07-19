@@ -14,12 +14,20 @@
 createSubjectProfileReport <- function(listPlots, 
 	timeLim = getXLimSubjectProfilePlots(listPlots),
 	refLines = NULL,
+	refLinesData = NULL,
+	refLinesTimeVar = NULL,
+	refLinesLabelVar = NULL,
+	subjectVar = "USUBJID",
 	landscape = FALSE,
 	outputFile = "subjectProfile.pdf",
 	exportFigures = FALSE){
 	
 	# combine
-	listPlotsPerSubject <- subjectProfileCombine(listPlots, timeLim = timeLim, refLines = refLines)
+	listPlotsPerSubject <- subjectProfileCombine(listPlots, 
+		timeLim = timeLim, refLines = refLines,
+		refLinesData = refLinesData, refLinesTimeVar = refLinesTimeVar, refLinesLabelVar = refLinesLabelVar,
+		subjectVar = subjectVar
+	)
 	
 	pathTemplate <- getPathTemplate("subjectProfile.Rnw")
 	
@@ -55,16 +63,7 @@ createSubjectProfileReport <- function(listPlots,
 
 #' Combine subject profile plots.
 #' @param listPlots list of \code{\link[ggplot2]{ggplot2}} objects
-#' @param refLines (optional) nested list with details for reference line(s).
-#' Each sublist contains:
-#' \itemize{
-#' \item{(required) 'label': }{string with label for the reference line}
-#' \item{(required) 'time': }{time(x) coordinate for the reference line,
-#' 'dotted' by default}
-#' \item{(optional) 'color': }{color for the reference line,
-#' 'black' by default}
-#' \item{(optional) 'linetype': }{linetype for the reference line}
-#' }
+#' @inheritParams addReferenceLinesProfilePlot
 #' @return a list of \code{subjectProfilePlot} object, containing the combined
 #' profile plots for each subject.
 #' This is in essence only a \code{\link[ggplot2]{ggplot2}} objects,
@@ -76,7 +75,11 @@ createSubjectProfileReport <- function(listPlots,
 #' @export
 subjectProfileCombine <- function(listPlots, 
 	timeLim = getXLimSubjectProfilePlots(listPlots),
-	refLines = NULL){
+	subjectVar = "USUBJID",
+	refLines = NULL,
+	refLinesData = NULL,
+	refLinesTimeVar = NULL,
+	refLinesLabelVar = NULL){
 	
 	# extract all subjects for which at least one plot is available
 	subjects <- sort(unique(unlist(lapply(listPlots, names))))
@@ -88,16 +91,6 @@ subjectProfileCombine <- function(listPlots,
 		attr(list, 'metaData') <- attr(x, 'metaData')
 		list
 	})
-
-	# add default for reference lines
-	if(!is.null(refLines)){
-		refLinesLabels <- sapply(refLines, function(x) x$label)
-		refLinesTime <- sapply(refLines, function(x) x$time)
-		refLinesColor <- sapply(refLines, function(x) 
-			ifelse("color" %in% names(x), x$color, "black"))
-		refLinesLinetype <- sapply(refLines, function(x) 
-			ifelse("linetype" %in% names(x), x$linetype, "dotted"))
-	}
 	
 	## combine plots
 	
@@ -122,39 +115,38 @@ subjectProfileCombine <- function(listPlots,
 		
 		if(length(listGgPlotsToCombine) > 0){
 			
+			# extract number of lines in the y-axis
+			nLinesPlot <- sapply(listGgPlotsToCombine, getNLinesYGgplot)
+			
 			# set same limits for the time/x-axis and reference lines
 			plotsToModify <-  which(sapply(listGgPlotsToCombine, function(gg)
 				!inherits(gg, "subjectProfileTextPlot") & !inherits(gg, "subjectProfileEmptyPlot")
 			))
-			if(length(plotsToModify) > 0)
-				listGgPlotsToCombine[plotsToModify] <- lapply(listGgPlotsToCombine[plotsToModify], function(gg){
+			if(length(plotsToModify) > 0){
+				
+				newPlots <- lapply(plotsToModify, function(i){
+					
+					gg <- listGgPlotsToCombine[[i]]
 					gg <- gg + coord_cartesian(xlim = timeLim)
-					if(!is.null(refLines))
-						gg <- gg + geom_vline(
-							xintercept = refLinesTime, 
-							color = refLinesColor,
-							linetype = refLinesLinetype, 
-							alpha = 0.5,
-							size = 1
-						)
-					gg				
-			})
-
-			# extract number of lines in the y-axis
-			nLinesPlot <- sapply(listGgPlotsToCombine, getNLinesYGgplot)
-
-			# add labels of reference lines in last plot
-			if(length(plotsToModify) > 0 & !is.null(refLines)){
-				# add label reference line
-				idxPlotRefLines <- max(plotsToModify)
-				ggWithRefLines <- addLabelReferenceLines(
-					gg = listGgPlotsToCombine[[idxPlotRefLines]], 
-					refLinesLabels = refLinesLabels,
-					refLinesTime = refLinesTime,
-					refLinesColor = refLinesColor
-				)
-				listGgPlotsToCombine[[idxPlotRefLines]] <- ggWithRefLines				
-				nLinesPlot[idxPlotRefLines] <- nLinesPlot[idxPlotRefLines] + attributes(ggWithRefLines)$nLinesLabelRefLines
+					
+					gg <- addReferenceLinesProfilePlot(
+						gg = gg, 
+						subjectVar = subjectVar,
+						refLines = refLines,
+						refLinesData = refLinesData,
+						refLinesTimeVar = refLinesTimeVar,
+						refLinesLabelVar = refLinesLabelVar,
+						addLabel = (i == plotsToModify[length(plotsToModify)])
+					)
+					
+				})
+		
+				listGgPlotsToCombine[plotsToModify] <- newPlots
+				nLinesPlot[plotsToModify] <- nLinesPlot[plotsToModify] +
+					sapply(newPlots, function(gg){
+						nLinesRef <- attributes(gg)$metaData$nLinesLabelRefLines
+						ifelse(is.null(nLinesRef), 0, nLinesRef)
+					})
 			}
 
 			# relative height of each plot
@@ -258,46 +250,123 @@ getXLimSubjectProfilePlots <- function(listPlots){
 	
 }
 
-#' Add label of reference lines to a \code{\link[ggplot2]{ggplot}} object
-#' @param gg \code{\link[ggplot2]{ggplot}} object
-#' @param refLinesLabels character vector with label for the reference line(s)
-#' @param refLinesTime numeric vector with time(x) coordinates for the reference line(s)
-#' @param refLinesColor vector with color for the reference line(s)
-#' @return \code{\link[gtable]{gtable}} objects,
-#' with additional attributes 'nLinesLabelRefLines' containing the number of
-#' lines for the label for the reference lines
+
+
+#' Add reference lines to a profile plot
+#' @param gg \code{\link[ggplot2]{ggplot2}} object
+#' @param refLines (optional) nested list with details for reference line(s).
+#' Each sublist contains:
+#' \itemize{
+#' \item{(required) 'label': }{string with label for the reference line}
+#' \item{(required) 'time': }{time(x) coordinate for the reference line,
+#' 'dotted' by default}
+#' \item{(optional) 'color': }{color for the reference line,
+#' 'black' by default}
+#' \item{(optional) 'linetype': }{linetype for the reference line}
+#' }
+#' @param refLinesData data.frame with data from which the reference line(s) should be extracted
+#' @param refLinesTimeVar string, variable of \code{refLinesData} with time for reference line(s)
+#' @param refLinesLabelVar string, variable of \code{refLinesData} with label for reference line(s)
+#' @param refLinesColor vector of length 1 with default color for reference line(s)
+#' @param refLinesLinetype vector of length 1 with default linetype for reference line(s)
+#' @param addLabel logical, if TRUE (FALSE by default) add the label of the reference line(s) at the bottom of the plot
+#' @inheritParams subjectProfileIntervalPlot
+#' @return if \code{addLabel} is TRUE, \code{\link[gtable]{gtable}} object,
+#' \code{\link[ggplot2]{ggplot2}} otherwise
+#' @author Laure Cougnaud
 #' @import ggplot2
 #' @importFrom grid textGrob gpar
-#' @author Laure Cougnaud
-#' @export
-addLabelReferenceLines <- function(gg, 
-	refLinesLabels, refLinesTime,
-	refLinesColor = "black"){
+addReferenceLinesProfilePlot <- function(
+	gg, 
+	subjectVar = "USUBJID",
+	refLines = NULL,
+	refLinesData = NULL,
+	refLinesTimeVar = NULL,
+	refLinesLabelVar = NULL,
+	refLinesColor = "black",
+	refLinesLinetype = "dotted",
+	addLabel = FALSE){
 	
-	nLinesRefLines <- max(nchar(refLinesLabels))
-	
-	if(length(refLinesColor) == 1)
-		refLinesColor <- rep(refLinesColor, length(refLinesLabels))
-	
-	gg <- gg + theme(plot.margin = unit(c(1, 3, nLinesRefLines + 3, 1), "lines"))
-	for(i in seq_along(refLinesLabels)){
-		x <- refLinesTime[i]
-		gg <- gg + annotation_custom(
-			grob = textGrob(
-				refLinesLabels[i], rot = 90, hjust = 1,
-					gp = gpar(col = refLinesColor[i])
-				), 
-				xmin = x, xmax = x, ymin = -3, ymax = -3
+	refLinesVect <- !is.null(refLines)
+	refLinesFromData <- !is.null(refLinesData) & !is.null(refLinesTimeVar) & !is.null(refLinesLabelVar) 
+
+	if(refLinesVect){
+		
+		refLinesLabels <- sapply(refLines, function(x) x$label)
+		refLinesTime <- sapply(refLines, function(x) x$time)
+		refLinesColor <- sapply(refLines, function(x) 
+			ifelse("color" %in% names(x), x$color, refLinesColor)
 		)
+		refLinesLinetype <- sapply(refLines, function(x) 
+			ifelse("linetype" %in% names(x), x$linetype, refLinesLinetype)
+		)
+		
+	}else if(refLinesFromData){
+		
+		subjectIDPlot <- attr(gg, "metaData")$subjectID
+		if(is.null(subjectIDPlot))
+			warning("No reference lines are added to the plot with subject ID, because no 'subjectID' available.")
+		
+		refLinesInfo <- subset(refLinesData, 
+			get(subjectVar) == subjectIDPlot &
+			!is.na(get(refLinesLabelVar)) &
+			!is.na(get(refLinesTimeVar))
+		)
+		refLinesLabels <- refLinesInfo[, refLinesLabelVar]
+		refLinesTime <- refLinesInfo[, refLinesTimeVar]
+		
 	}
 	
-	ggT <- ggplot_gtable(ggplot_build(gg))
-	ggT$layout$clip[ggT$layout$name == "panel"] <- "off"
-	
-	#	grid.draw(ggT)
-	
-	attr(ggT, "nLinesLabelRefLines") <- nLinesRefLines
-	
-	return(ggT)
+	res <- if(refLinesVect | refLinesFromData){
+				
+		if(length(refLinesColor) == 1)
+			refLinesColor <- rep(refLinesColor, length(refLinesLabels))
+		if(length(refLinesLinetype) == 1)
+			refLinesLinetype <- rep(refLinesLinetype, length(refLinesLabels))
+		
+		# add vertical lines
+		gg <- gg + geom_vline(
+			xintercept = refLinesTime, 
+			color = refLinesColor,
+			linetype = refLinesLinetype, 
+			alpha = 0.5,
+			size = 1
+		)
+		
+		# add label at the bottom of the plot
+		res <- if(addLabel){
+					
+			# extract number of lines for label
+			nLinesRefLines <- max(nchar(refLinesLabels))/2
+			
+			# increase bottom margin
+			gg <- gg + theme(plot.margin = unit(c(1, 3, nLinesRefLines + 3, 1), "lines"))
+			
+			# add label(s)
+			for(i in seq_along(refLinesLabels)){
+				x <- refLinesTime[i]
+				gg <- gg + annotation_custom(
+					grob = textGrob(
+						refLinesLabels[i], rot = 90, hjust = 1,
+						gp = gpar(col = refLinesColor[i])
+					), 
+					xmin = x, xmax = x, ymin = -3, ymax = -3
+				)
+			}
+			
+			# clip off the plot panel (otherwise the label doesn't appear)
+			ggT <- ggplot_gtable(ggplot_build(gg))
+			ggT$layout$clip[ggT$layout$name == "panel"] <- "off"
+			#	grid.draw(ggT)
+			
+			attr(ggT, "metaData") <- c(attr(gg, "metaData"), list(nLinesLabelRefLines = nLinesRefLines))
+			
+			ggT
+			
+		}else gg
+				
+	}else gg
+
+	return(res)
 	
 }

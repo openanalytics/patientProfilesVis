@@ -37,10 +37,16 @@ subjectProfileEventPlot <- function(
 	if(!is.null(shapeVar))	data <- data[!is.na(data[, shapeVar]), ]
 	
 	# if paramGroupVar is specified: change order levels of 'variable'
-	if(!is.null(paramGroupVar))
-		data[, "yVar"] <- with(data, reorder(yVar, get(paramGroupVar), unique))
+	if(!is.null(paramGroupVar)){
+		groupVariable <- if(length(paramGroupVar) > 0){
+			interaction(data[, paramGroupVar])
+		}else data[, paramGroupVar]
+		data[, "yVar"] <- reorder(data[, "yVar"], groupVariable, unique)
+	}
 	
 	listPlots <- dlply(data, subjectVar, function(dataSubject){	
+		
+		subject <- unique(dataSubject[, subjectVar])
 				
 		aesArgs <- c(
 			list(x = timeVar, y = "yVar"),
@@ -80,6 +86,8 @@ subjectProfileEventPlot <- function(
 		
 		if(!is.null(timeLim))
 			gg <- gg + coord_cartesian(xlim = timeLim)
+		
+		attr(gg, 'metaData') <- list(subjectID = subject)
 		
 		class(gg) <- c("subjectProfileEventPlot", class(gg))
 		

@@ -112,6 +112,9 @@ subjectProfileTextPlot <- function(
 		
 	# create the plot
 	listPlots <- dlply(dataPlot, subjectVar, function(dataSubject){	
+				
+		subject <- unique(dataSubject[, subjectVar])
+		
 		gg <- ggplot(data = dataSubject) +
 			geom_text(
 				aes(x = 0, y = variable, label = value),
@@ -134,6 +137,8 @@ subjectProfileTextPlot <- function(
 				b = 0, l = marDefault[4], unit = "pt")
 			gg <- gg + theme(plot.margin = marNew)
 		}
+		
+		attr(gg, 'metaData') <- list(subjectID = subject)
 		
 		class(gg) <- c("subjectProfileTextPlot", class(gg))
 		
