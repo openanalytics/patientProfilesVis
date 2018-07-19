@@ -6,8 +6,9 @@
 \usage{
 createSubjectProfileReport(listPlots,
   timeLim = getXLimSubjectProfilePlots(listPlots), refLines = NULL,
-  landscape = FALSE, outputFile = "subjectProfile.pdf",
-  exportFigures = FALSE)
+  refLinesData = NULL, refLinesTimeVar = NULL, refLinesLabelVar = NULL,
+  subjectVar = "USUBJID", landscape = FALSE,
+  outputFile = "subjectProfile.pdf", exportFigures = FALSE)
 }
 \arguments{
 \item{listPlots}{list of plots, as returned by the \code{\link{subjectProfileTextPlot}},
@@ -26,6 +27,14 @@ Each sublist contains:
 'black' by default}
 \item{(optional) 'linetype': }{linetype for the reference line}
 }}
+
+\item{refLinesData}{data.frame with data from which the reference line(s) should be extracted}
+
+\item{refLinesTimeVar}{string, variable of \code{refLinesData} with time for reference line(s)}
+
+\item{refLinesLabelVar}{string, variable of \code{refLinesData} with label for reference line(s)}
+
+\item{subjectVar}{string, variable of \code{data} with subject ID}
 
 \item{landscape}{logical, if TRUE the created report is in landscape format}
 
