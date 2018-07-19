@@ -9,14 +9,8 @@
 #' or pattern for this columns.
 #' By default all columns ending with 'DTC' are used (dateVars is: 'DTC$').
 #' @param verbose logical, if TRUE (by default) progress messages are printed during execution
-#' @return list with:
-#' \itemize{
-#' \item{'data': }{list of 
-#' data.frame with data of each ADAM file
-#' (if not empty)
-#' }
-#' \item{'labelVars': }{named vector with label of the variables}
-#' }
+#' @return list of data.frame with data of each ADAM file (if not empty),
+#' with special attributes 'labelVars': named vector with label of the variables
 #' @author Laure Cougnaud
 #' @importFrom tools file_path_sans_ext
 #' @importFrom haven read_sas
@@ -68,10 +62,9 @@ loadDataADaM <- function(files,
 	
 	# extract label variables
 	labelVars <- getLabelVars(dataList)
+	attr(dataList, "labelVars") <- labelVars
 	
-	res <- list(data = dataList, labelVars = labelVars)
-
-	return(res)
+	return(dataList)
 
 }
 

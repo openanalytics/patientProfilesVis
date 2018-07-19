@@ -4,15 +4,16 @@
 \alias{subjectProfileEventPlot}
 \title{Create plot of subject profiles for events}
 \usage{
-subjectProfileEventPlot(data, paramVar, paramLab = getLabelVar(paramVar,
-  labelVars = labelVars), paramGroupVar = NULL, colorVar = NULL,
-  colorLab = getLabelVar(colorVar, labelVars = labelVars), colorPalette = if
-  (!is.null(colorVar)) getPatientColorPalette(x = data[, colorVar]),
-  shapeVar = colorVar, shapeLab = getLabelVar(shapeVar, labelVars =
-  labelVars), shapePalette = if (!is.null(shapeVar)) getPatientShapePalette(x
-  = data[, colorVar]), timeVar, subjectVar = "USUBJID",
-  xLab = getLabelVar(timeVar, labelVars = labelVars), yLab = "",
-  timeLim = NULL, title = paramLab, label = title, labelVars = NULL)
+subjectProfileEventPlot(data, paramVar,
+  paramLab = toString(getLabelVar(paramVar, labelVars = labelVars)),
+  paramGroupVar = NULL, colorVar = NULL, colorLab = getLabelVar(colorVar,
+  labelVars = labelVars), colorPalette = if (!is.null(colorVar))
+  getPatientColorPalette(x = data[, colorVar]), shapeVar = colorVar,
+  shapeLab = getLabelVar(shapeVar, labelVars = labelVars), shapePalette = if
+  (!is.null(shapeVar)) getPatientShapePalette(x = data[, colorVar]), timeVar,
+  subjectVar = "USUBJID", xLab = getLabelVar(timeVar, labelVars =
+  labelVars), yLab = "", timeLim = NULL, title = paramLab,
+  label = title, labelVars = NULL)
 }
 \arguments{
 \item{data}{data.frame with data}

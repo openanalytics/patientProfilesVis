@@ -14,9 +14,13 @@ dataFiles <- list.files(
 	full.names = TRUE
 )
 
-res <- loadDataADaM(files = dataFiles)
-sdtmDataPelican <- res$data
+data <- loadDataADaM(files = dataFiles)
+dataListWithTime <- setReferenceTime(data = data)
+
+#res <- getTimeVsReference(dataList)
+
+sdtmDataPelican <- data
 save(sdtmDataPelican, file = "../data/sdtmDataPelican.RData")
 
-labelVarsPelican <- res$labelVars
+labelVarsPelican <- attr(data, "labelVars")
 save(labelVarsPelican, file = "../data/labelVarsPelican.RData")
