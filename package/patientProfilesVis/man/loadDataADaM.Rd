@@ -4,7 +4,7 @@
 \alias{loadDataADaM}
 \title{Load data from ADaM file(s).}
 \usage{
-loadDataADaM(files, convertToDate = TRUE, dateVars = "DTC$",
+loadDataADaM(files, convertToDate = FALSE, dateVars = "DTC$",
   verbose = TRUE)
 }
 \arguments{

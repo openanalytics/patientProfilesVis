@@ -5,13 +5,24 @@
 \title{Combine subject profile plots.}
 \usage{
 subjectProfileCombine(listPlots,
-  timeLim = getXLimSubjectProfilePlots(listPlots))
+  timeLim = getXLimSubjectProfilePlots(listPlots), refLines = NULL)
 }
 \arguments{
 \item{listPlots}{list of \code{\link[ggplot2]{ggplot2}} objects}
 
 \item{timeLim}{(optional) vector of length 2 with time limits (x-axis)
 If not specified, extracted from the minimum \code{startVar} and maximum \code{endVar}}
+
+\item{refLines}{(optional) nested list with details for reference line(s).
+Each sublist contains:
+\itemize{
+\item{(required) 'label': }{string with label for the reference line}
+\item{(required) 'time': }{time(x) coordinate for the reference line,
+'dotted' by default}
+\item{(optional) 'color': }{color for the reference line,
+'black' by default}
+\item{(optional) 'linetype': }{linetype for the reference line}
+}}
 }
 \value{
 a list of \code{subjectProfilePlot} object, containing the combined

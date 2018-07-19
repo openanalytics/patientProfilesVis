@@ -210,7 +210,8 @@ It is used here to represent the start/end date of the adverse events.
 		startVar = "AESTDY",
 		endVar = "AEENDY",
 		colorVar = "AESEV",
-		labelVars = labelVarsPelican
+		labelVars = labelVarsPelican,
+		title = "Adverse events"
 	)
 	
 ```
@@ -223,7 +224,10 @@ It is used here to represent the start/end date of the adverse events.
 
 ### Exposure
 
-```{r exampleIntervalModule-ax}
+The exposure of the patients to certain treatment(s) is also represented in
+this time interval visualization
+
+```{r exampleIntervalModule-ex}
 
 	# AEPTCD: preferred term codes
 	exPlots <- subjectProfileIntervalPlot(
@@ -232,8 +236,15 @@ It is used here to represent the start/end date of the adverse events.
 		startVar = "EXSTDY",
 		endVar = "EXENDY",
 		colorVar = "EXDOSFRM",
-		labelVars = labelVarsPelican
+		labelVars = labelVarsPelican,
+		title = "Treatment exposure"
 	)
+
+```
+
+```{r exampleIntervalModule-exinclude, echo = FALSE, fig.height = getNLinesYGgplot(exPlots[[1]])*0.14, fig.width = 14, fig.cap = paste("Exposure interval with the 'subjectProfileIntervalPlot' function for patient:", names(aePlots)[1])}
+
+	print(exPlots[[1]])
 
 ```
 
@@ -260,7 +271,8 @@ laboratory measurement (and corresponding time).
 		paramGroupVar = "LBSCAT",
 		subjectVar = "USUBJID",
 		timeVar = "LBDY",
-		labelVars = labelVarsPelican
+		labelVars = labelVarsPelican,
+		title = "Laboratory test measurements"
 	)
 
 ```
@@ -310,8 +322,40 @@ The function `createSubjectProfileReport` has mainly two purposes:
 
 ```{r createReportWithAllModules, eval = FALSE}
 
+	# reference lines input parameter
+	refLinesParam <- list(
+		list(
+			label = 'Start screening',
+			time = -28,
+			color = "darkgreen"
+		), 
+		list(
+			label = 'End screening',
+			time = -1,
+			color = "darkgreen"
+		), 
+		list(
+			label = 'Start treatment',
+			time = 1,
+			color = "darkblue"
+		), 
+		list(
+			label = 'End treatment',
+			time = 29,
+			color = "darkblue"
+		),
+		list(
+			label = 'Follow-up',
+			time = 49,
+			color = "purple"
+		)
+	)
+
+	# create report
 	createSubjectProfileReport(
-		listPlots = list(dmPlots, mhPlots, exPlots, aePlots, lbPlotsColor)
+		listPlots = list(dmPlots, mhPlots, exPlots, aePlots, lbPlotsColor),
+		refLines = refLinesParam,
+		exportFigures = TRUE
 	)
 
 ```
