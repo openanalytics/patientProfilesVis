@@ -327,27 +327,27 @@ The function `createSubjectProfileReport` has mainly two purposes:
 		list(
 			label = 'Start screening',
 			time = -28,
-			color = "darkgreen"
+			color = glpgPaletteCharts()["purple"]
 		), 
 		list(
 			label = 'End screening',
 			time = -1,
-			color = "darkgreen"
+			color = glpgPaletteCharts()["purple"]
 		), 
 		list(
 			label = 'Start treatment',
 			time = 1,
-			color = "darkblue"
+			color = glpgPaletteCharts()["darkblue"]
 		), 
 		list(
 			label = 'End treatment',
 			time = 29,
-			color = "darkblue"
+			color = glpgPaletteCharts()["darkblue"]
 		),
 		list(
 			label = 'Follow-up',
 			time = 49,
-			color = "purple"
+			color = glpgPaletteCharts()["pink"]
 		)
 	)
 
