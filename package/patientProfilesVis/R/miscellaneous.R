@@ -43,14 +43,15 @@ getLabelVar <- function(var, data = NULL, labelVars = NULL){
 		if(is.null(data) & is.null(labelVars)){
 			res <- var
 			names(res) <- var
+			res
 		}else{
 			#		stop("'data' or 'labelVars' should be specified for the label(s) extraction.")
 			res <- sapply(var, function(x){
-						attrX <- if(!is.null(labelVars))
-									labelVars[x]	else
-									attr(data[, x], "label")
-						ifelse(is.null(attrX), x, attrX)
-					})
+				attrX <- if(!is.null(labelVars))
+					labelVars[x]	else
+					attr(data[, x], "label")
+				ifelse(is.null(attrX), x, attrX)
+			})
 		}
 	}
 	return(res)
@@ -69,8 +70,8 @@ getLabelVar <- function(var, data = NULL, labelVars = NULL){
 #' named with the elements in \code{x} if \code{x} is specified.
 #' @author Laure Cougnaud
 #' @examples 
-#' getColorPalette(n = 10)
-#' getColorPalette(x = paste('treatment', 1:4))
+#' getPatientColorPalette(n = 10)
+#' getPatientColorPalette(x = paste('treatment', 1:4))
 #' @importFrom viridis viridis
 #' @importFrom glpgStyle glpgPaletteCharts
 #' @export
@@ -83,6 +84,7 @@ getPatientColorPalette <- function(n = NULL, x = NULL, type = c("GLPG", "viridis
 			"should be specified.")
 	
 	x <- if(is.factor(x))	levels(x)	else unique(x)
+	x[is.na(x)] <- 'NA'
 	if(is.null(n)) n <- length(x)
 	
 	palette <- switch(type,
@@ -110,7 +112,7 @@ getPatientShapePalette <- function(n = NULL, x = NULL){
 			"should be specified.")
 	
 	x <- if(is.factor(x))	levels(x)	else unique(x)
-	
+	x[is.na(x)] <- 'NA'
 	if(is.null(n)) n <- length(x)
 	
 	basePalette <- c(19, 15, 23:25, 1:14)
@@ -133,4 +135,48 @@ subjectProfileTheme <- function(){
 	customTheme <- theme_bw() +
 		theme(panel.grid.major.y = element_line(colour = c("grey80", theme_bw()$panel.grid$colour)))
 	return(customTheme)
+}
+
+#' Convert aesthetic variable to factor, converting the empty values ('') to NA
+#' @param data data.frame with data
+#' @param var variable of \code{data} with aesthetic
+#' @return updated factor \code{var} variable
+#' @author Laure Cougnaud
+convertAesVar <- function(data, var){
+	x <- data[, var]
+	idxEmpty <- which(x == "")
+	if(length(idxEmpty)){
+		message("Empty records in the: '", var, "' variable are converted to NA.")
+		x[idxEmpty] <- NA
+	}
+	if(!is.factor(x)){
+		factor(x, exclude = NULL)
+	}else{
+		droplevels(factor(x, exclude = NULL, levels = levels(x)))
+	}
+}
+
+#' Get custom 'scale_[type]_manual' function
+#' @param lab label for the scale (title of the legend)
+#' @param palette named vector with color palette
+#' @param type string with type of scale, e.g. 'color'
+#' @return output of the 'scale_[type]_manual' function
+#' @author Laure Cougnaud
+#' @import ggplot2
+getAesScaleManual <- function(lab, palette, type){
+	
+	paramsScale <- c(
+		list(
+			name = lab,
+			values = palette, drop = FALSE,
+			limits = names(palette)
+		),
+		if('NA' %in% names(palette))	
+			list(na.value = palette['NA'])
+	)
+	scaleFct <- paste0("scale_", type, "_manual")
+	res <- do.call(scaleFct, paramsScale)
+	
+	return(res)
+	
 }

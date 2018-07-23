@@ -9,15 +9,16 @@
 #' @author Laure Cougnaud
 #' @import ggplot2
 #' @importFrom plyr dlply
+#' @importFrom stats reorder
 #' @export
 subjectProfileEventPlot <- function(
 	data,
 	paramVar, paramLab = toString(getLabelVar(paramVar, labelVars = labelVars)),
 	paramGroupVar = NULL,
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
-	colorPalette = if(!is.null(colorVar))	getPatientColorPalette(x = data[, colorVar]),
+	colorPalette = NULL,
 	shapeVar = colorVar, shapeLab = getLabelVar(shapeVar, labelVars = labelVars),
-	shapePalette = if(!is.null(shapeVar))	getPatientShapePalette(x = data[, colorVar]),
+	shapePalette = NULL,
 	timeVar, 
 	subjectVar = "USUBJID",
 	xLab = getLabelVar(timeVar, labelVars = labelVars),
@@ -33,8 +34,15 @@ subjectProfileEventPlot <- function(
 	
 	data <- data[with(data, !is.na(yVar) & yVar != "" & !is.na(get(timeVar))), ]
 	
-	if(!is.null(colorVar))	data <- data[!is.na(data[, colorVar]), ]
-	if(!is.null(shapeVar))	data <- data[!is.na(data[, shapeVar]), ]
+	# convert aesthetic variables to factor
+	if(!is.null(colorVar)){
+		data[, colorVar] <- convertAesVar(data, colorVar)
+		if(is.null(colorPalette))	colorPalette <- getPatientColorPalette(x = data[, colorVar])
+	}
+	if(!is.null(shapeVar)){
+		data[, shapeVar] <- convertAesVar(data, shapeVar)
+		if(is.null(shapePalette))	shapePalette <- getPatientShapePalette(x = data[, shapeVar])
+	}
 	
 	# if paramGroupVar is specified: change order levels of 'variable'
 	if(!is.null(paramGroupVar)){
@@ -65,24 +73,14 @@ subjectProfileEventPlot <- function(
 			labs(title = title, x = xLab, y = yLab)
 		
 		# color palette and name for color legend
-		if(!is.null(colorVar)){
-			paramsScale <- list(
-				name = colorLab, 
-				values = colorPalette, drop = FALSE,
-				limits = names(colorPalette)
-			)
+		if(!is.null(colorVar))
 			gg <- gg + 
-				do.call(scale_fill_manual, paramsScale) +
-				do.call(scale_color_manual, paramsScale)
-		}
+				getAesScaleManual(lab = colorLab, palette = colorPalette, type = "color") +
+				getAesScaleManual(lab = colorLab, palette = colorPalette, type = "fill")
 		
 		# change name for color scale
 		if(!is.null(shapeVar))
-			gg <- gg + scale_shape_manual(
-				name = shapeLab, 
-				values = shapePalette, drop = FALSE,
-				limits = names(shapePalette)
-			)
+			gg <- gg + getAesScaleManual(lab = shapeLab, palette = shapePalette, type = "shape")
 		
 		if(!is.null(timeLim))
 			gg <- gg + coord_cartesian(xlim = timeLim)

@@ -28,8 +28,8 @@ either from a vector of names for the palette, or
 from a specified length.
 }
 \examples{
-getColorPalette(n = 10)
-getColorPalette(x = paste('treatment', 1:4))
+getPatientColorPalette(n = 10)
+getPatientColorPalette(x = paste('treatment', 1:4))
 }
 \author{
 Laure Cougnaud
