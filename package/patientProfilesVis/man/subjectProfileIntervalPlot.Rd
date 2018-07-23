@@ -11,9 +11,9 @@ subjectProfileIntervalPlot(data, paramVar,
   na.rm = TRUE))), rangeSimilarStartEnd = diff(timeLim)/1000,
   xLab = paste(getLabelVar(c(startVar, endVar), labelVars = labelVars),
   collapse = "/"), yLab = "", colorVar = NULL,
-  colorLab = getLabelVar(colorVar, labelVars = labelVars), colorPalette = if
-  (!is.null(colorVar)) getPatientColorPalette(x = data[, colorVar]),
-  title = paramLab, label = title, labelVars = NULL)
+  colorLab = getLabelVar(colorVar, labelVars = labelVars),
+  colorPalette = NULL, title = paramLab, label = title,
+  labelVars = NULL)
 }
 \arguments{
 \item{data}{data.frame with data}

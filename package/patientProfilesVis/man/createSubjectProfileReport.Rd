@@ -35,6 +35,10 @@ Each sublist contains:
 
 \item{refLinesLabelVar}{string, variable of \code{refLinesData} with label for reference line(s)}
 
+\item{bookmarkData}{data.frame with data containing information on which the index should be based}
+
+\item{bookmarkVar}{variable(s) of \code{data} of interest for the index}
+
 \item{subjectVar}{string, variable of \code{data} with subject ID}
 
 \item{landscape}{logical, if TRUE the created report is in landscape format}

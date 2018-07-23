@@ -7,13 +7,11 @@
 subjectProfileEventPlot(data, paramVar,
   paramLab = toString(getLabelVar(paramVar, labelVars = labelVars)),
   paramGroupVar = NULL, colorVar = NULL, colorLab = getLabelVar(colorVar,
-  labelVars = labelVars), colorPalette = if (!is.null(colorVar))
-  getPatientColorPalette(x = data[, colorVar]), shapeVar = colorVar,
-  shapeLab = getLabelVar(shapeVar, labelVars = labelVars), shapePalette = if
-  (!is.null(shapeVar)) getPatientShapePalette(x = data[, colorVar]), timeVar,
-  subjectVar = "USUBJID", xLab = getLabelVar(timeVar, labelVars =
-  labelVars), yLab = "", timeLim = NULL, title = paramLab,
-  label = title, labelVars = NULL)
+  labelVars = labelVars), colorPalette = NULL, shapeVar = colorVar,
+  shapeLab = getLabelVar(shapeVar, labelVars = labelVars),
+  shapePalette = NULL, timeVar, subjectVar = "USUBJID",
+  xLab = getLabelVar(timeVar, labelVars = labelVars), yLab = "",
+  timeLim = NULL, title = paramLab, label = title, labelVars = NULL)
 }
 \arguments{
 \item{data}{data.frame with data}

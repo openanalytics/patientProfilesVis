@@ -300,7 +300,8 @@ in normal range.
 		colorVar = "LBNRIND",
 		labelVars = labelVarsSDTMPelican,
 		shapeVar = "LBNRIND",
-		shapePalette = c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24)
+		shapePalette = c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24),
+		title = "Laboratory test measurements"
 	)
 	
 ```
@@ -364,7 +365,9 @@ The function `createSubjectProfileReport` has mainly two purposes:
 
 ## Reference lines from subject visits
 
-The reference lines are extracted from the subject visits: `SV` dataset.
+In the following example: the reference lines are extracted from the subject
+visits: `SV` dataset. Bookmarks are used to reference the sex and arm for each
+subject.
 
 ```{r createReportWithAllModules-referenceLinesFromSV, eval = FALSE}
 
@@ -386,9 +389,9 @@ The reference lines are extracted from the subject visits: `SV` dataset.
 
 ```
 
-<!-- # Example with the 'ADaM' dataset/format -->
-<!--  -->
-<!-- ADaM dataset can also be used in the same framework. -->
+# Example with the 'ADaM' dataset/format
+
+ADaM dataset can also be used in the same framework.
 
 ```{r createReportFromADAMDataset, eval = FALSE, echo = FALSE}
 
@@ -438,9 +441,10 @@ The reference lines are extracted from the subject visits: `SV` dataset.
 		paramGroupVar = c("PARCAT1", "PARCAT2"),
 		timeVar = "ADY",
 		colorVar = "ANRIND",
-		labelVars = labelVarsSDTMPelican,
+		labelVars = labelVarsADaMPelican,
 		shapeVar = "ANRIND",
-		shapePalette = c('L' = 25, 'N' = 19, 'H' = 24, 'H+L' = 23)
+		title = "Laboratory test measurements",
+		shapePalette = c('L' = 25, 'N' = 19, 'H' = 24, 'NA' = 3)
 	)
 
 	# create report
@@ -448,9 +452,8 @@ The reference lines are extracted from the subject visits: `SV` dataset.
 		listPlots = list(slPlotsADaM, mhPlotsADaM, 
 			exPlotsADaM, aePlotsADaM, lbPlotsADaM
 		),
-		refLinesData = ADaMDataPelican$ADSL,
 		refLines = refLinesParam,
-		outputFile = "subjectProfile_SDTM_referenceLinesFromSAP.pdf"
+		outputFile = "subjectProfile_ADAM.pdf"
 	)
 
 ```

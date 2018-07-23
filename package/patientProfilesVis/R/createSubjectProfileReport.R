@@ -5,6 +5,8 @@
 #' @param outputFile string, path to the output report
 #' @param exportFigures logical, if TRUE (FALSE by default) the figures are also exported
 #' in png format in a 'figures' folder
+#' @param bookmarkData data.frame with data containing information on which the index should be based
+#' @param bookmarkVar variable(s) of \code{data} of interest for the index
 #' @inheritParams subjectProfileCombine
 #' @inheritParams defineIndex
 #' @return no returned value, the report is created at the location

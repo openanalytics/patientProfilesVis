@@ -27,6 +27,7 @@
 #' @author Laure Cougnaud
 #' @import ggplot2
 #' @importFrom plyr dlply
+#' @importFrom stats reorder
 #' @export
 subjectProfileIntervalPlot <- function(
 	data,
@@ -40,7 +41,7 @@ subjectProfileIntervalPlot <- function(
 	xLab = paste(getLabelVar(c(startVar, endVar), labelVars = labelVars), collapse = "/"),
 	yLab = "",
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
-	colorPalette = if(!is.null(colorVar))	getPatientColorPalette(x = data[, colorVar]),
+	colorPalette = NULL,
 	title = paramLab,
 	label = title,
 	labelVars = NULL
@@ -81,6 +82,12 @@ subjectProfileIntervalPlot <- function(
 		data[, "yVar"] <- reorder(data[, "yVar"], groupVariable, unique)
 	}
 	
+	# convert color variable to factor
+	if(!is.null(colorVar)){
+		data[, colorVar] <- convertAesVar(data, colorVar)
+		if(is.null(colorPalette))	colorPalette <- getPatientColorPalette(x = data[, colorVar])
+	}
+	
 	listPlots <- dlply(data, subjectVar, function(dataSubject){	
 		
 		subject <- unique(dataSubject[, subjectVar])
@@ -102,10 +109,7 @@ subjectProfileIntervalPlot <- function(
 	
 		# color palette and name for color legend
 		if(!is.null(colorVar))
-			gg <- gg + scale_colour_manual(
-				name = colorLab, 
-				values = colorPalette, limits = names(colorPalette)
-			)
+			gg <- gg + getAesScaleManual(lab = colorLab, palette = colorPalette, type = "color")
 		
 		if(!is.null(timeLim))
 			gg <- gg + coord_cartesian(xlim = timeLim)

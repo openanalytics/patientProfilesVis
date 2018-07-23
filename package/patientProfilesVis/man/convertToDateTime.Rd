@@ -18,6 +18,8 @@ the \code{format} parameter of the \code{\link{strptime}} function).
 See the 'Details' section of the help of the function,
 for more information about this format.}
 
+\item{colName}{string with name of column, used in message (if any).}
+
 \item{verbose}{logical, if TRUE (by default) progress messages are printed during execution}
 }
 \value{
