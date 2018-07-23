@@ -6,38 +6,64 @@
 #' @param exportFigures logical, if TRUE (FALSE by default) the figures are also exported
 #' in png format in a 'figures' folder
 #' @inheritParams subjectProfileCombine
+#' @inheritParams defineIndex
 #' @return no returned value, the report is created at the location
 #' specified by \code{outputFile}
 #' @author Laure Cougnaud
 #' @importFrom tools texi2pdf
 #' @export
-createSubjectProfileReport <- function(listPlots, 
+createSubjectProfileReport <- function(
+	listPlots, 
 	timeLim = getXLimSubjectProfilePlots(listPlots),
 	refLines = NULL,
 	refLinesData = NULL,
 	refLinesTimeVar = NULL,
 	refLinesLabelVar = NULL,
+	bookmarkData = NULL,
+	bookmarkVar = NULL,
 	subjectVar = "USUBJID",
 	landscape = FALSE,
 	outputFile = "subjectProfile.pdf",
-	exportFigures = FALSE){
+	exportFigures = FALSE,
+	labelVars = NULL){
 	
-	# combine
+	# combine plots
 	listPlotsPerSubject <- subjectProfileCombine(listPlots, 
 		timeLim = timeLim, refLines = refLines,
 		refLinesData = refLinesData, refLinesTimeVar = refLinesTimeVar, refLinesLabelVar = refLinesLabelVar,
 		subjectVar = subjectVar
 	)
 	
+	# extract bookmark(s) (if any)
+	index <- if(!is.null(bookmarkData) & !is.null(bookmarkVar))
+		defineIndex(
+			subjects = names(listPlotsPerSubject), 
+			data = bookmarkData,
+			var = bookmarkVar,
+			subjectVar = subjectVar,
+			labelVars = labelVars
+		)
+	
 	pathTemplate <- getPathTemplate("subjectProfile.Rnw")
 	
-	## input parameters for the child document:
-	# listPlotsPerSubject
 	outputDir <- normalizePath(dirname(outputFile), winslash = "/")
-	landscape <- landscape # knitr search for input parameter in the parent envir
+	
+	## input parameters for the child document:
+	# save them in a new environment, passed to the 'knitr::knit' function
+	inputParametersEnv <- new.env()
+	inputParameters <- list(
+		listPlotsPerSubject = listPlotsPerSubject,
+		landscape = landscape,
+		outputDir = outputDir,
+		index = index		
+	)
+	assign("inputParameters", inputParameters, envir = inputParametersEnv)
 	
 	## convert Rnw -> tex
-	outputFileKnitr <- knitr::knit(input = pathTemplate, quiet = TRUE)
+	outputFileKnitr <- knitr::knit(
+		input = pathTemplate, quiet = FALSE,
+		envir = inputParametersEnv
+	)
 	
 	## convert tex -> pdf
 	
@@ -367,6 +393,64 @@ addReferenceLinesProfilePlot <- function(
 				
 	}else gg
 
+	return(res)
+	
+}
+
+#' Define LaTeX index based on specified variable(s)
+#' of the dataset
+#' @param subjects vector with subject IDs (based on the \code{subjectVar} variable)
+#' @param data data.frame with data containing information on which the index should be based
+#' @param var variable(s) of \code{data} of interest for the index
+#' @inheritParams subjectProfileIntervalPlot
+#' @return list with elements:
+#' \itemize{
+#' \item{'indexDef':}{string with LaTeX code for creation of index}
+#' \item{'indexInfo': }{character vector, named with named with subject ID,
+#'  containing LaTeX code for index for each subject
+#' specified in \code{subjects} parameter.}
+#' \item{'indexPrint': }{string with LaTeX code for printing/inclusion of index}
+#' }
+#' @importFrom plyr daply
+#' @author Laure Cougnaud
+defineIndex <- function(
+	subjects, 
+	data,
+	var,
+	subjectVar = "USUBJID",
+	labelVars = NULL
+){
+	
+	# Index creation:
+	# extract name used in Index (labels are the variable column names)
+	indexTitles <- getLabelVar(var, labelVars = labelVars)
+	indexMake <- paste(
+		paste0("\\makeindex[intoc,name=", names(indexTitles), ",title={Index on ",  indexTitles, "}]"),
+		collapse = "\n"
+	)
+	
+	# Index entry creation for each subject:
+	# extract values of specified 'var'
+	indexInfo <- daply(data, subjectVar, function(x){	
+		indexX <- unlist(x[, var])
+		if(nrow(x) > 1)
+			stop("Multiple information available for subject: ", unique(x[, subjectVar]), 
+				" for index construction.")
+		paste(
+			paste0("\\index[", names(indexX), "]{", indexX, "}"),
+			collapse = " "
+		)#	\index[person]{Heisenberg}
+	})
+	indexInfoSubjects <- indexInfo[subjectVar]
+	
+	# Index printing:
+	indexPrint <- paste(
+		paste0("\\printindex[", names(indexTitles), "]"),
+		collapse = "\n"
+	)
+	
+	res <- list(indexMake = indexMake, indexEntry = indexInfo, indexPrint = indexPrint)
+	
 	return(res)
 	
 }

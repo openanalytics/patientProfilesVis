@@ -18,6 +18,8 @@
 #' @param sectionTitles (optional) vector with section title(s) corresponding to \code{plotsList}
 #' @param sectionLevel integer with section level, 2 by default.
 #' This is only used if \code{sectionTitles} is specified
+#' @param bookmarkInfos character vector of length{plotsList} with 
+#' string for bookmark that will be included after each section
 #' @param ... any chunk parameters, will be replicated if necessary
 #' See \code{\link{knitr}[opts_chunk]} for further details on available options.
 #' @return no returned value, a text is printed with chunk content
@@ -32,6 +34,7 @@ knitPrintListPlotsKnitr <- function(
 	labels = paste0(generalLabel, seq_along(plotsList)), 
 	type = c("ggplot2", "plotly"),
 	includeNewpage = TRUE,
+	bookmarkInfos = NULL,
 	...){
 	
 	type <- match.arg(type)
@@ -55,19 +58,26 @@ knitPrintListPlotsKnitr <- function(
 		if(!is.null(argsChunkTxt)) paste0(", ", toString(argsChunkTxt)),
 		">>=\n",
 		if(!is.null(sectionTitles))	
-			paste0("cat('\\\\", 
-				paste(rep("sub", sectionLevel-1), collapse = ""), 
-				"section{", "^^sectionTitle$$", "}\\n')\n"
+			paste0("cat(",
+				# insert section
+				"'\\\\", paste(rep("sub", sectionLevel-1), collapse = ""), 
+				"section{", "^^sectionTitle$$", "}'",
+				# insertBookmark
+				if(!is.null(bookmarkInfos))	paste0(",' ',", "bookmarkInfos[^^i$$]"),
+				", '\\n')\n"
 			),
 		if(type == "ggplot2")	"print(", 
 		"plotsList[[^^i$$]]",
 		if(type == "ggplot2")	")", 
 		"\n",
+#		if(!is.null(bookmarkInfos))	paste0("cat(bookmarkInfos[^^i$$], '\\n')", "\n"),
 		if(includeNewpage)	"cat('\\\\newpage\\n')\n",
 		"@\n"
 	)
 	
 	# vectorize over plots
+	# Note: empty (NULL) parameter cannot be passed to the 'knit_expand', otherwise:
+	# zero-length inputs cannot be mixed with those of non-zero length
 	argsKnitExpand <- c(
 		list(FUN = knit_expand, 
 			text = chunkTemplate,
@@ -75,6 +85,7 @@ knitPrintListPlotsKnitr <- function(
 			label = labels,
 			MoreArgs = list(delim = c("^^", "$$"))
 		),
+		if(!is.null(bookmarkInfos))	list(bookmarkInfos = bookmarkInfos),
 		argsChunk,
 		if(!is.null(sectionTitles))	list(sectionTitle = sectionTitles)
 	)

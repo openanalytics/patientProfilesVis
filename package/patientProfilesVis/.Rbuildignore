@@ -4,5 +4,5 @@ data_raw/
 ^.*\.tex$
 figures_vignette/
 vignettes/patientProfilesVis-vignette.html
-vignettes/subjectProfile.pdf
+vignettes/subjectProfile*
 

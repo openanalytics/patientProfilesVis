@@ -7,7 +7,7 @@
 knitPrintListPlotsKnitr(plotsList, generalLabel = "plotsList",
   sectionTitles = NULL, sectionLevel = 2, labels = paste0(generalLabel,
   seq_along(plotsList)), type = c("ggplot2", "plotly"),
-  includeNewpage = TRUE, ...)
+  includeNewpage = TRUE, bookmarkInfos = NULL, ...)
 }
 \arguments{
 \item{plotsList}{list of plots, e.g. \code{ggplot} objects
@@ -28,6 +28,9 @@ This is only used if \code{sectionTitles} is specified}
 \item{type}{string with plot type, 'ggplot2' or 'plotly'}
 
 \item{includeNewpage}{logical, if TRUE include newpage after each plot}
+
+\item{bookmarkInfos}{character vector of length{plotsList} with 
+string for bookmark that will be included after each section}
 
 \item{...}{any chunk parameters, will be replicated if necessary
 See \code{\link{knitr}[opts_chunk]} for further details on available options.}
