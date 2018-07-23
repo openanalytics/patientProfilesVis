@@ -389,11 +389,11 @@ subject.
 
 ```
 
-# Example with the 'ADaM' dataset/format
+## Example with the 'ADaM' dataset/format
 
 ADaM dataset can also be used in the same framework.
 
-```{r createReportFromADAMDataset, eval = FALSE, echo = FALSE}
+```{r createReportFromADAMDataset, eval = FALSE}
 
 	# load example ADaM dataset
 	data(ADaMDataPelican)
