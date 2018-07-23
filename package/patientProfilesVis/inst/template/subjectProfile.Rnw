@@ -1,14 +1,41 @@
 \documentclass[a4paper, 10pt]{article}
 
 \usepackage{imakeidx}
+
+<<optionsChunks, echo = FALSE, cache = FALSE, message = FALSE, warning = FALSE>>=
+
+	library(knitr)
+
+	knitr::opts_chunk$set(
+		echo = FALSE, 
+		message = FALSE,
+		cache = FALSE,
+		warning = FALSE,
+		error = FALSE, # stop-on-error
+		results = "asis",
+		fig.align = "center",
+		fig.path = file.path(inputParameters$outputDir, "figures/")
+	)
+	
+	options(warn = 1, width = 200)
+	
+@
+
+<<indexCustom-makeIndex>>=
+
+	if(!is.null(inputParameters$index$indexMake))
+		cat(inputParameters$index$indexMake)
+
+@
+
 \makeindex
 
 % decrease margins: 1.875 inches wide by default on 10pt
 \usepackage[margin=0.75in]{geometry}
 
-<<echo = FALSE, results = 'asis'>>=
+<<specifyLayout>>=
 
-	if(landscape)
+	if(inputParameters$landscape)
 		cat("\n", "\\usepackage[landscape]{geometry}", "\n", sep = "\n")
 
 @
@@ -27,32 +54,12 @@
 
 %\tableofcontents
 
-<<optionsChunks, echo = FALSE, cache = FALSE, message = FALSE, warning = FALSE>>=
-
-	library(knitr)
-
-	knitr::opts_chunk$set(
-		echo = FALSE, 
-		message = FALSE,
-		cache = FALSE,
-		warning = FALSE,
-		error = FALSE, # stop-on-error
-		results = "asis",
-		fig.align = "center",
-		fig.path = file.path(outputDir, "figures/")
-	)
-	
-	options(warn = 1, width = 200)
-	
-@
-
 \section{Subject}
 
-<<includePlots, echo = FALSE>>=
+<<includePlots>>=
 
-#	figHeightInches <- sapply(listPlotsPerSubject, getSizeGTable, dim = "height", outputUnit = "inches")
-#	figWidthInches <- sapply(listPlotsPerSubject, getSizeGTable, dim = "width", outputUnit = "inches")
-	
+	listPlotsPerSubject <- inputParameters$listPlotsPerSubject
+
 	figHeightInches <- sapply(listPlotsPerSubject, function(plotSubject)
 		# number of lines in plot panel
 		attr(plotSubject, "nLinesPlot") * 0.14
@@ -67,15 +74,24 @@
 		fig.height = figHeightInches,
 		fig.width = textWidthInches,
 		sectionTitles = names(listPlotsPerSubject),
-		labels = names(listPlotsPerSubject)
+		labels = names(listPlotsPerSubject),
+		bookmarkInfos = inputParameters$index$indexEntry
 	)
-
+	
 @
 
 % add table of contents in 'Index'
-\cleardoublepage
-\phantomsection
-\addcontentsline{toc}{chapter}{\indexname}
+%\cleardoublepage
+%\phantomsection
+%\addcontentsline{toc}{chapter}{\indexname}
+
+<<indexCustom-printIndex>>=
+
+	if(!is.null(inputParameters$index$indexPrint))
+		cat(inputParameters$index$indexPrint)
+
+@
+
 \printindex
 
 \end{document}

@@ -7,8 +7,9 @@
 createSubjectProfileReport(listPlots,
   timeLim = getXLimSubjectProfilePlots(listPlots), refLines = NULL,
   refLinesData = NULL, refLinesTimeVar = NULL, refLinesLabelVar = NULL,
-  subjectVar = "USUBJID", landscape = FALSE,
-  outputFile = "subjectProfile.pdf", exportFigures = FALSE)
+  bookmarkData = NULL, bookmarkVar = NULL, subjectVar = "USUBJID",
+  landscape = FALSE, outputFile = "subjectProfile.pdf",
+  exportFigures = FALSE, labelVars = NULL)
 }
 \arguments{
 \item{listPlots}{list of plots, as returned by the \code{\link{subjectProfileTextPlot}},
@@ -42,6 +43,8 @@ Each sublist contains:
 
 \item{exportFigures}{logical, if TRUE (FALSE by default) the figures are also exported
 in png format in a 'figures' folder}
+
+\item{labelVars}{named string with variable labels (names are the variable code)}
 }
 \value{
 no returned value, the report is created at the location

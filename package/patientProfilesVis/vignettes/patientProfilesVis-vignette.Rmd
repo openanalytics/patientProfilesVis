@@ -370,11 +370,18 @@ The reference lines are extracted from the subject visits: `SV` dataset.
 
 	# create report
 	createSubjectProfileReport(
+		# general
 		listPlots = list(dmPlots, mhPlots, exPlots, aePlots, lbPlotsColor),
+		outputFile = "subjectProfile_SDTM_referenceLinesFromSV.pdf",
+		# reference line(s)
 		refLinesData = SDTMDataPelican$SV,
 		refLinesTimeVar = "SVSTDY",
 		refLinesLabelVar = "VISIT",
-		outputFile = "subjectProfile_SDTM_referenceLinesFromSV.pdf"
+		# bookmark(s)
+		bookmarkData = SDTMDataPelican$DM,
+		bookmarkVar = c("SEX", "ARM"),
+		labelVars = attr(SDTMDataPelican, "labelVars"),
+		exportFigures = TRUE
 	)
 
 ```
@@ -439,7 +446,8 @@ The reference lines are extracted from the subject visits: `SV` dataset.
 	# create report
 	createSubjectProfileReport(
 		listPlots = list(slPlotsADaM, mhPlotsADaM, 
-			exPlotsADaM, aePlotsADaM, lbPlotsADaM),
+			exPlotsADaM, aePlotsADaM, lbPlotsADaM
+		),
 		refLinesData = ADaMDataPelican$ADSL,
 		refLines = refLinesParam,
 		outputFile = "subjectProfile_SDTM_referenceLinesFromSAP.pdf"
