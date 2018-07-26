@@ -38,13 +38,22 @@ fluidPage(
             
             h4("Upload data and module specification"),
             
+			# upload data file(s)
             fileInput(inputId = 'dataFiles', label = 'Upload data', 
 				accept = '.sas7bdat', multiple = TRUE
 			),
             
+			# new module specification
+			h4("Module specification"),
 			actionLink(inputId = "createModule", label = "Create new module"),
-			uiOutput("module")
-        
+			uiOutput("module"),
+			br(),
+			
+			# creation of subject profile report
+			h4("Report creation"),
+			actionButton(inputId = "createSubjectProfileReport", label = "Create subject profile report"),
+            uiOutput("downloadSubjectProfileReportPanel")
+
         ), 
         
         mainPanel(
@@ -52,14 +61,7 @@ fluidPage(
             h4("Preview subject profiles"),
 			
 			uiOutput("moduleResults")
-            
-#            actionButton("submit", "Get Results")
-            
-#            tags$br(),
-#            tags$br(),
-#            
-#            uiOutput("downloadResults"), 
-#            uiOutput("resMessage")
+        
         )
     
     )

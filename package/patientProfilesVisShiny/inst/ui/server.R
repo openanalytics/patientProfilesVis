@@ -3,9 +3,10 @@
 # DT, plotly
 library(patientProfilesVis)
 library(tools)
+library(plyr)
 
 # to increase the limit of size of 5MB for each uploaded file
-options(shiny.maxRequestSize=30*1024^2) 
+options(shiny.maxRequestSize = 30*1024^2) 
 
 serverFunction <- function(input, output, session) {
   
@@ -27,7 +28,7 @@ serverFunction <- function(input, output, session) {
 		
 	})
 	
-	results <- reactiveValues()
+	results <- reactiveValues(listPlots = NULL)
   
 	# load the imported data
 	results$dataRes <- reactive({
@@ -59,7 +60,6 @@ serverFunction <- function(input, output, session) {
 	
 	results$datasets <- reactive(names(results$dataAll()))
   
-
   	# create widgets for user specification
 	output$module <- renderUI({
 				
@@ -68,13 +68,12 @@ serverFunction <- function(input, output, session) {
 		conditionalPanel(
 			condition = "input.createModule % 2 == 1",
 			
-			h4("Module specification"),
+			# specify dataset
+			selectInput("moduleData", label = "Dataset", choices = results$datasets()),
 			
-			selectInput("moduleData", label = "Dataset", 
-				choices = results$datasets()
-			),
-			
+			# module specification
 			uiOutput("modulePanel")
+	
 		)
 	})
 
@@ -83,15 +82,18 @@ serverFunction <- function(input, output, session) {
 		if(!is.null(input$moduleData))	results$dataAll()[[input$moduleData]]
 	})
 	results$variablesDataCurrent <- reactive(colnames(results$dataCurrent()))
+	
+	results$variablesTimeDataCurrent <- reactive(
+		names(which(unlist(colwise(is.numeric)(results$dataCurrent()))))
+	)
 
-	createWidgetVariable <- function(..., optional = FALSE, multiple = FALSE)
-		selectInput(...,
-			choices = c(
-				if(optional)	c('<none>' = 'none'), 
-				results$variablesDataCurrent()
-			),
-			multiple = multiple
+	# custom wrapper for selectInput based on column names
+	createWidgetVariable <- function(..., optional = FALSE, multiple = FALSE, 
+		choices = c(
+			if(optional)	c('<none>' = 'none'), 
+			results$variablesDataCurrent())
 		)
+		selectInput(..., choices = choices, multiple = multiple)
 
 	output$modulePanel <- renderUI({
 				
@@ -117,25 +119,79 @@ serverFunction <- function(input, output, session) {
 				),
 				uiOutput("moduleSpecificType"),
 				createWidgetVariable(inputId = "moduleGroupVar", label = "Column with grouping", optional = TRUE),
-				actionButton(inputId = "submitModule", label = "Submit module")
+				fluidRow(
+					column(4, actionButton(inputId = "submitModule", label = "Submit module")),
+					column(4, actionButton(inputId = "saveModule", label = "Save module"))
+				)
 			)
 			
 		})
 		
 	})
 
+	# create widgets specific of certain module type
 	output$moduleSpecificType <- renderUI({
+				
 		validate(need(input$moduleType, "moduleType"))
 		
-		conditionalPanel("input.moduleType == 'text'",		
+		# widgets common to the 'event' and 'interval' modules
+		tagListCommonEventInterval <- list(
+			createWidgetVariable(
+				inputId = "moduleValueVar", 
+				label = "Column with variable(s)", 
+				multiple = TRUE
+			),
+			createWidgetVariable(
+				inputId = "moduleColorVar", 
+				label = "Column with variable used for color",
+				optional = TRUE
+			)
+		)
+		
+		switch(input$moduleType,
 				
-			radioButtons("moduleTextVarSpecType", label = "",
-				choices = list(
-					"Column(s) with variable" = 1,
-					"Pair of column with parameter name/value" = 2
+			'text' = list(
+				radioButtons("moduleTextVarSpecType", label = "",
+					choices = list(
+						"Column(s) with variable" = 1,
+						"Pair of column with parameter name/value" = 2
+					)
+				),
+				uiOutput("moduleTextVarPanel")
+			),
+			'event' = c(
+				list(
+					createWidgetVariable(
+						inputId = "moduleEventTimeVar", 
+						label = "Column with time variable",
+						choices = results$variablesTimeDataCurrent()
+					)
+				),
+				tagListCommonEventInterval,
+				list(
+					createWidgetVariable(
+						inputId = "moduleEventShapeVar", 
+						label = "Column with variable used for symbol",
+						optional = TRUE
+					)
 				)
 			),
-			uiOutput("moduleTextVarPanel")
+			
+			'interval' = c(
+				list(
+					createWidgetVariable(
+						inputId = "moduleIntervalTimeStartVar", 
+						label = "Column with start time variable",
+						choices = results$variablesTimeDataCurrent()
+					),
+					createWidgetVariable(
+						inputId = "moduleIntervalTimeEndVar", 
+						label = "Column with end time variable",
+						choices = results$variablesTimeDataCurrent()
+					)
+				),
+				tagListCommonEventInterval
+			)
 		)
 		
 	})
@@ -154,9 +210,7 @@ serverFunction <- function(input, output, session) {
 	})
 
 	# create the list of plot(s) for the specified module
-	results$plotCurrent <- reactive({
-				
-		validate(need(input$submitModule > 0, "Submit module"))
+	results$plotsCurrent <- eventReactive(input$submitModule, {
 		
 		listParams <- c(
 			list(
@@ -174,13 +228,33 @@ serverFunction <- function(input, output, session) {
 						paramValueVar = input$moduleTextValueVarPair,
 						paramNameVar = input$moduleTextNameVarPair
 					)
+				),
+				'event' = list(
+					paramVar = input$moduleValueVar,
+					timeVar = input$moduleEventTimeVar,
+					colorVar = input$moduleColorVar,
+					shapeVar = input$moduleEventShapeVar
+				),
+				'interval' = list(
+					paramVar = input$moduleValueVar,
+					timeStartVar = input$moduleIntervalTimeStartVar,
+					timeEndVar = input$moduleIntervalTimeEndVar,
+					colorVar = input$moduleColorVar
 				)
 			)
 		)
+		# remove empty optional parameters
+		listParams <- listParams[sapply(listParams, function(x) 
+			!(length(x) == 1 && x == "none")
+		)]
 			
 		# check if all parameter(s) are specified
 		reqParam <- c("data", 
-			switch(input$moduleType, 'text' = c("paramValueVar"))
+			switch(input$moduleType, 
+				'text' = "paramValueVar",
+				'event' = c("paramVar", "timeVar"),
+				'interval' = c("paramVar", "timeStartVar", "timeEndVar")
+			)
 		)
 		specParams <- sapply(listParams[reqParam], isTruthy)
 		validate(need(all(specParams), "Some parameters are missing."))
@@ -190,10 +264,10 @@ serverFunction <- function(input, output, session) {
 						
 	})
 
-	# fill the plot module
+	# preview: fill the plot module
 	output$moduleResults <- renderUI({
 		
-		validate(need(results$plotCurrent(), "Plot not yet created."))
+		validate(need(isTruthy(results$plotsCurrent()), "Plot not yet created."))
 		
 		tagList(	
 				
@@ -201,61 +275,84 @@ serverFunction <- function(input, output, session) {
 			selectInput(inputId = "subjectCurrent", label = "Select subject",
 				choices = unique(results$dataCurrent()[, input$moduleSubjectVar])
 			),
-			plotOutput("modulePlot")
+			plotOutput("plotSubject")
 		
 		)
 
 	})
 
-	output$modulePlot <- renderPlot({
-		results$plotCurrent()[[input$subjectCurrent]]		
+	# extract the plot for specified subject
+	results$plotSubjectCurrent <- reactive({		
+		validate(need(input$subjectCurrent, "subject"), need(results$plotsCurrent(), "plot"))
+		results$plotsCurrent()[[input$subjectCurrent]]
+	})
+	
+	# plot this plot in the 'preview' panel
+	observe({	
+		validate(need(
+			expr = results$plotSubjectCurrent(), 
+			message = paste0("No data is available for the specified module for subject: '", 
+				input$subjectCurrent, "'.")
+		))
+		output$plotSubject <- renderPlot(
+			expr = results$plotSubjectCurrent(),
+			height = getNLinesYGgplot(results$plotSubjectCurrent()) * 30
+		)
 	})
 
-#  results$analysis <- eventReactive(input$submit, {
-#        
-#        withProgress(message = 'Analyzing Data...\n', 
-#            detail = "The analysis is running. A download button will 
-#                appear when the results are processed and available. (Please do 
-#                not press the 'Get Results' button multiple times)",
-#            style = "notification", value = NULL, {
-#              
-#              
-#              message(".. Analyzing Data....")
-#              
-#              file.copy("www/sampleReport.Rmd", ".")
-#              render("sampleReport.Rmd")
-#              
-#            })  
-#        
-#        
-#        return(TRUE)
-#        
-#      })
+	# save current module if requested
+	observeEvent(input$saveModule, {
+		validate(need(isTruthy(results$plotsCurrent), "Current module not valid."))
+		cat("Save module.")
+		results$listPlots <- c(isolate(results$listPlots), list(results$plotsCurrent()))
+	})
+
+	# create the report
+	results$subjectProfileReport <- eventReactive(input$createSubjectProfileReport, {
+    
+		validate(need(length(results$listPlots) > 0, "No module(s) are saved yet."))
+
+        withProgress(message = 'Create subject profile report..\n', 
+				
+            detail = "The analysis is running. A download button will 
+                appear when the results are processed and available. (Please do 
+                not press the 'Get Results' button multiple times)",
+		
+            style = "notification", value = NULL, {
+            message(".. Create subject profile report....")
+              
+			potentialErrorMessage <- try(
+				createSubjectProfileReport(
+					listPlots = results$listPlots,
+					outputFile = "subjectProfile.pdf",
+					labelVars = results$labelVars()
+				),
+				silent = TRUE
+			)
+              
+		})
+        
+	})
   
-  
-  
-#  output$download <- downloadHandler(
-#      filename = function()
-#        paste0(tools::file_path_sans_ext(input$jobFile$name), '_shiny-files.zip'),
-#      content = function(fname) {
-#        
-#        write.csv(results$data(), file = "shinyData.csv")     
-#        
-#        fs <- c("shinyData.csv", "sampleReport.html")
-#        
-#        zip(zipfile = fname, files = fs)
-#      },
-#      contentType = "application/zip"
-#  )
-#  
-#  
-#  output$downloadResults <- renderUI({
-#        
-#        validate(need(results$analysis(), "No results available"))
-#        
-#        downloadButton("download", label = "Download results")
-#        
-#      })
+	# give the report when clicking on the download button
+	output$downloadSubjectProfileReport <- downloadHandler(
+		filename = "subjectProfile.pdf",
+		content = function(file)	file.copy("subjectProfile.pdf", file),
+      	contentType = "application/pdf"
+  	)
+
+	# make the download button available
+	output$downloadSubjectProfileReportPanel <- renderUI({
+        validate(
+			need(
+				!inherits(results$subjectProfileReport(), "try-error"), 
+				paste("Issue during creation of subject profile report: ", 
+					results$subjectProfileReport(), "."
+				)
+			)
+		)
+        downloadButton("downloadSubjectProfileReport", label = "Download subject profile report")
+	})
   
 }
 

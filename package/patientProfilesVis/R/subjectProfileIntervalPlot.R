@@ -5,12 +5,12 @@
 #' If specified, the parameters will be grouped by this(these) variable(s) in the y-axis.
 #' @param paramLab string, label for \code{paramVar}
 #' @param subjectVar string, variable of \code{data} with subject ID
-#' @param startVar string, variable of \code{data} with start of range
-#' @param endVar string, variable of \code{data} with end of range
+#' @param timeStartVar string, variable of \code{data} with start of range
+#' @param timeEndVar string, variable of \code{data} with end of range
 #' @param timeLim (optional) vector of length 2 with time limits (x-axis)
-#' If not specified, extracted from the minimum \code{startVar} and maximum \code{endVar}
+#' If not specified, extracted from the minimum \code{timeStartVar} and maximum \code{timeEndVar}
 #' @param rangeSimilarStartEnd numeric, if a record has the same
-#' \code{startVar} and \code{endVar}, what should be the range of the segment?
+#' \code{timeStartVar} and \code{timeEndVar}, what should be the range of the segment?
 #' By default, a thousandth of the range of \code{timeLim}.
 #' @param xLab string, label for the x-axis
 #' @param yLab string, label for the y-axis
@@ -33,12 +33,12 @@ subjectProfileIntervalPlot <- function(
 	data,
 	paramVar, paramLab = toString(getLabelVar(paramVar, labelVars = labelVars)),
 	paramGroupVar = NULL,
-	startVar,
-	endVar,
+	timeStartVar,
+	timeEndVar,
 	subjectVar = "USUBJID",
-	timeLim =  with(data, c(min(get(startVar), na.rm = TRUE), max(get(startVar), na.rm = TRUE))),
+	timeLim =  with(data, c(min(get(timeStartVar), na.rm = TRUE), max(get(timeStartVar), na.rm = TRUE))),
 	rangeSimilarStartEnd = diff(timeLim)/1000,
-	xLab = paste(getLabelVar(c(startVar, endVar), labelVars = labelVars), collapse = "/"),
+	xLab = paste(getLabelVar(c(timeStartVar, timeEndVar), labelVars = labelVars), collapse = "/"),
 	yLab = "",
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
 	colorPalette = NULL,
@@ -48,23 +48,23 @@ subjectProfileIntervalPlot <- function(
 ){
 	
 	# filter records without start date
-	idxMissingStart <- is.na(data[, startVar])
+	idxMissingStart <- is.na(data[, timeStartVar])
 	if(any(idxMissingStart))
 		data <- data[-which(idxMissingStart), ]	
 	
 	# if no end date: take last time in dataset
 	# TODO per subject
-	idxMissingEnd <- is.na(data[, endVar])
+	idxMissingEnd <- is.na(data[, timeEndVar])
 	if(any(idxMissingEnd))
-		data[idxMissingEnd, endVar] <- timeLim[2]
+		data[idxMissingEnd, timeEndVar] <- timeLim[2]
 	
 	# if same start/end, data not included by geom_segment
 	# so jitter the start/end in this case (proportion of the total x-range)
-	idxSameStartEnd <- which(data[, startVar] == data[, endVar])
+	idxSameStartEnd <- which(data[, timeStartVar] == data[, timeEndVar])
 	if(length(idxSameStartEnd) > 0){
-		data[idxSameStartEnd, c(startVar, endVar)] <-
+		data[idxSameStartEnd, c(timeStartVar, timeEndVar)] <-
 			sweep(
-				x = data[idxSameStartEnd, c(startVar, endVar)], 
+				x = data[idxSameStartEnd, c(timeStartVar, timeEndVar)], 
 				MARGIN = 2, 
 				STATS = c(-1, 1) * rangeSimilarStartEnd/2,
 				FUN = "+"
@@ -93,7 +93,7 @@ subjectProfileIntervalPlot <- function(
 		subject <- unique(dataSubject[, subjectVar])
 				
 		aesArgs <- c(
-			list(x = startVar, xend = endVar, y = "yVar", yend = "yVar"),
+			list(x = timeStartVar, xend = timeEndVar, y = "yVar", yend = "yVar"),
 			if(!is.null(colorVar))	list(color = colorVar)
 		)
 				

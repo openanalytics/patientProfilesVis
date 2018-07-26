@@ -15,5 +15,6 @@ Suggests:
 	plotly,
 	rmarkdown,
 	patientProfilesVis,
+	plyr,
 	glpgStyle
 RoxygenNote: 6.0.1

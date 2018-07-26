@@ -44,7 +44,7 @@ If specified, the parameters will be grouped by this(these) variable(s) in the y
 \item{yLab}{string, label for the y-axis}
 
 \item{timeLim}{(optional) vector of length 2 with time limits (x-axis)
-If not specified, extracted from the minimum \code{startVar} and maximum \code{endVar}}
+If not specified, extracted from the minimum \code{timeStartVar} and maximum \code{timeEndVar}}
 
 \item{title}{string, title for the plot}
 
