@@ -6,11 +6,12 @@
 \usage{
 subjectProfileIntervalPlot(data, paramVar,
   paramLab = toString(getLabelVar(paramVar, labelVars = labelVars)),
-  paramGroupVar = NULL, startVar, endVar, subjectVar = "USUBJID",
-  timeLim = with(data, c(min(get(startVar), na.rm = TRUE), max(get(startVar),
-  na.rm = TRUE))), rangeSimilarStartEnd = diff(timeLim)/1000,
-  xLab = paste(getLabelVar(c(startVar, endVar), labelVars = labelVars),
-  collapse = "/"), yLab = "", colorVar = NULL,
+  paramGroupVar = NULL, timeStartVar, timeEndVar, subjectVar = "USUBJID",
+  timeLim = with(data, c(min(get(timeStartVar), na.rm = TRUE),
+  max(get(timeStartVar), na.rm = TRUE))),
+  rangeSimilarStartEnd = diff(timeLim)/1000,
+  xLab = paste(getLabelVar(c(timeStartVar, timeEndVar), labelVars =
+  labelVars), collapse = "/"), yLab = "", colorVar = NULL,
   colorLab = getLabelVar(colorVar, labelVars = labelVars),
   colorPalette = NULL, title = paramLab, label = title,
   labelVars = NULL)
@@ -25,17 +26,17 @@ subjectProfileIntervalPlot(data, paramVar,
 \item{paramGroupVar}{(optional) character vector with variable(s) of \code{data} with grouping.
 If specified, the parameters will be grouped by this(these) variable(s) in the y-axis.}
 
-\item{startVar}{string, variable of \code{data} with start of range}
+\item{timeStartVar}{string, variable of \code{data} with start of range}
 
-\item{endVar}{string, variable of \code{data} with end of range}
+\item{timeEndVar}{string, variable of \code{data} with end of range}
 
 \item{subjectVar}{string, variable of \code{data} with subject ID}
 
 \item{timeLim}{(optional) vector of length 2 with time limits (x-axis)
-If not specified, extracted from the minimum \code{startVar} and maximum \code{endVar}}
+If not specified, extracted from the minimum \code{timeStartVar} and maximum \code{timeEndVar}}
 
 \item{rangeSimilarStartEnd}{numeric, if a record has the same
-\code{startVar} and \code{endVar}, what should be the range of the segment?
+\code{timeStartVar} and \code{timeEndVar}, what should be the range of the segment?
 By default, a thousandth of the range of \code{timeLim}.}
 
 \item{xLab}{string, label for the x-axis}

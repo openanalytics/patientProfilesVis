@@ -207,8 +207,8 @@ It is used here to represent the start/end date of the adverse events.
 	aePlots <- subjectProfileIntervalPlot(
 		data = dataPlot,
 		paramVar = "AETERM",
-		startVar = "AESTDY",
-		endVar = "AEENDY",
+		timeStartVar = "AESTDY",
+		timeEndVar = "AEENDY",
 		colorVar = "AESEV",
 		labelVars = labelVarsSDTMPelican,
 		title = "Adverse events"
@@ -233,8 +233,8 @@ this time interval visualization
 	exPlots <- subjectProfileIntervalPlot(
 		data = SDTMDataPelican$EX,
 		paramVar = c("EXTRT", "EXDOSE", "EXDOSU"),
-		startVar = "EXSTDY",
-		endVar = "EXENDY",
+		timeStartVar = "EXSTDY",
+		timeEndVar = "EXENDY",
 		colorVar = "EXDOSFRM",
 		labelVars = labelVarsSDTMPelican,
 		title = "Treatment exposure"
@@ -418,8 +418,8 @@ ADaM dataset can also be used in the same framework.
 	exPlotsADaM <- subjectProfileIntervalPlot(
 		data = ADaMDataPelican$ADEX,
 		paramVar = c("EXTRT", "EXDOSE", "EXDOSU"),
-		startVar = "EXSTDY",
-		endVar = "EXENDY",
+		timeStartVar = "EXSTDY",
+		timeEndVar = "EXENDY",
 		colorVar = "EXDOSFRM",
 		labelVars = labelVarsADaMPelican,
 		title = "Treatment exposure"
@@ -428,8 +428,8 @@ ADaM dataset can also be used in the same framework.
 	aePlotsADaM <- subjectProfileIntervalPlot(
 		data = ADaMDataPelican$ADAE,
 		paramVar = "AETERM",
-		startVar = "ASTDY",
-		endVar = "AENDY",
+		timeStartVar = "ASTDY",
+		timeEndVar = "AENDY",
 		colorVar = "AESEV",
 		labelVars = labelVarsADaMPelican,
 		title = "Adverse events"
