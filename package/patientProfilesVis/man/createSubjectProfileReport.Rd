@@ -16,7 +16,7 @@ createSubjectProfileReport(listPlots,
 \code{\link{subjectProfileEventPlot}} or \code{\link{subjectProfileIntervalPlot}}}
 
 \item{timeLim}{(optional) vector of length 2 with time limits (x-axis)
-If not specified, extracted from the minimum \code{startVar} and maximum \code{endVar}}
+If not specified, extracted from the minimum \code{timeStartVar} and maximum \code{timeEndVar}}
 
 \item{refLines}{(optional) nested list with details for reference line(s).
 Each sublist contains:
