@@ -1,4 +1,8 @@
 #' Create plot of subject profiles with segments for range of parameters 
+#' 
+#' Note that is no end date is available for a specific record,
+#' the maximum of the time limits (\code{timeLim}) is used as end of the interval
+#' and a triangle with right direction is added.
 #' @param data data.frame with data
 #' @param paramVar string, variable of \code{data} with parameter (used in the y-axis)
 #' @param paramGroupVar (optional) character vector with variable(s) of \code{data} with grouping.
@@ -53,8 +57,8 @@ subjectProfileIntervalPlot <- function(
 		data <- data[-which(idxMissingStart), ]	
 	
 	# if no end date: take last time in dataset
-	# TODO per subject
 	idxMissingEnd <- is.na(data[, timeEndVar])
+	data$missingEndPlot <- idxMissingEnd
 	if(any(idxMissingEnd))
 		data[idxMissingEnd, timeEndVar] <- timeLim[2]
 	
@@ -71,15 +75,17 @@ subjectProfileIntervalPlot <- function(
 			)
 	}
 	
-	data[, "yVar"] <- if(length(paramVar) > 1)
+	data$yVar <- if(length(paramVar) > 1)
 		apply(data[, paramVar], 1, paste, collapse = " ")	else	data[, paramVar]
-	
+	if(!is.factor(data$yVar))	data$yVar <- factor(data$yVar)
+
+
 	# if paramGroupVar is specified: change order levels of 'variable'
 	if(!is.null(paramGroupVar)){
 		groupVariable <- if(length(paramGroupVar) > 0){
 			interaction(data[, paramGroupVar])
 		}else data[, paramGroupVar]
-		data[, "yVar"] <- reorder(data[, "yVar"], groupVariable, unique)
+		data$yVar <- reorder(data$yVar, groupVariable, unique)
 	}
 	
 	# convert color variable to factor
@@ -89,20 +95,44 @@ subjectProfileIntervalPlot <- function(
 	}
 	
 	listPlots <- dlply(data, subjectVar, function(dataSubject){	
-		
+						
 		subject <- unique(dataSubject[, subjectVar])
-				
+			
+		# build aesthetic
 		aesArgs <- c(
 			list(x = timeStartVar, xend = timeEndVar, y = "yVar", yend = "yVar"),
 			if(!is.null(colorVar))	list(color = colorVar)
 		)
-				
-		# create the plot
-		gg <- ggplot(data = dataSubject) +
+		# and custom geom_segment
+		geomSegmentCustom <- function(...)
 			geom_segment(
 				do.call(aes_string, aesArgs),
-				size = 2
-			) +
+				size = 2, ...
+			) 
+		
+		# if missing end, plot arrow, otherwise only a segment
+		dataPlotByME <- dlply(dataSubject, "missingEndPlot")
+				
+		# create the plot
+		gg <- ggplot()
+		
+		# plot segment for records with end date
+		if("FALSE" %in% names(dataPlotByME))
+			gg <- gg + geomSegmentCustom(data = dataPlotByME[["FALSE"]]) 
+	
+		# in case of missing end date
+		# right-directed triangle not available in shape palette
+		# option 1: use Unicode, but symbol not centered
+		# option 2: draw segment
+		if("TRUE" %in% names(dataPlotByME))
+			gg <- gg + geomSegmentCustom(
+				data = dataPlotByME[["TRUE"]],
+				arrow = arrow(length = unit(1, "char")),
+				show.legend = FALSE
+			)
+		
+		# remove paramneters without data, set theme and labels
+		gg <- gg +
 			scale_y_discrete(drop = TRUE) +
 			subjectProfileTheme() +
 			labs(title = title, x = xLab, y = yLab)
@@ -111,6 +141,7 @@ subjectProfileIntervalPlot <- function(
 		if(!is.null(colorVar))
 			gg <- gg + getAesScaleManual(lab = colorLab, palette = colorPalette, type = "color")
 		
+		# set time limits for the x-axis
 		if(!is.null(timeLim))
 			gg <- gg + coord_cartesian(xlim = timeLim)
 		
@@ -122,8 +153,7 @@ subjectProfileIntervalPlot <- function(
 
 	})
 
-	# metaData:
-	# stored plot label
+	# metaData: stored plot label
 	attr(listPlots, 'metaData') <- list(label = label)
 
 	return(listPlots)

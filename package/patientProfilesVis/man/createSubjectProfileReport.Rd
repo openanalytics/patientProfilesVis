@@ -9,7 +9,7 @@ createSubjectProfileReport(listPlots,
   refLinesData = NULL, refLinesTimeVar = NULL, refLinesLabelVar = NULL,
   bookmarkData = NULL, bookmarkVar = NULL, subjectVar = "USUBJID",
   landscape = FALSE, outputFile = "subjectProfile.pdf",
-  exportFigures = FALSE, labelVars = NULL)
+  exportFigures = FALSE, labelVars = NULL, heightLineIn = 0.2)
 }
 \arguments{
 \item{listPlots}{list of plots, as returned by the \code{\link{subjectProfileTextPlot}},
@@ -49,6 +49,8 @@ Each sublist contains:
 in png format in a 'figures' folder}
 
 \item{labelVars}{named string with variable labels (names are the variable code)}
+
+\item{heightLineIn}{height of a line in inches}
 }
 \value{
 no returned value, the report is created at the location
