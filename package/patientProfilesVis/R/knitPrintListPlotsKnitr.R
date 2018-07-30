@@ -15,7 +15,8 @@
 #' @param labels vector with labels for each chunk
 #' @param type string with plot type, 'ggplot2' or 'plotly'
 #' @param includeNewpage logical, if TRUE include newpage after each plot
-#' @param sectionTitles (optional) vector with section title(s) corresponding to \code{plotsList}
+#' @param sectionTitles (optional) vector with section title(s) corresponding to \code{plotsList}.
+#' If no section should be included for a particular plot, please use the empty string: ''.
 #' @param sectionLevel integer with section level, 2 by default.
 #' This is only used if \code{sectionTitles} is specified
 #' @param bookmarkInfos character vector of length{plotsList} with 
@@ -58,10 +59,10 @@ knitPrintListPlotsKnitr <- function(
 		if(!is.null(argsChunkTxt)) paste0(", ", toString(argsChunkTxt)),
 		">>=\n",
 		if(!is.null(sectionTitles))	
-			paste0("cat(",
+			paste0("if(paste0('^^sectionTitle$$') != '')  cat(",
 				# insert section
 				"'\\\\", paste(rep("sub", sectionLevel-1), collapse = ""), 
-				"section{", "^^sectionTitle$$", "}'",
+				"section{^^sectionTitle$$}'",
 				# insertBookmark
 				if(!is.null(bookmarkInfos))	paste0(",' ',", "bookmarkInfos[^^i$$]"),
 				", '\\n')\n"

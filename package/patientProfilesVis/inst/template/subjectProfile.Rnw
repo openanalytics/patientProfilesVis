@@ -31,7 +31,10 @@
 \makeindex
 
 % decrease margins: 1.875 inches wide by default on 10pt
-\usepackage[margin=0.75in]{geometry}
+<<setMargins>>=
+	cat(paste0("\\usepackage[margin=", inputParameters$margin, "in]{geometry}\n"))
+@
+
 
 <<specifyLayout>>=
 
@@ -58,13 +61,24 @@
 
 <<includePlots>>=
 
-	listPlotsPerSubject <- inputParameters$listPlotsPerSubject
-
+	listPlotsPerSubjectList <- inputParameters$listPlotsPerSubject
+	
+	# convert list of list to list with only one level
+	listPlotsPerSubject <- unlist(listPlotsPerSubjectList, recursive = FALSE)
+	
+	# extract height for each plot
 	figHeightInches <- sapply(listPlotsPerSubject, function(plotSubject)
 		# number of lines in plot panel
-		attr(plotSubject, "nLinesPlot") * 0.2
+		attr(plotSubject, "nLinesPlot") * inputParameters$heightLineIn
 	)
-
+	
+	# extract labels 
+	labelPlots <- names(listPlotsPerSubject)
+	
+	# extract titles
+	sectionTitles <- unlist(lapply(names(listPlotsPerSubjectList), function(name) 
+		c(name, rep("", length(listPlotsPerSubjectList[[name]])-1))))
+	
 #	textHeightPt <- ifelse(landscape, 345, 598)
 	textWidthInches <- 14 #ifelse(landscape, 598, 345)/72
 #	figHeightInches <- paste0("'", round(textHeightPt/figHeightPt, 2), "\\textheight'")
@@ -73,8 +87,8 @@
 		out.width = "'\\\\linewidth'",
 		fig.height = figHeightInches,
 		fig.width = textWidthInches,
-		sectionTitles = names(listPlotsPerSubject),
-		labels = names(listPlotsPerSubject),
+		sectionTitles = sectionTitles,
+		labels = labelPlots,
 		bookmarkInfos = inputParameters$index$indexEntry
 	)
 	

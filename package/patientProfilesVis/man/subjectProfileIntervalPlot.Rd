@@ -62,7 +62,9 @@ list of \code{\link[ggplot2]{ggplot2} objects},
 also of class \code{subjectProfileTextPlot}
 }
 \description{
-Create plot of subject profiles with segments for range of parameters
+Note that is no end date is available for a specific record,
+the maximum of the time limits (\code{timeLim}) is used as end of the interval
+and a triangle with right direction is added.
 }
 \author{
 Laure Cougnaud
