@@ -20,17 +20,11 @@ uiFiles <- list.files(path = uiDir, full.names = FALSE, recursive = TRUE)
 uiFiles <- uiFiles[!(uiFiles %in% c("global.R"))]
 
 sapply(uiFiles, function(from) {
-      
-      to <- file.path(tmpDir, from)
-      toDir <- dirname(to)
-      
-      if (!dir.exists(toDir)) {
-        
-        dir.create(path = toDir, recursive = TRUE)
-        
-      }
-      
-      file.copy(from = file.path(uiDir, from), to = to, overwrite = TRUE)
-      
-    })  
+	to <- file.path(tmpDir, from)
+	toDir <- dirname(to)
+	if (!dir.exists(toDir)) {
+		dir.create(path = toDir, recursive = TRUE)
+	}
+    file.copy(from = file.path(uiDir, from), to = to, overwrite = TRUE)
+})  
 

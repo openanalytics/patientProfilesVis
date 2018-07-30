@@ -22,16 +22,15 @@ fluidPage(
 			bookmarkButton()
 		)
 	),
-		
-    titlePanel(
-		title = div(
-			img(src = system.file("images/logo-with-fish.png", package = "glpgStyle"), 
-				float = "top", height = "60px", hspace = "50px"),
-         	"Visualization of patient profiles"
-		), 
-        windowTitle = "patientProfilesVisShiny"
+	
+	
+	titlePanel(title = div(img(
+		src = "logo-with-fish.png", 
+		float = "top", height = "60px", hspace = "70px"),
+		"Visualization of patient profile"),
+		windowTitle = "patientProfiles"
 	),
-    
+	
     sidebarLayout(
         
         sidebarPanel(
