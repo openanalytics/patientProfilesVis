@@ -15,7 +15,7 @@ getDefaultModules <- function(data){
 				list(
 					'Demography (default, text)' =
 					list(
-						dataName = "DM",
+						data = "DM",
 						paramValueVar  = params,
 						type = "text",
 						label = "defaultSDTMDMText",
@@ -25,14 +25,14 @@ getDefaultModules <- function(data){
 				)
 		},
 		if("MH" %in% names(data) && 
-			all(c("MHDECOD", "MHENRTPT") %in% colnames(data))){
+			all(c("MHDECOD", "MHENRTPT") %in% colnames(data$MH))){
 			params <- c("SEX", "AGE", "RACE", "COUNTRY", "ARM")
 			params <- params[params %in% colnames(data$DM)]
 			if(length(params) > 0)
 				list('Medical history (default, text)' = 
 					c(
 						list(
-							dataName = "MH",
+							data = "MH",
 							paramNameVar = "MHDECOD",
 							paramValueVar = "MHENRTPT",
 							type = "text",
@@ -48,7 +48,7 @@ getDefaultModules <- function(data){
 			all(c("AETERM", "AESTDY", "AEENDY") %in% colnames(data$AE))){
 			list('Adverse event (default, interval)' = 
 				list(
-					dataName = "AE",
+					data = "AE",
 					paramVar = "AETERM",
 					timeStartVar = "AESTDY",
 					timeEndVar = "AEENDY",
@@ -56,7 +56,8 @@ getDefaultModules <- function(data){
 					label = "defaultSDTMAEInterval",
 					title = "Adverse events",
 					subjectVar =  "USUBJID"
-				)
+				),
+				if("AESEV" %in% colnames(data$AE))	list(colorVar = "AESEV")
 			)
 			
 		},
@@ -65,7 +66,7 @@ getDefaultModules <- function(data){
 			list('Laboratory data (default, event)' = 
 				c(
 					list(
-						dataName = "LB",
+						data = "LB",
 						paramVar = "LBTEST",
 						timeVar = "LBDY",
 						colorVar = "LBNRIND",
@@ -88,7 +89,7 @@ getDefaultModules <- function(data){
 			list('Exposure (default, interval)' = 
 				c(
 					list(
-						dataName = "EX",
+						data = "EX",
 						paramVar = c("EXTRT",
 							if("EXDOSE" %in% names(data$EX))	"EXDOSE", 
 							if("EXDOSU" %in% names(data$EX))	"EXDOSU"

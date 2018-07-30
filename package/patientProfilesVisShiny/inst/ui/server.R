@@ -10,7 +10,8 @@ options(shiny.maxRequestSize = 30*1024^2)
 
 serverFunction <- function(input, output, session) {
   
-	# Advanced debugging
+	## Advanced debugging
+	
 	observe({
 				
 		if (is.null(input$debug_console))
@@ -28,8 +29,10 @@ serverFunction <- function(input, output, session) {
 		
 	})
 	
-	results <- reactiveValues(listPlots = NULL)
+	results <- reactiveValues(listPlots = NULL, availableModules = NULL)
   
+	## Data
+	
 	# load the imported data
 	results$dataRes <- reactive({
         
@@ -59,24 +62,26 @@ serverFunction <- function(input, output, session) {
 	results$datasets <- reactive(names(results$dataAll()))
 	
 	# create default modules for uploaded datasets
-	results$defaultModules <- reactive({
-		defaultModules <- getDefaultModules(data = results$dataAll())
-	})
-	results$defaultModulesNames <- reactive(names(results$defaultModules()))
 	observe({
-		updateSelectInput(session, inputId = "selectedModules",
-			choices = results$defaultModulesNames(),
-			selected = results$defaultModulesNames()
-		)
+		cat("Update available modules")
+		results$availableModules <- getDefaultModules(data = results$dataAll())
 	})
+	results$defaultModulesNames <- reactive(names(results$availableModules))
+#	observe({
+#		updateSelectInput(session, inputId = "selectedModules",
+#			choices = results$defaultModulesNames(),
+#			selected = results$defaultModulesNames()
+#		)
+#	})
   
+	## Module specification:
+	
   	# create widgets for user specification
 	output$module <- renderUI({
 				
 		cat("Update entire module\n")		
 				
 		conditionalPanel(
-#			condition = "input.createModule % 2 == 1",
 			condition = "input.createDisplayModule % 2 == 1", {
 			
 			tagList(
@@ -91,16 +96,16 @@ serverFunction <- function(input, output, session) {
 
 	})
 
+	# currently selected module
 	results$currentModule <- reactive({
 		validate(need(isTruthy(input$moduleChoice) && input$moduleChoice != "none", "Please choose a module."))		
 		if(!input$moduleChoice %in% c("<none>", "New module"))
-			results$defaultModules()[[input$moduleChoice]]
+			results$availableModules[[input$moduleChoice]]
 	})
 	
 	# create widget to specify dataset
 	output$modulePanel <- renderUI({
-		
-		moduleDataAvailable <- if(!is.null(results$currentModule()))	results$currentModule()$dataName	else	results$datasets()	
+		moduleDataAvailable <- if(!is.null(results$currentModule()))	results$currentModule()$data	else	results$datasets()	
 		tagList(
 			selectInput("moduleData", label = "Dataset", choices = moduleDataAvailable),
 			uiOutput("moduleParamPanel")
@@ -153,15 +158,16 @@ serverFunction <- function(input, output, session) {
 					)
 				),
 				uiOutput("moduleSpecificType"),
-				createWidgetVariable(inputId = "moduleGroupVar", label = "Column with grouping", optional = TRUE,
+				createWidgetVariable(inputId = "moduleParamGroupVar", label = "Column with grouping", optional = TRUE,
 					selected = ifelse(!is.null(results$currentModule()) & !is.null(results$currentModule()$paramGroupVar), 
 						results$currentModule()$paramGroupVar, "<none>"
 					)
 				),
 				fluidRow(
-					column(4, actionButton(inputId = "submitModule", label = "Submit module")),
+					column(4, actionButton(inputId = "previewModule", label = "Preview module")),
 					column(4, actionButton(inputId = "saveModule", label = "Save module"))
-				)
+				),
+				verbatimTextOutput("moduleSaveMessage")
 			)
 			
 		})
@@ -176,7 +182,7 @@ serverFunction <- function(input, output, session) {
 		# widgets common to the 'event' and 'interval' modules
 		tagListCommonEventInterval <- list(
 			createWidgetVariable(
-				inputId = "moduleValueVar", 
+				inputId = "moduleParamVar", 
 				label = "Column with variable(s)", 
 				multiple = TRUE,
 				selected = if(!is.null(results$currentModule()))	results$currentModule()$paramVar
@@ -198,7 +204,7 @@ serverFunction <- function(input, output, session) {
 					1
 				)
 				list(
-					radioButtons("moduleTextVarSpecType", label = "",
+					radioButtons("moduleTextVarSpecType", label = "Variable(s) specification",
 						choices = list(
 							"Column(s) with variable" = 1,
 							"Pair of columns with parameter name/value" = 2
@@ -254,73 +260,28 @@ serverFunction <- function(input, output, session) {
 		
 		switch(input$moduleTextVarSpecType,
 			'1' = createWidgetVariable(
-				inputId = "moduleTextValueVar", label = "Column with variable", 
+				inputId = "moduleTextParamValueVar", label = "Column(s) with variable", 
 				multiple = TRUE,
 				selected = if(!is.null(results$currentModule()))	results$currentModule()$paramValueVar
 			),
-			'2' = list(
-				createWidgetVariable(inputId = "moduleTextValueVarPair", label = "Column with variable value",
-					selected = if(!is.null(results$currentModule()))	results$currentModule()$paramValueVar),
-				createWidgetVariable(inputId = "moduleTextNameVarPair", label = "Column with variable name",
+			'2' = fluidRow(
+				column(6, createWidgetVariable(inputId = "moduleTextParamValueVarPair", label = "Column with variable value",
+					selected = if(!is.null(results$currentModule()))	results$currentModule()$paramValueVar)
+				),
+				column(6, createWidgetVariable(inputId = "moduleTextParamNameVarPair", label = "Column with variable name",
 					selected = if(!is.null(results$currentModule()))	results$currentModule()$paramNameVar)
+				)
 			)
 		)	
 	})
 
+	## Preview module (plot creation)
+
 	# create the list of plot(s) for the specified module
-	results$plotsCurrent <- eventReactive(input$submitModule, {
-		
-		listParams <- c(
-			list(
-				data = results$dataCurrent(),
-				subjectVar = input$moduleSubjectVar,
-				title = input$moduleTitle,
-				label = input$moduleLabel,
-				labelVars = results$labelVars(),
-				paramGroupVar = input$moduleGroupVar
-			),
-			switch(input$moduleType,
-				'text' = switch(input$moduleTextVarSpecType,
-					'1' = list(paramValueVar = input$moduleTextValueVar),
-					'2' = list(
-						paramValueVar = input$moduleTextValueVarPair,
-						paramNameVar = input$moduleTextNameVarPair
-					)
-				),
-				'event' = list(
-					paramVar = input$moduleValueVar,
-					timeVar = input$moduleEventTimeVar,
-					colorVar = input$moduleColorVar,
-					shapeVar = input$moduleEventShapeVar
-				),
-				'interval' = list(
-					paramVar = input$moduleValueVar,
-					timeStartVar = input$moduleIntervalTimeStartVar,
-					timeEndVar = input$moduleIntervalTimeEndVar,
-					colorVar = input$moduleColorVar
-				)
-			)
-		)
-		# remove empty optional parameters
-		listParams <- listParams[sapply(listParams, function(x) 
-			!(length(x) == 1 && x == "none")
-		)]
-			
-		# check if all parameter(s) are specified
-		reqParam <- c("data", 
-			switch(input$moduleType, 
-				'text' = "paramValueVar",
-				'event' = c("paramVar", "timeVar"),
-				'interval' = c("paramVar", "timeStartVar", "timeEndVar")
-			)
-		)
-		specParams <- sapply(listParams[reqParam], isTruthy)
-		validate(need(all(specParams), "Some parameters are missing."))
-		
-		subjectProfileFct <- paste0("subjectProfile", simpleCap(input$moduleType), "Plot")
-		do.call(subjectProfileFct, listParams)
-						
-	})
+	results$plotsCurrent <- eventReactive(
+		input$previewModule, 
+		createSubjectProfileUI(input = input, results = results)
+	)
 
 	# preview: fill the plot module
 	output$moduleResults <- renderUI({
@@ -347,23 +308,65 @@ serverFunction <- function(input, output, session) {
 	
 	# plot this plot in the 'preview' panel
 	observe({	
-		validate(need(
-			expr = results$plotSubjectCurrent(), 
-			message = paste0("No data is available for the specified module for subject: '", 
-				input$subjectCurrent, "'.")
-		))
+		validate(
+			need(
+				expr = results$plotSubjectCurrent(), 
+				message = paste0("No data is available for the specified module for subject: '", 
+					input$subjectCurrent, "'.")
+			),
+			need(
+				expr = !input$moduleLabel %in% names(results$listPlots),
+				message = "Label already used, please specify a different label."
+			)
+		)
 		output$plotSubject <- renderPlot(
 			expr = results$plotSubjectCurrent(),
 			height = getNLinesYGgplot(results$plotSubjectCurrent()) * 30
 		)
 	})
 
+	## Save module
+
 	# save current module if requested
 	observeEvent(input$saveModule, {
-		validate(need(isTruthy(results$plotsCurrent), "Current module not valid."))
-		cat("Save module.")
-		results$listPlots <- c(isolate(results$listPlots), list(results$plotsCurrent()))
+	
+#		validate(
+#			need(results$plotsCurrent(), "Please preview first your specified module."),
+#			need(!is.null(input$moduleLabel) && !input$moduleLabel %in% names(results$listPlots),
+#				"Label already used, please specify a different label")
+#		)
+		if(!isTruthy(results$plotsCurrent()))
+			output$moduleSaveMessage <- renderText("Please preview first your specified module.")
+		if(!is.null(input$moduleLabel) && input$moduleLabel %in% names(results$listPlots))
+			output$moduleSaveMessage <- renderText("Label already used, please specify a different label.")
+				
+#		validate(
+#			need(!input$moduleLabel %in% names(results$listPlots),
+#				"Please specify a different label, this one is already used."),
+#			need(!input$moduleTitle %in% names(results$availableModules()),
+#				"Please specify a different title, this one is already used.")	
+#		)
+#				
+#		plotsCurrent <- if(!isTruthy(results$plotsCurrent)){
+#			results$plotsCurrent()
+#		}else	createSubjectProfileUI(input = input, results = results)
+##		validate(need(isTruthy(results$plotsCurrent), "Current module not valid."))
+			
+		# save the plot
+		isolate(
+			results$listPlots <- c(results$listPlots, setNames(list(results$plotsCurrent()), input$moduleLabel))	
+		)
+		
+#		# save the parameters:
+		newModule <- list(getUIParamModule(input))
+		names(newModule) <- paste0(input$moduleTitle, " (custom, ", input$moduleType, ")")
+		results$availableModules <- c(results$availableModules, newModule)
+		
 	})
+
+	## Report creation
+	
+	# specified module
 
 	# create the report
 	results$subjectProfileReport <- eventReactive(input$createSubjectProfileReport, {
@@ -377,7 +380,7 @@ serverFunction <- function(input, output, session) {
                 not press the 'Get Results' button multiple times)",
 		
             style = "notification", value = NULL, {
-            message(".. Create subject profile report....")
+            message("... Create subject profile report ...")
               
 			potentialErrorMessage <- try(
 				createSubjectProfileReport(
