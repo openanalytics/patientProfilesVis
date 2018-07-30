@@ -53,12 +53,22 @@ serverFunction <- function(input, output, session) {
         
 	})
 
-	# list of data.frame
-	results$dataAll <- reactive(results$dataRes())
-	# named vector with variable labels
-	results$labelVars <- reactive(attributes(results$dataRes())$labelVars)
-	
+	# store uploaded data, variable labels and dataset
+	results$dataAll <- reactive(results$dataRes()) # list of data.frame
+	results$labelVars <- reactive(attributes(results$dataRes())$labelVars) # named vector with variable labels
 	results$datasets <- reactive(names(results$dataAll()))
+	
+	# create default modules for uploaded datasets
+	results$defaultModules <- reactive({
+		defaultModules <- getDefaultModules(data = results$dataAll())
+	})
+	results$defaultModulesNames <- reactive(names(results$defaultModules()))
+	observe({
+		updateSelectInput(session, inputId = "selectedModules",
+			choices = results$defaultModulesNames(),
+			selected = results$defaultModulesNames()
+		)
+	})
   
   	# create widgets for user specification
 	output$module <- renderUI({
@@ -66,14 +76,34 @@ serverFunction <- function(input, output, session) {
 		cat("Update entire module\n")		
 				
 		conditionalPanel(
-			condition = "input.createModule % 2 == 1",
+#			condition = "input.createModule % 2 == 1",
+			condition = "input.createDisplayModule % 2 == 1", {
 			
-			# specify dataset
-			selectInput("moduleData", label = "Dataset", choices = results$datasets()),
+			tagList(
+				selectInput("moduleChoice", label = "Choose module", 
+					choices = c("<none>" = "none", "New module", results$defaultModulesNames())
+				),
+				# module specification
+				uiOutput("modulePanel")
+			)
 			
-			# module specification
-			uiOutput("modulePanel")
+		})
+
+	})
+
+	results$currentModule <- reactive({
+		validate(need(isTruthy(input$moduleChoice) && input$moduleChoice != "none", "Please choose a module."))		
+		if(!input$moduleChoice %in% c("<none>", "New module"))
+			results$defaultModules()[[input$moduleChoice]]
+	})
 	
+	# create widget to specify dataset
+	output$modulePanel <- renderUI({
+		
+		moduleDataAvailable <- if(!is.null(results$currentModule()))	results$currentModule()$dataName	else	results$datasets()	
+		tagList(
+			selectInput("moduleData", label = "Dataset", choices = moduleDataAvailable),
+			uiOutput("moduleParamPanel")
 		)
 	})
 
@@ -95,30 +125,39 @@ serverFunction <- function(input, output, session) {
 		)
 		selectInput(..., choices = choices, multiple = multiple)
 
-	output$modulePanel <- renderUI({
+	output$moduleParamPanel <- renderUI({
 				
 		validate(need(input$moduleData, "Please specify a dataset."))		
 			
 		isolate({
-		
+				
 			tagList(
-	
+
 				selectInput(
 					"moduleType", label = "Type", 
-					choices = c("text", "event", "interval")
+					choices = c("text", "event", "interval"),
+					selected = if(!is.null(results$currentModule()))	results$currentModule()$type	else	"text"
 				),
 				
-				textInput("moduleTitle", label = "Title", value = ""),
-				textInput("moduleLabel", label = "Label", value = input$moduleTitle),
+				textInput("moduleTitle", label = "Title", 
+					value = ifelse(!is.null(results$currentModule()), results$currentModule()$title, "")
+				),
+				textInput("moduleLabel", label = "Label", 
+					value = ifelse(!is.null(results$currentModule()), results$currentModule()$label, "")
+				),
 				createWidgetVariable(
 					inputId = "moduleSubjectVar",
 					label = "Column with subject identifier",
-					selected = ifelse("USUBJID" %in% results$variablesDataCurrent(), "USUBJID",
-						results$variablesDataCurrent()[1]
+					selected = ifelse(!is.null(results$currentModule()), results$currentModule()$subjectVar,
+						ifelse("USUBJID" %in% results$variablesDataCurrent(), "USUBJID", results$variablesDataCurrent()[1])
 					)
 				),
 				uiOutput("moduleSpecificType"),
-				createWidgetVariable(inputId = "moduleGroupVar", label = "Column with grouping", optional = TRUE),
+				createWidgetVariable(inputId = "moduleGroupVar", label = "Column with grouping", optional = TRUE,
+					selected = ifelse(!is.null(results$currentModule()) & !is.null(results$currentModule()$paramGroupVar), 
+						results$currentModule()$paramGroupVar, "<none>"
+					)
+				),
 				fluidRow(
 					column(4, actionButton(inputId = "submitModule", label = "Submit module")),
 					column(4, actionButton(inputId = "saveModule", label = "Save module"))
@@ -139,32 +178,42 @@ serverFunction <- function(input, output, session) {
 			createWidgetVariable(
 				inputId = "moduleValueVar", 
 				label = "Column with variable(s)", 
-				multiple = TRUE
+				multiple = TRUE,
+				selected = if(!is.null(results$currentModule()))	results$currentModule()$paramVar
 			),
 			createWidgetVariable(
 				inputId = "moduleColorVar", 
 				label = "Column with variable used for color",
-				optional = TRUE
+				optional = TRUE,
+				selected = if(!is.null(results$currentModule()))	results$currentModule()$colorVar
 			)
 		)
 		
 		switch(input$moduleType,
 				
-			'text' = list(
-				radioButtons("moduleTextVarSpecType", label = "",
-					choices = list(
-						"Column(s) with variable" = 1,
-						"Pair of column with parameter name/value" = 2
-					)
-				),
-				uiOutput("moduleTextVarPanel")
-			),
+			'text' = {
+				selected <- ifelse(
+					!is.null(results$currentModule()),
+					ifelse(!is.null(results$currentModule()$paramNameVar), 2, 1),
+					1
+				)
+				list(
+					radioButtons("moduleTextVarSpecType", label = "",
+						choices = list(
+							"Column(s) with variable" = 1,
+							"Pair of columns with parameter name/value" = 2
+						), selected = selected
+					),
+					uiOutput("moduleTextVarPanel")
+				)
+			},
 			'event' = c(
 				list(
 					createWidgetVariable(
 						inputId = "moduleEventTimeVar", 
 						label = "Column with time variable",
-						choices = results$variablesTimeDataCurrent()
+						choices = results$variablesTimeDataCurrent(),
+						selected = if(!is.null(results$currentModule()))	results$currentModule()$timeVar
 					)
 				),
 				tagListCommonEventInterval,
@@ -172,7 +221,8 @@ serverFunction <- function(input, output, session) {
 					createWidgetVariable(
 						inputId = "moduleEventShapeVar", 
 						label = "Column with variable used for symbol",
-						optional = TRUE
+						optional = TRUE,
+						selected = if(!is.null(results$currentModule()))	results$currentModule()$shapeVar
 					)
 				)
 			),
@@ -182,12 +232,14 @@ serverFunction <- function(input, output, session) {
 					createWidgetVariable(
 						inputId = "moduleIntervalTimeStartVar", 
 						label = "Column with start time variable",
-						choices = results$variablesTimeDataCurrent()
+						choices = results$variablesTimeDataCurrent(),
+						selected = if(!is.null(results$currentModule()))	results$currentModule()$timeStartVar
 					),
 					createWidgetVariable(
 						inputId = "moduleIntervalTimeEndVar", 
 						label = "Column with end time variable",
-						choices = results$variablesTimeDataCurrent()
+						choices = results$variablesTimeDataCurrent(),
+						selected = if(!is.null(results$currentModule()))	results$currentModule()$timeEndVar
 					)
 				),
 				tagListCommonEventInterval
@@ -198,13 +250,19 @@ serverFunction <- function(input, output, session) {
 
 	output$moduleTextVarPanel <- renderUI({
 				
-		validate(need(input$moduleTextVarSpecType, "moduleTextVarSpecType"))	
+		validate(need(input$moduleTextVarSpecType, "moduleTextVarSpecType"))
 		
 		switch(input$moduleTextVarSpecType,
-			'1' = createWidgetVariable(inputId = "moduleTextValueVar", label = "Column with variable", multiple = TRUE),
+			'1' = createWidgetVariable(
+				inputId = "moduleTextValueVar", label = "Column with variable", 
+				multiple = TRUE,
+				selected = if(!is.null(results$currentModule()))	results$currentModule()$paramValueVar
+			),
 			'2' = list(
-				createWidgetVariable(inputId = "moduleTextValueVarPair", label = "Column with variable value"),
-				createWidgetVariable(inputId = "moduleTextNameVarPair", label = "Column with variable name")
+				createWidgetVariable(inputId = "moduleTextValueVarPair", label = "Column with variable value",
+					selected = if(!is.null(results$currentModule()))	results$currentModule()$paramValueVar),
+				createWidgetVariable(inputId = "moduleTextNameVarPair", label = "Column with variable name",
+					selected = if(!is.null(results$currentModule()))	results$currentModule()$paramNameVar)
 			)
 		)	
 	})

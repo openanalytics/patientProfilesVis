@@ -2,18 +2,20 @@
 % Please edit documentation in R/getDefaultModules.R
 \name{getDefaultModules}
 \alias{getDefaultModules}
-\title{Get default modules}
+\title{Get default modules a specific data.
+This is based on the ADaM dataset names.}
 \usage{
-getDefaultModules(datasetNames)
+getDefaultModules(data)
 }
 \arguments{
-\item{datasetNames}{names of the dataset}
+\item{data}{list of ADaM datasets}
 }
 \value{
-character vector with default modules
+list of list of input parameter for modules
 }
 \description{
-Get default modules
+Get default modules a specific data.
+This is based on the ADaM dataset names.
 }
 \author{
 Laure Cougnaud

@@ -44,7 +44,14 @@ fluidPage(
             
 			# new module specification
 			h4("Module specification"),
-			actionLink(inputId = "createModule", label = "Create new module"),
+			selectInput(inputId = "selectedModules", label = "Selected modules", 
+				choices = "", multiple = TRUE
+			),
+			actionLink(inputId = "createDisplayModule", label = "Create new/display existing module"),
+#			radioButtons("createDisplayModule", label = h3("Action"),
+#				choices = list("No action" = 1, "Create module" = 2, "Display module" = 3), 
+#				selected = 1
+#			),
 			uiOutput("module"),
 			br(),
 			
