@@ -15,11 +15,41 @@ getPathTemplate <- function(file){
 #' @export
 getNLinesYGgplot <- function(gg){
 	nLinesPlot <- length(unique(ggplot_build(gg)$data[[1]]$y))
-	nLinesTitleAndXAxis <- sum(unlist(lapply(ggplot_build(gg)$plot$labels[c("title", "x")], function(label)
-		if(!is.null(label) && label != "")	length(unlist(strsplit(label, split = "\n"))) * 3
-	)))
+	getNLinesLabel <- function(elName, elNLines){
+		elValue <- ggplot_build(gg)$plot$labels[[elName]]
+		if(!is.null(elValue) && elValue != "")	length(unlist(strsplit(elValue, split = "\n"))) * elNLines
+	}
+	nLinesTitleAndXAxis <- sum(c(getNLinesLabel("title", 3), getNLinesLabel("x", 2)))
 	nLines <- nLinesPlot + nLinesTitleAndXAxis
 	return(nLines)
+}
+
+#' Get maximum number of lines of a 'combined plot'
+#' for a specific document
+#' @param heightLineIn height of a line in inches
+#' @param margin margin in inches
+#' @param landscape logical, if TRUE the created report is in landscape format
+#' @return numeric with maximum height for plot
+#' @importFrom grid convertX
+#' @author Laure Cougnaud
+#' @export
+getMaxNLinesCombinePlot <- function(
+	heightLineIn = 0.2,
+	margin = 0.75,
+	landscape = FALSE){
+	
+	heightForPlot <- 
+		# page dimension
+		convertX(unit(ifelse(landscape, 21, 29.7), "cm"), "inches", valueOnly = TRUE) -
+		# margin:
+		margin * 2 -
+		# section: 17 pt (only for first page) + subsection: 14 pt
+		sum(convertX(unit(c(14, 17), "pt"), "inches", valueOnly = TRUE))
+
+	nLinesPlot <- heightForPlot/heightLineIn
+
+	return(nLinesPlot)
+	
 }
 
 #' Get label(s) for a variable of the dataset
@@ -72,7 +102,7 @@ getLabelVar <- function(var, data = NULL, labelVars = NULL){
 #' @examples 
 #' getPatientColorPalette(n = 10)
 #' getPatientColorPalette(x = paste('treatment', 1:4))
-#' @importFrom viridis viridis
+#' @importFrom viridisLite viridis
 #' @importFrom glpgStyle glpgPaletteCharts
 #' @export
 getPatientColorPalette <- function(n = NULL, x = NULL, type = c("GLPG", "viridis")){

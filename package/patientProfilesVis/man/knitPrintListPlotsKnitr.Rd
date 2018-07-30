@@ -18,7 +18,8 @@ The labels are constructed as '\code{generalLabel}[i]',
 with i the plot number (from sequence spanning the length of \code{plotsList}).
 Only use if \code{labels} is not specified.}
 
-\item{sectionTitles}{(optional) vector with section title(s) corresponding to \code{plotsList}}
+\item{sectionTitles}{(optional) vector with section title(s) corresponding to \code{plotsList}.
+If no section should be included for a particular plot, please use the empty string: ''.}
 
 \item{sectionLevel}{integer with section level, 2 by default.
 This is only used if \code{sectionTitles} is specified}

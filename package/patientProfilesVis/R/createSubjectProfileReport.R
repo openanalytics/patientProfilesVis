@@ -1,14 +1,15 @@
 #' Create subject profile report
 #' @param listPlots list of plots, as returned by the \code{\link{subjectProfileTextPlot}},
 #' \code{\link{subjectProfileEventPlot}} or \code{\link{subjectProfileIntervalPlot}}
-#' @param landscape logical, if TRUE the created report is in landscape format
 #' @param outputFile string, path to the output report
 #' @param exportFigures logical, if TRUE (FALSE by default) the figures are also exported
 #' in png format in a 'figures' folder
 #' @param bookmarkData data.frame with data containing information on which the index should be based
 #' @param bookmarkVar variable(s) of \code{data} of interest for the index
+#' @param heightLineIn height of a line in inches
 #' @inheritParams subjectProfileCombine
 #' @inheritParams defineIndex
+#' @inheritParams getMaxNLinesCombinePlot
 #' @return no returned value, the report is created at the location
 #' specified by \code{outputFile}
 #' @author Laure Cougnaud
@@ -27,19 +28,31 @@ createSubjectProfileReport <- function(
 	landscape = FALSE,
 	outputFile = "subjectProfile.pdf",
 	exportFigures = FALSE,
-	labelVars = NULL){
-	
+	labelVars = NULL,
+	heightLineIn = 0.2){
+
+	# margin of document in inches
+	margin <- 0.75
+	maxNLines <- getMaxNLinesCombinePlot(
+		margin = margin ,
+		landscape = landscape,
+		heightLineIn = heightLineIn
+	)
+
 	# combine plots
-	listPlotsPerSubject <- subjectProfileCombine(listPlots, 
-		timeLim = timeLim, refLines = refLines,
-		refLinesData = refLinesData, refLinesTimeVar = refLinesTimeVar, refLinesLabelVar = refLinesLabelVar,
-		subjectVar = subjectVar
+	listPlotsPerSubjectList <- subjectProfileCombine(
+		listPlots, 
+		timeLim = timeLim, 
+		refLines = refLines, refLinesData = refLinesData, 
+		refLinesTimeVar = refLinesTimeVar, refLinesLabelVar = refLinesLabelVar,
+		subjectVar = subjectVar,
+		maxNLines = maxNLines
 	)
 	
 	# extract bookmark(s) (if any)
 	index <- if(!is.null(bookmarkData) & !is.null(bookmarkVar))
 		defineIndex(
-			subjects = names(listPlotsPerSubject), 
+			subjects = names(listPlotsPerSubjectList), 
 			data = bookmarkData,
 			var = bookmarkVar,
 			subjectVar = subjectVar,
@@ -54,10 +67,12 @@ createSubjectProfileReport <- function(
 	# save them in a new environment, passed to the 'knitr::knit' function
 	inputParametersEnv <- new.env()
 	inputParameters <- list(
-		listPlotsPerSubject = listPlotsPerSubject,
+		listPlotsPerSubjectList = listPlotsPerSubjectList,
 		landscape = landscape,
 		outputDir = outputDir,
-		index = index		
+		index = index,
+		heightLineIn = heightLineIn,
+		margin = margin
 	)
 	assign("inputParameters", inputParameters, envir = inputParametersEnv)
 	
@@ -91,19 +106,17 @@ createSubjectProfileReport <- function(
 
 #' Combine subject profile plots.
 #' @param listPlots list of \code{\link[ggplot2]{ggplot2}} objects
-#' @inheritParams addReferenceLinesProfilePlot
 #' @return a list of \code{subjectProfilePlot} object, containing the combined
 #' profile plots for each subject.
-#' This is in essence only a \code{\link[ggplot2]{ggplot2}} objects,
-#' (with the additional attribute 'nLinesPlot')
-#' @importFrom cowplot plot_grid ggdraw draw_label
-#' @importFrom ggplot2 coord_cartesian ggplot theme_bw ggtitle
-#' @inheritParams subjectProfileIntervalPlot
+#' @importFrom cowplot ggdraw draw_label
+#' @inheritParams subjectProfileCombineOnce
 #' @author Laure Cougnaud
 #' @export
-subjectProfileCombine <- function(listPlots, 
+subjectProfileCombine <- function(
+	listPlots, 
 	timeLim = getXLimSubjectProfilePlots(listPlots),
 	subjectVar = "USUBJID",
+	maxNLines = NULL,
 	refLines = NULL,
 	refLinesData = NULL,
 	refLinesTimeVar = NULL,
@@ -120,89 +133,6 @@ subjectProfileCombine <- function(listPlots,
 		list
 	})
 	
-	## combine plots
-	
-	# wrapper function to combine ggplot2 objects
-	combineGGPlots <- function(..., labels){
-		
-		listGgPlotsToCombine <- list(...)
-		
-		# 'empty' plot in case a specific plot is not available for this subject
-		isEmpty <- which(sapply(listGgPlotsToCombine, is.null))
-		if(any(isEmpty)){
-			listGgPlotsToCombine[isEmpty] <- lapply(isEmpty, function(i)
-				if(labels[i] != ""){
-					gg <- ggplot() + theme_bw() + 
-						ggtitle(paste("No", labels[i], "available."))
-					class(gg) <- c("subjectProfileEmptyPlot", class(gg))
-					gg
-				}
-			)
-		}
-		listGgPlotsToCombine <- listGgPlotsToCombine[!sapply(listGgPlotsToCombine, is.null)]
-		
-		if(length(listGgPlotsToCombine) > 0){
-			
-			# extract number of lines in the y-axis
-			nLinesPlot <- sapply(listGgPlotsToCombine, getNLinesYGgplot)
-			
-			# set same limits for the time/x-axis and reference lines
-			plotsToModify <-  which(sapply(listGgPlotsToCombine, function(gg)
-				!inherits(gg, "subjectProfileTextPlot") & !inherits(gg, "subjectProfileEmptyPlot")
-			))
-			if(length(plotsToModify) > 0){
-				
-				newPlots <- lapply(plotsToModify, function(i){
-					
-					gg <- listGgPlotsToCombine[[i]]
-					gg <- gg + coord_cartesian(xlim = timeLim)
-					
-					gg <- addReferenceLinesProfilePlot(
-						gg = gg, 
-						subjectVar = subjectVar,
-						refLines = refLines,
-						refLinesData = refLinesData,
-						refLinesTimeVar = refLinesTimeVar,
-						refLinesLabelVar = refLinesLabelVar,
-						addLabel = (i == plotsToModify[length(plotsToModify)])
-					)
-					
-				})
-		
-				listGgPlotsToCombine[plotsToModify] <- newPlots
-				nLinesPlot[plotsToModify] <- nLinesPlot[plotsToModify] +
-					sapply(newPlots, function(gg){
-						nLinesRef <- attributes(gg)$metaData$nLinesLabelRefLines
-						ifelse(is.null(nLinesRef), 0, nLinesRef)
-					})
-			}
-
-			# relative height of each plot
-			relHeights <- nLinesPlot/sum(nLinesPlot)
-			
-			# combine all plots
-			plot <- do.call(plot_grid,
-				c(
-					listGgPlotsToCombine,
-					list(align = "v", ncol = 1, axis = "lr",
-						rel_heights = relHeights
-					)
-				)
-			)
-			
-			# store the number of lines in the y-axis (used to adapt size during export)
-			attributes(plot) <- c(attributes(plot), 
-				list(nLinesPlot = sum(nLinesPlot), nSubplots = length(listGgPlotsToCombine))
-			)
-			
-			class(plot) <- c("subjectProfilePlot", class(plot))
-			
-			plot
-			
-		}
-		
-	}
-	
 	# combine all plots per subject
 	# this returns a list of 'gtable' object
 	plotLabels <- sapply(listPlotsAll, function(x){
@@ -211,7 +141,15 @@ subjectProfileCombine <- function(listPlots,
 	})
 	listPlotsPerSubject <- do.call(mapply, 
 		c(
-			list(FUN = combineGGPlots, SIMPLIFY = FALSE, MoreArgs = list(labels = plotLabels)),
+			list(FUN = subjectProfileCombineOnce, SIMPLIFY = FALSE, 
+				MoreArgs = list(
+					labels = plotLabels, 
+					timeLim = timeLim,
+					maxNLines = maxNLines,
+					refLines = refLines, refLinesData = refLinesData, 
+					refLinesTimeVar = refLinesTimeVar, refLinesLabelVar = refLinesLabelVar,
+					subjectVar = subjectVar
+				)),
 			listPlotsAll
 		)
 	)
@@ -225,34 +163,159 @@ subjectProfileCombine <- function(listPlots,
 				x = 0, hjust = 0, lineheight = 2
 			)
 		
-		plotSubject <- listPlotsPerSubject[[subject]]
-		# extract number of lines in main plot...
-		nLinesPlot <- attr(plotSubject, "nLinesPlot")
-		# to get relative height of title/main plot
-		relHeights <- c(4, nLinesPlot)/(4+nLinesPlot)
-#		convertX(ggplot_build(gg)$plot$theme$plot.margin, unitTo = "lines", valueOnly = TRUE)
+		plotSubjectList <- listPlotsPerSubject[[subject]]
 		
-		# combine title and plot
-		plotSubjectWithTitle <- plot_grid(title, plotSubject, ncol = 1, rel_heights = relHeights)
+		plotsSubjectListRF <- sapply(plotSubjectList, function(plotSubject){
 		
-		nLinesPlotTotal <- nLinesPlot + 4
-		
-		# store the number of lines in the y-axis (used to adapt size during export)
-		attributes(plotSubjectWithTitle) <- c(
-			attributes(plotSubjectWithTitle), 
-			list(
-				nLinesPlot = nLinesPlotTotal,
-				nSubplots = attr(plotSubject, "nSubplots")
+			# extract number of lines in main plot...
+			nLinesPlot <- attr(plotSubject, "nLinesPlot")
+			# to get relative height of title/main plot
+			relHeights <- c(4, nLinesPlot)/(4+nLinesPlot)
+	#		convertX(ggplot_build(gg)$plot$theme$plot.margin, unitTo = "lines", valueOnly = TRUE)
+			
+			# combine title and plot
+			plotSubjectWithTitle <- plot_grid(title, plotSubject, ncol = 1, rel_heights = relHeights)
+			
+			nLinesPlotTotal <- nLinesPlot + 4
+			
+			# store the number of lines in the y-axis (used to adapt size during export)
+			attributes(plotSubjectWithTitle) <- c(
+				attributes(plotSubjectWithTitle), 
+				list(
+					nLinesPlot = nLinesPlotTotal,
+					nSubplots = attr(plotSubject, "nSubplots")
+				)
 			)
-		)
-		class(plotSubjectWithTitle) <- c("subjectProfilePlot", class(plotSubjectWithTitle))
-		
-		plotSubjectWithTitle
+			class(plotSubjectWithTitle) <- c("subjectProfilePlot", class(plotSubjectWithTitle))
+			
+			plotSubjectWithTitle
+			
+		}, simplify = FALSE)
 		
 	}, simplify = FALSE)
 
 	return(listPlotsPerSubject)
 	
+}
+
+#' combine multiple \code{\link[ggplot2]{ggplot2}} objects
+#' @param ... \code{\link[ggplot2]{ggplot2}} objects
+#' @param labels string with labels for the plots
+#' @param maxNLines maximum number of lines for a combined plot,
+#' to fit in the page height
+#' @inheritParams subjectProfileIntervalPlot
+#' @inheritParams addReferenceLinesProfilePlot
+#' @return \code{subjectProfilePlot} object, containing the combined
+#' profile plots
+#' @author Laure Cougnaud
+#' @importFrom cowplot plot_grid
+#' @importFrom ggplot2 coord_cartesian ggplot theme_bw ggtitle
+subjectProfileCombineOnce <- function(..., 
+	labels, 
+	timeLim = NULL, 
+	maxNLines = NULL,
+	refLines = NULL,
+	refLinesData = NULL,
+	refLinesTimeVar = NULL,
+	refLinesLabelVar = NULL,
+	subjectVar = "USUBJID"){
+		
+	listGgPlotsToCombine <- list(...)
+		
+	# 'empty' plot in case a specific plot is not available for this subject
+	isEmpty <- which(sapply(listGgPlotsToCombine, is.null))
+	if(any(isEmpty)){
+		listGgPlotsToCombine[isEmpty] <- lapply(isEmpty, function(i)
+			if(labels[i] != ""){
+				gg <- ggplot() + theme_bw() + 
+					ggtitle(paste("No", labels[i], "available."))
+				class(gg) <- c("subjectProfileEmptyPlot", class(gg))
+				gg
+			}
+		)
+	}
+	listGgPlotsToCombine <- listGgPlotsToCombine[!sapply(listGgPlotsToCombine, is.null)]
+	
+	plot <- if(length(listGgPlotsToCombine) > 0){
+		
+		# extract number of lines in the y-axis
+		nLinesPlot <- sapply(listGgPlotsToCombine, getNLinesYGgplot)
+		
+		# set same limits for the time/x-axis and reference lines
+		plotsToModify <-  which(sapply(listGgPlotsToCombine, function(gg)
+			!inherits(gg, "subjectProfileTextPlot") & !inherits(gg, "subjectProfileEmptyPlot")
+		))
+		if(length(plotsToModify) > 0){
+			
+			# set same coordinates and include reference lines if any
+			newPlots <- lapply(plotsToModify, function(i){
+						
+				gg <- listGgPlotsToCombine[[i]]
+				if(!is.null(timeLim))	gg <- gg + coord_cartesian(xlim = timeLim)
+						
+				gg <- addReferenceLinesProfilePlot(
+					gg = gg, 
+					subjectVar = subjectVar,
+					refLines = refLines,
+					refLinesData = refLinesData,
+					refLinesTimeVar = refLinesTimeVar,
+					refLinesLabelVar = refLinesLabelVar,
+					addLabel = (i == plotsToModify[length(plotsToModify)])
+				)
+						
+			})
+			
+			listGgPlotsToCombine[plotsToModify] <- newPlots
+			# add number of lines used for labels reference lines in plot
+			nLinesPlot[plotsToModify] <- nLinesPlot[plotsToModify] +
+				sapply(newPlots, function(gg){
+					nLinesRef <- attributes(gg)$metaData$nLinesLabelRefLines
+					ifelse(is.null(nLinesRef), 0, nLinesRef)
+			})
+		}
+		
+		# wrapper function to combine plots with 'subplot'
+		combineGGPlotsOnce <- function(listGgPlotsToCombine, nLinesPlot){
+			
+			# relative height of each plot
+			relHeights <- nLinesPlot/sum(nLinesPlot)
+			
+			# combine all plots
+			plot <- do.call(plot_grid,
+				c(
+					listGgPlotsToCombine,
+					list(align = "v", ncol = 1, axis = "lr", rel_heights = relHeights)
+				)
+			)
+			
+			# store the number of lines in the y-axis (used to adapt size during export)
+			attributes(plot) <- c(attributes(plot), 
+				list(nLinesPlot = sum(nLinesPlot), nSubplots = length(listGgPlotsToCombine))
+			)
+			
+			class(plot) <- c("subjectProfilePlot", class(plot))
+			
+			return(plot)
+			
+		}
+		
+		# split plots in case nLines > maxNLines
+		plot <- if(!is.null(maxNLines)){
+			plotsFact <- as.numeric(droplevels(
+				cut(cumsum(nLinesPlot), breaks = c(seq(1, sum(nLinesPlot), by = maxNLines), sum(nLinesPlot)), right = TRUE)
+			))
+			plots <- sapply(unique(plotsFact), function(fact){
+				idx <- which(plotsFact == fact)
+				combineGGPlotsOnce(listGgPlotsToCombine[idx], nLinesPlot[idx])
+			}, simplify = FALSE)
+		}else{
+			combineGGPlotsOnce(listGgPlotsToCombine, nLinesPlot)
+		}
+		
+	}
+	
+	return(plot)
+
 }
 
 #' Get limits for a list of plots.
