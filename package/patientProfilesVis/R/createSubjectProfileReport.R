@@ -29,15 +29,18 @@ createSubjectProfileReport <- function(
 	outputFile = "subjectProfile.pdf",
 	exportFigures = FALSE,
 	labelVars = NULL,
-	heightLineIn = 0.2){
+	heightLineIn = 0.2,
+	maxNLines = NULL){
 
 	# margin of document in inches
 	margin <- 0.75
-	maxNLines <- getMaxNLinesCombinePlot(
-		margin = margin ,
-		landscape = landscape,
-		heightLineIn = heightLineIn
-	)
+	if(is.null(maxNLines)){
+		maxNLines <- getMaxNLinesCombinePlot(
+			margin = margin,
+			landscape = landscape,
+			heightLineIn = heightLineIn
+		)
+	}
 
 	# combine plots
 	listPlotsPerSubjectList <- subjectProfileCombine(
@@ -331,7 +334,7 @@ getXLimSubjectProfilePlots <- function(listPlots){
 	xlimList <- lapply(listPlots, function(list)
 		lapply(list, function(gg) 
 			if(!inherits(gg, "subjectProfileTextPlot"))
-				range(ggplot_build(gg)$data[[1]]$x)
+				range(unlist(lapply(ggplot_build(gg)$data, function(x) x$x)))
 		)
 	)
 	

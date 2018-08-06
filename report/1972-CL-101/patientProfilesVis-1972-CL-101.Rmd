@@ -1,0 +1,185 @@
+---
+title: "1972-CL-101 study"
+author: "Laure Cougnaud"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output: 
+  rmarkdown::html_document:
+    toc: true
+    toc_float:
+      collapsed: true
+    number_sections: true
+vignette: >
+  %\VignetteIndexEntry{patientProfilesVis package}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+# Introduction
+
+```{r options, echo = FALSE}
+	
+	library(knitr)
+	opts_chunk$set(
+		echo = TRUE, results = 'asis', warning = FALSE, 
+		error = FALSE, message = FALSE, cache = FALSE,
+		fig.width = 8, fig.height = 7,
+		fig.path = "./figures_vignette/",
+		#out.width = '0.7\\textwidth', 
+		fig.align = 'center')#, out.height = 0.5\\textwidth', fig.path = 'graphs/') 
+	options(width = 170)#, stringsAsFactors = FALSE
+	options(warn = 1)#instead of warn = 0 by default -> to have place where warnings occur in the call to Sweave function
+	
+	heightLineIn  <- 0.2
+	
+```
+
+This package `patientProfilesVis` enables to create report containing subject
+profiles.
+
+```{r loadPackages}
+
+	library(patientProfilesVis)
+	library(pander)
+
+```
+
+# Load the data
+
+```{r loadData}	
+	
+	dataFiles <- list.files(pattern = "sas7bdat", path = "../../data/1972-CL-101/", full.names = TRUE)
+	dataRes <- loadDataADaM(dataFiles)
+	data <- dataRes
+	labelVars <- attr(dataRes, "labelVars")
+
+```
+
+# Create the plot submodules
+
+## Info patient
+
+```{r  infoPatient}
+			
+	infoPatientData <- subset(data$ADLB, SUBJGR2 %in% paste("Cohort", c("C", "D", "E")))
+	infoPatientPlots <- subjectProfileTextPlot(
+		data = infoPatientData,
+		paramValueVar = c("SUBJGR1", "SUBJGR2", "SEX", "ARM"),
+		title = "Patient information",
+		labelVars = labelVars
+	)
+
+```
+
+## Adverse events
+
+```{r ae}
+
+	# AEPTCD: preferred term code
+	dataPlot <- subset(data$ADAE, SUBJGR2 %in% paste("Cohort", c("C", "D", "E")) & AETERM != "")
+	# specify order of value in 'AESEV'
+	dataPlot[, "AESEV"] <- factor(dataPlot[, "AESEV"], levels = "MILD")
+	aePlots <- subjectProfileIntervalPlot(
+		data = dataPlot,
+		paramVar = "AETERM",
+		timeStartVar = "AESTDY",
+		timeEndVar = "AEENDY",
+		colorVar = "AESEV",
+		labelVars = labelVars,
+		title = "Adverse events"
+	)
+	
+```
+
+## Laboratory data
+
+```{r lb-eventPlot}
+
+#	params <- unique(dataLB[, c("PARAMCD", "PARAM")])
+#	subset(params, grepl("leuk", PARAM, ignore.case = TRUE))
+
+	# prepare data for plots:
+	# leuko = WBC, CRP
+	# Note: ADY is missing (NA) when AVISIT is Worst-case scenario, but remote the records for safety
+	dataLB <- subset(data$ADLB, 
+		PARAMCD %in% 
+			c("MONO", "LYM", "BASO", "WBC", "PLAT", "ALT", "AST", "ALP", "GGT") &
+		LBTEST != "" &
+		SUBJGR2 %in% paste("Cohort", c("C", "D", "E")) &
+		AVISIT != "Worst"
+	)
+	# sort the categories (empty values '' becomes NA)
+	dataLB$LBNRIND <- factor(dataLB$LBNRIND, levels = c("LOW", "NORMAL", "HIGH"))
+
+	# create plot
+	lbPlots <- subjectProfileEventPlot(
+		data = dataLB,
+		paramVar = "LBTESTCD",
+		colorVar = "LBNRIND", shapeVar = "LBNRIND",
+		shapePalette = c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24),
+		timeVar = "LBDY",
+		labelVars = labelVars,
+		title = "Laboratory test measurements: reference range indicator"
+	)
+	
+```
+
+```{r lb-spaghettiPlot}
+
+	# create plot
+	lbPlotsSpagh <- subjectProfileSpaghettiPlot(
+		data = dataLB,
+		paramVar = "AVAL",
+		facetVar = "LBTESTCD",
+		timeVar = "LBDY",
+		labelVars = labelVars,
+		title = "Laboratory test measurements: spaghetti plots"
+	)
+	
+```
+
+### Temperature vital signs
+
+```{r exampleTestModule-wideFormat-include, echo = FALSE}
+
+	dataVSTemp <- subset(data$ADVS, 
+		VSTESTCD == "TEMP" &
+		SUBJGR2 %in% paste("Cohort", c("C", "D", "E"))
+	)
+	# create plot
+	# A1CLSIG: Clinically Significant 1 
+
+	tempVsPlots <- subjectProfileSpaghettiPlot(
+		data = dataVSTemp,
+		paramVar = "AVAL",
+		facetVar = "VSTEST",
+		timeVar = "ADY",
+		labelVars = labelVars,
+		title = "Vital signs"
+	)
+
+```
+
+
+## Reference lines for Statistical Analysis Plan
+
+```{r createReportWithAllModules-referenceLinesFromSAP, eval = FALSE}
+
+	# create report
+	createSubjectProfileReport(
+		listPlots = list(infoPatientPlots, aePlots, lbPlots, lbPlotsSpagh, tempVsPlots),
+		outputFile = "subjectProfile_1972-CL-101.pdf",
+		maxNLines = 100
+	)
+
+```
+
+# Appendix
+
+## Session information
+
+
+```{r includeSessionInfo, echo = FALSE}
+
+	pander(sessionInfo())
+
+```

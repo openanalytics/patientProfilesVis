@@ -51,7 +51,9 @@ createSubjectProfileUI <- function(input, results){
 		)
 	)
 	specParams <- sapply(listParams[reqParam], isTruthy)
-	validate(need(all(specParams), "Some parameters are missing."))
+	validate(need(all(specParams), 
+		paste0("Some parameters (", toString(names(which(!specParams))), ") are missing.")
+	))
 	
 	subjectProfileFct <- paste0("subjectProfile", simpleCap(input$moduleType), "Plot")
 	plotsList <- do.call(subjectProfileFct, listParams)
