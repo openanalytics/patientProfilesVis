@@ -6,7 +6,7 @@
 \usage{
 subjectProfileSpaghettiPlot(data, paramVar,
   paramLab = toString(getLabelVar(paramVar, labelVars = labelVars)),
-  facetVar = NULL, timeVar, subjectVar = "USUBJID",
+  paramGroupVar = NULL, facetVar = NULL, timeVar, subjectVar = "USUBJID",
   xLab = getLabelVar(timeVar, labelVars = labelVars), yLab = "",
   timeLim = NULL, title = paramLab, label = title, labelVars = NULL)
 }
@@ -16,6 +16,9 @@ subjectProfileSpaghettiPlot(data, paramVar,
 \item{paramVar}{string, variable of \code{data} with parameter (used in the y-axis)}
 
 \item{paramLab}{string, label for \code{paramVar}}
+
+\item{paramGroupVar}{(optional) character vector with variable(s) of \code{data} with grouping.
+If specified, the parameters will be grouped by this(these) variable(s) in the y-axis.}
 
 \item{facetVar}{string, variable used for facetting}
 
