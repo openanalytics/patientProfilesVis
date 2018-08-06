@@ -11,6 +11,7 @@
 subjectProfileSpaghettiPlot <- function(
 	data,
 	paramVar, paramLab = toString(getLabelVar(paramVar, labelVars = labelVars)),
+	paramGroupVar = NULL,
 	facetVar = NULL,
 	timeVar, 
 	subjectVar = "USUBJID",
@@ -22,17 +23,24 @@ subjectProfileSpaghettiPlot <- function(
 	labelVars = NULL
 ){
 	
-	
 	data[, "yVar"] <- data[, paramVar]
 	
 	data <- data[with(data, !is.na(yVar) & yVar != "" & !is.na(get(timeVar))), ]
+	
+	# if paramGroupVar is specified: change order levels of 'variable'
+	if(!is.null(paramGroupVar)){
+		groupVariable <- if(length(paramGroupVar) > 0){
+			interaction(data[, paramGroupVar])
+		}else data[, paramGroupVar]
+		data[, "yVar"] <- reorder(data[, "yVar"], groupVariable, unique)
+	}
 	
 	listPlots <- dlply(data, subjectVar, function(dataSubject){	
 		
 		subject <- unique(dataSubject[, subjectVar])
 				
 		aesArgs <- c(
-			list(x = timeVar, y = paramVar)
+			list(x = timeVar, y = "yVar")
 		)
 			
 		# create the plot

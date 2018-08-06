@@ -40,7 +40,7 @@ subjectProfileIntervalPlot <- function(
 	timeStartVar,
 	timeEndVar,
 	subjectVar = "USUBJID",
-	timeLim =  with(data, c(min(get(timeStartVar), na.rm = TRUE), max(get(timeStartVar), na.rm = TRUE))),
+	timeLim =  with(data, c(min(get(timeStartVar), na.rm = TRUE), max(get(timeEndVar), na.rm = TRUE))),
 	rangeSimilarStartEnd = diff(timeLim)/1000,
 	xLab = paste(getLabelVar(c(timeStartVar, timeEndVar), labelVars = labelVars), collapse = "/"),
 	yLab = "",

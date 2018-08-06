@@ -17,7 +17,7 @@ getPathTemplate <- function(file){
 getNLinesYGgplot <- function(gg){
 	
 	nLinesPlot <- if(inherits(gg, "subjectProfileSpaghettiPlot")){
-		n_distinct(ggplot_build(gg)$data[[1]]$PANEL) * 2
+		n_distinct(ggplot_build(gg)$data[[1]]$PANEL) * 3
 	}else	length(unique(ggplot_build(gg)$data[[1]]$y))
 	
 	getNLinesLabel <- function(elName, elNLines){
