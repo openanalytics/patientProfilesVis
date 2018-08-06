@@ -9,7 +9,8 @@ createSubjectProfileReport(listPlots,
   refLinesData = NULL, refLinesTimeVar = NULL, refLinesLabelVar = NULL,
   bookmarkData = NULL, bookmarkVar = NULL, subjectVar = "USUBJID",
   landscape = FALSE, outputFile = "subjectProfile.pdf",
-  exportFigures = FALSE, labelVars = NULL, heightLineIn = 0.2)
+  exportFigures = FALSE, labelVars = NULL, heightLineIn = 0.2,
+  maxNLines = NULL)
 }
 \arguments{
 \item{listPlots}{list of plots, as returned by the \code{\link{subjectProfileTextPlot}},
@@ -51,6 +52,9 @@ in png format in a 'figures' folder}
 \item{labelVars}{named string with variable labels (names are the variable code)}
 
 \item{heightLineIn}{height of a line in inches}
+
+\item{maxNLines}{maximum number of lines for a combined plot,
+to fit in the page height}
 }
 \value{
 no returned value, the report is created at the location

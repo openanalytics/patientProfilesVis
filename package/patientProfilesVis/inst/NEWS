@@ -2,6 +2,8 @@
     o subjectProfileIntervalPlot: re-label [start|end]Var -> time[Start|end]Var and use arrow for non-ending interval
     o use viridisLite instead of viridis paclage
     o createSubjectProfileReport: automatic split of modules across pages in report
+    o subjectProfileTextPlot: concatenate information if duplicated info
+    o subjectProfileSpaghettiPlot
 0.0.3
     o subjectProfileTextPlot: possibility to have multiple paramValueVar in same line, fix ordering
     o subjectProfileTextPlot: paramValueVar can be a function
