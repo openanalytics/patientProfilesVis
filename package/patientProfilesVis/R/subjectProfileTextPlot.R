@@ -72,13 +72,19 @@ subjectProfileTextPlot <- function(
 		}
 		
 		# transform data from wide to long format
-		dataToTransform <- unique(data[, c(subjectVar, paramValueVar)])
+		dataToTransform <- unique(data[, unique(c(subjectVar, paramValueVar))])
 		dataPlot <- melt(
 			dataToTransform, 
 			id.vars = subjectVar, 
 			measure.vars = paramValueVar, 
 			variable.name = "variable",
 			value.name = "value"
+		)
+		dataPlot <- unique(dataPlot)
+		
+		# in case multiple value for the same variable, concatenate them
+		dataPlot <- ddply(dataPlot, c(subjectVar, "variable"), function(x)
+			data.frame(value = paste(unique(x$value), collapse = paramVarSep), stringsAsFactors = FALSE)
 		)
 		
 		# use the labels for the names of the variables
@@ -87,7 +93,7 @@ subjectProfileTextPlot <- function(
 		dataPlot$variable <- if(!is.null(labelVars)){
 			varsLabels <- getLabelVar(paramValueVar, labelVars = labelVars)
 			factor(
-				varsLabels[dataPlot$variable],
+				varsLabels[as.character(dataPlot$variable)],
 				levels = rev(labelVars[paramValueVar])
 			)
 		}else factor(dataPlot$variable, levels = rev(paramValueVar))
@@ -100,7 +106,7 @@ subjectProfileTextPlot <- function(
 			data[, paramValueVar]
 		# in case multiple value for the same variable, concatenate them
 		dataPlot <- ddply(data, c(subjectVar, paramNameVar, paramGroupVar), function(x)
-			data.frame(value = paste(unique(x$value), collapse = paramVarSep))
+			data.frame(value = paste(unique(x$value), collapse = paramVarSep), stringsAsFactors = FALSE)
 		)
 		colnames(dataPlot) <- c(subjectVar, 'variable', paramGroupVar, 'value')
 		

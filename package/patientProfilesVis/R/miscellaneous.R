@@ -12,9 +12,14 @@ getPathTemplate <- function(file){
 #' @return vector with (approximated) number of lines
 #' @author Laure Cougnaud
 #' @importFrom ggplot2 ggplot_build
+#' @importFrom dplyr n_distinct
 #' @export
 getNLinesYGgplot <- function(gg){
-	nLinesPlot <- length(unique(ggplot_build(gg)$data[[1]]$y))
+	
+	nLinesPlot <- if(inherits(gg, "subjectProfileSpaghettiPlot")){
+		n_distinct(ggplot_build(gg)$data[[1]]$PANEL) * 2
+	}else	length(unique(ggplot_build(gg)$data[[1]]$y))
+	
 	getNLinesLabel <- function(elName, elNLines){
 		elValue <- ggplot_build(gg)$plot$labels[[elName]]
 		if(!is.null(elValue) && elValue != "")	length(unlist(strsplit(elValue, split = "\n"))) * elNLines
