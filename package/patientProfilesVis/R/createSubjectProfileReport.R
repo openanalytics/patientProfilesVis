@@ -334,7 +334,13 @@ getXLimSubjectProfilePlots <- function(listPlots){
 	xlimList <- lapply(listPlots, function(list)
 		lapply(list, function(gg) 
 			if(!inherits(gg, "subjectProfileTextPlot"))
-				range(unlist(lapply(ggplot_build(gg)$data, function(x) x$x)))
+				range(
+					unlist(
+						lapply(ggplot_build(gg)$data, function(dataPlot) 
+							c(dataPlot$x, if("xend" %in% colnames(dataPlot))	dataPlot$xend)
+						)
+					)
+				)
 		)
 	)
 	

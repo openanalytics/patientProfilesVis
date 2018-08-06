@@ -30,7 +30,10 @@ subjectProfileEventPlot <- function(
 ){
 	
 	data[, "yVar"] <- if(length(paramVar) > 1)
-		apply(data[, paramVar], 1, paste, collapse = " ")	else	data[, paramVar]
+		apply(data[, paramVar], 1, paste, collapse = " ")	else{
+		yVar <- data[, paramVar]
+		if(is.factor(yVar))	factor(yVar, levels = rev(levels(yVar)))	else	yVar
+	}
 	
 	data <- data[with(data, !is.na(yVar) & yVar != "" & !is.na(get(timeVar))), ]
 	

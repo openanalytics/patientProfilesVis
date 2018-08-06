@@ -54,12 +54,11 @@ profiles.
 
 ```
 
-# Create the plot submodules
+# Create the report
 
-## Info patient
+```{r createReport}
 
-```{r  infoPatient}
-			
+	## info patient
 	infoPatientData <- subset(data$ADLB, SUBJGR2 %in% paste("Cohort", c("C", "D", "E")))
 	infoPatientPlots <- subjectProfileTextPlot(
 		data = infoPatientData,
@@ -68,12 +67,7 @@ profiles.
 		labelVars = labelVars
 	)
 
-```
-
-## Adverse events
-
-```{r ae}
-
+	## adverse event
 	# AEPTCD: preferred term code
 	dataPlot <- subset(data$ADAE, SUBJGR2 %in% paste("Cohort", c("C", "D", "E")) & AETERM != "")
 	# specify order of value in 'AESEV'
@@ -87,12 +81,8 @@ profiles.
 		labelVars = labelVars,
 		title = "Adverse events"
 	)
-	
-```
 
-## Laboratory data
-
-```{r lb-eventPlot}
+    ### laboratory data
 
 #	params <- unique(dataLB[, c("PARAMCD", "PARAM")])
 #	subset(params, grepl("leuk", PARAM, ignore.case = TRUE))
@@ -100,30 +90,28 @@ profiles.
 	# prepare data for plots:
 	# leuko = WBC, CRP
 	# Note: ADY is missing (NA) when AVISIT is Worst-case scenario, but remote the records for safety
+	lbParams <- c("MONO", "LYM", "BASO", "WBC", "PLAT", "ALT", "AST", "ALP", "GGT", "EOS", "NEUT")
 	dataLB <- subset(data$ADLB, 
-		PARAMCD %in% 
-			c("MONO", "LYM", "BASO", "WBC", "PLAT", "ALT", "AST", "ALP", "GGT") &
+		PARAMCD %in% lbParams &
 		LBTEST != "" &
 		SUBJGR2 %in% paste("Cohort", c("C", "D", "E")) &
 		AVISIT != "Worst"
 	)
 	# sort the categories (empty values '' becomes NA)
 	dataLB$LBNRIND <- factor(dataLB$LBNRIND, levels = c("LOW", "NORMAL", "HIGH"))
+	
+	dataLB$LBTESTCD <- factor(dataLB$LBTESTCD)
 
 	# create plot
 	lbPlots <- subjectProfileEventPlot(
 		data = dataLB,
-		paramVar = "LBTESTCD",
+		paramVar = "LBTESTCD", #paramGroupVar = "LBTESTCD",
 		colorVar = "LBNRIND", shapeVar = "LBNRIND",
 		shapePalette = c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24),
 		timeVar = "LBDY",
 		labelVars = labelVars,
 		title = "Laboratory test measurements: reference range indicator"
 	)
-	
-```
-
-```{r lb-spaghettiPlot}
 
 	# create plot
 	lbPlotsSpagh <- subjectProfileSpaghettiPlot(
@@ -134,12 +122,8 @@ profiles.
 		labelVars = labelVars,
 		title = "Laboratory test measurements: spaghetti plots"
 	)
-	
-```
 
-### Temperature vital signs
-
-```{r exampleTestModule-wideFormat-include, echo = FALSE}
+    ## vital signs temperature
 
 	dataVSTemp <- subset(data$ADVS, 
 		VSTESTCD == "TEMP" &
@@ -157,17 +141,10 @@ profiles.
 		title = "Vital signs"
 	)
 
-```
-
-
-## Reference lines for Statistical Analysis Plan
-
-```{r createReportWithAllModules-referenceLinesFromSAP, eval = FALSE}
-
 	# create report
 	createSubjectProfileReport(
 		listPlots = list(infoPatientPlots, aePlots, lbPlots, lbPlotsSpagh, tempVsPlots),
-		outputFile = "subjectProfile_1972-CL-101.pdf",
+		outputFile = "subjectProfile_1972-CL-101_MAD.pdf",
 		maxNLines = 100
 	)
 
