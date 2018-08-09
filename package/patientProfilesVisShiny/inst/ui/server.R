@@ -67,32 +67,22 @@ serverFunction <- function(input, output, session) {
 		results$availableModules <- getDefaultModules(data = results$dataAll())
 	})
 	results$defaultModulesNames <- reactive(names(results$availableModules))
-#	observe({
-#		updateSelectInput(session, inputId = "selectedModules",
-#			choices = results$defaultModulesNames(),
-#			selected = results$defaultModulesNames()
-#		)
-#	})
   
 	## Module specification:
-	
-  	# create widgets for user specification
 	output$module <- renderUI({
+					
+		validate(need(results$dataRes(), "Please upload some data."))
 				
-		cat("Update entire module\n")		
-				
-		conditionalPanel(
-			condition = "input.createDisplayModule % 2 == 1", {
+		cat("Update entire module\n")
 			
-			tagList(
-				selectInput("moduleChoice", label = "Choose module", 
-					choices = c("<none>" = "none", "New module", results$defaultModulesNames())
-				),
-				# module specification
-				uiOutput("modulePanel")
-			)
-			
-		})
+		tagList(
+			uiOutput("moduleMessage"),
+			selectInput("moduleChoice", label = "Choose module", 
+				choices = c("<none>" = "none", "New module", results$defaultModulesNames())
+			),
+			# module specification
+			uiOutput("modulePanel")
+		)
 
 	})
 
@@ -279,13 +269,20 @@ serverFunction <- function(input, output, session) {
 
 	# create the list of plot(s) for the specified module
 	observeEvent(input$previewModule, {
+				
 		plotCurrentError <- try(
 			plotCurrent <- createSubjectProfileUI(input = input, results = results)
 		, silent = TRUE)
+
 		if(inherits(plotCurrentError, "try-error")){
 			output$moduleSaveMessage <- renderUI(
 				div(strong(paste("The patient profiles cannot be created:", attr(plotCurrentError, "condition")$message)), 
 				style = "color:red")
+			)
+		}else if(!input$moduleLabel %in% names(results$listPlots)){
+			output$moduleSaveMessage <- renderUI(
+				div(strong("Label already used, please specify a different label."), 
+					style = "color:red")
 			)
 		}else{
 			results$plotsCurrent <- plotCurrent
@@ -294,6 +291,7 @@ serverFunction <- function(input, output, session) {
 					style = "color:green")
 			)
 		}
+		
 	})
 
 	# preview: fill the plot module
@@ -307,8 +305,8 @@ serverFunction <- function(input, output, session) {
 			selectInput(inputId = "subjectCurrent", label = "Select subject",
 				choices = unique(results$dataCurrent()[, input$moduleSubjectVar])
 			),
-			plotOutput("plotSubject")
-		
+			uiOutput("moduleResultsMessage"),
+			plotOutput("plotSubject")		
 		)
 
 	})
@@ -321,56 +319,57 @@ serverFunction <- function(input, output, session) {
 	
 	# plot this plot in the 'preview' panel
 	observe({	
-		validate(
-			need(
-				expr = results$plotSubjectCurrent(), 
-				message = paste0("No data is available for the specified module for subject: '", 
-					input$subjectCurrent, "'.")
-			),
-			need(
-				expr = !input$moduleLabel %in% names(results$listPlots),
-				message = "Label already used, please specify a different label."
-			)
-		)
-		output$plotSubject <- renderPlot(
-			expr = results$plotSubjectCurrent(),
-			height = getNLinesYGgplot(results$plotSubjectCurrent()) * 30
-		)
+		currentPlot <- results$plotSubjectCurrent()
+		isolate({
+			if(is.null(currentPlot)){
+				output$moduleResultsMessage <- renderUI(
+					div(strong(
+						paste0("No data is available for the specified module for subject: '", 
+							input$subjectCurrent, "', please select a different subject.")
+						), style = "color:red")
+					)
+			}else{
+				output$moduleResultsMessage <- renderUI(
+					div(
+						paste0("Please find a preview of the specified module for subject: '", 
+							input$subjectCurrent, "'."), 
+					style = "color:green")
+				)
+				output$plotSubject <- renderPlot(
+					expr = results$plotSubjectCurrent(),
+					height = getNLinesYGgplot(results$plotSubjectCurrent()) * 30
+				)	
+			}	
+		})
 	})
 
 	## Save module
 	
-	
 	# create the list of plot(s) for the specified module
 	observeEvent(input$previewModule, {
-				plotCurrentError <- try(
-						plotCurrent <- createSubjectProfileUI(input = input, results = results)
-						, silent = TRUE)
-				if(inherits(plotCurrentError, "try-error")){
-					output$moduleSaveMessage <- renderUI(
-							div(strong(paste("The patient profiles cannot be created:", attr(plotCurrentError, "condition")$message)), 
-									style = "color:red")
-					)
-				}else{
-					results$plotsCurrent <- plotCurrent
-					output$moduleSaveMessage <- renderUI(
-							div("The patient profiles have been created for the specified module, you can preview them in the right panel.", 
-									style = "color:green")
-					)
-				}
-			})
+				
+		plotCurrentError <- try(
+			plotCurrent <- createSubjectProfileUI(input = input, results = results)
+			, silent = TRUE)
+		if(inherits(plotCurrentError, "try-error")){
+			output$moduleSaveMessage <- renderUI(
+				div(strong(paste("The patient profiles cannot be created:", attr(plotCurrentError, "condition")$message)), 
+					style = "color:red")
+			)
+		}else{
+			results$plotsCurrent <- plotCurrent
+			output$moduleSaveMessage <- renderUI(
+				div("The patient profiles have been created for the specified module, you can preview them in the right panel.", 
+					style = "color:green")
+			)
+		}
+		
+	})
 
 	# save current module if requested
 	observeEvent(input$saveModule, {
-	
-#		validate(
-#			need(results$plotsCurrent(), "Please preview first your specified module."),
-#			need(!is.null(input$moduleLabel) && !input$moduleLabel %in% names(results$listPlots),
-#				"Label already used, please specify a different label")
-#		)
-		cat("Save module button ticked")
 			
-		if(!isTruthy(results$plotsCurrent())){
+		if(!isTruthy(results$plotsCurrent)){
 			output$moduleSaveMessage <- renderUI(
 				div(strong("Please preview first your specified module."), 
 					style = "color:red"))
@@ -379,82 +378,80 @@ serverFunction <- function(input, output, session) {
 				div(strong("Label already used, please specify a different label."), 
 					style = "color:red"))
 		}else{
-				
-#		validate(
-#			need(!input$moduleLabel %in% names(results$listPlots),
-#				"Please specify a different label, this one is already used."),
-#			need(!input$moduleTitle %in% names(results$availableModules()),
-#				"Please specify a different title, this one is already used.")	
-#		)
-#				
-#		plotsCurrent <- if(!isTruthy(results$plotsCurrent)){
-#			results$plotsCurrent()
-#		}else	createSubjectProfileUI(input = input, results = results)
-##		validate(need(isTruthy(results$plotsCurrent), "Current module not valid."))
 			
-		# save the plot
-					
-			results$listPlots <- c(results$listPlots, setNames(list(results$plotsCurrent()), input$moduleLabel))	
-		
+			# save the plot
+			results$listPlots <- c(results$listPlots, setNames(list(results$plotsCurrent), input$moduleLabel))	
+			
 			# save the parameters:
 			newModule <- list(getUIParamModule(input))
 			names(newModule) <- paste0(input$moduleTitle, " (custom, ", input$moduleType, ")")
 			results$availableModules <- c(results$availableModules, newModule)
 			
+			output$moduleMessage <- renderUI(
+				div(paste0("Module has been saved, you can preview it by selecting: '",
+					names(newModule), "' in the selection box below."), 
+					style = "color:green")
+			)
+			
+			output$moduleSaveMessage <- moduleResultsMessage <- renderUI("")
+			
+			# delete current plot
+			results$plotsCurrent <- NULL
+			
 		}
 		
 	})
 
-#	## Report creation
-#	
-#	# specified module
-#
-#	# create the report
-#	results$subjectProfileReport <- eventReactive(input$createSubjectProfileReport, {
-#    
-#		validate(need(length(results$listPlots) > 0, "No module(s) are saved yet."))
-#
-#        withProgress(message = 'Create subject profile report..\n', 
-#				
-#            detail = "The analysis is running. A download button will 
-#                appear when the results are processed and available. (Please do 
-#                not press the 'Get Results' button multiple times)",
-#		
-#            style = "notification", value = NULL, {
-#            message("... Create subject profile report ...")
-#              
-#			potentialErrorMessage <- try(
-#				createSubjectProfileReport(
-#					listPlots = results$listPlots,
-#					outputFile = "subjectProfile.pdf",
-#					labelVars = results$labelVars()
-#				),
-#				silent = TRUE
-#			)
-#              
-#		})
-#        
-#	})
-#  
-#	# give the report when clicking on the download button
-#	output$downloadSubjectProfileReport <- downloadHandler(
-#		filename = "subjectProfile.pdf",
-#		content = function(file)	file.copy("subjectProfile.pdf", file),
-#      	contentType = "application/pdf"
-#  	)
-#
-#	# make the download button available
-#	output$downloadSubjectProfileReportPanel <- renderUI({
-#        validate(
-#			need(
-#				!inherits(results$subjectProfileReport(), "try-error"), 
-#				paste("Issue during creation of subject profile report: ", 
-#					results$subjectProfileReport(), "."
-#				)
-#			)
-#		)
-#        downloadButton("downloadSubjectProfileReport", label = "Download subject profile report")
-#	})
+	## Report creation
+	
+	# specified module
+
+	# create the report
+	results$subjectProfileReport <- eventReactive(input$createSubjectProfileReport, {
+    
+		validate(need(length(results$listPlots) > 0, "No module(s) are saved yet."))
+
+        withProgress(message = 'Create subject profile report..\n', 
+				
+            detail = "The analysis is running. A download button will 
+                appear when the results are processed and available. (Please do 
+                not press the 'Get Results' button multiple times)",
+		
+            style = "notification", value = NULL, {
+            message("... Create subject profile report ...")
+              
+			potentialErrorMessage <- try(
+				createSubjectProfileReport(
+					listPlots = results$listPlots,
+					outputFile = "subjectProfile.pdf",
+					labelVars = results$labelVars()
+				),
+				silent = TRUE
+			)
+              
+		})
+        
+	})
+  
+	# give the report when clicking on the download button
+	output$downloadSubjectProfileReport <- downloadHandler(
+		filename = "subjectProfile.pdf",
+		content = function(file)	file.copy("subjectProfile.pdf", file),
+      	contentType = "application/pdf"
+  	)
+
+	# make the download button available
+	output$downloadSubjectProfileReportPanel <- renderUI({
+        validate(
+			need(
+				!inherits(results$subjectProfileReport(), "try-error"), 
+				paste("Issue during creation of subject profile report: ", 
+					results$subjectProfileReport(), "."
+				)
+			)
+		)
+        downloadButton("downloadSubjectProfileReport", label = "Download subject profile report")
+	})
   
 }
 

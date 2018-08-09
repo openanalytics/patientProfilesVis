@@ -43,7 +43,7 @@ createSubjectProfileUI <- function(input, results){
 	)]
 	
 	# check if all parameter(s) are specified
-	reqParam <- c("data", 
+	reqParam <- c("data", "title",
 		switch(input$moduleType, 
 			'text' = "paramValueVar",
 			'event' = c("paramVar", "timeVar"),

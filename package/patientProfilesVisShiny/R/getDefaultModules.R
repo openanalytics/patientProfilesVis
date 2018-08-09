@@ -46,7 +46,7 @@ getDefaultModules <- function(data){
 		},
 		if("AE" %in% names(data) &&
 			all(c("AETERM", "AESTDY", "AEENDY") %in% colnames(data$AE))){
-			list('Adverse event (default, interval)' = 
+			list('Adverse events (default, interval)' = 
 				list(
 					data = "AE",
 					paramVar = "AETERM",

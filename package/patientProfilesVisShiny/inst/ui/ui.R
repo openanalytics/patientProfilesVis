@@ -44,15 +44,12 @@ fluidPage(
             
 			# new module specification
 			h4("Module specification"),
-			actionLink(inputId = "createDisplayModule", label = "Create new/display existing module"),
+
 			uiOutput("module"),
 			br(),
 			
 			# creation of subject profile report
 			h4("Report creation"),
-#			selectInput(inputId = "selectedModules", label = "Selected modules", 
-#				choices = "", multiple = TRUE
-#			),
 			actionButton(inputId = "createSubjectProfileReport", label = "Create subject profile report"),
             uiOutput("downloadSubjectProfileReportPanel")
 
