@@ -50,7 +50,7 @@ usually loaded from a _SAS_ data file (`sas7bdat` format).
 The label of the variables stored in the `SAS` datasets is also used
 for title/captions. 
 
-The function `loadDataADaM` can be used to load your custom `SAS` dataset(s) of
+The function `loadDataADaMSDTM` can be used to load your custom `SAS` dataset(s) of
 interest.
 This function returns two objects:
 

@@ -63,7 +63,7 @@ getDefaultModules <- function(data){
 		},
 		if("LB" %in% names(data) &&
 			all(c("LBTEST", "LBDY") %in% colnames(data$LB))){
-			list('Laboratory data (default, event)' = 
+			list('Laboratory test measurements (default, event)' = 
 				c(
 					list(
 						data = "LB",
@@ -86,7 +86,7 @@ getDefaultModules <- function(data){
 		},
 		if("EX" %in% names(data) &&
 			all(c("EXTRT", "EXSTDY", "EXENDY") %in% names(data$EX))){
-			list('Exposure (default, interval)' = 
+			list('Treatment exposure (default, interval)' = 
 				c(
 					list(
 						data = "EX",

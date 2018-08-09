@@ -39,7 +39,7 @@ serverFunction <- function(input, output, session) {
 		inFile <- input$dataFiles
         validate(need(inFile, "No data loaded"))
         
-        data <- loadDataADaM(file.path(inFile$datapath))
+        data <- loadDataADaMSDTM(file.path(inFile$datapath))
 		# uploaded file are renamed by Shiny,
 		# this set the original dataset name(s) to the list names
         initFileNames <- toupper(
@@ -106,7 +106,11 @@ serverFunction <- function(input, output, session) {
 		cat("Update current data\n")
 		if(!is.null(input$moduleData))	results$dataAll()[[input$moduleData]]
 	})
-	results$variablesDataCurrent <- reactive(colnames(results$dataCurrent()))
+	results$variablesDataCurrent <- reactive({
+		vars <- colnames(results$dataCurrent())
+		names(vars) <- paste0(getLabelVar(var = vars, labelVars = results$labelVars()), " (", vars, ")")
+		vars
+	})
 	
 	results$variablesTimeDataCurrent <- reactive(
 		names(which(unlist(colwise(is.numeric)(results$dataCurrent()))))
@@ -196,7 +200,7 @@ serverFunction <- function(input, output, session) {
 				list(
 					radioButtons("moduleTextVarSpecType", label = "Variable(s) specification",
 						choices = list(
-							"Column(s) with variable" = 1,
+							"Column(s) with parameter" = 1,
 							"Pair of columns with parameter name/value" = 2
 						), selected = selected
 					),
@@ -250,15 +254,19 @@ serverFunction <- function(input, output, session) {
 		
 		switch(input$moduleTextVarSpecType,
 			'1' = createWidgetVariable(
-				inputId = "moduleTextParamValueVar", label = "Column(s) with variable", 
+				inputId = "moduleTextParamValueVar", label = "Column(s) with parameter", 
 				multiple = TRUE,
 				selected = if(!is.null(results$currentModule()))	results$currentModule()$paramValueVar
 			),
 			'2' = fluidRow(
-				column(6, createWidgetVariable(inputId = "moduleTextParamValueVarPair", label = "Column with variable value",
-					selected = if(!is.null(results$currentModule()))	results$currentModule()$paramValueVar)
+				column(6, 
+					createWidgetVariable(inputId = "moduleTextParamValueVarPair", 
+						label = "Column with parameter value",
+						selected = if(!is.null(results$currentModule()))	
+							results$currentModule()$paramValueVar)
 				),
-				column(6, createWidgetVariable(inputId = "moduleTextParamNameVarPair", label = "Column with variable name",
+				column(6, createWidgetVariable(inputId = "moduleTextParamNameVarPair",
+					label = "Column with parameter name",
 					selected = if(!is.null(results$currentModule()))	results$currentModule()$paramNameVar)
 				)
 			)

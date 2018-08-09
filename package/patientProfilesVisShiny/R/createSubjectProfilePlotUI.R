@@ -37,6 +37,21 @@ createSubjectProfileUI <- function(input, results){
 			)
 		)
 	)
+	
+	namesParam <- c(
+		'data' = 'data', 'title' = 'title', 'label' = 'label',
+		'subjectVar' = "subject identifier",
+		'paramGroupVar' = "grouping variable",
+		'paramValueVar' = 'column with parameter value',
+		'paramNameVar' = 'column with variable name',
+		'paramVar' = "column with parameter",
+		'timeVar' = "time variable",
+		'timeStartVar' = "start time variable",
+		'timeEndVar' = "end time variable",
+		'colorVar' = "color variable",
+		'shapeVar' = "symbol variable"
+	)
+	
 	# remove empty optional parameters
 	listParams <- listParams[sapply(listParams, function(x) 
 		!(length(x) == 1 && x == "none")
@@ -52,7 +67,7 @@ createSubjectProfileUI <- function(input, results){
 	)
 	specParams <- sapply(listParams[reqParam], isTruthy)
 	validate(need(all(specParams), 
-		paste0("Some parameters (", toString(names(which(!specParams))), ") are missing.")
+		paste0("Some parameters (", toString(namesParam[names(which(!specParams))]), ") are missing.")
 	))
 	
 	subjectProfileFct <- paste0("subjectProfile", simpleCap(input$moduleType), "Plot")
