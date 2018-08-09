@@ -7,7 +7,7 @@
 subjectProfileCombine(listPlots,
   timeLim = getXLimSubjectProfilePlots(listPlots), subjectVar = "USUBJID",
   maxNLines = NULL, refLines = NULL, refLinesData = NULL,
-  refLinesTimeVar = NULL, refLinesLabelVar = NUL, shiny = FALSE)
+  refLinesTimeVar = NULL, refLinesLabelVar = NULL, shiny = FALSE)
 }
 \arguments{
 \item{listPlots}{list of \code{\link[ggplot2]{ggplot2}} objects}
