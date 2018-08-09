@@ -18,7 +18,7 @@ dataFiles <- list.files(
 	full.names = TRUE
 )
 
-dataSDTM <- loadDataADaM(files = dataFiles)
+dataSDTM <- loadDataADaMSDTM(files = dataFiles)
 
 #res <- getTimeVsReference(dataList)
 
@@ -38,7 +38,7 @@ dataFiles <- list.files(
 	full.names = TRUE
 )
 
-dataADaM <- loadDataADaM(files = dataFiles)
+dataADaM <- loadDataADaMSDTM(files = dataFiles)
 
 #res <- getTimeVsReference(dataList)
 
