@@ -1,5 +1,5 @@
 ---
-title: "1972-CL-101 study"
+title: "1972-CL-104 study"
 author: "Laure Cougnaud"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output: 
@@ -47,7 +47,7 @@ profiles.
 
 ```{r loadData}	
 	
-	dataFiles <- list.files(pattern = "sas7bdat", path = "../../data/1972-CL-101/", full.names = TRUE)
+	dataFiles <- list.files(pattern = "sas7bdat", path = "../../data/1972-CL-104/", full.names = TRUE)
 	dataRes <- loadDataADaMSDTM(dataFiles)
 	data <- dataRes
 	labelVars <- attr(dataRes, "labelVars")
@@ -56,22 +56,36 @@ profiles.
 
 # Create the report
 
-```{r createReport}
+The following code create the different modules, and the resulting report.
+Please note that the `createSubjectProfileReport` should be called in the R
+session directly (not within the call to `knitr`).
+
+```{r createReport, eval = FALSE}
+
+	# remove the 45 patients with screen failure
+	dataSL <- subset(data$ADSL, ARM != "Screen Failure")
+	treatments <- unique(dataSL$ARM)
+	treatmentsOrdered <- c(sapply(c("Placebo", "GLPG1972"), function(treat)
+		sapply(c(100, 200, 300), function(dose)
+			grep(paste0(dose, "mg ", treat), treatments, value = TRUE)
+		)
+	))
+	dataSL$ARM <- factor(dataSL$ARM, levels = treatmentsOrdered)
+	subjectIDs <- dataSL$USUBJID
 
 	## info patient
-	infoPatientData <- subset(data$ADLB, SUBJGR2 %in% paste("Cohort", c("C", "D", "E")))
 	infoPatientPlots <- subjectProfileTextPlot(
-		data = infoPatientData,
-		paramValueVar = c("SUBJGR1", "SUBJGR2", "SEX", "ARM"),
+		data = dataSL,
+		paramValueVar = c("ANALGR1", "SEX", "ARM"),
 		title = "Patient information",
 		labelVars = labelVars
 	)
 
 	## adverse event
 	# AEPTCD: preferred term code
-	dataPlot <- subset(data$ADAE, SUBJGR2 %in% paste("Cohort", c("C", "D", "E")) & AETERM != "")
+	dataPlot <- subset(data$ADAE, AETERM != "" & USUBJID %in% subjectIDs)
 	# specify order of value in 'AESEV'
-	dataPlot[, "AESEV"] <- factor(dataPlot[, "AESEV"], levels = "MILD")
+	dataPlot[, "AESEV"] <- factor(dataPlot[, "AESEV"], levels = c("MILD", "MODERATE"))
 	aePlots <- subjectProfileIntervalPlot(
 		data = dataPlot,
 		paramVar = "AETERM",
@@ -84,31 +98,31 @@ profiles.
 
     ### laboratory data
 
+#	dataLB <- data$ADLB
 #	params <- unique(dataLB[, c("PARAMCD", "PARAM")])
 #	subset(params, grepl("leuk", PARAM, ignore.case = TRUE))
 
 	# prepare data for plots:
 	# leuko = WBC, CRP
 	# Note: ADY is missing (NA) when AVISIT is Worst-case scenario, but remote the records for safety
-	lbParams <- c("MONO", "LYM", "BASO", "WBC", "PLAT", "ALT", "AST", "ALP", "GGT", "EOS", "NEUT")
+	
+	lbParams <- c("MONO", "LYM", "BASO", "WBC", "PLAT", "ALT", "AST", "ALP", "GGT", "EOS", "NEUT", "CRP")
 	dataLB <- subset(data$ADLB, 
 		PARAMCD %in% lbParams &
-		LBTEST != "" &
-		SUBJGR2 %in% paste("Cohort", c("C", "D", "E")) &
-		AVISIT != "Worst"
+#		AVISIT != "Worst" &
+		USUBJID %in% subjectIDs
 	)
 	# sort the categories (empty values '' becomes NA)
-	dataLB$LBNRIND <- factor(dataLB$LBNRIND, levels = c("LOW", "NORMAL", "HIGH"))
-	
-	dataLB$LBTESTCD <- factor(dataLB$LBTESTCD)
+	dataLB$ANRIND <- factor(dataLB$ANRIND, levels = c("LOW", "NORMAL", "HIGH"))
+	dataLB$PARAMCD <- factor(dataLB$PARAMCD)
 
 	# create plot
 	lbPlots <- subjectProfileEventPlot(
 		data = dataLB,
-		paramVar = "LBTESTCD", #paramGroupVar = "LBTESTCD",
-		colorVar = "LBNRIND", shapeVar = "LBNRIND",
+		paramVar = "PARAMCD", #paramGroupVar = "LBTESTCD",
+		colorVar = "ANRIND", shapeVar = "ANRIND",
 		shapePalette = c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24),
-		timeVar = "LBDY",
+		timeVar = "ADY",
 		labelVars = labelVars,
 		title = "Laboratory test measurements: reference range indicator"
 	)
@@ -117,8 +131,8 @@ profiles.
 	lbPlotsSpagh <- subjectProfileLinePlot(
 		data = dataLB,
 		paramValueVar = "AVAL",
-		paramNameVar = "LBTESTCD",
-		timeVar = "LBDY",
+		paramNameVar = "PARAMCD",
+		timeVar = "ADY",
 		labelVars = labelVars,
 		title = "Laboratory test measurements: line plots"
 	)
@@ -126,16 +140,14 @@ profiles.
     ## vital signs temperature
 
 	dataVSTemp <- subset(data$ADVS, 
-		VSTESTCD == "TEMP" &
-		SUBJGR2 %in% paste("Cohort", c("C", "D", "E"))
-	)
+		PARAMCD == "TEMP" & USUBJID %in% subjectIDs)
 	# create plot
 	# A1CLSIG: Clinically Significant 1 
 
-	tempVsPlots <- subjectProfileSpaghettiPlot(
+	tempVsPlots <- subjectProfileLinePlot(
 		data = dataVSTemp,
-		paramVar = "AVAL",
-		facetVar = "VSTEST",
+		paramValueVar = "AVAL",
+		paramNameVar = "PARAMCD",
 		timeVar = "ADY",
 		labelVars = labelVars,
 		title = "Vital signs"
@@ -144,8 +156,11 @@ profiles.
 	# create report
 	createSubjectProfileReport(
 		listPlots = list(infoPatientPlots, aePlots, lbPlots, lbPlotsSpagh, tempVsPlots),
-		outputFile = "subjectProfile_1972-CL-101_MAD.pdf",
-		maxNLines = 100
+		outputFile = "subjectProfile_1972-CL-104_MAD.pdf",
+		maxNLines = 100,
+		# sort subject by arm
+		subjectSortData = dataSL,
+		subjectSortVar = "ARM"
 	)
 
 ```

@@ -6,6 +6,10 @@
 #' in png format in a 'figures' folder
 #' @param bookmarkData data.frame with data containing information on which the index should be based
 #' @param bookmarkVar variable(s) of \code{data} of interest for the index
+#' @param subjectSortData data.frame with data containing information on how the subjects 
+#' should be sorted in the report, by default same as \code{bookmarkData}
+#' @param subjectSortVar variable(s) of \code{data} indicating the order for the subjects in the report,
+#' by default same as \code{bookmarkVar}
 #' @param heightLineIn height of a line in inches
 #' @inheritParams subjectProfileCombine
 #' @inheritParams defineIndex
@@ -24,6 +28,8 @@ createSubjectProfileReport <- function(
 	refLinesLabelVar = NULL,
 	bookmarkData = NULL,
 	bookmarkVar = NULL,
+	subjectSortData = bookmarkData,
+	subjectSortVar = bookmarkVar,
 	subjectVar = "USUBJID",
 	landscape = FALSE,
 	outputFile = "subjectProfile.pdf",
@@ -56,6 +62,17 @@ createSubjectProfileReport <- function(
 		maxNLines = maxNLines,
 		shiny = shiny
 	)
+	
+	if(!is.null(subjectSortData) & !is.null(subjectSortVar)){
+		subjectsOrdered <- ddply(unique(subjectSortData[, c(subjectVar, subjectSortVar)]), subjectSortVar)$USUBJID
+		if(all(names(listPlotsPerSubjectList) %in% subjectsOrdered)){
+			listPlotsPerSubjectList <- listPlotsPerSubjectList[subjectsOrdered]
+		}else{
+			warning("The subjects are not ordered according to the specified 'subjectSortVar',",
+				"because not all subjects are contained in the 'subjectSortData'.")
+		}
+		
+	}
 	
 	# extract bookmark(s) (if any)
 	index <- if(!is.null(bookmarkData) & !is.null(bookmarkVar))
@@ -525,7 +542,7 @@ defineIndex <- function(
 	# Index entry creation for each subject:
 	# extract values of specified 'var'
 	indexInfo <- daply(data, subjectVar, function(x){	
-		indexX <- unlist(x[, var])
+		indexX <- unlist(x[, var, drop = FALSE])
 		if(nrow(x) > 1)
 			stop("Multiple information available for subject: ", unique(x[, subjectVar]), 
 				" for index construction.")
@@ -534,7 +551,6 @@ defineIndex <- function(
 			collapse = " "
 		)#	\index[person]{Heisenberg}
 	})
-	indexInfoSubjects <- indexInfo[subjectVar]
 	
 	# Index printing:
 	indexPrint <- paste(
