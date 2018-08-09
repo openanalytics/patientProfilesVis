@@ -5,6 +5,7 @@
     o subjectProfileTextPlot: concatenate information if duplicated info
     o subjectProfileSpaghettiPlot
     o getXLimSubjectProfilePlots: fix extraction limits for interval plot
+    o add sessionInfo, shiny parameter
 0.0.3
     o subjectProfileTextPlot: possibility to have multiple paramValueVar in same line, fix ordering
     o subjectProfileTextPlot: paramValueVar can be a function

@@ -30,7 +30,11 @@ createSubjectProfileReport <- function(
 	exportFigures = FALSE,
 	labelVars = NULL,
 	heightLineIn = 0.2,
-	maxNLines = NULL){
+	maxNLines = NULL,
+	shiny = FALSE){
+
+	if(shiny && !requireNamespace("shiny", quietly = TRUE))
+		stop("The package 'shiny' is required to report progress.")
 
 	# margin of document in inches
 	margin <- 0.75
@@ -49,7 +53,8 @@ createSubjectProfileReport <- function(
 		refLines = refLines, refLinesData = refLinesData, 
 		refLinesTimeVar = refLinesTimeVar, refLinesLabelVar = refLinesLabelVar,
 		subjectVar = subjectVar,
-		maxNLines = maxNLines
+		maxNLines = maxNLines,
+		shiny = shiny
 	)
 	
 	# extract bookmark(s) (if any)
@@ -61,6 +66,8 @@ createSubjectProfileReport <- function(
 			subjectVar = subjectVar,
 			labelVars = labelVars
 		)
+	
+	if(shiny)	incProgress(0.1, detail = "Create subject profile report.")
 	
 	pathTemplate <- getPathTemplate("subjectProfile.Rnw")
 	
@@ -75,7 +82,8 @@ createSubjectProfileReport <- function(
 		outputDir = outputDir,
 		index = index,
 		heightLineIn = heightLineIn,
-		margin = margin
+		margin = margin,
+		shiny = shiny
 	)
 	assign("inputParameters", inputParameters, envir = inputParametersEnv)
 	
@@ -89,7 +97,7 @@ createSubjectProfileReport <- function(
 	
 	# texi2pdf cannot deal with space in name and file should be in current directory
 	oldwd <- getwd()
-	setwd(outputDir)
+	setwd(outputDir)	
 	
 	# convert to pdf
 	texi2pdf(file = outputFileKnitr, clean = TRUE)
@@ -109,6 +117,10 @@ createSubjectProfileReport <- function(
 
 #' Combine subject profile plots.
 #' @param listPlots list of \code{\link[ggplot2]{ggplot2}} objects
+#' @param shiny logical, set to TRUE (FALSE by default) if the report is generated from a Shiny application.
+#' Messages during report creation will be included in the Shiny interface,
+#' and it will be mentioned at the end of the report.
+#' In this case, the \code{shiny} package should be available.
 #' @return a list of \code{subjectProfilePlot} object, containing the combined
 #' profile plots for each subject.
 #' @importFrom cowplot ggdraw draw_label
@@ -123,7 +135,11 @@ subjectProfileCombine <- function(
 	refLines = NULL,
 	refLinesData = NULL,
 	refLinesTimeVar = NULL,
-	refLinesLabelVar = NULL){
+	refLinesLabelVar = NUL,
+	shiny = FALSE){
+
+	if(shiny && !requireNamespace("shiny", quietly = TRUE))
+		stop("The package 'shiny' is required to report progress.")
 	
 	# extract all subjects for which at least one plot is available
 	subjects <- sort(unique(unlist(lapply(listPlots, names))))
@@ -135,6 +151,8 @@ subjectProfileCombine <- function(
 		attr(list, 'metaData') <- attr(x, 'metaData')
 		list
 	})
+
+	if(shiny)	incProgress(0.1, detail = "Combine plots across subjects/modules.")
 	
 	# combine all plots per subject
 	# this returns a list of 'gtable' object
@@ -158,6 +176,7 @@ subjectProfileCombine <- function(
 	)
 		
 	# add title
+	if(shiny)	incProgress(0.5, detail = "Add title.")
 	listPlotsPerSubject <- sapply(names(listPlotsPerSubject), function(subject){
 		
 		# create a ggplot for title only
@@ -249,7 +268,7 @@ subjectProfileCombineOnce <- function(...,
 			!inherits(gg, "subjectProfileTextPlot") & !inherits(gg, "subjectProfileEmptyPlot")
 		))
 		if(length(plotsToModify) > 0){
-			
+						
 			# set same coordinates and include reference lines if any
 			newPlots <- lapply(plotsToModify, function(i){
 						
