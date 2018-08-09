@@ -56,10 +56,14 @@ profiles.
 
 # Create the report
 
-```{r createReport}
+```{r createReport, eval = FALSE}
 
 	## info patient
 	infoPatientData <- subset(data$ADLB, SUBJGR2 %in% paste("Cohort", c("C", "D", "E")))
+	library(plyr)
+	arms <- ddply(unique(infoPatientData[, c("ARM", "ARMN")]), "ARMN")$ARM
+	infoPatientData$ARM <- factor(infoPatientData$ARM, levels = arms)
+	
 	infoPatientPlots <- subjectProfileTextPlot(
 		data = infoPatientData,
 		paramValueVar = c("SUBJGR1", "SUBJGR2", "SEX", "ARM"),
@@ -132,10 +136,10 @@ profiles.
 	# create plot
 	# A1CLSIG: Clinically Significant 1 
 
-	tempVsPlots <- subjectProfileSpaghettiPlot(
+	tempVsPlots <- subjectProfileLinePlot(
 		data = dataVSTemp,
-		paramVar = "AVAL",
-		facetVar = "VSTEST",
+		paramValueVar = "AVAL",
+		paramNameVar = "VSTEST",
 		timeVar = "ADY",
 		labelVars = labelVars,
 		title = "Vital signs"
@@ -145,7 +149,9 @@ profiles.
 	createSubjectProfileReport(
 		listPlots = list(infoPatientPlots, aePlots, lbPlots, lbPlotsSpagh, tempVsPlots),
 		outputFile = "subjectProfile_1972-CL-101_MAD.pdf",
-		maxNLines = 100
+		maxNLines = 100,
+		subjectSortData = infoPatientData,
+		subjectSortVar = "ARM"
 	)
 
 ```
