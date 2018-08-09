@@ -85,6 +85,8 @@ Three plot types/modules are currently available in the package:
   available via the `subjectProfileIntervalPlot` function
 * **'event'** module: representation of single event, available via the
   `subjectProfileEventPlot`
+* **'line'** module: representation of evolution of a value across time via the 
+`subjectProfileLinePlot`
   
 Each of this function returns a list of plots (`ggplot` object), one for each
 subject. 
@@ -309,7 +311,7 @@ in normal range.
 		labelVars = labelVarsSDTMPelican,
 		shapeVar = "LBNRIND",
 		shapePalette = c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24),
-		title = "Laboratory test measurements"
+		title = "Laboratory test measurements: reference range indicator"
 	)
 	
 ```
@@ -317,6 +319,32 @@ in normal range.
 ```{r exampleEventModuleWithColor-include, echo = FALSE, fig.height = getNLinesYGgplot(lbPlotsColor[[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with the 'subjectProfileEventPlot' function for patient:", names(lbPlotsColor)[1])}
 
 	print(lbPlotsColor[[1]])
+
+```
+
+## Line module
+
+The 'line' module enables to represent value of a variable across time.
+
+This is used to represent the evolution of the lab parameters.
+
+```{r exampleLineModule}
+
+	# create plot
+	lbLinePlots <- subjectProfileLinePlot(
+		data = dataLB,
+		paramNameVar = "LBTESTCD",
+		paramValueVar = "LBSTRESN",
+		timeVar = "LBDY",
+		title = "Laboratory test measurements: actual value",
+		label = "defaultSDTMLBLine"
+	)
+	
+```
+
+```{r exampleLineModule-include, echo = FALSE, fig.height = getNLinesYGgplot(lbLinePlots[[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with the 'subjectProfileLinePlot' function for patient:", names(lbLinePlots)[1])}
+
+	print(lbLinePlots[[1]])
 
 ```
 
@@ -364,7 +392,7 @@ The function `createSubjectProfileReport` has mainly two purposes:
 
 	# create report
 	createSubjectProfileReport(
-		listPlots = list(dmPlots, mhPlots, exPlots, aePlots, lbPlotsColor),
+		listPlots = list(dmPlots, mhPlots, exPlots, aePlots, lbLinePlots, lbPlotsColor),
 		refLines = refLinesParam,
 		outputFile = "subjectProfile_SDTM_referenceLinesFromSAP.pdf"
 	)

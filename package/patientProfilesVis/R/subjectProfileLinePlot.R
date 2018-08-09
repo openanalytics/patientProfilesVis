@@ -46,21 +46,20 @@ subjectProfileLinePlot <- function(
 	listPlots <- dlply(data, subjectVar, function(dataSubject){	
 		
 		subject <- unique(dataSubject[, subjectVar])
-				
+
 		aesArgs <- c(
 			list(x = timeVar, y = "yVar"),
-			if(!is.null(colorVar))	list(color = colorVar)
+			if(!is.null(colorVar))	list(color = colorVar, group = colorVar)	else	list(group = 1)
 		)
-			
+		
 		# create the plot
-		gg <- ggplot(data = dataSubject) +
-			geom_point(do.call(aes_string, aesArgs)) +
-			geom_line(do.call(aes_string, aesArgs)) +
+		gg <- ggplot(data = dataSubject, do.call(aes_string, aesArgs)) +
+			geom_point() + geom_line() +
 			subjectProfileTheme() +
 			labs(title = title, x = xLab, y = yLab) +
 			theme(
 				strip.text.y = element_text(size = 6),
-				axis.text.y = element_text(size = 5)
+				axis.text.y = element_text(size = 6)
 			)
 		
 		if(!is.null(paramNameVar))

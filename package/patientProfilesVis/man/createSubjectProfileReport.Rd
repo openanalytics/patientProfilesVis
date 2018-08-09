@@ -7,10 +7,10 @@
 createSubjectProfileReport(listPlots,
   timeLim = getXLimSubjectProfilePlots(listPlots), refLines = NULL,
   refLinesData = NULL, refLinesTimeVar = NULL, refLinesLabelVar = NULL,
-  bookmarkData = NULL, bookmarkVar = NULL, subjectVar = "USUBJID",
-  landscape = FALSE, outputFile = "subjectProfile.pdf",
-  exportFigures = FALSE, labelVars = NULL, heightLineIn = 0.2,
-  maxNLines = NULL, shiny = FALSE)
+  bookmarkData = NULL, bookmarkVar = NULL, subjectSortData = bookmarkData,
+  subjectSortVar = bookmarkVar, subjectVar = "USUBJID", landscape = FALSE,
+  outputFile = "subjectProfile.pdf", exportFigures = FALSE,
+  labelVars = NULL, heightLineIn = 0.2, maxNLines = NULL, shiny = FALSE)
 }
 \arguments{
 \item{listPlots}{list of plots, as returned by the \code{\link{subjectProfileTextPlot}},
@@ -39,6 +39,12 @@ Each sublist contains:
 \item{bookmarkData}{data.frame with data containing information on which the index should be based}
 
 \item{bookmarkVar}{variable(s) of \code{data} of interest for the index}
+
+\item{subjectSortData}{data.frame with data containing information on how the subjects 
+should be sorted in the report, by default same as \code{bookmarkData}}
+
+\item{subjectSortVar}{variable(s) of \code{data} indicating the order for the subjects in the report,
+by default same as \code{bookmarkVar}}
 
 \item{subjectVar}{string, variable of \code{data} with subject ID}
 

@@ -17,7 +17,7 @@ getPathTemplate <- function(file){
 getNLinesYGgplot <- function(gg){
 	
 	nLinesPlot <- if(inherits(gg, "subjectProfileLinePlot")){
-		n_distinct(ggplot_build(gg)$data[[1]]$PANEL) * 3
+		n_distinct(ggplot_build(gg)$data[[1]]$PANEL) * 4
 	}else	length(unique(ggplot_build(gg)$data[[1]]$y))
 	
 	getNLinesLabel <- function(elName, elNLines){
@@ -184,11 +184,8 @@ convertAesVar <- function(data, var){
 		message("Empty records in the: '", var, "' variable are converted to NA.")
 		x[idxEmpty] <- NA
 	}
-	if(!is.factor(x)){
-		factor(x, exclude = NULL)
-	}else{
-		factor(x, exclude = NULL, levels = levels(x))
-	}
+	res <- factor(x, exclude = NULL)
+	return(res)
 }
 
 #' Get custom 'scale_[type]_manual' function
