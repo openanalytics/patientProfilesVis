@@ -10,7 +10,7 @@ createSubjectProfileReport(listPlots,
   bookmarkData = NULL, bookmarkVar = NULL, subjectVar = "USUBJID",
   landscape = FALSE, outputFile = "subjectProfile.pdf",
   exportFigures = FALSE, labelVars = NULL, heightLineIn = 0.2,
-  maxNLines = NULL)
+  maxNLines = NULL, shiny = FALSE)
 }
 \arguments{
 \item{listPlots}{list of plots, as returned by the \code{\link{subjectProfileTextPlot}},
@@ -55,6 +55,11 @@ in png format in a 'figures' folder}
 
 \item{maxNLines}{maximum number of lines for a combined plot,
 to fit in the page height}
+
+\item{shiny}{logical, set to TRUE (FALSE by default) if the report is generated from a Shiny application.
+Messages during report creation will be included in the Shiny interface,
+and it will be mentioned at the end of the report.
+In this case, the \code{shiny} package should be available.}
 }
 \value{
 no returned value, the report is created at the location

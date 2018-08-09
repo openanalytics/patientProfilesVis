@@ -11,8 +11,9 @@ runPatientProfilesVisShiny <- function(installDependencies = FALSE, ...){
   if (installDependencies) {
     
     ## (a) CRAN packages
-    update(dev_package_deps(pkg = system.file("ui", package = "patientProfilesVisShiny"), 
-            dependencies = "Suggests"))
+    update(dev_package_deps(
+		pkg = system.file("ui", package = "patientProfilesVisShiny"), dependencies = "Suggests")
+	)
     
     
     ## (b) non-CRAN packages - by hand
@@ -27,31 +28,31 @@ runPatientProfilesVisShiny <- function(installDependencies = FALSE, ...){
   
 	# (2) Copy the UI files & folders from "inst/ui" for local use
   
-  tmpDir <- tempdir()
-  oldDir <- setwd(tmpDir)
-  on.exit(setwd(oldDir))
+	tmpDir <- tempdir()
+	oldDir <- setwd(tmpDir)
+	on.exit(setwd(oldDir))
   
 	uiDir <- system.file("ui", package = "patientProfilesVisShiny")
 	uiFiles <- list.files(path = uiDir, full.names = FALSE, recursive = TRUE)
 	
 	sapply(uiFiles, function(from) {
 				
-				to <- file.path(tmpDir, from)
-				toDir <- dirname(to)
-				
-				if (!dir.exists(toDir)) {
-					
-					dir.create(path = toDir, recursive = TRUE)
-					
-				}
-				
-				file.copy(from = file.path(uiDir, from), to = to, overwrite = TRUE)
-				
-			})  
+		to <- file.path(tmpDir, from)
+		toDir <- dirname(to)
+		
+		if (!dir.exists(toDir)) {
+			
+			dir.create(path = toDir, recursive = TRUE)
+			
+		}
+		
+		file.copy(from = file.path(uiDir, from), to = to, overwrite = TRUE)
+		
+	})  
 	
 	
 	# (3) Run the application
-  library(shiny)
+	library(shiny)
 	runApp(appDir = tmpDir, ...)
 	
 }

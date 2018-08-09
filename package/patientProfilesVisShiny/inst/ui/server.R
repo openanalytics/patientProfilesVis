@@ -297,7 +297,7 @@ serverFunction <- function(input, output, session) {
 	# preview: fill the plot module
 	output$moduleResults <- renderUI({
 		
-		validate(need(isTruthy(results$plotsCurrent), "Plot not yet created."))
+		validate(need(isTruthy(results$plotsCurrent), "No subject profile plot has been created yet."))
 		
 		tagList(	
 				
@@ -417,14 +417,15 @@ serverFunction <- function(input, output, session) {
                 appear when the results are processed and available. (Please do 
                 not press the 'Get Results' button multiple times)",
 		
-            style = "notification", value = NULL, {
+            style = "notification", value = 0, {
             message("... Create subject profile report ...")
               
 			potentialErrorMessage <- try(
 				createSubjectProfileReport(
 					listPlots = results$listPlots,
 					outputFile = "subjectProfile.pdf",
-					labelVars = results$labelVars()
+					labelVars = results$labelVars(),
+				 	shiny = TRUE
 				),
 				silent = TRUE
 			)
