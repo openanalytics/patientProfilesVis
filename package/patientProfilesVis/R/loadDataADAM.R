@@ -10,13 +10,15 @@
 #' By default all columns ending with 'DTC' are used (dateVars is: 'DTC$').
 #' @param verbose logical, if TRUE (by default) progress messages are printed during execution
 #' @return list of data.frame with data of each ADAM file (if not empty),
-#' with special attributes 'labelVars': named vector with label of the variables
+#' with special attributes 'labelVars': named vector with label of the variables.
+#' Each data.frame contains an additional column: 'dataset' specifying the name of the 
+#' \code{files} it was read from.
 #' @author Laure Cougnaud
 #' @importFrom tools file_path_sans_ext
 #' @importFrom haven read_sas
 #' @importFrom plyr colwise
 #' @export
-loadDataADaM <- function(files, 
+loadDataADaMSDTM <- function(files, 
 	convertToDate = FALSE, dateVars = "DTC$",
 	verbose = TRUE){
 	
@@ -26,7 +28,7 @@ loadDataADaM <- function(files,
 	idxDuplFiles <- duplicated(names(files))
 	if(any(idxDuplFiles))
 		warning(sum(idxDuplFiles), "duplicated file name. These files",
-			"will have the same name in the 'ADAM' column.")
+			"will have the same name in the 'dataset' column.")
 	
 	# import SAS dataset format into R
 	dataList <- sapply(names(files), function(name){
@@ -40,7 +42,7 @@ loadDataADaM <- function(files,
 		if(nrow(data) > 0){
 		
 			# save dataset name
-			data <- cbind(data, ADAM = name)
+			data <- cbind(data, DATASET = name)
 			
 			if(convertToDate){
 				colsDate <- grep(dateVars, colnames(data), value = TRUE)
@@ -61,7 +63,7 @@ loadDataADaM <- function(files,
 	dataList <- dataList[!sapply(dataList, is.null)]
 	
 	# extract label variables
-	labelVars <- getLabelVars(dataList)
+	labelVars <- c(getLabelVars(dataList), 'DATASET' = "Dataset Name")
 	attr(dataList, "labelVars") <- labelVars
 	
 	return(dataList)
