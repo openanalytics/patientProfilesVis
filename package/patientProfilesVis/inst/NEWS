@@ -3,7 +3,7 @@
     o use viridisLite instead of viridis paclage
     o createSubjectProfileReport: automatic split of modules across pages in report
     o subjectProfileTextPlot: concatenate information if duplicated info
-    o subjectProfileSpaghettiPlot
+    o subjectProfileLinePlot
     o getXLimSubjectProfilePlots: fix extraction limits for interval plot
     o add sessionInfo, shiny parameter
     o rename loadDataADaM by loadDataADaMSDTM

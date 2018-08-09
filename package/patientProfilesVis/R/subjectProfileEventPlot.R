@@ -43,7 +43,7 @@ subjectProfileEventPlot <- function(
 		if(is.null(colorPalette))	colorPalette <- getPatientColorPalette(x = data[, colorVar])
 	}
 	if(!is.null(shapeVar)){
-		data[, shapeVar] <- convertAesVar(data, shapeVar)
+		data[, shapeVar] <- convertAesVar(data, var = shapeVar)
 		if(is.null(shapePalette))	shapePalette <- getPatientShapePalette(x = data[, shapeVar])
 	}
 	
