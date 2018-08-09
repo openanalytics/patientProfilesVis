@@ -156,7 +156,7 @@ session directly (not within the call to `knitr`).
 	# create report
 	createSubjectProfileReport(
 		listPlots = list(infoPatientPlots, aePlots, lbPlots, lbPlotsSpagh, tempVsPlots),
-		outputFile = "subjectProfile_1972-CL-104_MAD.pdf",
+		outputFile = "subjectProfile_1972-CL-104.pdf",
 		maxNLines = 100,
 		# sort subject by arm
 		subjectSortData = dataSL,

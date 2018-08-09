@@ -152,7 +152,7 @@ subjectProfileCombine <- function(
 	refLines = NULL,
 	refLinesData = NULL,
 	refLinesTimeVar = NULL,
-	refLinesLabelVar = NUL,
+	refLinesLabelVar = NULL,
 	shiny = FALSE){
 
 	if(shiny && !requireNamespace("shiny", quietly = TRUE))
