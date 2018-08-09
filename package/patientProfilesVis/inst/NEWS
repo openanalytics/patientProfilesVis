@@ -7,6 +7,8 @@
     o getXLimSubjectProfilePlots: fix extraction limits for interval plot
     o add sessionInfo, shiny parameter
     o rename loadDataADaM by loadDataADaMSDTM
+    o defineIndex: fix when only one variable is used
+    o createSubjectProfileReport: possibility to sort subjects based on a variable
 0.0.3
     o subjectProfileTextPlot: possibility to have multiple paramValueVar in same line, fix ordering
     o subjectProfileTextPlot: paramValueVar can be a function
