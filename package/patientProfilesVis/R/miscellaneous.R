@@ -16,7 +16,7 @@ getPathTemplate <- function(file){
 #' @export
 getNLinesYGgplot <- function(gg){
 	
-	nLinesPlot <- if(inherits(gg, "subjectProfileSpaghettiPlot")){
+	nLinesPlot <- if(inherits(gg, "subjectProfileLinePlot")){
 		n_distinct(ggplot_build(gg)$data[[1]]$PANEL) * 3
 	}else	length(unique(ggplot_build(gg)$data[[1]]$y))
 	
@@ -187,7 +187,7 @@ convertAesVar <- function(data, var){
 	if(!is.factor(x)){
 		factor(x, exclude = NULL)
 	}else{
-		droplevels(factor(x, exclude = NULL, levels = levels(x)))
+		factor(x, exclude = NULL, levels = levels(x))
 	}
 }
 

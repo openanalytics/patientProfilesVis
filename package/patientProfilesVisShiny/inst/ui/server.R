@@ -102,16 +102,18 @@ serverFunction <- function(input, output, session) {
 		)
 	})
 
+	# save selected dataset
 	results$dataCurrent <- reactive({
 		cat("Update current data\n")
 		if(!is.null(input$moduleData))	results$dataAll()[[input$moduleData]]
 	})
+	# and column names (variables)
 	results$variablesDataCurrent <- reactive({
 		vars <- colnames(results$dataCurrent())
 		names(vars) <- paste0(getLabelVar(var = vars, labelVars = results$labelVars()), " (", vars, ")")
 		vars
 	})
-	
+	# extract possible time variable (should be numeric)
 	results$variablesTimeDataCurrent <- reactive(
 		names(which(unlist(colwise(is.numeric)(results$dataCurrent()))))
 	)
@@ -124,17 +126,20 @@ serverFunction <- function(input, output, session) {
 		)
 		selectInput(..., choices = choices, multiple = multiple)
 
+	# create widgets for module specification
 	output$moduleParamPanel <- renderUI({
 				
 		validate(need(input$moduleData, "Please specify a dataset."))		
 			
+		cat("Update module param")
+		
 		isolate({
 				
 			tagList(
 
 				selectInput(
 					"moduleType", label = "Type", 
-					choices = c("text", "event", "interval"),
+					choices = c("text", "event", "interval", "line"),
 					selected = if(!is.null(results$currentModule()))	results$currentModule()$type	else	"text"
 				),
 				
@@ -171,22 +176,28 @@ serverFunction <- function(input, output, session) {
 	# create widgets specific of certain module type
 	output$moduleSpecificType <- renderUI({
 				
+		cat("module specific type")		
+				
 		validate(need(input$moduleType, "moduleType"))
 		
 		# widgets common to the 'event' and 'interval' modules
-		tagListCommonEventInterval <- list(
-			createWidgetVariable(
-				inputId = "moduleParamVar", 
-				label = "Column with variable(s)", 
-				multiple = TRUE,
-				selected = if(!is.null(results$currentModule()))	results$currentModule()$paramVar
-			),
-			createWidgetVariable(
-				inputId = "moduleColorVar", 
-				label = "Column with variable used for color",
-				optional = TRUE,
-				selected = if(!is.null(results$currentModule()))	results$currentModule()$colorVar
-			)
+		widgetParamVar <- createWidgetVariable(
+			inputId = "moduleParamVar", 
+			label = "Column with variable(s)", 
+			multiple = TRUE,
+			selected = if(!is.null(results$currentModule()))	results$currentModule()$paramVar
+		)
+		widgetColorVar <- createWidgetVariable(
+			inputId = "moduleColorVar", 
+			label = "Column with variable used for color",
+			optional = TRUE,
+			selected = if(!is.null(results$currentModule()))	results$currentModule()$colorVar
+		)		
+		widgetTimeVar <- createWidgetVariable(
+			inputId = "moduleTimeVar", 
+			label = "Column with time variable",
+			choices = results$variablesTimeDataCurrent(),
+			selected = if(!is.null(results$currentModule()))	results$currentModule()$timeVar
 		)
 		
 		switch(input$moduleType,
@@ -208,15 +219,7 @@ serverFunction <- function(input, output, session) {
 				)
 			},
 			'event' = c(
-				list(
-					createWidgetVariable(
-						inputId = "moduleEventTimeVar", 
-						label = "Column with time variable",
-						choices = results$variablesTimeDataCurrent(),
-						selected = if(!is.null(results$currentModule()))	results$currentModule()$timeVar
-					)
-				),
-				tagListCommonEventInterval,
+				list(widgetTimeVar, widgetParamVar, widgetColorVar),
 				list(
 					createWidgetVariable(
 						inputId = "moduleEventShapeVar", 
@@ -242,9 +245,27 @@ serverFunction <- function(input, output, session) {
 						selected = if(!is.null(results$currentModule()))	results$currentModule()$timeEndVar
 					)
 				),
-				tagListCommonEventInterval
-			)
-		)
+				list(widgetParamVar, widgetColorVar)
+			),
+			
+			'line' = {
+				cat(str(results$currentModule()))
+				list(
+					widgetTimeVar, 
+					createWidgetVariable(inputId = "moduleLineParamValueVar", 
+						label = "Column with parameter value",
+						selected = if(!is.null(results$currentModule()))	
+							results$currentModule()$paramValueVar
+					),
+					createWidgetVariable(inputId = "moduleLineParamNameVar",
+						label = "Column with parameter name",
+						selected = if(!is.null(results$currentModule()))	
+							results$currentModule()$paramNameVar
+					),
+					widgetColorVar
+				)
+				
+			})
 		
 	})
 

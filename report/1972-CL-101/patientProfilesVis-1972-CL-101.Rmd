@@ -114,13 +114,13 @@ profiles.
 	)
 
 	# create plot
-	lbPlotsSpagh <- subjectProfileSpaghettiPlot(
+	lbPlotsSpagh <- subjectProfileLinePlot(
 		data = dataLB,
-		paramVar = "AVAL",
-		facetVar = "LBTESTCD",
+		paramValueVar = "AVAL",
+		paramNameVar = "LBTESTCD",
 		timeVar = "LBDY",
 		labelVars = labelVars,
-		title = "Laboratory test measurements: spaghetti plots"
+		title = "Laboratory test measurements: line plots"
 	)
 
     ## vital signs temperature

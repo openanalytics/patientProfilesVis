@@ -25,7 +25,7 @@ createSubjectProfileUI <- function(input, results){
 			),
 			'event' = list(
 				paramVar = input$moduleParamVar,
-				timeVar = input$moduleEventTimeVar,
+				timeVar = input$moduleTimeVar,
 				colorVar = input$moduleColorVar,
 				shapeVar = input$moduleEventShapeVar
 			),
@@ -33,6 +33,12 @@ createSubjectProfileUI <- function(input, results){
 				paramVar = input$moduleParamVar,
 				timeStartVar = input$moduleIntervalTimeStartVar,
 				timeEndVar = input$moduleIntervalTimeEndVar,
+				colorVar = input$moduleColorVar
+			),
+			'line' = list(
+				paramNameVar = input$moduleLineParamNameVar,
+				paramValueVar = input$moduleLineParamValueVar,
+				timeVar = input$moduleTimeVar,
 				colorVar = input$moduleColorVar
 			)
 		)
@@ -46,6 +52,7 @@ createSubjectProfileUI <- function(input, results){
 		'paramNameVar' = 'column with variable name',
 		'paramVar' = "column with parameter",
 		'timeVar' = "time variable",
+		'facetVar' = "variable",
 		'timeStartVar' = "start time variable",
 		'timeEndVar' = "end time variable",
 		'colorVar' = "color variable",
@@ -62,7 +69,8 @@ createSubjectProfileUI <- function(input, results){
 		switch(input$moduleType, 
 			'text' = "paramValueVar",
 			'event' = c("paramVar", "timeVar"),
-			'interval' = c("paramVar", "timeStartVar", "timeEndVar")
+			'interval' = c("paramVar", "timeStartVar", "timeEndVar"),
+			'line' = c("paramNameVar", "paramValueVar", "timeVar")
 		)
 	)
 	specParams <- sapply(listParams[reqParam], isTruthy)

@@ -73,7 +73,7 @@ getDefaultModules <- function(data){
 						shapeVar = "LBNRIND",
 						type = "event",
 		#				shapePalette = c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24),
-						title = "Laboratory test measurements",
+						title = "Laboratory test measurements: reference range indicator",
 						label = "defaultSDTMLBEvent",
 						subjectVar =  "USUBJID"
 					),
@@ -84,6 +84,23 @@ getDefaultModules <- function(data){
 				)
 			)
 		},
+		if("LB" %in% names(data) && all(c("LBTESTCD", "LBSTRESN", "LBDY") %in% colnames(data$LB))){
+			list('Laboratory test measurements (default, line)' = 
+				c(
+					list(
+						data = "LB",
+						paramNameVar = "LBTESTCD",
+						paramValueVar = "LBSTRESN",
+						timeVar = "LBDY",
+						type = "line",
+						title = "Laboratory test measurements: actual value",
+						label = "defaultSDTMLBLine",
+						subjectVar =  "USUBJID"
+					)
+				)
+			)
+		},
+		
 		if("EX" %in% names(data) &&
 			all(c("EXTRT", "EXSTDY", "EXENDY") %in% names(data$EX))){
 			list('Treatment exposure (default, interval)' = 
