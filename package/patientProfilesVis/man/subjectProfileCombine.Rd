@@ -7,7 +7,7 @@
 subjectProfileCombine(listPlots,
   timeLim = getXLimSubjectProfilePlots(listPlots), subjectVar = "USUBJID",
   maxNLines = NULL, refLines = NULL, refLinesData = NULL,
-  refLinesTimeVar = NULL, refLinesLabelVar = NULL)
+  refLinesTimeVar = NULL, refLinesLabelVar = NUL, shiny = FALSE)
 }
 \arguments{
 \item{listPlots}{list of \code{\link[ggplot2]{ggplot2}} objects}
@@ -36,6 +36,11 @@ Each sublist contains:
 \item{refLinesTimeVar}{string, variable of \code{refLinesData} with time for reference line(s)}
 
 \item{refLinesLabelVar}{string, variable of \code{refLinesData} with label for reference line(s)}
+
+\item{shiny}{logical, set to TRUE (FALSE by default) if the report is generated from a Shiny application.
+Messages during report creation will be included in the Shiny interface,
+and it will be mentioned at the end of the report.
+In this case, the \code{shiny} package should be available.}
 }
 \value{
 a list of \code{subjectProfilePlot} object, containing the combined
