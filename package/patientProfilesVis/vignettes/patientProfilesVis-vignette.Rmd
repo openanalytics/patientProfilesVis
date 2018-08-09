@@ -258,6 +258,29 @@ this time interval visualization
 
 ```
 
+### Concomitant medications
+
+```{r exampleIntervalModule-cm}
+
+	# AEPTCD: preferred term codes
+	cmPlots <- subjectProfileIntervalPlot(
+		data = SDTMDataPelican$CM,
+		paramVar = c("CMDECOD", "CMINDC", "CMDOSTXT", "CMDOSU", "CMROUTE"),
+		timeStartVar = "CMSTDY",
+		timeEndVar = "CMENDY",
+		colorVar = "CMDOSFRQ",
+		labelVars = labelVarsSDTMPelican,
+		title = "Concomitant medications"
+	)
+
+```
+
+```{r exampleIntervalModule-cm-include, echo = FALSE, fig.height = getNLinesYGgplot(cmPlots[[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlots)[1])}
+
+	print(cmPlots[[1]])
+
+```
+
 ## Event module
 
 The 'event' module enables to represent event data.

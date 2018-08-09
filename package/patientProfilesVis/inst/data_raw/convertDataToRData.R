@@ -13,7 +13,7 @@ pathData <- file.path(
 )
 
 dataFiles <- list.files(
-	pattern = "^(ae|dm|lb|mh|ex|sv|tv)\\.sas7bdat$",
+	pattern = "^(ae|dm|lb|mh|ex|sv|tv|cm)\\.sas7bdat$",
 	path = pathData, 
 	full.names = TRUE
 )

@@ -1,3 +1,5 @@
+0.0.5
+    o add concomitant medications in vignette
 0.0.4
     o subjectProfileIntervalPlot: re-label [start|end]Var -> time[Start|end]Var and use arrow for non-ending interval
     o use viridisLite instead of viridis paclage
