@@ -8,13 +8,5 @@ Maintainer: Laure Cougnaud <laure.cougnaud@openanalytics.eu>
 Description: This package contains a shiny application to visualize patient profiles.
 License: Software for Internal Use at Open Analytics NV
 Imports: 
-	shiny
-Suggests: 
-	tools,
-	DT,
-	plotly,
-	rmarkdown,
-	patientProfilesVis,
-	plyr,
-	glpgStyle
+	shiny, patientProfilesVis, tools, plyr
 RoxygenNote: 6.0.1

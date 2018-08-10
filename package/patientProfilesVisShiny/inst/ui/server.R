@@ -1,6 +1,5 @@
 #library(rmarkdown)
 #library(tools)  
-# DT, plotly
 library(patientProfilesVis)
 library(tools)
 library(plyr)
