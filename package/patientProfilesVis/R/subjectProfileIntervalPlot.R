@@ -24,6 +24,7 @@
 #' This label is used to report the name of the panel 
 #' in the text when the plots are combined (e.g. if the plot is empty).
 #' @inheritParams getLabelVar
+#' @inheritParams filterData
 #' @return list of \code{\link[ggplot2]{ggplot2} objects}, 
 #' also of class \code{subjectProfileTextPlot}
 #' @author Laure Cougnaud
@@ -38,6 +39,7 @@ subjectProfileIntervalPlot <- function(
 	timeStartVar,
 	timeEndVar,
 	subjectVar = "USUBJID",
+	subsetVar = NULL, subsetValue = NULL,
 	timeLim =  with(data, c(min(get(timeStartVar), na.rm = TRUE), max(get(timeEndVar), na.rm = TRUE))),
 	rangeSimilarStartEnd = diff(timeLim)/1000,
 	xLab = paste(getLabelVar(c(timeStartVar, timeEndVar), labelVars = labelVars), collapse = "/"),
@@ -79,6 +81,12 @@ subjectProfileIntervalPlot <- function(
 
 	# remove records without parameter variable
 	data <- data[with(data, !is.na(yVar) & yVar != ""), ]
+	
+	# only keep records of interest
+	data <- filterData(data, 
+		subsetVar = subsetVar, 
+		subsetValue = subsetValue
+	)
 
 	# if paramGroupVar is specified: change order levels of 'variable'
 	data$yVar <- formatParamVar(

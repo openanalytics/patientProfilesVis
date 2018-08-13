@@ -5,7 +5,8 @@
 \title{Create plot of subject profiles for events.}
 \usage{
 subjectProfileTextPlot(data, paramValueVar, paramNameVar = NULL,
-  paramGroupVar = NULL, subjectVar = "USUBJID", xLab = "", yLab = "",
+  paramGroupVar = NULL, subsetVar = NULL, subsetValue = NULL,
+  subjectVar = "USUBJID", xLab = "", yLab = "",
   title = "Subject information", label = title, labelVars = NULL,
   paramVarSep = " - ")
 }
@@ -37,6 +38,11 @@ If specified, \code{paramValueVar} should be an unique variable.}
 \item{paramGroupVar}{(optional) string, variable of \code{data} with grouping.
 If specified, the parameters will be grouped by this variable in the y-axis, and
 \code{paramValueVar} should be an unique variable.}
+
+\item{subsetVar}{variable of \code{data} used for subsetting}
+
+\item{subsetValue}{character vector with value(s) of interest to consider for 
+\code{paramSubsetVar}}
 
 \item{subjectVar}{string, variable of \code{data} with subject ID}
 
