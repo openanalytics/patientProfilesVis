@@ -445,7 +445,7 @@ serverFunction <- function(input, output, session) {
 			
 			# save the parameters:
 			newModule <- list(getUIParamModule(input))
-			names(newModule) <- paste0(input$moduleTitle, " (custom, ", input$moduleType, ")")
+			names(newModule) <- paste0("SELECTED: ", input$moduleTitle, " (custom, ", input$moduleType, ")")
 			results$availableModules <- c(results$availableModules, newModule)
 			
 			output$moduleMessage <- renderUI(
@@ -526,7 +526,7 @@ serverFunction <- function(input, output, session) {
 					listPlots = results$listPlots,
 					outputFile = "subjectProfile.pdf",
 					labelVars = results$labelVars(),
-					subjectSortData = input$reportSubjectSortData,
+					subjectSortData = results$dataAll()[[input$reportSubjectSortData]],
 					subjectSortVar = input$reportSubjectSortVar,
 				 	shiny = TRUE
 				),
