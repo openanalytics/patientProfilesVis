@@ -224,7 +224,7 @@ getAesScaleManual <- function(lab, palette, type){
 #' @return vector with re-formatted \code{paramVar}, NULL if empty
 #' @author Laure Cougnaud
 #' @export
-getParamNameVar <- function(data, paramVar = NULL, paramGroupVar = NULL){
+formatParamVar <- function(data, paramVar = NULL, paramGroupVar = NULL, revert = FALSE){
 	
 	res <- if(!is.null(paramVar)){
 		
@@ -240,12 +240,22 @@ getParamNameVar <- function(data, paramVar = NULL, paramGroupVar = NULL){
 			}else{
 				groupVariable <- if(length(paramGroupVar) > 1){
 					interaction(data[, paramGroupVar])
-				}else data[, paramGroupVar]
-				paramVarVect <- reorder(paramVarVect, groupVariable, unique)
+				}else{
+					if(!is.factor(data[, paramGroupVar]))
+						factor(data[, paramGroupVar])	else	data[, paramGroupVar]
+				}	
+				if(!all(tapply(groupVariable, paramVarVect, n_distinct) == 1)){
+					warning(paste("The grouping variable:", groupVariable, "is not used, ",
+						"because it is not unique for all parameters."))
+				}else{
+					paramVarVect <- reorder(paramVarVect, groupVariable, unique)
+				}
 			}
 		}
 		
-		paramVarVect
+		if(revert){
+			factor(paramVarVect, levels = rev(levels(paramVarVect)))
+		}else	paramVarVect
 	
 	}
 	
