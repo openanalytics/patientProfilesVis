@@ -34,7 +34,7 @@ subjectProfileLinePlot <- function(
 	
 	data <- data[with(data, !is.na(yVar) & yVar != "" & !is.na(get(timeVar))), ]
 	
-	data[, paramNameVar] <- getParamNameVar(
+	data[, paramNameVar] <- formatParamVar(
 		data = data, paramVar = paramNameVar, paramGroupVar = paramGroupVar
 	)
 		

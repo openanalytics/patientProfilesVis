@@ -73,14 +73,17 @@ subjectProfileIntervalPlot <- function(
 			)
 	}
 	
+	# concatenate variable(s) if multiple are specified
 	data$yVar <- if(length(paramVar) > 1)
 		apply(data[, paramVar], 1, paste, collapse = " ")	else	data[, paramVar]
-	if(!is.factor(data$yVar))	data$yVar <- factor(data$yVar)
 
+	# remove records without parameter variable
+	data <- data[with(data, !is.na(yVar) & yVar != ""), ]
 
 	# if paramGroupVar is specified: change order levels of 'variable'
-	data$yVar <- getParamNameVar(
-		data = data, paramVar = "yVar", paramGroupVar = paramGroupVar
+	data$yVar <- formatParamVar(
+		data = data, paramVar = "yVar", paramGroupVar = paramGroupVar,
+		revert = TRUE
 	)
 	
 	# convert color variable to factor

@@ -2,11 +2,11 @@
 
 export(convertToDateTime)
 export(createSubjectProfileReport)
+export(formatParamVar)
 export(getLabelVar)
 export(getLabelVars)
 export(getMaxNLinesCombinePlot)
 export(getNLinesYGgplot)
-export(getParamNameVar)
 export(getPathTemplate)
 export(getPatientColorPalette)
 export(getPatientShapePalette)

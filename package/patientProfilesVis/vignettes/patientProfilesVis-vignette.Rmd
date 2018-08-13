@@ -334,7 +334,7 @@ in normal range.
 		colorVar = "LBNRIND",
 		labelVars = labelVarsSDTMPelican,
 		shapeVar = "LBNRIND",
-		shapePalette = c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24),
+		shapePalette = c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24, 'NA' = 3),
 		title = "Laboratory test measurements: reference range indicator"
 	)
 	
