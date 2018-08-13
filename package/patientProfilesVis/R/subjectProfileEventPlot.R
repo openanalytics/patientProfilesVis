@@ -29,12 +29,14 @@ subjectProfileEventPlot <- function(
 	labelVars = NULL
 ){
 	
-	data[, "yVar"] <- if(length(paramVar) > 1)
-		apply(data[, paramVar], 1, paste, collapse = " ")	else{
-		yVar <- data[, paramVar]
-		if(is.factor(yVar))	factor(yVar, levels = rev(levels(yVar)))	else	yVar
+	# concatenate variable(s) if multiple are specified
+	data[, "yVar"] <- if(length(paramVar) > 1){
+		apply(data[, paramVar], 1, paste, collapse = " ")
+	}else{
+		data[, paramVar]
 	}
 	
+	# remove records without parameter or time variables
 	data <- data[with(data, !is.na(yVar) & yVar != "" & !is.na(get(timeVar))), ]
 	
 	# convert aesthetic variables to factor
@@ -47,8 +49,10 @@ subjectProfileEventPlot <- function(
 		if(is.null(shapePalette))	shapePalette <- getPatientShapePalette(x = data[, shapeVar])
 	}
 	
-	data$yVar <- getParamNameVar(
-		data = data, paramVar = "yVar", paramGroupVar = paramGroupVar
+	# format variable
+	data$yVar <- formatParamVar(
+		data = data, paramVar = "yVar", paramGroupVar = paramGroupVar,
+		revert = TRUE
 	)
 	
 	listPlots <- dlply(data, subjectVar, function(dataSubject){	
