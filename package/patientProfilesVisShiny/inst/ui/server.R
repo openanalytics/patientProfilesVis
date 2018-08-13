@@ -108,9 +108,7 @@ serverFunction <- function(input, output, session) {
 	})
 	# and column names (variables)
 	results$variablesDataCurrent <- reactive({
-		vars <- colnames(results$dataCurrent())
-		names(vars) <- paste0(getLabelVar(var = vars, labelVars = results$labelVars()), " (", vars, ")")
-		vars
+		getVarLabelsForUI(data = results$dataCurrent(), labelVars = results$labelVars())
 	})
 	# extract possible time variable (should be numeric)
 	results$variablesTimeDataCurrent <- reactive(
@@ -467,6 +465,46 @@ serverFunction <- function(input, output, session) {
 
 	## Report creation
 	
+	output$reportCreation <- renderUI({
+				
+		validate(need(results$dataRes(), "Please upload some data."))		
+				
+		tagList(
+			h5("Sort subjects based on:"),
+			fluidRow(
+				column(6,
+					selectInput(inputId = "reportSubjectSortData",
+						label = "Dataset", multiple = FALSE,
+						choices = c('<none>' = 'none', results$datasets())
+					)
+				),
+				column(6, uiOutput("reportSubjectSortVarPanel"))
+			),
+			fluidRow(
+				actionButton(inputId = "createSubjectProfileReport", label = "Create subject profile report"),
+				br(),
+				uiOutput("downloadSubjectProfileReportPanel")
+			)
+		)		
+				
+	})
+
+	# extract the possible variable to sort subject by
+	output$reportSubjectSortVarPanel <- renderUI({
+		validate(need(input$reportSubjectSortData, "reportSubjectSortData"))
+		
+		reportSubjectSortVars  <- if(input$reportSubjectSortData != "none")
+			getVarLabelsForUI(
+				data = results$dataAll()[[input$reportSubjectSortData]], 
+				labelVars = results$labelVars()
+			)
+		selectInput(
+			inputId = "reportSubjectSortVar", 
+			label = "Variable", multiple = FALSE,
+			choices = reportSubjectSortVars, selected = reportSubjectSortVars[1]
+		)
+	})
+	
 	# specified module
 
 	# create the report
@@ -488,6 +526,8 @@ serverFunction <- function(input, output, session) {
 					listPlots = results$listPlots,
 					outputFile = "subjectProfile.pdf",
 					labelVars = results$labelVars(),
+					subjectSortData = input$reportSubjectSortData,
+					subjectSortVar = input$reportSubjectSortVar,
 				 	shiny = TRUE
 				),
 				silent = TRUE

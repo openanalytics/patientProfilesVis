@@ -3,6 +3,7 @@
 export(createSubjectProfileUI)
 export(getDefaultModules)
 export(getUIParamModule)
+export(getVarLabelsForUI)
 export(runPatientProfilesVisShiny)
 export(simpleCap)
 importFrom(shiny,runApp)

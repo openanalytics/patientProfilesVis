@@ -16,3 +16,15 @@ simpleCap <- function(x, onlyFirst = FALSE, rev = FALSE) {
 	})
 }
 
+
+#' Get variable labels for the interface.
+#' This concatenate the variable code (column in data) and variable labels
+#' @inheritParams patientProfilesVis::getLabelVar
+#' @return named vector with variables
+#' @author Laure Cougnaud
+#' @export
+getVarLabelsForUI <- function(data, labelVars){
+	vars <- colnames(data)
+	names(vars) <- paste0(getLabelVar(var = vars, labelVars = labelVars), " (", vars, ")")
+	return(vars)	
+}

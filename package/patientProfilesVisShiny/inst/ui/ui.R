@@ -50,11 +50,7 @@ fluidPage(
 			
 			# creation of subject profile report
 			h4("Report creation"),
-			fluidRow(
-				actionButton(inputId = "createSubjectProfileReport", label = "Create subject profile report"),
-				br(),
-				uiOutput("downloadSubjectProfileReportPanel")
-			)
+			uiOutput("reportCreation")
         ), 
         
         mainPanel(
