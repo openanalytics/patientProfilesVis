@@ -292,7 +292,7 @@ subjectProfileCombineOnce <- function(...,
 			newPlots <- lapply(plotsToModify, function(i){
 						
 				gg <- listGgPlotsToCombine[[i]]
-				if(!is.null(timeLim))	gg <- gg + coord_cartesian(xlim = timeLim)
+				if(!is.null(timeLim))	gg <- gg + coord_cartesian(xlim = timeLim, default = FALSE)
 						
 				gg <- addReferenceLinesProfilePlot(
 					gg = gg, 
@@ -317,10 +317,8 @@ subjectProfileCombineOnce <- function(...,
 		
 		# wrapper function to combine plots with 'subplot'
 		combineGGPlotsOnce <- function(listGgPlotsToCombine, nLinesPlot){
-			
 			# relative height of each plot
 			relHeights <- nLinesPlot/sum(nLinesPlot)
-			
 			# combine all plots
 			plot <- do.call(plot_grid,
 				c(
@@ -328,16 +326,12 @@ subjectProfileCombineOnce <- function(...,
 					list(align = "v", ncol = 1, axis = "lr", rel_heights = relHeights)
 				)
 			)
-			
 			# store the number of lines in the y-axis (used to adapt size during export)
 			attributes(plot) <- c(attributes(plot), 
 				list(nLinesPlot = sum(nLinesPlot), nSubplots = length(listGgPlotsToCombine))
 			)
-			
 			class(plot) <- c("subjectProfilePlot", class(plot))
-			
 			return(plot)
-			
 		}
 		
 		# split plots in case nLines > maxNLines
