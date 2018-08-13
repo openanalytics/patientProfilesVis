@@ -47,13 +47,9 @@ subjectProfileEventPlot <- function(
 		if(is.null(shapePalette))	shapePalette <- getPatientShapePalette(x = data[, shapeVar])
 	}
 	
-	# if paramGroupVar is specified: change order levels of 'variable'
-	if(!is.null(paramGroupVar)){
-		groupVariable <- if(length(paramGroupVar) > 0){
-			interaction(data[, paramGroupVar])
-		}else data[, paramGroupVar]
-		data[, "yVar"] <- reorder(data[, "yVar"], groupVariable, unique)
-	}
+	data$yVar <- getParamNameVar(
+		data = data, paramVar = "yVar", paramGroupVar = paramGroupVar
+	)
 	
 	listPlots <- dlply(data, subjectVar, function(dataSubject){	
 		

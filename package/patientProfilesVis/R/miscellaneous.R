@@ -215,3 +215,40 @@ getAesScaleManual <- function(lab, palette, type){
 	return(res)
 	
 }
+
+#' Get variable for parameter name
+#' @param data data.frame with data
+#' @param paramVar string, variable of \code{data} with parameter
+#' @param paramGroupVar (optional) character vector with variable(s) of \code{data} with grouping.
+#' If specified, the parameters will be grouped by this(these) variable(s) in the y-axis.
+#' @return vector with re-formatted \code{paramVar}, NULL if empty
+#' @author Laure Cougnaud
+#' @export
+getParamNameVar <- function(data, paramVar = NULL, paramGroupVar = NULL){
+	
+	res <- if(!is.null(paramVar)){
+		
+		paramVarVect <- if(!is.factor(data[, paramVar])){	
+			factor(data[, paramVar])
+		}else data[, paramVar]
+	
+		# if paramGroupVar is specified: change order levels of 'variable'
+		if(!is.null(paramGroupVar)){
+			if(is.null(paramVar)){
+				warning("The variable used for grouping ('paramGroupVar') is not used",
+					"because no variable for parameter ('paramVar') is not specified.")
+			}else{
+				groupVariable <- if(length(paramGroupVar) > 1){
+					interaction(data[, paramGroupVar])
+				}else data[, paramGroupVar]
+				paramVarVect <- reorder(paramVarVect, groupVariable, unique)
+			}
+		}
+		
+		paramVarVect
+	
+	}
+	
+	return(res)
+	
+}
