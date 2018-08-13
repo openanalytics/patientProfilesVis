@@ -132,7 +132,7 @@ serverFunction <- function(input, output, session) {
 			
 		cat("Update module param")
 		
-		isolate({
+#		isolate({
 				
 			tagList(
 
@@ -145,15 +145,28 @@ serverFunction <- function(input, output, session) {
 				textInput("moduleTitle", label = "Title", 
 					value = ifelse(!is.null(results$currentModule()), results$currentModule()$title, "")
 				),
+				helpText("The title is also used to uniquely identify a specified module in the interface."),
 				textInput("moduleLabel", label = "Label", 
 					value = ifelse(!is.null(results$currentModule()), results$currentModule()$label, "")
 				),
+				helpText("The label is used to uniquely identify a specified module in the background."),
 				createWidgetVariable(
 					inputId = "moduleSubjectVar",
 					label = "Column with subject identifier",
 					selected = ifelse(!is.null(results$currentModule()), results$currentModule()$subjectVar,
 						ifelse("USUBJID" %in% results$variablesDataCurrent(), "USUBJID", results$variablesDataCurrent()[1])
 					)
+				),
+				# subset of interest
+				fluidRow(
+					column(6, 
+						createWidgetVariable(inputId = "moduleSubsetVar", label = "Filter data based on:", optional = TRUE,
+							selected = ifelse(!is.null(results$currentModule()) & !is.null(results$currentModule()$paramSubsetVar), 
+								results$currentModule()$paramSubsetVar, "<none>"
+							)
+						)
+					),
+					column(6, uiOutput("moduleSubsetValuePanel"))
 				),
 				uiOutput("moduleSpecificType"),
 				createWidgetVariable(inputId = "moduleParamGroupVar", label = "Column with grouping", optional = TRUE,
@@ -168,7 +181,23 @@ serverFunction <- function(input, output, session) {
 				uiOutput("moduleSaveMessage")
 			)
 			
-		})
+#		})
+		
+	})
+	
+	# create subsetValue parameter
+	output$moduleSubsetValuePanel <- renderUI({
+				
+		validate(need(input$moduleSubsetVar, "moduleSubsetVar"))
+		
+		subsetValues <- unique(results$dataCurrent()[[input$moduleSubsetVar]])
+		
+		createWidgetVariable(
+			inputId = "moduleSubsetValue", 
+			label = "Group(s) of interest", optional = FALSE,
+			choices = subsetValues, selected = subsetValues[1],
+			multiple = TRUE
+		)
 		
 	})
 

@@ -13,7 +13,9 @@ createSubjectProfileUI <- function(input, results){
 			title = input$moduleTitle,
 			label = input$moduleLabel,
 			labelVars = results$labelVars(),
-			paramGroupVar = input$moduleParamGroupVar
+			paramGroupVar = input$moduleParamGroupVar,
+			subsetVar = input$moduleSubsetVar,
+			subsetValue = input$moduleSubsetValue
 		),
 		switch(input$moduleType,
 			'text' = switch(input$moduleTextVarSpecType,
@@ -58,7 +60,9 @@ createSubjectProfileUI <- function(input, results){
 		'timeStartVar' = "start time variable",
 		'timeEndVar' = "end time variable",
 		'colorVar' = "color variable",
-		'shapeVar' = "symbol variable"
+		'shapeVar' = "symbol variable",
+		'subsetVar' = "filtering variable",
+		'subsetValue' = "filtering value(s)"
 	)
 	
 	# remove empty optional parameters

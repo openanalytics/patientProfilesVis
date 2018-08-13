@@ -2,6 +2,7 @@
 
 export(convertToDateTime)
 export(createSubjectProfileReport)
+export(filterData)
 export(formatParamVar)
 export(getLabelVar)
 export(getLabelVars)

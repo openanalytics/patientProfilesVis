@@ -262,3 +262,29 @@ formatParamVar <- function(data, paramVar = NULL, paramGroupVar = NULL, revert =
 	return(res)
 	
 }
+
+#' Filter a dataset for records of interest
+#' @param data data data.frame with data
+#' @param subsetVar variable of \code{data} used for subsetting
+#' @param subsetValue character vector with value(s) of interest to consider for 
+#' \code{paramSubsetVar}
+#' @return possibly filtered dataset
+#' @author Laure Cougnaud
+#' @export
+filterData <- function(data, 
+	subsetVar = NULL, 
+	subsetValue = NULL
+){
+	
+	if(!is.null(subsetVar)){
+		if(is.null(subsetValue)){
+			warning("Subset variable: ", subsetVar, 
+				"not used, because no value of interest is specified.")
+		}else{
+			data <- data[which(data[, subsetVar] %in% subsetValue), ]
+		}
+	}
+	
+	return(data)
+	
+}

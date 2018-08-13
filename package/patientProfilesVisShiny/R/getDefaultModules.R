@@ -84,12 +84,12 @@ getDefaultModules <- function(data){
 				)
 			)
 		},
-		if("LB" %in% names(data) && all(c("LBTESTCD", "LBSTRESN", "LBDY") %in% colnames(data$LB))){
+		if("LB" %in% names(data) && all(c("LBTEST", "LBSTRESN", "LBDY") %in% colnames(data$LB))){
 			list('Laboratory test measurements (default, line)' = 
 				c(
 					list(
 						data = "LB",
-						paramNameVar = "LBTESTCD",
+						paramNameVar = "LBTEST",
 						paramValueVar = "LBSTRESN",
 						paramValueRangeVar = if(all(c("LBSTNRLO", "LBSTNRHI") %in% colnames(data$LB)))
 							c("LBSTNRLO", "LBSTNRHI"),

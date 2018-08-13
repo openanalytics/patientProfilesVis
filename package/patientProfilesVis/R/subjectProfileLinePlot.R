@@ -22,6 +22,7 @@ subjectProfileLinePlot <- function(
 	paramGroupVar = NULL,
 	timeVar, 
 	subjectVar = "USUBJID",
+	subsetVar = NULL, subsetValue = NULL,
 	xLab = getLabelVar(timeVar, labelVars = labelVars),
 	yLab = "",
 	timeLim = NULL,
@@ -32,8 +33,16 @@ subjectProfileLinePlot <- function(
 	
 	data[, "yVar"] <- data[, paramValueVar]
 	
+	# remove records without parameter or time variables
 	data <- data[with(data, !is.na(yVar) & yVar != "" & !is.na(get(timeVar))), ]
 	
+	# only keep records of interest
+	data <- filterData(data, 
+		subsetVar = subsetVar, 
+		subsetValue = subsetValue
+	)
+	
+	# format variable
 	data[, paramNameVar] <- formatParamVar(
 		data = data, paramVar = paramNameVar, paramGroupVar = paramGroupVar
 	)

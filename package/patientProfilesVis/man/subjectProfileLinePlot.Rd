@@ -8,9 +8,10 @@ subjectProfileLinePlot(data, paramValueVar,
   paramLab = toString(getLabelVar(paramValueVar, labelVars = labelVars)),
   paramNameVar = NULL, paramValueRangeVar = NULL, colorVar = NULL,
   colorLab = getLabelVar(colorVar, labelVars = labelVars),
-  paramGroupVar = NULL, timeVar, subjectVar = "USUBJID",
-  xLab = getLabelVar(timeVar, labelVars = labelVars), yLab = "",
-  timeLim = NULL, title = paramLab, label = title, labelVars = NULL)
+  paramGroupVar = NULL, timeVar, subjectVar = "USUBJID", subsetVar = NULL,
+  subsetValue = NULL, xLab = getLabelVar(timeVar, labelVars = labelVars),
+  yLab = "", timeLim = NULL, title = paramLab, label = title,
+  labelVars = NULL)
 }
 \arguments{
 \item{data}{data.frame with data}
@@ -32,6 +33,11 @@ e.g. to represent the reference range of the variable.}
 \item{timeVar}{string, variable of \code{data} with time}
 
 \item{subjectVar}{string, variable of \code{data} with subject ID}
+
+\item{subsetVar}{variable of \code{data} used for subsetting}
+
+\item{subsetValue}{character vector with value(s) of interest to consider for 
+\code{paramSubsetVar}}
 
 \item{xLab}{string, label for the x-axis}
 

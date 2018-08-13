@@ -284,6 +284,8 @@ this time interval visualization
 
 ## Event module
 
+### General
+
 The 'event' module enables to represent event data.
 
 This is used to represent the presence/absence of a certain
@@ -316,6 +318,8 @@ laboratory measurement (and corresponding time).
 
 ```
 
+### Color variable
+
 The reference range indicator is used to color the presence/absence of the
 laboratory data via the `colorVar` parameter.
 This parameter is also used for the symbol via the `shapeVar` variable.
@@ -340,9 +344,40 @@ in normal range.
 	
 ```
 
-```{r exampleEventModuleWithColor-include, echo = FALSE, fig.height = getNLinesYGgplot(lbPlotsColor[[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with the 'subjectProfileEventPlot' function for patient:", names(lbPlotsColor)[1])}
+```{r exampleEventModuleWithColor-include, echo = FALSE, fig.height = getNLinesYGgplot(lbPlotsColor[[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with reference range with the 'subjectProfileEventPlot' function for patient:", names(lbPlotsColor)[1])}
 
 	print(lbPlotsColor[[1]])
+
+```
+
+### Subset of interest
+
+If only a subset of parameters are of interest, the `paramSubsetVar` and
+`paramSubsetValue` can be used. 
+These parameters are also available for all other module types.
+These parameters are here used to represent only the measurements for the
+hematology parameters.
+
+```{r exampleEventModuleWithSubset}
+
+	# create plot
+	lbPlotsSubset <- subjectProfileEventPlot(
+		data = dataLB,
+		paramVar = "LBTEST",
+		subsetVar = "LBCAT", subsetValue = "HEMATOLOGY",
+		timeVar = "LBDY",
+		colorVar = "LBNRIND",
+		labelVars = labelVarsSDTMPelican,
+		shapeVar = "LBNRIND",
+		shapePalette = c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24, 'NA' = 3),
+		title = "Laboratory test measurements: reference range indicator"
+	)
+	
+```
+
+```{r exampleEventModuleWithSubset-include, echo = FALSE, fig.height = getNLinesYGgplot(lbPlotsSubset[[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Hematology data with the 'subjectProfileEventPlot' function for patient:", names(lbPlotsSubset)[1])}
+
+	print(lbPlotsSubset[[1]])
 
 ```
 
@@ -360,12 +395,12 @@ highlighted in the plot.
 	# create plot
 	lbLinePlots <- subjectProfileLinePlot(
 		data = dataLB,
-		paramNameVar = "LBTEST", #LBTESTCD
+		paramNameVar = "LBTEST", 
 		paramValueVar = "LBSTRESN",
 		paramGroupVar = "LBSCAT",
 		paramValueRangeVar = c("LBSTNRLO", "LBSTNRHI"),
 		timeVar = "LBDY",
-		title = "Laboratory test measurements: actual value",
+		title = "Hematology test measurements: actual value",
 		label = "defaultSDTMLBLine",
 		labelVars = labelVarsSDTMPelican
 	)
