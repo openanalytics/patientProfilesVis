@@ -2,17 +2,22 @@
 #' @param timeVar string, variable of \code{data} with time
 #' @param paramValueVar string, variable of \code{data} with parameter value to represent
 #' @param paramNameVar string, variable of \code{data} with parameter name
+#' @param paramValueRangeVar character vector of length 2 containing variables of \code{data}
+#' with minimum and maximum range for \code{paramValueVar},
+#' e.g. to represent the reference range of the variable.
 #' @inheritParams subjectProfileIntervalPlot
 #' @return list of \code{\link[ggplot2]{ggplot2} objects}, 
 #' also of class \code{subjectProfileTextPlot}
 #' @author Laure Cougnaud
 #' @import ggplot2
+#' @importFrom glpgStyle glpgColor
 #' @importFrom plyr dlply
 #' @export
 subjectProfileLinePlot <- function(
 	data,
 	paramValueVar, paramLab = toString(getLabelVar(paramValueVar, labelVars = labelVars)),
 	paramNameVar = NULL,
+	paramValueRangeVar = NULL,
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
 	paramGroupVar = NULL,
 	timeVar, 
@@ -29,14 +34,10 @@ subjectProfileLinePlot <- function(
 	
 	data <- data[with(data, !is.na(yVar) & yVar != "" & !is.na(get(timeVar))), ]
 	
-	# if paramGroupVar is specified: change order levels of 'variable'
-	if(!is.null(paramGroupVar)){
-		groupVariable <- if(length(paramGroupVar) > 0){
-			interaction(data[, paramGroupVar])
-		}else data[, paramGroupVar]
-		data[, "yVar"] <- reorder(data[, "yVar"], groupVariable, unique)
-	}
-	
+	data[, paramNameVar] <- getParamNameVar(
+		data = data, paramVar = paramNameVar, paramGroupVar = paramGroupVar
+	)
+		
 	# convert aesthetic variables to factor
 	if(!is.null(colorVar)){
 		data[, colorVar] <- convertAesVar(data, colorVar)
@@ -53,20 +54,40 @@ subjectProfileLinePlot <- function(
 		)
 		
 		# create the plot
-		gg <- ggplot(data = dataSubject, do.call(aes_string, aesArgs)) +
-			geom_point() + geom_line() +
+		gg <- ggplot(data = dataSubject, do.call(aes_string, aesArgs))
+		
+		# range of the variable
+		if(!is.null(paramValueRangeVar)){
+			if(length(paramValueRangeVar) != 2)
+				stop("The range of the parameter ('paramValueRangeVar' parameter)",
+					"should be specified by two variables in the dataset.")
+			# use geom_ribbon instead of geom_rect in case different intervals for different time points
+			gg <- gg + 
+				geom_ribbon(
+					aes_string(x = timeVar, 
+						ymin = paramValueRangeVar[1], ymax = paramValueRangeVar[2]
+					),
+					fill = unname(glpgColor("extra")["lightGreen"]), alpha = 0.1
+				)
+		}
+		
+		# base plot
+		gg <- gg + geom_point() + geom_line() +
 			subjectProfileTheme() +
 			labs(title = title, x = xLab, y = yLab) +
-			theme(
-				strip.text.y = element_text(size = 6),
-				axis.text.y = element_text(size = 6)
-			)
+			theme(axis.text.y = element_text(size = 7))
 		
 		if(!is.null(paramNameVar))
 			gg <- gg + facet_grid(paste0(paramNameVar, "~."), 
 				scales = "free_y", switch = "y",
-				labeller = label_wrap_gen(width = 8)) +
-				theme(strip.placement = "outside")
+				labeller = label_wrap_gen(width = Inf)) +
+				theme(
+					strip.placement = "outside", 
+					strip.text.y = element_text(
+						angle = 180, size = 8, hjust = 1
+					),
+					strip.background = element_rect(color = NA, fill = NA)
+				)
 	
 		# color palette and name for color legend
 		if(!is.null(colorVar))

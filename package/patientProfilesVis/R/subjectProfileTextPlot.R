@@ -111,8 +111,9 @@ subjectProfileTextPlot <- function(
 		colnames(dataPlot) <- c(subjectVar, 'variable', paramGroupVar, 'value')
 		
 		# if paramGroupVar is specified: change order levels of 'variable'
-		if(!is.null(paramGroupVar))
-			dataPlot[, "variable"] <- with(dataPlot, reorder(variable, get(paramGroupVar), unique))
+		dataPlot$variable <- getParamNameVar(
+			data = dataPlot, paramVar = "variable", paramGroupVar = paramGroupVar
+		)
 		
 	}
 		

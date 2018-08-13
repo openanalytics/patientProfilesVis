@@ -6,11 +6,11 @@
 \usage{
 subjectProfileLinePlot(data, paramValueVar,
   paramLab = toString(getLabelVar(paramValueVar, labelVars = labelVars)),
-  paramNameVar = NULL, colorVar = NULL, colorLab = getLabelVar(colorVar,
-  labelVars = labelVars), paramGroupVar = NULL, timeVar,
-  subjectVar = "USUBJID", xLab = getLabelVar(timeVar, labelVars =
-  labelVars), yLab = "", timeLim = NULL, title = paramLab,
-  label = title, labelVars = NULL)
+  paramNameVar = NULL, paramValueRangeVar = NULL, colorVar = NULL,
+  colorLab = getLabelVar(colorVar, labelVars = labelVars),
+  paramGroupVar = NULL, timeVar, subjectVar = "USUBJID",
+  xLab = getLabelVar(timeVar, labelVars = labelVars), yLab = "",
+  timeLim = NULL, title = paramLab, label = title, labelVars = NULL)
 }
 \arguments{
 \item{data}{data.frame with data}
@@ -21,12 +21,13 @@ subjectProfileLinePlot(data, paramValueVar,
 
 \item{paramNameVar}{string, variable of \code{data} with parameter name}
 
+\item{paramValueRangeVar}{character vector of length 2 containing variables of \code{data}
+with minimum and maximum range for \code{paramValueVar},
+e.g. to represent the reference range of the variable.}
+
 \item{colorVar}{string, variable of \code{data} with color.}
 
 \item{colorLab}{string, label for \code{colorVar}}
-
-\item{paramGroupVar}{(optional) character vector with variable(s) of \code{data} with grouping.
-If specified, the parameters will be grouped by this(these) variable(s) in the y-axis.}
 
 \item{timeVar}{string, variable of \code{data} with time}
 

@@ -5,8 +5,6 @@
 #' and a triangle with right direction is added.
 #' @param data data.frame with data
 #' @param paramVar string, variable of \code{data} with parameter (used in the y-axis)
-#' @param paramGroupVar (optional) character vector with variable(s) of \code{data} with grouping.
-#' If specified, the parameters will be grouped by this(these) variable(s) in the y-axis.
 #' @param paramLab string, label for \code{paramVar}
 #' @param subjectVar string, variable of \code{data} with subject ID
 #' @param timeStartVar string, variable of \code{data} with start of range
@@ -81,12 +79,9 @@ subjectProfileIntervalPlot <- function(
 
 
 	# if paramGroupVar is specified: change order levels of 'variable'
-	if(!is.null(paramGroupVar)){
-		groupVariable <- if(length(paramGroupVar) > 0){
-			interaction(data[, paramGroupVar])
-		}else data[, paramGroupVar]
-		data$yVar <- reorder(data$yVar, groupVariable, unique)
-	}
+	data$yVar <- getParamNameVar(
+		data = data, paramVar = "yVar", paramGroupVar = paramGroupVar
+	)
 	
 	# convert color variable to factor
 	if(!is.null(colorVar)){
