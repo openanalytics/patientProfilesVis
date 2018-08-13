@@ -64,9 +64,11 @@ createSubjectProfileReport <- function(
 	)
 	
 	if(!is.null(subjectSortData) & !is.null(subjectSortVar)){
-		subjectsOrdered <- ddply(unique(subjectSortData[, c(subjectVar, subjectSortVar)]), subjectSortVar)$USUBJID
+		subjectsOrdered <- ddply(unique(subjectSortData[, c(subjectVar, subjectSortVar)]), subjectSortVar)[[subjectVar]]
 		if(all(names(listPlotsPerSubjectList) %in% subjectsOrdered)){
-			listPlotsPerSubjectList <- listPlotsPerSubjectList[subjectsOrdered]
+			# in case more subjects are available in sortData than in the plot(s)
+			subjectsOrderedInData <- subjectsOrdered[subjectsOrdered %in% names(listPlotsPerSubjectList)]
+			listPlotsPerSubjectList <- listPlotsPerSubjectList[subjectsOrderedInData]
 		}else{
 			warning("The subjects are not ordered according to the specified 'subjectSortVar',",
 				"because not all subjects are contained in the 'subjectSortData'.")
