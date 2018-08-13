@@ -352,16 +352,22 @@ The 'line' module enables to represent value of a variable across time.
 
 This is used to represent the evolution of the lab parameters.
 
+The reference range (`paramValueRangeVar` variable) of each variable is
+highlighted in the plot.
+
 ```{r exampleLineModule}
 
 	# create plot
 	lbLinePlots <- subjectProfileLinePlot(
 		data = dataLB,
-		paramNameVar = "LBTESTCD",
+		paramNameVar = "LBTEST", #LBTESTCD
 		paramValueVar = "LBSTRESN",
+		paramGroupVar = "LBSCAT",
+		paramValueRangeVar = c("LBSTNRLO", "LBSTNRHI"),
 		timeVar = "LBDY",
 		title = "Laboratory test measurements: actual value",
-		label = "defaultSDTMLBLine"
+		label = "defaultSDTMLBLine",
+		labelVars = labelVarsSDTMPelican
 	)
 	
 ```

@@ -1,6 +1,7 @@
 0.0.5
     o add concomitant medications in vignette
     o getNLinesYGgplot: extend to multiple panels 
+    o subjectProfileLinePlot: add paramValueRangeVar
 0.0.4
     o subjectProfileIntervalPlot: re-label [start|end]Var -> time[Start|end]Var and use arrow for non-ending interval
     o use viridisLite instead of viridis paclage
