@@ -16,9 +16,12 @@ getPathTemplate <- function(file){
 #' @export
 getNLinesYGgplot <- function(gg){
 	
+	dataPlot <- ggplot_build(gg)$data
 	nLinesPlot <- if(inherits(gg, "subjectProfileLinePlot")){
-		n_distinct(ggplot_build(gg)$data[[1]]$PANEL) * 4
-	}else	length(unique(ggplot_build(gg)$data[[1]]$y))
+		sum(n_distinct(unlist(lapply(dataPlot, function(x)		unique(x$PANEL))))) * 4
+	}else{
+		sum(unlist(lapply(dataPlot, function(x)		length(unique(x$y)))))
+	}
 	
 	getNLinesLabel <- function(elName, elNLines){
 		elValue <- ggplot_build(gg)$plot$labels[[elName]]
