@@ -38,8 +38,9 @@ createSubjectProfileUI <- function(input, results){
 			'line' = list(
 				paramNameVar = input$moduleLineParamNameVar,
 				paramValueVar = input$moduleLineParamValueVar,
+				paramValueRangeVar = input$moduleLineParamNameRangeVar,
 				timeVar = input$moduleTimeVar,
-				colorVar = input$moduleColorVar
+				colorVar = input$moduleColorVar				
 			)
 		)
 	)
@@ -50,6 +51,7 @@ createSubjectProfileUI <- function(input, results){
 		'paramGroupVar' = "grouping variable",
 		'paramValueVar' = 'column with parameter value',
 		'paramNameVar' = 'column with variable name',
+		'paramValueRangeVar' = "columns with reference range",
 		'paramVar' = "column with parameter",
 		'timeVar' = "time variable",
 		'facetVar' = "variable",

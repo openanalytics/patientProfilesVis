@@ -261,6 +261,12 @@ serverFunction <- function(input, output, session) {
 						selected = if(!is.null(results$currentModule()))	
 							results$currentModule()$paramNameVar
 					),
+					createWidgetVariable(inputId = "moduleLineParamNameRangeVar",
+						label = "Columns with reference range (minimum and maximum)",
+						selected = if(!is.null(results$currentModule()))	
+							results$currentModule()$paramValueRangeVar,
+						multiple = TRUE
+					),
 					widgetColorVar
 				)
 				
