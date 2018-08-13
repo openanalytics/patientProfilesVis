@@ -7,8 +7,8 @@
 subjectProfileIntervalPlot(data, paramVar,
   paramLab = toString(getLabelVar(paramVar, labelVars = labelVars)),
   paramGroupVar = NULL, timeStartVar, timeEndVar, subjectVar = "USUBJID",
-  timeLim = with(data, c(min(get(timeStartVar), na.rm = TRUE),
-  max(get(timeEndVar), na.rm = TRUE))),
+  subsetVar = NULL, subsetValue = NULL, timeLim = with(data,
+  c(min(get(timeStartVar), na.rm = TRUE), max(get(timeEndVar), na.rm = TRUE))),
   rangeSimilarStartEnd = diff(timeLim)/1000,
   xLab = paste(getLabelVar(c(timeStartVar, timeEndVar), labelVars =
   labelVars), collapse = "/"), yLab = "", colorVar = NULL,
@@ -28,6 +28,11 @@ subjectProfileIntervalPlot(data, paramVar,
 \item{timeEndVar}{string, variable of \code{data} with end of range}
 
 \item{subjectVar}{string, variable of \code{data} with subject ID}
+
+\item{subsetVar}{variable of \code{data} used for subsetting}
+
+\item{subsetValue}{character vector with value(s) of interest to consider for 
+\code{paramSubsetVar}}
 
 \item{timeLim}{(optional) vector of length 2 with time limits (x-axis)
 If not specified, extracted from the minimum \code{timeStartVar} and maximum \code{timeEndVar}}

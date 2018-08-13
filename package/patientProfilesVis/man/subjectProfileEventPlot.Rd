@@ -9,9 +9,10 @@ subjectProfileEventPlot(data, paramVar,
   paramGroupVar = NULL, colorVar = NULL, colorLab = getLabelVar(colorVar,
   labelVars = labelVars), colorPalette = NULL, shapeVar = colorVar,
   shapeLab = getLabelVar(shapeVar, labelVars = labelVars),
-  shapePalette = NULL, timeVar, subjectVar = "USUBJID",
-  xLab = getLabelVar(timeVar, labelVars = labelVars), yLab = "",
-  timeLim = NULL, title = paramLab, label = title, labelVars = NULL)
+  shapePalette = NULL, timeVar, subjectVar = "USUBJID", subsetVar = NULL,
+  subsetValue = NULL, xLab = getLabelVar(timeVar, labelVars = labelVars),
+  yLab = "", timeLim = NULL, title = paramLab, label = title,
+  labelVars = NULL)
 }
 \arguments{
 \item{data}{data.frame with data}
@@ -35,6 +36,11 @@ subjectProfileEventPlot(data, paramVar,
 \item{timeVar}{string, variable of \code{data} with time}
 
 \item{subjectVar}{string, variable of \code{data} with subject ID}
+
+\item{subsetVar}{variable of \code{data} used for subsetting}
+
+\item{subsetValue}{character vector with value(s) of interest to consider for 
+\code{paramSubsetVar}}
 
 \item{xLab}{string, label for the x-axis}
 

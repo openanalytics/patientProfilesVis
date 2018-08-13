@@ -21,6 +21,7 @@ subjectProfileEventPlot <- function(
 	shapePalette = NULL,
 	timeVar, 
 	subjectVar = "USUBJID",
+	subsetVar = NULL, subsetValue = NULL,
 	xLab = getLabelVar(timeVar, labelVars = labelVars),
 	yLab = "",
 	timeLim = NULL,
@@ -38,6 +39,12 @@ subjectProfileEventPlot <- function(
 	
 	# remove records without parameter or time variables
 	data <- data[with(data, !is.na(yVar) & yVar != "" & !is.na(get(timeVar))), ]
+	
+	# only keep records of interest
+	data <- filterData(data, 
+		subsetVar = subsetVar, 
+		subsetValue = subsetValue
+	)
 	
 	# convert aesthetic variables to factor
 	if(!is.null(colorVar)){

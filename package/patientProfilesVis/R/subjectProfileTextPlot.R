@@ -48,6 +48,7 @@ subjectProfileTextPlot <- function(
 	paramValueVar,
 	paramNameVar = NULL,
 	paramGroupVar = NULL,
+	subsetVar = NULL, subsetValue = NULL,
 	subjectVar = "USUBJID",
 	xLab = "",
 	yLab = "",
@@ -56,6 +57,12 @@ subjectProfileTextPlot <- function(
 	labelVars = NULL,
 	paramVarSep = " - "
 ){
+	
+	# only keep records of interest
+	data <- filterData(data, 
+		subsetVar = subsetVar, 
+		subsetValue = subsetValue
+	)
 		
 	if(is.null(paramNameVar)){
 
