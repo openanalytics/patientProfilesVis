@@ -4,7 +4,7 @@
 #' @return subject profile plot(s)
 #' @author Laure Cougnaud
 #' @export
-createSubjectProfileUI <- function(input, results){
+createSubjectProfileFromShinyInput <- function(input, results){
 
 	listParams <- c(
 		list(
@@ -83,8 +83,37 @@ createSubjectProfileUI <- function(input, results){
 	validate(need(all(specParams), 
 		paste0("Some parameters (", toString(namesParam[names(which(!specParams))]), ") are missing.")
 	))
+
+	createSubjectProfileType(listParams = listParams, type = input$moduleType)
+
+}
+
+#' Create subject profile plot for list of parameters 
+#' (e.g. sublist of output of the \code{\link{getDefaultModules}} function).
+#' @param listParams list of parameters
+#' @param data data.frame with data
+#' @return subject profile plot(s)
+#' @author Laure Cougnaud
+#' @export
+createSubjectProfileFromParam <- function(listParams, data){
 	
-	subjectProfileFct <- paste0("subjectProfile", simpleCap(input$moduleType), "Plot")
+	type <- listParams$type
+	listParams$data <- data[[listParams$data]]
+	listParams$type <- NULL
+	createSubjectProfileType(listParams, type = type)
+	
+}	
+
+
+#' Create subject profile plot of specified type
+#' @param listParams list of parameters
+#' @param type string with type of profile plot
+#' @return subject profile plot(s)
+#' @author Laure Cougnaud
+#' @export
+createSubjectProfileType <- function(listParams, type){
+	
+	subjectProfileFct <- paste0("subjectProfile", simpleCap(type), "Plot")
 	plotsList <- do.call(subjectProfileFct, listParams)
 	
 	return(plotsList)

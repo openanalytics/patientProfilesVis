@@ -69,8 +69,6 @@ getDefaultModules <- function(data){
 						data = "LB",
 						paramVar = "LBTEST",
 						timeVar = "LBDY",
-						colorVar = "LBNRIND",
-						shapeVar = "LBNRIND",
 						type = "event",
 #						shapePalette = c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24,),
 						title = "Laboratory test measurements: reference range indicator",

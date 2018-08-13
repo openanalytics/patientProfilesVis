@@ -87,7 +87,9 @@ serverFunction <- function(input, output, session) {
 
 	# currently selected module
 	results$currentModule <- reactive({
-		validate(need(isTruthy(input$moduleChoice) && input$moduleChoice != "none", "Please choose a module."))		
+		validate(need(isTruthy(input$moduleChoice) && input$moduleChoice != "none", 
+			"To create a new module or display existing module(s), please choose a module.")
+		)		
 		if(!input$moduleChoice %in% c("<none>", "New module"))
 			results$availableModules[[input$moduleChoice]]
 	})
@@ -332,7 +334,7 @@ serverFunction <- function(input, output, session) {
 	observeEvent(input$previewModule, {
 				
 		plotCurrentError <- try(
-			plotCurrent <- createSubjectProfileUI(input = input, results = results)
+			plotCurrent <- createSubjectProfileFromShinyInput(input = input, results = results)
 		, silent = TRUE)
 
 		if(inherits(plotCurrentError, "try-error")){
@@ -410,7 +412,7 @@ serverFunction <- function(input, output, session) {
 	observeEvent(input$previewModule, {
 				
 		plotCurrentError <- try(
-			plotCurrent <- createSubjectProfileUI(input = input, results = results)
+			plotCurrent <- createSubjectProfileFromShinyInput(input = input, results = results)
 			, silent = TRUE)
 		if(inherits(plotCurrentError, "try-error")){
 			output$moduleSaveMessage <- renderUI(
@@ -440,20 +442,22 @@ serverFunction <- function(input, output, session) {
 					style = "color:red"))
 		}else{
 			
-			# save the plot
-			results$listPlots <- c(results$listPlots, setNames(list(results$plotsCurrent), input$moduleLabel))	
+			currentPlotName <- paste0(input$moduleTitle, " (custom, ", input$moduleType, ")")
 			
-			# save the parameters:
-			newModule <- list(getUIParamModule(input))
-			names(newModule) <- paste0("SELECTED: ", input$moduleTitle, " (custom, ", input$moduleType, ")")
+			# save the plot (because already created)
+			currentPlot <- setNames(list(results$plotsCurrent), currentPlotName)
+			results$listPlots <- c(results$listPlots, currentPlot)	
+			
+			# save the input parameters (to be able to preview plot later on):
+			newModule <- setNames(list(getUIParamModule(input)), currentPlotName)
 			results$availableModules <- c(results$availableModules, newModule)
 			
+			# update progress message(s)
 			output$moduleMessage <- renderUI(
 				div(paste0("Module has been saved, you can preview it by selecting: '",
 					names(newModule), "' in the selection box below."), 
 					style = "color:green")
 			)
-			
 			output$moduleSaveMessage <- moduleResultsMessage <- renderUI("")
 			
 			# delete current plot
@@ -464,17 +468,20 @@ serverFunction <- function(input, output, session) {
 	})
 
 	## Report creation
-	
 	output$reportCreation <- renderUI({
 				
 		validate(need(results$dataRes(), "Please upload some data."))		
 				
 		tagList(
-			h5("Sort subjects based on:"),
+			selectInput(inputId = "reportSelectedModules",
+				label = "Selected modules", multiple = TRUE,
+				choices = results$defaultModulesNames(),
+				selected = results$defaultModulesNames()
+			),
 			fluidRow(
 				column(6,
 					selectInput(inputId = "reportSubjectSortData",
-						label = "Dataset", multiple = FALSE,
+						label = "Sort subjects based on dataset:", multiple = FALSE,
 						choices = c('<none>' = 'none', results$datasets())
 					)
 				),
@@ -500,17 +507,15 @@ serverFunction <- function(input, output, session) {
 			)
 		selectInput(
 			inputId = "reportSubjectSortVar", 
-			label = "Variable", multiple = FALSE,
+			label = "with variable:", multiple = FALSE,
 			choices = reportSubjectSortVars, selected = reportSubjectSortVars[1]
 		)
 	})
-	
-	# specified module
 
 	# create the report
 	results$subjectProfileReport <- eventReactive(input$createSubjectProfileReport, {
     
-		validate(need(length(results$listPlots) > 0, "No module(s) are saved yet."))
+		validate(need(input$reportSelectedModules, "No module(s) are seledted yet."))
 
         withProgress(message = 'Create subject profile report..\n', 
 				
@@ -520,18 +525,38 @@ serverFunction <- function(input, output, session) {
 		
             style = "notification", value = 0, {
             message("... Create subject profile report ...")
-              
-			potentialErrorMessage <- try(
-				createSubjectProfileReport(
-					listPlots = results$listPlots,
-					outputFile = "subjectProfile.pdf",
-					labelVars = results$labelVars(),
-					subjectSortData = results$dataAll()[[input$reportSubjectSortData]],
-					subjectSortVar = input$reportSubjectSortVar,
-				 	shiny = TRUE
-				),
-				silent = TRUE
-			)
+			
+				## extract the plots
+						
+				# plots created with the display button
+				listPlots <- results$listPlots 
+				
+				# default plots (not yet created)
+				selModNotCreated <- setdiff(input$reportSelectedModules, names(listPlots))
+				if(length(selModNotCreated) > 0){
+					incProgress(amount = 0.2, 
+						detail = "Create module(s) not previewed in the interface"
+					)
+					listPlotsDefaults <- sapply(
+						results$availableModules[selModNotCreated], 
+						createSubjectProfileFromParam, 
+						data = results$dataAll(), 
+						simplify = FALSE
+					)
+					listPlots <- c(listPlots, listPlotsDefaults)
+				}	
+	              
+				potentialErrorMessage <- try(
+					createSubjectProfileReport(
+						listPlots = listPlots,
+						outputFile = "subjectProfile.pdf",
+						labelVars = results$labelVars(),
+						subjectSortData = results$dataAll()[[input$reportSubjectSortData]],
+						subjectSortVar = input$reportSubjectSortVar,
+					 	shiny = TRUE
+					),
+					silent = TRUE
+				)
               
 		})
         
