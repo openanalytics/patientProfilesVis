@@ -19,6 +19,7 @@ subjectProfileLinePlot <- function(
 	paramNameVar = NULL,
 	paramValueRangeVar = NULL,
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
+	colorPalette = NULL,
 	paramGroupVar = NULL,
 	timeVar, 
 	subjectVar = "USUBJID",

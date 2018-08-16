@@ -149,7 +149,7 @@ serverFunction <- function(input, output, session) {
 				textInput("moduleLabel", label = "Label", 
 					value = ifelse(!is.null(results$currentModule()), results$currentModule()$label, "")
 				),
-				helpText("The label is used to uniquely identify a specified module in the background."),
+				helpText("The label is used to uniquely identify a specified module when combining modules."),
 				createWidgetVariable(
 					inputId = "moduleSubjectVar",
 					label = "Column with subject identifier",

@@ -2,7 +2,8 @@
 % Please edit documentation in R/miscellaneous.R
 \name{formatParamVar}
 \alias{formatParamVar}
-\title{Get variable for parameter name}
+\title{Format a variable as factor, and optionally sorted according to the levels
+of a grouping variable}
 \usage{
 formatParamVar(data, paramVar = NULL, paramGroupVar = NULL,
   revert = FALSE)
@@ -14,12 +15,15 @@ formatParamVar(data, paramVar = NULL, paramGroupVar = NULL,
 
 \item{paramGroupVar}{(optional) character vector with variable(s) of \code{data} with grouping.
 If specified, the parameters will be grouped by this(these) variable(s) in the y-axis.}
+
+\item{revert}{logical, if TRUE revert the order of the levels of the variable}
 }
 \value{
 vector with re-formatted \code{paramVar}, NULL if empty
 }
 \description{
-Get variable for parameter name
+Format a variable as factor, and optionally sorted according to the levels
+of a grouping variable
 }
 \author{
 Laure Cougnaud

@@ -216,14 +216,15 @@ getAesScaleManual <- function(lab, palette, type){
 	
 }
 
-#' Get variable for parameter name
+#' Format a variable as factor, and optionally sorted according to the levels
+#' of a grouping variable
 #' @param data data.frame with data
 #' @param paramVar string, variable of \code{data} with parameter
 #' @param paramGroupVar (optional) character vector with variable(s) of \code{data} with grouping.
 #' If specified, the parameters will be grouped by this(these) variable(s) in the y-axis.
+#' @param revert logical, if TRUE revert the order of the levels of the variable
 #' @return vector with re-formatted \code{paramVar}, NULL if empty
 #' @author Laure Cougnaud
-#' @export
 formatParamVar <- function(data, paramVar = NULL, paramGroupVar = NULL, revert = FALSE){
 	
 	res <- if(!is.null(paramVar)){
