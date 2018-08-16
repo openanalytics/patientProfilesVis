@@ -14,7 +14,8 @@ subjectProfileCombineOnce(..., labels, timeLim = NULL, maxNLines = NULL,
 \item{labels}{string with labels for the plots}
 
 \item{timeLim}{(optional) vector of length 2 with time limits (x-axis)
-If not specified, extracted from the minimum \code{timeStartVar} and maximum \code{timeEndVar}}
+If not specified, extracted from the minimum \code{timeStartVar} 
+and maximum \code{timeEndVar} per subject.}
 
 \item{maxNLines}{maximum number of lines for a combined plot,
 to fit in the page height}
