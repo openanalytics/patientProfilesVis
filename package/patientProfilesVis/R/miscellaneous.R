@@ -8,9 +8,9 @@ getPathTemplate <- function(file){
 
 #' Get approximately the number of lines in the y-axis of the plot.
 #' Can be used to specify plot-specific height during the export.
-#' @param gg \code{\link[ggplot2]{ggplot2}} object
-#' @return vector with (approximated) number of lines
 #' @author Laure Cougnaud
+#' @inheritParams getNLinesLabel
+#' @inherit getNLinesLabel return
 #' @importFrom ggplot2 ggplot_build
 #' @importFrom dplyr n_distinct
 #' @export
@@ -22,18 +22,45 @@ getNLinesYGgplot <- function(gg){
 	}else{
 		sum(unlist(lapply(dataPlot, function(x)		length(unique(x$y)))))
 	}
-	
-	getNLinesLabel <- function(elName, elNLines){
-		elValue <- ggplot_build(gg)$plot$labels[[elName]]
-		if(!is.null(elValue) && !(is.character(elValue) && elValue == "")){
-			if(is.expression(elValue))	elValue <- as.character(elValue)
-			length(unlist(strsplit(elValue, split = "\n"))) * elNLines
-		}
-	}
-	nLinesTitleAndXAxis <- sum(c(getNLinesLabel("title", 3), getNLinesLabel("x", 2)))
+
+	nLinesTitleAndXAxis <- sum(c(
+		getNLinesLabel(gg = gg, elName = "title"), 
+		getNLinesLabel(gg = gg, elName = "x"),
+		getNLinesLabel(gg = gg, elName = "caption")
+	))
 	nLines <- nLinesPlot + nLinesTitleAndXAxis
 	return(nLines)
 }
+
+#' Get number of lines for specific label
+#' @param gg \code{\link[ggplot2]{ggplot2}} object
+#' @param elName string with name of label to extract,
+#' among 'x', 'y' and 'title'
+#' @param elNLines (optional) integer with number of lines,
+#' by default 2 for 'x'/'y' and 3 for 'title'
+#' @return vector with (approximated) number of lines
+#' @author Laure Cougnaud
+#' @importFrom ggplot2 ggplot_build
+getNLinesLabel <- function(gg, 
+	elName = c("x", "y", "title", "caption"),  elNLines = NULL){
+
+	elName <- match.arg(elName, several.ok = TRUE)
+	
+	if(is.null(elNLines))
+		elNLines <- c("x" = 2, "y" = 2, "title" = 3, "caption" = 2)[elName]
+	
+	elValue <- ggplot_build(gg)$plot$labels[elName]
+	sum(unlist(
+		lapply(names(elValue), function(elNameI){
+			x <- elValue[[elNameI]]
+			if(!is.null(x) && !(is.character(x) && x == "")){
+				if(is.expression(x))	x <- as.character(x)
+				length(unlist(strsplit(x, split = "\n"))) * elNLines[elNameI]
+			}
+		})
+	))
+}
+
 
 #' Get maximum number of lines of a 'combined plot'
 #' for a specific document
