@@ -42,7 +42,7 @@ If specified, the parameters will be grouped by this variable in the y-axis, and
 \item{subsetVar}{variable of \code{data} used for subsetting}
 
 \item{subsetValue}{character vector with value(s) of interest to consider for 
-\code{paramSubsetVar}}
+\code{subsetVar}}
 
 \item{subjectVar}{string, variable of \code{data} with subject ID}
 

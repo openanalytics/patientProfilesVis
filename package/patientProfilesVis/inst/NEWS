@@ -1,5 +1,7 @@
 0.0.6
     o subjectProfileLinePlot: include colorPalette
+    o subjectProfileIntervalPlot: don't delete records without start date, different arrows for missing start/end dates
+    o subjectProfileIntervalPlot: consider min/max time per subject in case of missing date, include timeLimData/timeLimVar
 0.0.5
     o add concomitant medications in vignette
     o getNLinesYGgplot: extend to multiple panels 

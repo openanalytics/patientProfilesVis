@@ -12,7 +12,7 @@ filterData(data, subsetVar = NULL, subsetValue = NULL)
 \item{subsetVar}{variable of \code{data} used for subsetting}
 
 \item{subsetValue}{character vector with value(s) of interest to consider for 
-\code{paramSubsetVar}}
+\code{subsetVar}}
 }
 \value{
 possibly filtered dataset
