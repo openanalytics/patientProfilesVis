@@ -62,7 +62,7 @@ serverFunction <- function(input, output, session) {
 	
 	# create default modules for uploaded datasets
 	observe({
-		cat("Update available modules")
+#		cat("Update available modules")
 		results$availableModules <- getDefaultModules(data = results$dataAll())
 	})
 	results$defaultModulesNames <- reactive(names(results$availableModules))
@@ -72,7 +72,7 @@ serverFunction <- function(input, output, session) {
 					
 		validate(need(results$dataRes(), "Please upload some data."))
 				
-		cat("Update entire module\n")
+#		cat("Update entire module\n")
 			
 		tagList(
 			uiOutput("moduleMessage"),
@@ -105,7 +105,7 @@ serverFunction <- function(input, output, session) {
 
 	# save selected dataset
 	results$dataCurrent <- reactive({
-		cat("Update current data\n")
+#		cat("Update current data\n")
 		if(!is.null(input$moduleData))	results$dataAll()[[input$moduleData]]
 	})
 	# and column names (variables)
@@ -130,7 +130,7 @@ serverFunction <- function(input, output, session) {
 				
 		validate(need(input$moduleData, "Please specify a dataset."))		
 			
-		cat("Update module param")
+#		cat("Update module param")
 		
 #		isolate({
 				
@@ -161,8 +161,8 @@ serverFunction <- function(input, output, session) {
 				fluidRow(
 					column(6, 
 						createWidgetVariable(inputId = "moduleSubsetVar", label = "Filter data based on:", optional = TRUE,
-							selected = ifelse(!is.null(results$currentModule()) & !is.null(results$currentModule()$paramSubsetVar), 
-								results$currentModule()$paramSubsetVar, "<none>"
+							selected = ifelse(!is.null(results$currentModule()) & !is.null(results$currentModule()$subsetVar), 
+								results$currentModule()$subsetVar, "<none>"
 							)
 						)
 					),
@@ -190,11 +190,15 @@ serverFunction <- function(input, output, session) {
 				
 		validate(need(input$moduleSubsetVar, "moduleSubsetVar"))
 		
-		subsetValues <- unique(results$dataCurrent()[[input$moduleSubsetVar]])
+		subsetValues <- if(!is.null(results$currentModule()) & !is.null(results$currentModule()$subsetValue)){ 
+			results$currentModule()$subsetValue
+		}else{
+			unique(results$dataCurrent()[[input$moduleSubsetVar]])
+		}
 		
 		createWidgetVariable(
 			inputId = "moduleSubsetValue", 
-			label = "Group(s) of interest", optional = FALSE,
+			label = "with group(s) of interest:", optional = FALSE,
 			choices = subsetValues, selected = subsetValues[1],
 			multiple = TRUE
 		)
@@ -204,7 +208,7 @@ serverFunction <- function(input, output, session) {
 	# create widgets specific of certain module type
 	output$moduleSpecificType <- renderUI({
 				
-		cat("module specific type")		
+#		cat("module specific type")		
 				
 		validate(need(input$moduleType, "moduleType"))
 		
@@ -277,7 +281,6 @@ serverFunction <- function(input, output, session) {
 			),
 			
 			'line' = {
-				cat(str(results$currentModule()))
 				list(
 					widgetTimeVar, 
 					createWidgetVariable(inputId = "moduleLineParamValueVar", 
@@ -290,7 +293,7 @@ serverFunction <- function(input, output, session) {
 						selected = if(!is.null(results$currentModule()))	
 							results$currentModule()$paramNameVar
 					),
-					createWidgetVariable(inputId = "moduleLineParamNameRangeVar",
+					createWidgetVariable(inputId = "moduleLineParamValueRangeVar",
 						label = "Columns with reference range (minimum and maximum)",
 						selected = if(!is.null(results$currentModule()))	
 							results$currentModule()$paramValueRangeVar,
@@ -382,26 +385,38 @@ serverFunction <- function(input, output, session) {
 	
 	# plot this plot in the 'preview' panel
 	observe({	
-		currentPlot <- results$plotSubjectCurrent()
+		plotSubjectError <- try(
+			plotSubject <- results$plotSubjectCurrent()
+		, silent = TRUE)
+		subject <- input$subjectCurrent
 		isolate({
-			if(is.null(currentPlot)){
+			if(inherits(plotSubjectError, "try-error")){
 				output$moduleResultsMessage <- renderUI(
-					div(strong(
-						paste0("No data is available for the specified module for subject: '", 
-							input$subjectCurrent, "', please select a different subject.")
-						), style = "color:red")
+					div(strong(paste0("The patient profile for the subject : '", subject, "'cannot be displayed: ", 
+						attr(plotSubjectError, "condition")$message)), 
+						style = "color:red"
 					)
-			}else{
-				output$moduleResultsMessage <- renderUI(
-					div(
-						paste0("Please find a preview of the specified module for subject: '", 
-							input$subjectCurrent, "'."), 
-					style = "color:green")
 				)
-				output$plotSubject <- renderPlot(
-					expr = results$plotSubjectCurrent(),
-					height = getNLinesYGgplot(results$plotSubjectCurrent()) * 30
-				)	
+			}else{
+				if(is.null(plotSubject)){
+					output$moduleResultsMessage <- renderUI(
+						div(strong(
+							paste0("No data is available for the specified module for subject: '", 
+								subject, "', please select a different subject.")
+							), style = "color:red")
+						)
+				}else{			
+					output$moduleResultsMessage <- renderUI(
+						div(
+							paste0("Please find a preview of the specified module for subject: '", 
+								input$subjectCurrent, "'."), 
+						style = "color:green")
+					)
+					output$plotSubject <- renderPlot(
+						expr = plotSubject,
+						height = getNLinesYGgplot(results$plotSubjectCurrent()) * 30
+					)	
+				}
 			}	
 		})
 	})
@@ -454,8 +469,8 @@ serverFunction <- function(input, output, session) {
 			
 			# update progress message(s)
 			output$moduleMessage <- renderUI(
-				div(paste0("Module has been saved, you can preview it by selecting: '",
-					names(newModule), "' in the selection box below."), 
+				div(paste0("Module has been saved, you can preview it by selecting:", br(), 
+					"'", names(newModule), "' in the selection box below."), 
 					style = "color:green")
 			)
 			output$moduleSaveMessage <- moduleResultsMessage <- renderUI("")

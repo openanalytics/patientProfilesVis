@@ -12,7 +12,7 @@ getUIParamModule <- function(input){
 		input[[name]]			
 	, simplify = FALSE)
 	names(paramsModule) <- simpleCap(
-		sub("^module(Event|Interval|Text)*(.+)(Pair)*", "\\2", names(paramsModule)),
+		sub("^module(Event|Interval|Text|Line)*(.+)(Pair)*", "\\2", names(paramsModule)),
 		rev = TRUE
 	)
 	return(paramsModule)

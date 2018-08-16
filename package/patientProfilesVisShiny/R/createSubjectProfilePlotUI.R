@@ -40,7 +40,7 @@ createSubjectProfileFromShinyInput <- function(input, results){
 			'line' = list(
 				paramNameVar = input$moduleLineParamNameVar,
 				paramValueVar = input$moduleLineParamValueVar,
-				paramValueRangeVar = input$moduleLineParamNameRangeVar,
+				paramValueRangeVar = input$moduleLineParamValueRangeVar,
 				timeVar = input$moduleTimeVar,
 				colorVar = input$moduleColorVar				
 			)
