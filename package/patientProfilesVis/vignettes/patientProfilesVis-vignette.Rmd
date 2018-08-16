@@ -548,14 +548,15 @@ The function `createSubjectProfileReport` has mainly two purposes:
 	# create report
 	createSubjectProfileReport(
 		listPlots = list(
-#			dmPlots[1], mhPlots[1], cmPlots[1], 
-#			exPlots[1], 
-#			aePlots[1], 
+			dmPlots[1], mhPlots[1], cmPlotsTimeSV[1], 
+			exPlots[1], 
+			aePlots[1], 
 			lbLinePlots[1], 
 			lbPlotsColor[1]
 		),
 		refLines = refLinesParam,
-		outputFile = "subjectProfile_SDTM_referenceLinesFromSAP.pdf"
+		outputFile = "subjectProfile_SDTM_referenceLinesFromSAP.pdf",
+		exportFigures = TRUE
 	)
 
 ```
