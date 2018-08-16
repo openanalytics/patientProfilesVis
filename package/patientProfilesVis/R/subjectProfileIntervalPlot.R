@@ -25,6 +25,7 @@
 #' in the text when the plots are combined (e.g. if the plot is empty).
 #' @inheritParams getLabelVar
 #' @inheritParams filterData
+#' @inheritParams formatParamVar
 #' @return list of \code{\link[ggplot2]{ggplot2} objects}, 
 #' also of class \code{subjectProfileTextPlot}
 #' @author Laure Cougnaud
