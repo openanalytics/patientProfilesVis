@@ -6,7 +6,8 @@
 \usage{
 addReferenceLinesProfilePlot(gg, subjectVar = "USUBJID", refLines = NULL,
   refLinesData = NULL, refLinesTimeVar = NULL, refLinesLabelVar = NULL,
-  refLinesColor = "black", refLinesLinetype = "dotted", addLabel = FALSE)
+  refLinesColor = "black", refLinesLinetype = "dotted", timeLim = NULL,
+  addLabel = FALSE)
 }
 \arguments{
 \item{gg}{\code{\link[ggplot2]{ggplot2}} object}
@@ -33,6 +34,10 @@ Each sublist contains:
 \item{refLinesColor}{vector of length 1 with default color for reference line(s)}
 
 \item{refLinesLinetype}{vector of length 1 with default linetype for reference line(s)}
+
+\item{timeLim}{(optional) vector of length 2 with time limits (x-axis)
+If not specified, extracted from the minimum \code{timeStartVar} 
+and maximum \code{timeEndVar} per subject.}
 
 \item{addLabel}{logical, if TRUE (FALSE by default) add the label of the reference line(s) at the bottom of the plot}
 }

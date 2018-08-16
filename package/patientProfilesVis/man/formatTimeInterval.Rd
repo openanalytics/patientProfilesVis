@@ -26,8 +26,6 @@ and maximum \code{timeEndVar} per subject.}
 \item{timeLimStartVar}{string, variable of \code{timeLimData} with time start}
 
 \item{timeLimEndVar}{string, variable of \code{timeLimData} with time end}
-
-\item{timeLimInData}{vector of length 2 with time limits in the data (across subjects).}
 }
 \value{
 list with:

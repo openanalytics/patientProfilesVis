@@ -247,7 +247,6 @@ subjectProfileIntervalPlot <- function(
 #' @param timeLimData data.frame with data used to extract time limits per subject
 #' @param timeLimStartVar string, variable of \code{timeLimData} with time start
 #' @param timeLimEndVar string, variable of \code{timeLimData} with time end
-#' @param timeLimInData vector of length 2 with time limits in the data (across subjects).
 #' @return list with:
 #' \itemize{
 #' \item{'data': }{data with filled missing start/end time variables.

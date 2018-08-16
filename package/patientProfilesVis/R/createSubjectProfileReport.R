@@ -292,7 +292,8 @@ subjectProfileCombineOnce <- function(...,
 			newPlots <- lapply(plotsToModify, function(i){
 						
 				gg <- listGgPlotsToCombine[[i]]
-				if(!is.null(timeLim))	gg <- gg + coord_cartesian(xlim = timeLim, default = FALSE)
+				if(!is.null(timeLim))	
+					gg <- gg + coord_cartesian(xlim = timeLim, default = FALSE)
 						
 				gg <- addReferenceLinesProfilePlot(
 					gg = gg, 
@@ -301,7 +302,8 @@ subjectProfileCombineOnce <- function(...,
 					refLinesData = refLinesData,
 					refLinesTimeVar = refLinesTimeVar,
 					refLinesLabelVar = refLinesLabelVar,
-					addLabel = (i == plotsToModify[length(plotsToModify)])
+					addLabel = (i == plotsToModify[length(plotsToModify)]),
+					timeLim = timeLim
 				)
 						
 			})
@@ -407,7 +409,8 @@ getXLimSubjectProfilePlots <- function(listPlots){
 #' \code{\link[ggplot2]{ggplot2}} otherwise
 #' @author Laure Cougnaud
 #' @import ggplot2
-#' @importFrom grid textGrob gpar
+#' @importFrom stats setNames
+#' @importFrom cowplot plot_grid
 addReferenceLinesProfilePlot <- function(
 	gg, 
 	subjectVar = "USUBJID",
@@ -417,6 +420,7 @@ addReferenceLinesProfilePlot <- function(
 	refLinesLabelVar = NULL,
 	refLinesColor = "black",
 	refLinesLinetype = "dotted",
+	timeLim = NULL,
 	addLabel = FALSE){
 	
 	refLinesVect <- !is.null(refLines)
@@ -449,7 +453,7 @@ addReferenceLinesProfilePlot <- function(
 		
 	}
 	
-	res <- if(refLinesVect | refLinesFromData){
+	res <- if(refLinesVect | refLinesFromData && length(refLinesTime) > 0){
 				
 		if(length(refLinesColor) == 1)
 			refLinesColor <- rep(refLinesColor, length(refLinesLabels))
@@ -457,13 +461,15 @@ addReferenceLinesProfilePlot <- function(
 			refLinesLinetype <- rep(refLinesLinetype, length(refLinesLabels))
 		
 		# add vertical lines
-		gg <- gg + geom_vline(
-			xintercept = refLinesTime, 
-			color = refLinesColor,
-			linetype = refLinesLinetype, 
-			alpha = 0.5,
-			size = 1
-		)
+		for(i in seq_along(refLinesTime)){
+			gg <- gg + geom_vline(
+				xintercept = refLinesTime[i], 
+				color = refLinesColor[i],
+				linetype = refLinesLinetype[i], 
+				alpha = 0.5,
+				size = 1
+			)
+		}
 		
 		# add label at the bottom of the plot
 		res <- if(addLabel){
@@ -471,25 +477,25 @@ addReferenceLinesProfilePlot <- function(
 			# extract number of lines for label
 			nLinesRefLines <- max(nchar(refLinesLabels))/2
 			
-			# increase bottom margin
-			gg <- gg + theme(plot.margin = unit(c(1, 3, nLinesRefLines + 3, 1), "lines"))
-			
 			# add label(s)
-			for(i in seq_along(refLinesLabels)){
-				x <- refLinesTime[i]
-				gg <- gg + annotation_custom(
-					grob = textGrob(
-						refLinesLabels[i], rot = 90, hjust = 1,
-						gp = gpar(col = refLinesColor[i])
-					), 
-					xmin = x, xmax = x, ymin = -3, ymax = -3
+			colors <- setNames(refLinesColor, refLinesLabels)
+			dataText <- data.frame(x = refLinesTime, label = refLinesLabels)
+			ggText <- ggplot(data = dataText) +
+				geom_text(aes(x = x, label = label, colour = label, y = 0), 
+					angle = 90, hjust = 0.5, show.legend = FALSE
+				) + theme_void() +
+				scale_color_manual(values = colors, limits = names(colors))
+			if(!is.null(timeLim))	ggText <- ggText + coord_cartesian(xlim = timeLim)
+		
+			nLinesPlot <- c(getNLinesYGgplot(gg), nLinesRefLines)
+			relHeights <- nLinesPlot/sum(nLinesPlot)
+			# combine all plots
+			ggT <- do.call(plot_grid,
+				c(
+					list(gg, ggText),
+					list(align = "v", ncol = 1, axis = "lr", rel_heights = relHeights)
 				)
-			}
-			
-			# clip off the plot panel (otherwise the label doesn't appear)
-			ggT <- ggplot_gtable(ggplot_build(gg))
-			ggT$layout$clip[ggT$layout$name == "panel"] <- "off"
-			#	grid.draw(ggT)
+			)
 			
 			attr(ggT, "metaData") <- c(attr(gg, "metaData"), list(nLinesLabelRefLines = nLinesRefLines))
 			
