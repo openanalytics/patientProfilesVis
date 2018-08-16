@@ -268,7 +268,7 @@ formatParamVar <- function(data, paramVar = NULL, paramGroupVar = NULL, revert =
 #' @param data data data.frame with data
 #' @param subsetVar variable of \code{data} used for subsetting
 #' @param subsetValue character vector with value(s) of interest to consider for 
-#' \code{paramSubsetVar}
+#' \code{subsetVar}
 #' @return possibly filtered dataset
 #' @author Laure Cougnaud
 #' @export

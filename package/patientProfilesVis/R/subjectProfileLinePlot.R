@@ -69,8 +69,8 @@ subjectProfileLinePlot <- function(
 		# range of the variable
 		if(!is.null(paramValueRangeVar)){
 			if(length(paramValueRangeVar) != 2)
-				stop("The range of the parameter ('paramValueRangeVar' parameter)",
-					"should be specified by two variables in the dataset.")
+				stop(paste("The range of the parameter ('paramValueRangeVar' parameter)",
+					"should be specified by two variables in the dataset."))
 			# use geom_ribbon instead of geom_rect in case different intervals for different time points
 			gg <- gg + 
 				geom_ribbon(
