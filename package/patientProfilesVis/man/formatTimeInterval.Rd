@@ -47,7 +47,7 @@ Set missing start/end time variable in the data.
 In case of missing values for the time start or end variables, they are replaced by:
 \itemize{
 \item{in case \code{timeLim} is specified: }{specified time limits}
-\item{otherwise, in case \code{timeLimData} and \code{timeLimVar} are specified: }{
+\item{otherwise, in case \code{timeLimData}, \code{timeLimStartVar} and \code{timeLimEndVar} are specified: }{
 minimum/maximum values in the variable: \code{timeLimVar} in the data: \code{timeLimData}
 for the specific subject (if available). If there are missing for a specific subject,
 they are taken across subjects.
@@ -59,10 +59,12 @@ minimum/maximum of the times available in the \code{timeStartVar} and
 \item{if all time are missings, the range is set to 0 and Inf} 
 }
 The time limits are the same across subjects, and set to:
-1) \code{timeLim} if specified
-2) maximum time range in \code{timeLimStartVar} and \code{timeLimEndVar} in \code{timeLimData} 
-if specified
-3) the maximum range on the data obtained after filling missing values
+\itemize{
+\item{\code{timeLim} if specified}
+\item{maximum time range in \code{timeLimStartVar} and \code{timeLimEndVar} in \code{timeLimData} 
+if specified}
+\item{the maximum range on the data obtained after filling missing values}
+}
 }
 \author{
 Laure Cougnaud

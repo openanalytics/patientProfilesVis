@@ -202,7 +202,7 @@ some parameters/events of interest.
 
 It is used here to represent the start/end date of the adverse events.
 
-Please have a look at the section 'Missing times' of the documentation of the
+Please have a look at the section 'Details' of the documentation of the
 `subjectProfileIntervalPlot` function for further information on records with
 missing start/end date are represented.
 
