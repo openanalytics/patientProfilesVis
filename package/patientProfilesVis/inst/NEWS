@@ -1,3 +1,5 @@
+0.0.6
+    o subjectProfileLinePlot: include colorPalette
 0.0.5
     o add concomitant medications in vignette
     o getNLinesYGgplot: extend to multiple panels 

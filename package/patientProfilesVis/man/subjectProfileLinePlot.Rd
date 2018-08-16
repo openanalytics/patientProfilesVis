@@ -8,10 +8,10 @@ subjectProfileLinePlot(data, paramValueVar,
   paramLab = toString(getLabelVar(paramValueVar, labelVars = labelVars)),
   paramNameVar = NULL, paramValueRangeVar = NULL, colorVar = NULL,
   colorLab = getLabelVar(colorVar, labelVars = labelVars),
-  paramGroupVar = NULL, timeVar, subjectVar = "USUBJID", subsetVar = NULL,
-  subsetValue = NULL, xLab = getLabelVar(timeVar, labelVars = labelVars),
-  yLab = "", timeLim = NULL, title = paramLab, label = title,
-  labelVars = NULL)
+  colorPalette = NULL, paramGroupVar = NULL, timeVar,
+  subjectVar = "USUBJID", subsetVar = NULL, subsetValue = NULL,
+  xLab = getLabelVar(timeVar, labelVars = labelVars), yLab = "",
+  timeLim = NULL, title = paramLab, label = title, labelVars = NULL)
 }
 \arguments{
 \item{data}{data.frame with data}
@@ -29,6 +29,11 @@ e.g. to represent the reference range of the variable.}
 \item{colorVar}{string, variable of \code{data} with color.}
 
 \item{colorLab}{string, label for \code{colorVar}}
+
+\item{colorPalette}{named vector with color for \code{colorVar}}
+
+\item{paramGroupVar}{(optional) character vector with variable(s) of \code{data} with grouping.
+If specified, the parameters will be grouped by this(these) variable(s) in the y-axis.}
 
 \item{timeVar}{string, variable of \code{data} with time}
 
