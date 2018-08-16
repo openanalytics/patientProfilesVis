@@ -1,3 +1,5 @@
+0.0.3
+    o fix issue saving parameters for line plot, add error tracking around plot preview
 0.0.2
     o include possibility to display selected modules and include default modules
 0.0.1

@@ -3,6 +3,7 @@
 #' @param results reactiveValues object with list of results created from the server script
 #' @return subject profile plot(s)
 #' @author Laure Cougnaud
+#' @import shiny
 #' @export
 createSubjectProfileFromShinyInput <- function(input, results){
 

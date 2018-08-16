@@ -22,6 +22,7 @@ simpleCap <- function(x, onlyFirst = FALSE, rev = FALSE) {
 #' @inheritParams patientProfilesVis::getLabelVar
 #' @return named vector with variables
 #' @author Laure Cougnaud
+#' @importFrom patientProfilesVis getLabelVar
 #' @export
 getVarLabelsForUI <- function(data, labelVars){
 	vars <- colnames(data)
