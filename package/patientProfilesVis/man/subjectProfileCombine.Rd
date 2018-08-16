@@ -13,7 +13,8 @@ subjectProfileCombine(listPlots,
 \item{listPlots}{list of \code{\link[ggplot2]{ggplot2}} objects}
 
 \item{timeLim}{(optional) vector of length 2 with time limits (x-axis)
-If not specified, extracted from the minimum \code{timeStartVar} and maximum \code{timeEndVar}}
+If not specified, extracted from the minimum \code{timeStartVar} 
+and maximum \code{timeEndVar} per subject.}
 
 \item{subjectVar}{string, variable of \code{data} with subject ID}
 

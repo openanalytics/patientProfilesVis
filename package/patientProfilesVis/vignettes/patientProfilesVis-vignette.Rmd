@@ -202,11 +202,9 @@ some parameters/events of interest.
 
 It is used here to represent the start/end date of the adverse events.
 
-Please note that if a end date is not available for a certain record, the
-maximum of the time limits (`timeLim` parameter) is used.
-By default, these time limits are extracted from the minimum/maximum
-time availabl ein the `timeStartVar`/`timeEndVar` (so specific of the
-represented dataset).
+Please have a look at the section 'Missing times' of the documentation of the
+`subjectProfileIntervalPlot` function for further information on records with
+missing start/end date are represented.
 
 ```{r exampleIntervalModule-ae}
 
@@ -229,6 +227,36 @@ represented dataset).
 ```{r exampleIntervalModule-ae-include, echo = FALSE, fig.height = getNLinesYGgplot(aePlots[[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", names(aePlots)[1])}
 
 	print(aePlots[[1]])
+
+```
+
+To set the values represented for records with missing start/end dates,
+the time limits can be specified via the `timeLim` parameter or a dataset,
+or extracted from a specified dataset containing the start/end date for each
+patient via the `timeLimData` and `timeLimVar` parameters.
+The second option is used below to extract the time limits based on all visist
+for a specific subject from the subject-level SDTM dataset.
+
+```{r exampleIntervalModule-ae-timeLimData}
+
+	aePlotsTimLimFromSV <- subjectProfileIntervalPlot(
+		data = dataPlot,
+		paramVar = "AETERM",
+		timeStartVar = "AESTDY",
+		timeEndVar = "AEENDY",
+		colorVar = "AESEV",
+		labelVars = labelVarsSDTMPelican,
+		title = "Adverse events",
+		timeLimData = SDTMDataPelican$SV,
+		timeLimStartVar = "SVSTDY", 
+		timeLimEndVar = "SVENDY"
+	)
+	
+```
+
+```{r exampleIntervalModule-ae-timeLimData-include, echo = FALSE, fig.height = getNLinesYGgplot(aePlotsTimLimFromSV[[1]])*heightLineIn, fig.width = 14, fig.cap = paste0("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", names(aePlotsTimLimFromSV)[1], ". Missing start/end date are extracted from the subject-level datasets.")}
+
+	print(aePlotsTimLimFromSV[[1]])
 
 ```
 
@@ -279,6 +307,68 @@ this time interval visualization
 ```{r exampleIntervalModule-cm-include, echo = FALSE, fig.height = getNLinesYGgplot(cmPlots[[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlots)[1])}
 
 	print(cmPlots[[1]])
+
+```
+
+By default, in case of missing values the minimum/maximum time range for the
+specific subject is used, and across subjects if all missing. This results
+in big time range for this plot.
+
+The time limits of the concomitant medications is quite large compared to the
+study time range.
+As the modules will be combined with the same time limits, it might be
+advisable to restrict the time limits for this module via the `timeLimData`,
+`timeLimStartVar` and `timeLimEndVar` parameter.
+In this example the time limits are restricted to the minimum/maximum
+time range of the subject visits.
+
+```{r exampleIntervalModule-cm-restrictedTimeLimits}
+
+	cmPlotsTimeSV <- subjectProfileIntervalPlot(
+		data = SDTMDataPelican$CM,
+		paramVar = c("CMINDC", "CMDECOD", "CMDOSTXT", "CMDOSU", "CMROUTE", "CMDOSFRQ"),
+		timeStartVar = "CMSTDY",
+		timeEndVar = "CMENDY",
+		paramGroupVar = "CMINDC",
+		colorVar = "CMINDC",
+		labelVars = labelVarsSDTMPelican,
+		title = "Concomitant medications",
+		timeLimData = SDTMDataPelican$SV,
+		timeLimStartVar = "SVSTDY",
+		timeLimEndVar = "SVENDY"
+	)
+
+```
+
+```{r exampleIntervalModule-cm-restrictedTimeLimits-include, echo = FALSE, fig.height = getNLinesYGgplot(cmPlotsTimeSV[[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlots)[1], "with time limits restricted to subject visits")}
+
+	print(cmPlotsTimeSV[[1]])
+
+```
+
+Please note that the same behaviour can be obtained by specifying directly the
+time limits via the `timeLim` parameter:
+
+```{r exampleIntervalModule-cm-restrictedTimeLimits2}
+
+	timeLim <- c(-28, 53)
+	cmPlotsTimeSpec <- subjectProfileIntervalPlot(
+		data = SDTMDataPelican$CM,
+		paramVar = c("CMINDC", "CMDECOD", "CMDOSTXT", "CMDOSU", "CMROUTE", "CMDOSFRQ"),
+		timeStartVar = "CMSTDY",
+		timeEndVar = "CMENDY",
+		paramGroupVar = "CMINDC",
+		colorVar = "CMINDC",
+		labelVars = labelVarsSDTMPelican,
+		title = "Concomitant medications",
+		timeLim = timeLim
+	)
+
+```
+
+```{r exampleIntervalModule-cm-restrictedTimeLimits2-include, echo = FALSE, fig.height = getNLinesYGgplot(cmPlotsTimeSpec[[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlotsTimeSpec)[1], "with time limits restricted to: (", toString(timeLim), ")")}
+
+	print(cmPlotsTimeSpec[[1]])
 
 ```
 

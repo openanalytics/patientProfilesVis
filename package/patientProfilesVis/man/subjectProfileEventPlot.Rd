@@ -43,14 +43,15 @@ If specified, the parameters will be grouped by this(these) variable(s) in the y
 \item{subsetVar}{variable of \code{data} used for subsetting}
 
 \item{subsetValue}{character vector with value(s) of interest to consider for 
-\code{paramSubsetVar}}
+\code{subsetVar}}
 
 \item{xLab}{string, label for the x-axis}
 
 \item{yLab}{string, label for the y-axis}
 
 \item{timeLim}{(optional) vector of length 2 with time limits (x-axis)
-If not specified, extracted from the minimum \code{timeStartVar} and maximum \code{timeEndVar}}
+If not specified, extracted from the minimum \code{timeStartVar} 
+and maximum \code{timeEndVar} per subject.}
 
 \item{title}{string, title for the plot}
 

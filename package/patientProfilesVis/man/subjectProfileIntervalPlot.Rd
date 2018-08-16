@@ -7,12 +7,11 @@
 subjectProfileIntervalPlot(data, paramVar,
   paramLab = toString(getLabelVar(paramVar, labelVars = labelVars)),
   paramGroupVar = NULL, timeStartVar, timeEndVar, subjectVar = "USUBJID",
-  subsetVar = NULL, subsetValue = NULL, timeLim = with(data,
-  c(min(get(timeStartVar), na.rm = TRUE), max(get(timeEndVar), na.rm = TRUE))),
-  rangeSimilarStartEnd = diff(timeLim)/1000,
-  xLab = paste(getLabelVar(c(timeStartVar, timeEndVar), labelVars =
-  labelVars), collapse = "/"), yLab = "", colorVar = NULL,
-  colorLab = getLabelVar(colorVar, labelVars = labelVars),
+  subsetVar = NULL, subsetValue = NULL, timeLim = NULL,
+  timeLimData = NULL, timeLimStartVar = NULL, timeLimEndVar = NULL,
+  rangeSimilarStartEnd = NULL, xLab = paste(getLabelVar(c(timeStartVar,
+  timeEndVar), labelVars = labelVars), collapse = "/"), yLab = "",
+  colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
   colorPalette = NULL, title = paramLab, label = title,
   labelVars = NULL)
 }
@@ -35,14 +34,22 @@ If specified, the parameters will be grouped by this(these) variable(s) in the y
 \item{subsetVar}{variable of \code{data} used for subsetting}
 
 \item{subsetValue}{character vector with value(s) of interest to consider for 
-\code{paramSubsetVar}}
+\code{subsetVar}}
 
 \item{timeLim}{(optional) vector of length 2 with time limits (x-axis)
-If not specified, extracted from the minimum \code{timeStartVar} and maximum \code{timeEndVar}}
+If not specified, extracted from the minimum \code{timeStartVar} 
+and maximum \code{timeEndVar} per subject.}
+
+\item{timeLimData}{data.frame with data used to extract time limits per subject}
+
+\item{timeLimStartVar}{string, variable of \code{timeLimData} with time start}
+
+\item{timeLimEndVar}{string, variable of \code{timeLimData} with time end}
 
 \item{rangeSimilarStartEnd}{numeric, if a record has the same
 \code{timeStartVar} and \code{timeEndVar}, what should be the range of the segment?
-By default, a thousandth of the range of \code{timeLim}.}
+By default, a thousandth of the range of \code{timeLim}
+(if not specified the time range available in the data).}
 
 \item{xLab}{string, label for the x-axis}
 
@@ -67,9 +74,28 @@ list of \code{\link[ggplot2]{ggplot2} objects},
 also of class \code{subjectProfileTextPlot}
 }
 \description{
-Note that is no end date is available for a specific record,
-the maximum of the time limits (\code{timeLim}) is used as end of the interval
-and a triangle with right direction is added.
+If no start and/or end date is available, specific arrows are created.
+}
+\details{
+In case of missing values for the time start or end variables, they are replaced by:
+\itemize{
+\item{in case \code{timeLim} is specified: }{specified time limits}
+\item{otherwise, in case \code{timeLimData} and \code{timeLimVar} are specified: }{
+minimum/maximum values in the variable: \code{timeLimVar} in the data: \code{timeLimData}
+for the specific subject (if available). If there are missing for a specific subject,
+they are taken across subjects.
+}
+\item{otherwise (default): }{the missing values for start/end date are replaced by the 
+minimum/maximum of the times available in the \code{timeStartVar} and 
+\code{timeEndVar} of the visualized \code{data} PER SUBJECT (if available).
+}
+\item{if all time are missings, the range is set to 0 and Inf} 
+}
+The time limits are the same across subjects, and set to:
+1) \code{timeLim} if specified
+2) maximum time range in \code{timeLimStartVar} and \code{timeLimEndVar} in \code{timeLimData} 
+if specified
+3) the maximum range on the data obtained after filling missing values
 }
 \author{
 Laure Cougnaud

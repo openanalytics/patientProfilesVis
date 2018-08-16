@@ -25,7 +25,10 @@ getNLinesYGgplot <- function(gg){
 	
 	getNLinesLabel <- function(elName, elNLines){
 		elValue <- ggplot_build(gg)$plot$labels[[elName]]
-		if(!is.null(elValue) && elValue != "")	length(unlist(strsplit(elValue, split = "\n"))) * elNLines
+		if(!is.null(elValue) && !(is.character(elValue) && elValue == "")){
+			if(is.expression(elValue))	elValue <- as.character(elValue)
+			length(unlist(strsplit(elValue, split = "\n"))) * elNLines
+		}
 	}
 	nLinesTitleAndXAxis <- sum(c(getNLinesLabel("title", 3), getNLinesLabel("x", 2)))
 	nLines <- nLinesPlot + nLinesTitleAndXAxis
