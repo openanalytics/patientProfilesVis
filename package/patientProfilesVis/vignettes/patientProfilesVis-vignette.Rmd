@@ -352,8 +352,8 @@ in normal range.
 
 ### Subset of interest
 
-If only a subset of parameters are of interest, the `paramSubsetVar` and
-`paramSubsetValue` can be used. 
+If only a subset of parameters are of interest, the `subsetVar` and
+`subsetValue` can be used. 
 These parameters are also available for all other module types.
 These parameters are here used to represent only the measurements for the
 hematology parameters.
