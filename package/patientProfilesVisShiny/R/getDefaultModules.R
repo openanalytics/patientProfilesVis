@@ -18,7 +18,7 @@ getDefaultModules <- function(data){
 						data = "DM",
 						paramValueVar  = params,
 						type = "text",
-						label = "defaultSDTMDMText",
+#						label = "defaultSDTMDMText",
 						title = "Demographical information",
 						subjectVar =  "USUBJID"
 					)
@@ -36,7 +36,7 @@ getDefaultModules <- function(data){
 							paramNameVar = "MHDECOD",
 							paramValueVar = "MHENRTPT",
 							type = "text",
-							label = "defaultSDTMMHText",
+#							label = "defaultSDTMMHText",
 							title = "Medical history: status",
 							subjectVar =  "USUBJID"
 						),
@@ -53,7 +53,7 @@ getDefaultModules <- function(data){
 					timeStartVar = "AESTDY",
 					timeEndVar = "AEENDY",
 					type = "interval",
-					label = "defaultSDTMAEInterval",
+#					label = "defaultSDTMAEInterval",
 					title = "Adverse events",
 					subjectVar =  "USUBJID"
 				),
@@ -72,7 +72,7 @@ getDefaultModules <- function(data){
 						type = "event",
 #						shapePalette = c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24,),
 						title = "Laboratory test measurements: reference range indicator",
-						label = "defaultSDTMLBEvent",
+#						label = "defaultSDTMLBEvent",
 						subjectVar =  "USUBJID"
 					),
 					if("LBNRIND" %in% colnames(data$LB))
@@ -94,7 +94,7 @@ getDefaultModules <- function(data){
 						timeVar = "LBDY",
 						type = "line",
 						title = "Laboratory test measurements: actual value",
-						label = "defaultSDTMLBLine",
+#						label = "defaultSDTMLBLine",
 						subjectVar =  "USUBJID"
 					)
 				)
@@ -114,7 +114,7 @@ getDefaultModules <- function(data){
 						type = "interval",
 						timeStartVar = "EXSTDY",
 						timeEndVar = "EXENDY",
-						label = "defaultSDTMEXInterval",
+#						label = "defaultSDTMEXInterval",
 						title = "Treatment exposure",
 						subjectVar =  "USUBJID"
 					),

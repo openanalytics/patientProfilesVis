@@ -146,10 +146,10 @@ serverFunction <- function(input, output, session) {
 					value = ifelse(!is.null(results$currentModule()), results$currentModule()$title, "")
 				),
 				helpText("The title is also used to uniquely identify a specified module in the interface."),
-				textInput("moduleLabel", label = "Label", 
-					value = ifelse(!is.null(results$currentModule()), results$currentModule()$label, "")
-				),
-				helpText("The label is used to uniquely identify a specified module when combining modules."),
+#				textInput("moduleLabel", label = "Label", 
+#					value = ifelse(!is.null(results$currentModule()), results$currentModule()$label, "")
+#				),
+#				helpText("The label is used to uniquely identify a specified module when combining modules."),
 				createWidgetVariable(
 					inputId = "moduleSubjectVar",
 					label = "Column with subject identifier",
@@ -345,9 +345,9 @@ serverFunction <- function(input, output, session) {
 				div(strong(paste("The patient profiles cannot be created:", attr(plotCurrentError, "condition")$message)), 
 				style = "color:red")
 			)
-		}else if(!input$moduleLabel %in% names(results$listPlots)){
+		}else if(!input$moduleTitle %in% names(results$listPlots)){
 			output$moduleSaveMessage <- renderUI(
-				div(strong("Label already used, please specify a different label."), 
+				div(strong("Title already used, please specify a different title."), 
 					style = "color:red")
 			)
 		}else{
@@ -451,9 +451,12 @@ serverFunction <- function(input, output, session) {
 			output$moduleSaveMessage <- renderUI(
 				div(strong("Please preview first your specified module."), 
 					style = "color:red"))
-		}else if(!is.null(input$moduleLabel) && input$moduleLabel %in% names(results$listPlots)){
+		}else if(!is.null(input$moduleTitle) && 
+			length(results$listPlots > 0) && 
+			# by default the label is set to the title
+			input$moduleTitle %in% sapply(results$listPlots, function(x) attr(x, "label"))){
 			output$moduleSaveMessage <- renderUI(
-				div(strong("Label already used, please specify a different label."), 
+				div(strong("Title already used, please specify a different title."), 
 					style = "color:red"))
 		}else{
 			

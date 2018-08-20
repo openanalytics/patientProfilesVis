@@ -12,7 +12,7 @@ createSubjectProfileFromShinyInput <- function(input, results){
 			data = results$dataCurrent(),
 			subjectVar = input$moduleSubjectVar,
 			title = input$moduleTitle,
-			label = input$moduleLabel,
+#			label = input$moduleLabel,
 			labelVars = results$labelVars(),
 			paramGroupVar = input$moduleParamGroupVar,
 			subsetVar = input$moduleSubsetVar,
