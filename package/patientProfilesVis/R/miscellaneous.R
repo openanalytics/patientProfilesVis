@@ -12,15 +12,14 @@ getPathTemplate <- function(file){
 #' @inheritParams getNLinesLabel
 #' @inherit getNLinesLabel return
 #' @importFrom ggplot2 ggplot_build
-#' @importFrom dplyr n_distinct
 #' @export
 getNLinesYGgplot <- function(gg){
 	
 	dataPlot <- ggplot_build(gg)$data
 	nLinesPlot <- if(inherits(gg, "subjectProfileLinePlot")){
-		sum(n_distinct(unlist(lapply(dataPlot, function(x)		unique(x$PANEL))))) * 4
+		sum(length(unique(unlist(lapply(dataPlot, function(x)		unique(x$PANEL)))))) * 4
 	}else{
-		sum(unlist(lapply(dataPlot, function(x)		length(unique(x$y)))))
+		sum(length(unique(unlist(lapply(dataPlot, function(x)		unique(x$y))))))
 	}
 
 	nLinesTitleAndXAxis <- sum(c(
@@ -30,6 +29,53 @@ getNLinesYGgplot <- function(gg){
 	))
 	nLines <- nLinesPlot + nLinesTitleAndXAxis
 	return(nLines)
+}
+
+#' Get variable with page of the plot,
+#' used for automatic paging of a plot
+#' @param data data.frame with data
+#' @param var string, variable of \code{data} with variable for the y-axis
+#' @param typeVar string, type of the variable, either 'y' or 'panel'
+#' @param formatReport list of output from the 
+#' \code{\link{subjectProfileReportFormat}} function
+#' @param title logical, has the plot a title?
+#' @param xLab logical, has the plot a label for the x-axis?
+#' @param caption logical, has the plot a caption?
+#' @return input \code{data} with additional column 'pagePlot'
+#' containing the page for the plot
+#' @author Laure Cougnaud
+getPageVar <- function(data, var, 
+	typeVar = c("y", "panel"),
+	formatReport = subjectProfileReportFormat(),
+	title = TRUE, xLab = TRUE, caption = TRUE){
+	
+	typeVar <- match.arg(typeVar)
+	
+	# maximum number of lines for the plot
+	maxNLines <- do.call(getMaxNLinesCombinePlot, formatReport) - 
+		sum(c(title, xLab, caption)) # let some space for title/x/caption
+	
+	# compute number of elements per page
+	nElPerPage <- floor(maxNLines / switch(typeVar, 'y' = 1, 'panel' = 4))
+	
+	# in case some levels are not present for some subjects
+	data[, var] <- droplevels(data[, var])
+	
+	# get vector with cumulative number of lines across plots
+	levelsRows <- seq_len(nlevels(data[, var]))
+
+	# cut the variable by the maximum number of lines
+	numVect <- .bincode(x  = levelsRows, 
+		breaks = c(seq(from = 1, to = max(levelsRows), by = nElPerPage), Inf),
+		right = FALSE
+	)
+	names(numVect) <- levels(data[, var])
+	
+	# create a variable with grouping
+	data$pagePlot <- numVect[data[, var]]
+	
+	return(data)
+	
 }
 
 #' Get number of lines for specific label
@@ -64,30 +110,48 @@ getNLinesLabel <- function(gg,
 
 #' Get maximum number of lines of a 'combined plot'
 #' for a specific document
-#' @param heightLineIn height of a line in inches
-#' @param margin margin in inches
-#' @param landscape logical, if TRUE the created report is in landscape format
+#' @inheritParams subjectProfileReportFormat
 #' @return numeric with maximum height for plot
 #' @importFrom grid convertX
 #' @author Laure Cougnaud
-#' @export
 getMaxNLinesCombinePlot <- function(
-	heightLineIn = 0.2,
-	margin = 0.75,
-	landscape = FALSE){
+	heightLineIn = subjectProfileReportFormat()$heightLineIn,
+	margin = subjectProfileReportFormat()$margin,
+	landscape = subjectProfileReportFormat()$landscape,
+	aspectRatio = subjectProfileReportFormat()$aspectRatio){
 	
-	heightForPlot <- 
+	heightForPlot <- (
 		# page dimension
 		convertX(unit(ifelse(landscape, 21, 29.7), "cm"), "inches", valueOnly = TRUE) -
 		# margin:
 		margin * 2 -
 		# section: 17 pt (only for first page) + subsection: 14 pt
 		sum(convertX(unit(c(14, 17), "pt"), "inches", valueOnly = TRUE))
+	) / aspectRatio
 
 	nLinesPlot <- heightForPlot/heightLineIn
 
 	return(nLinesPlot)
 	
+}
+
+#' Get width for a plot for a certain page layout
+#' @inheritParams subjectProfileReportFormat
+#' @return width for the plot in inches
+#' @importFrom grid convertX
+#' @author Laure Cougnaud
+getWidthPlot <- function(
+	margin = subjectProfileReportFormat()$margin,
+	landscape = subjectProfileReportFormat()$landscape,
+	aspectRatio = subjectProfileReportFormat()$aspectRatio){
+	
+	widthPage <- (
+		convertX(unit(ifelse(landscape, 29.7, 21), "cm"), "inches", valueOnly = TRUE) -
+		margin*2
+	)/ aspectRatio
+	
+	return(widthPage)
+
 }
 
 #' Get label(s) for a variable of the dataset
@@ -318,4 +382,31 @@ filterData <- function(data,
 	
 	return(data)
 	
+}
+
+#' Get list with format specification for subject profile report,
+#' setting default for entire workflow
+#' @param heightLineIn height of a line in inches
+#' @param margin margin in inches
+#' @param landscape logical, if TRUE the created report is in landscape format
+#' @param aspectRatio ratio between size of image in inches 
+#' (derived from specified margin, landscape and heightLineIn)
+#' and real size for exported image
+#' @return list with input parameters.
+#' If not specified, default are used.
+#' @author Laure Cougnaud
+#' @export
+subjectProfileReportFormat <- function(
+	heightLineIn = 0.2,
+	margin = 0.75,
+	landscape = FALSE,
+	aspectRatio = 0.5){
+
+	paramFormat <- list(
+		heightLineIn = heightLineIn, margin = margin, 
+		landscape = landscape, aspectRatio = aspectRatio
+	)
+	
+	return(paramFormat)
+
 }

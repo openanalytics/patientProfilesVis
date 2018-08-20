@@ -8,17 +8,20 @@ createSubjectProfileReport(listPlots,
   timeLim = getXLimSubjectProfilePlots(listPlots), refLines = NULL,
   refLinesData = NULL, refLinesTimeVar = NULL, refLinesLabelVar = NULL,
   bookmarkData = NULL, bookmarkVar = NULL, subjectSortData = bookmarkData,
-  subjectSortVar = bookmarkVar, subjectVar = "USUBJID", landscape = FALSE,
+  subjectSortVar = bookmarkVar, subjectVar = "USUBJID",
   outputFile = "subjectProfile.pdf", exportFigures = FALSE,
-  labelVars = NULL, heightLineIn = 0.2, maxNLines = NULL, shiny = FALSE)
+  labelVars = NULL, maxNLines = NULL, shiny = FALSE,
+  formatReport = subjectProfileReportFormat())
 }
 \arguments{
-\item{listPlots}{list of plots, as returned by the \code{\link{subjectProfileTextPlot}},
-\code{\link{subjectProfileEventPlot}} or \code{\link{subjectProfileIntervalPlot}}}
+\item{listPlots}{nested list of plots, as returned by the \code{\link{subjectProfileTextPlot}},
+\code{\link{subjectProfileEventPlot}}, \code{\link{subjectProfileIntervalPlot}} or
+\code{\link{subjectProfileLinePlot}} functions.}
 
-\item{timeLim}{(optional) vector of length 2 with time limits (x-axis)
-If not specified, extracted from the minimum \code{timeStartVar} 
-and maximum \code{timeEndVar} per subject.}
+\item{timeLim}{vector of length 2 with time limits.
+If not specified, these are set to the time limits specified
+when creating each module (stored in \code{attributes(x)$metaData$timeLim})
+otherwise to the maximum range contained in the data.}
 
 \item{refLines}{(optional) nested list with details for reference line(s).
 Each sublist contains:
@@ -49,16 +52,12 @@ by default same as \code{bookmarkVar}}
 
 \item{subjectVar}{string, variable of \code{data} with subject ID}
 
-\item{landscape}{logical, if TRUE the created report is in landscape format}
-
 \item{outputFile}{string, path to the output report}
 
 \item{exportFigures}{logical, if TRUE (FALSE by default) the figures are also exported
 in png format in a 'figures' folder}
 
 \item{labelVars}{named string with variable labels (names are the variable code)}
-
-\item{heightLineIn}{height of a line in inches}
 
 \item{maxNLines}{maximum number of lines for a combined plot,
 to fit in the page height}
@@ -67,6 +66,11 @@ to fit in the page height}
 Messages during report creation will be included in the Shiny interface,
 and it will be mentioned at the end of the report.
 In this case, the \code{shiny} package should be available.}
+
+\item{formatReport}{list with parameters used to specify the format of the report,
+see parameters of the \code{\link{subjectProfileReportFormat}} function}
+
+\item{heightLineIn}{height of a line in inches}
 }
 \value{
 no returned value, the report is created at the location

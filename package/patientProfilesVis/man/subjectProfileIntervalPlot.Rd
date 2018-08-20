@@ -14,7 +14,7 @@ subjectProfileIntervalPlot(data, paramVar,
   timeEndVar), labelVars = labelVars), collapse = "/"), yLab = "",
   colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
   colorPalette = NULL, title = paramLab, label = title,
-  labelVars = NULL)
+  labelVars = NULL, formatReport = subjectProfileReportFormat())
 }
 \arguments{
 \item{data}{data.frame with data}
@@ -69,10 +69,14 @@ This label is used to report the name of the panel
 in the text when the plots are combined (e.g. if the plot is empty).}
 
 \item{labelVars}{named string with variable labels (names are the variable code)}
+
+\item{formatReport}{list with parameters used to specify the format of the report,
+see parameters of the \code{\link{subjectProfileReportFormat}} function}
 }
 \value{
-list of \code{\link[ggplot2]{ggplot2} objects}, 
-also of class \code{subjectProfileTextPlot}
+list of (across subjects) of list (across modules) of \code{\link[ggplot2]{ggplot2} objects}, 
+also of class \code{subjectProfileIntervalPlot}, with additional metaData attributes containing
+'label' and 'timeLim'.
 }
 \description{
 Create plot of subject profiles with segments for range of parameters 

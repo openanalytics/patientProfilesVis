@@ -7,14 +7,16 @@
 getXLimSubjectProfilePlots(listPlots)
 }
 \arguments{
-\item{listPlots}{list of \code{subjectProfile[X]Plot} plots}
+\item{listPlots}{list of list of \code{subjectProfile[X]Plot} plots}
 }
 \value{
 vector of length 2 with limits for the x-axis
 }
 \description{
-These limits are extracted from the maximal range
-of the x-coordinates across all plots
+These limits are extracted from specified \code{timeLim} for each
+module (stored in the \code{attributes()$metaData$timeLim}), 
+and if empty for all modules: from the maximal range
+of the x-coordinates across all plots.
 }
 \author{
 Laure Cougnaud
