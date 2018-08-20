@@ -171,7 +171,7 @@ subjectProfileCombine <- function(
 		list
 	})
 
-	if(shiny)	incProgress(0.1, detail = "Combine plots across subjects/modules.")
+	if(shiny)	incProgress(0.1, detail = "Combine plots across modules for each subject.")
 	
 	# combine all plots per subject
 	# this returns a list of 'gtable' object
@@ -322,12 +322,7 @@ subjectProfileCombineOnce <- function(...,
 			# relative height of each plot
 			relHeights <- nLinesPlot/sum(nLinesPlot)
 			# combine all plots
-			plot <- do.call(plot_grid,
-				c(
-					listGgPlotsToCombine,
-					list(align = "v", ncol = 1, axis = "lr", rel_heights = relHeights)
-				)
-			)
+			plot <- combineVerticallyGGplot(listPlots = listGgPlotsToCombine, height = relHeights, package = "egg")
 			# store the number of lines in the y-axis (used to adapt size during export)
 			attributes(plot) <- c(attributes(plot), 
 				list(nLinesPlot = sum(nLinesPlot), nSubplots = length(listGgPlotsToCombine))
@@ -490,12 +485,8 @@ addReferenceLinesProfilePlot <- function(
 			nLinesPlot <- c(getNLinesYGgplot(gg), nLinesRefLines)
 			relHeights <- nLinesPlot/sum(nLinesPlot)
 			# combine all plots
-			ggT <- do.call(plot_grid,
-				c(
-					list(gg, ggText),
-					list(align = "v", ncol = 1, axis = "lr", rel_heights = relHeights)
-				)
-			)
+			ggT <- combineVerticallyGGplot(listPlots = list(gg, ggText), height = relHeights, 
+				package = "cowplot")
 			
 			attr(ggT, "metaData") <- c(attr(gg, "metaData"), list(nLinesLabelRefLines = nLinesRefLines))
 			
@@ -564,4 +555,30 @@ defineIndex <- function(
 	
 	return(res)
 	
+}
+
+#' Combine vertically some plots
+#' @param listPlots list of \code{\link[ggplot2]{ggplot2}} objects
+#' @param heights vector with heights
+#' @param package string with package name used to combine the pots, 'egg' or 'cowplot'
+#' @return gtable
+#' @importFrom cowplot plot_grid
+#' @importFrom egg ggarrange
+#' @author Laure Cougnaud
+combineVerticallyGGplot <- function(listPlots, heights, package = c("egg", "cowplot")){
+	
+	package <- match.arg(package)
+	
+	res <- switch(package,
+			
+		'cowplot' = plot_grid(
+			plotlist = listPlots,
+			align = "v", ncol = 1, axis = "lr", rel_heights = heights
+		),
+		
+		'egg' = ggarrange(plots = listPlots, ncol = 1, heights = heights)
+
+	)
+	
+	return(res)
 }
