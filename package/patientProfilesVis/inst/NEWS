@@ -1,3 +1,6 @@
+0.0.7
+    o subjectProfileCombine: adapt progress message
+    o use egg package to combine plots across modules
 0.0.6
     o subjectProfileLinePlot: include colorPalette
     o subjectProfileIntervalPlot: don't delete records without start date, different arrows for missing start/end dates
