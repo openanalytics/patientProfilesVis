@@ -4,8 +4,9 @@
 #' @param shapeLab string, label for \code{shapeVar}
 #' @param shapePalette named vector with shape for \code{shapeVar}
 #' @inheritParams subjectProfileIntervalPlot
-#' @return list of \code{\link[ggplot2]{ggplot2} objects}, 
-#' also of class \code{subjectProfileTextPlot}
+#' @return list of (across subjects) of list (across modules) of \code{\link[ggplot2]{ggplot2} objects}, 
+#' also of class \code{subjectProfileEventPlot}, with additional metaData attributes containing
+#' 'label' and 'timeLim'.
 #' @author Laure Cougnaud
 #' @import ggplot2
 #' @importFrom plyr dlply
@@ -27,7 +28,8 @@ subjectProfileEventPlot <- function(
 	timeLim = NULL,
 	title = paramLab,
 	label = title,
-	labelVars = NULL
+	labelVars = NULL,
+	formatReport = subjectProfileReportFormat()
 ){
 	
 	# concatenate variable(s) if multiple are specified
@@ -63,49 +65,63 @@ subjectProfileEventPlot <- function(
 	)
 	
 	listPlots <- dlply(data, subjectVar, function(dataSubject){	
-		
-		subject <- unique(dataSubject[, subjectVar])
 				
-		aesArgs <- c(
-			list(x = timeVar, y = "yVar"),
-			if(!is.null(colorVar))	list(fill = colorVar, color = colorVar),
-			if(!is.null(shapeVar))	list(shape = shapeVar)
-		)
+		subject <- unique(dataSubject[, subjectVar])
+		
+		# split plot into multiple page(s)
+		dataSubject <- getPageVar(
+			data = dataSubject, 
+			var = "yVar", typeVar = "y",
+			formatReport = formatReport,
+			title = !is.null(title),
+			xLab = !is.null(xLab),
+			caption = FALSE
+		)	
+		
+		listPlots <- dlply(dataSubject, "pagePlot", function(dataSubjectPage){
+					
+			aesArgs <- c(
+				list(x = timeVar, y = "yVar"),
+				if(!is.null(colorVar))	list(fill = colorVar, color = colorVar),
+				if(!is.null(shapeVar))	list(shape = shapeVar)
+			)
+				
+			# create the plot
+			gg <- ggplot(data = dataSubjectPage) +
+				geom_point(
+					do.call(aes_string, aesArgs),
+					size = 3
+				) +
+				scale_y_discrete(drop = TRUE) +
+				subjectProfileTheme() +
+				labs(title = title, x = xLab, y = yLab)
 			
-		# create the plot
-		gg <- ggplot(data = dataSubject) +
-			geom_point(
-				do.call(aes_string, aesArgs),
-				size = 3
-			) +
-			scale_y_discrete(drop = TRUE) +
-			subjectProfileTheme() +
-			labs(title = title, x = xLab, y = yLab)
-		
-		# color palette and name for color legend
-		if(!is.null(colorVar))
-			gg <- gg + 
-				getAesScaleManual(lab = colorLab, palette = colorPalette, type = "color") +
-				getAesScaleManual(lab = colorLab, palette = colorPalette, type = "fill")
-		
-		# change name for color scale
-		if(!is.null(shapeVar))
-			gg <- gg + getAesScaleManual(lab = shapeLab, palette = shapePalette, type = "shape")
-		
-		if(!is.null(timeLim))
-			gg <- gg + coord_cartesian(xlim = timeLim)
-		
-		attr(gg, 'metaData') <- list(subjectID = subject)
-		
-		class(gg) <- c("subjectProfileEventPlot", class(gg))
-		
-		gg
+			# color palette and name for color legend
+			if(!is.null(colorVar))
+				gg <- gg + 
+					getAesScaleManual(lab = colorLab, palette = colorPalette, type = "color") +
+					getAesScaleManual(lab = colorLab, palette = colorPalette, type = "fill")
+			
+			# change name for color scale
+			if(!is.null(shapeVar))
+				gg <- gg + getAesScaleManual(lab = shapeLab, palette = shapePalette, type = "shape")
+			
+			if(!is.null(timeLim))
+				gg <- gg + coord_cartesian(xlim = timeLim)
+			
+			attr(gg, 'metaData') <- list(subjectID = subject)
+			
+			class(gg) <- c("subjectProfileEventPlot", class(gg))
+			
+			gg
+			
+		})
 		
 	})
 
 	# metaData:
 	# stored plot label
-	attr(listPlots, 'metaData') <- list(label = label)
+	attr(listPlots, 'metaData') <- list(label = label, timeLim = timeLim)
 	
 	return(listPlots)
 	

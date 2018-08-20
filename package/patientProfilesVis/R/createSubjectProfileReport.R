@@ -1,6 +1,7 @@
 #' Create subject profile report
-#' @param listPlots list of plots, as returned by the \code{\link{subjectProfileTextPlot}},
-#' \code{\link{subjectProfileEventPlot}} or \code{\link{subjectProfileIntervalPlot}}
+#' @param listPlots nested list of plots, as returned by the \code{\link{subjectProfileTextPlot}},
+#' \code{\link{subjectProfileEventPlot}}, \code{\link{subjectProfileIntervalPlot}} or
+#' \code{\link{subjectProfileLinePlot}} functions.
 #' @param outputFile string, path to the output report
 #' @param exportFigures logical, if TRUE (FALSE by default) the figures are also exported
 #' in png format in a 'figures' folder
@@ -11,9 +12,13 @@
 #' @param subjectSortVar variable(s) of \code{data} indicating the order for the subjects in the report,
 #' by default same as \code{bookmarkVar}
 #' @param heightLineIn height of a line in inches
+#' @param timeLim vector of length 2 with time limits.
+#' If not specified, these are set to the time limits specified
+#' when creating each module (stored in \code{attributes(x)$metaData$timeLim})
+#' otherwise to the maximum range contained in the data.
 #' @inheritParams subjectProfileCombine
 #' @inheritParams defineIndex
-#' @inheritParams getMaxNLinesCombinePlot
+#' @inheritParams subjectProfileIntervalPlot
 #' @return no returned value, the report is created at the location
 #' specified by \code{outputFile}
 #' @author Laure Cougnaud
@@ -31,25 +36,19 @@ createSubjectProfileReport <- function(
 	subjectSortData = bookmarkData,
 	subjectSortVar = bookmarkVar,
 	subjectVar = "USUBJID",
-	landscape = FALSE,
 	outputFile = "subjectProfile.pdf",
 	exportFigures = FALSE,
 	labelVars = NULL,
-	heightLineIn = 0.2,
 	maxNLines = NULL,
-	shiny = FALSE){
+	shiny = FALSE,
+	formatReport = subjectProfileReportFormat()){
 
 	if(shiny && !requireNamespace("shiny", quietly = TRUE))
 		stop("The package 'shiny' is required to report progress.")
 
 	# margin of document in inches
-	margin <- 0.75
 	if(is.null(maxNLines)){
-		maxNLines <- getMaxNLinesCombinePlot(
-			margin = margin,
-			landscape = landscape,
-			heightLineIn = heightLineIn
-		)
+		maxNLines <- do.call(getMaxNLinesCombinePlot, formatReport)
 	}
 
 	# combine plots
@@ -97,11 +96,9 @@ createSubjectProfileReport <- function(
 	inputParametersEnv <- new.env()
 	inputParameters <- list(
 		listPlotsPerSubjectList = listPlotsPerSubjectList,
-		landscape = landscape,
 		outputDir = outputDir,
 		index = index,
-		heightLineIn = heightLineIn,
-		margin = margin,
+		formatReport = formatReport,
 		shiny = shiny
 	)
 	assign("inputParameters", inputParameters, envir = inputParametersEnv)
@@ -261,23 +258,25 @@ subjectProfileCombineOnce <- function(...,
 	refLinesLabelVar = NULL,
 	subjectVar = "USUBJID"){
 		
-	listGgPlotsToCombine <- list(...)
+	listGgPlotsToCombineInit <- list(...)
 		
 	# 'empty' plot in case a specific plot is not available for this subject
-	isEmpty <- which(sapply(listGgPlotsToCombine, is.null))
+	isEmpty <- which(sapply(listGgPlotsToCombineInit, is.null))
 	if(any(isEmpty)){
-		listGgPlotsToCombine[isEmpty] <- lapply(isEmpty, function(i)
+		listGgPlotsToCombineInit[isEmpty] <- lapply(isEmpty, function(i)
 			if(labels[i] != ""){
 				gg <- ggplot() + theme_bw() + 
 					ggtitle(paste("No", labels[i], "available."))
 				class(gg) <- c("subjectProfileEmptyPlot", class(gg))
-				gg
+				list(gg)
 			}
 		)
 	}
-	listGgPlotsToCombine <- listGgPlotsToCombine[!sapply(listGgPlotsToCombine, is.null)]
+	listGgPlotsToCombineInit <- listGgPlotsToCombineInit[!sapply(listGgPlotsToCombineInit, is.null)]
 	
-	plot <- if(length(listGgPlotsToCombine) > 0){
+	plot <- if(length(listGgPlotsToCombineInit) > 0){
+		
+		listGgPlotsToCombine <- unlist(listGgPlotsToCombineInit, recursive = FALSE)
 		
 		# extract number of lines in the y-axis
 		nLinesPlot <- sapply(listGgPlotsToCombine, getNLinesYGgplot)
@@ -352,28 +351,41 @@ subjectProfileCombineOnce <- function(...,
 
 #' Get limits for a list of plots.
 #' 
-#' These limits are extracted from the maximal range
-#' of the x-coordinates across all plots
-#' @param listPlots list of \code{subjectProfile[X]Plot} plots
+#' These limits are extracted from specified \code{timeLim} for each
+#' module (stored in the \code{attributes()$metaData$timeLim}), 
+#' and if empty for all modules: from the maximal range
+#' of the x-coordinates across all plots.
+#' @param listPlots list of list of \code{subjectProfile[X]Plot} plots
 #' @return vector of length 2 with limits for the x-axis
 #' @importFrom ggplot2 ggplot_build
 #' @author Laure Cougnaud
 getXLimSubjectProfilePlots <- function(listPlots){
 	
-	xlimList <- lapply(listPlots, function(list)
-		lapply(list, function(gg) 
+	# in case the time limits were specified for a specific plot
+	timeLim <- range(unlist(lapply(listPlots, function(x) attributes(x)$metaData$timeLim)), na.rm = TRUE)
+	
+	if(is.null(timeLim)){
+		
+		listPlots1 <- unlist(unlist(listPlots, recursive = FALSE), recursive = FALSE)
+		
+		xlimList <- lapply(listPlots1, function(gg)
 			if(!inherits(gg, "subjectProfileTextPlot"))
 				range(
 					unlist(
-						lapply(ggplot_build(gg)$data, function(dataPlot) 
-							c(dataPlot$x, if("xend" %in% colnames(dataPlot))	dataPlot$xend)
-						)
+					 lapply(ggplot_build(gg)$data, function(dataPlot) 
+						c(dataPlot$x, if("xend" %in% colnames(dataPlot))	dataPlot$xend)
 					)
 				)
+			)
 		)
-	)
-	
-	timeLim <- range(unlist(xlimList, recursive = TRUE), na.rm = TRUE)
+		
+		xlimVect <- unlist(xlimList)
+		
+		timeLim <- if(!is.null(xlimVect)){
+			range(xlimVect, na.rm = TRUE)
+		}else{c(-Inf, Inf)}
+
+	}
 	
 	return(timeLim)
 	
@@ -399,6 +411,7 @@ getXLimSubjectProfilePlots <- function(listPlots){
 #' @param refLinesColor vector of length 1 with default color for reference line(s)
 #' @param refLinesLinetype vector of length 1 with default linetype for reference line(s)
 #' @param addLabel logical, if TRUE (FALSE by default) add the label of the reference line(s) at the bottom of the plot
+#' @param timeLim vector of length 2 with time limits
 #' @inheritParams subjectProfileIntervalPlot
 #' @return if \code{addLabel} is TRUE, \code{\link[gtable]{gtable}} object,
 #' \code{\link[ggplot2]{ggplot2}} otherwise

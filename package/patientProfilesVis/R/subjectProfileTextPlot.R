@@ -36,8 +36,9 @@
 #' @param paramVarSep string with character(s) used to concatenate multiple 
 #' \code{paramNameVar} or \code{paramValueVar}, ' - ' by default.
 #' @inheritParams subjectProfileIntervalPlot
-#' @return list of \code{\link[ggplot2]{ggplot2} objects}, also of class
-#' \code{subjectProfileTextPlot}
+#' @return list of (across subjects) of list (across modules) of \code{\link[ggplot2]{ggplot2} objects}, 
+#' also of class \code{subjectProfileTextPlot}, with additional metaData attributes containing
+#' 'label' and 'timeLim'.
 #' @author Laure Cougnaud
 #' @import ggplot2
 #' @importFrom plyr dlply
@@ -55,7 +56,8 @@ subjectProfileTextPlot <- function(
 	title = "Subject information",
 	label = title,
 	labelVars = NULL,
-	paramVarSep = " - "
+	paramVarSep = " - ",
+	formatReport = subjectProfileReportFormat()
 ){
 	
 	# only keep records of interest
@@ -130,34 +132,48 @@ subjectProfileTextPlot <- function(
 				
 		subject <- unique(dataSubject[, subjectVar])
 		
-		gg <- ggplot(data = dataSubject) +
-			geom_text(
-				aes(x = 0, y = variable, label = value),
-				hjust = 0,
-				size = rel(3)
-			) +
-			xlim(c(0, 1)) +
-			subjectProfileTheme() +
-			theme(
-				panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-				axis.ticks = element_blank(),
-				axis.text.x = element_blank(),
-				axis.ticks.x = element_blank()
-			) +
-			labs(title = title, x = xLab, y = yLab)
+		# split plot into multiple page(s)
+		dataSubject <- getPageVar(
+			data = dataSubject, 
+			var = "variable", typeVar = "y",
+			formatReport = formatReport,
+			title = !is.null(title),
+			xLab = !is.null(xLab) && xLab != "",
+			caption = FALSE
+		)
 		
-		if(xLab == ""){
-			marDefault <- theme_bw()$plot.margin
-			marNew <- margin(t = marDefault[1], r = marDefault[2], 
-				b = 0, l = marDefault[4], unit = "pt")
-			gg <- gg + theme(plot.margin = marNew)
-		}
+		listPlots <- dlply(dataSubject, "pagePlot", function(dataSubjectPage){
 		
-		attr(gg, 'metaData') <- list(subjectID = subject)
-		
-		class(gg) <- c("subjectProfileTextPlot", class(gg))
-		
-		gg
+			gg <- ggplot(data = dataSubjectPage) +
+				geom_text(
+					aes(x = 0, y = variable, label = value),
+					hjust = 0,
+					size = rel(3)
+				) +
+				xlim(c(0, 1)) +
+				subjectProfileTheme() +
+				theme(
+					panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+					axis.ticks = element_blank(),
+					axis.text.x = element_blank(),
+					axis.ticks.x = element_blank()
+				) +
+				labs(title = title, x = xLab, y = yLab)
+			
+			if(xLab == ""){
+				marDefault <- theme_bw()$plot.margin
+				marNew <- margin(t = marDefault[1], r = marDefault[2], 
+					b = 0, l = marDefault[4], unit = "pt")
+				gg <- gg + theme(plot.margin = marNew)
+			}
+			
+			attr(gg, 'metaData') <- list(subjectID = subject)
+			
+			class(gg) <- c("subjectProfileTextPlot", class(gg))
+			
+			gg
+			
+		})
 		
 	})
 

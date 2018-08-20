@@ -35,9 +35,7 @@ Each sublist contains:
 
 \item{refLinesLinetype}{vector of length 1 with default linetype for reference line(s)}
 
-\item{timeLim}{(optional) vector of length 2 with time limits (x-axis)
-If not specified, extracted from the minimum \code{timeStartVar} 
-and maximum \code{timeEndVar} per subject.}
+\item{timeLim}{vector of length 2 with time limits}
 
 \item{addLabel}{logical, if TRUE (FALSE by default) add the label of the reference line(s) at the bottom of the plot}
 }
