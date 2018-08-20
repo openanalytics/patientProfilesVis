@@ -549,14 +549,19 @@ The function `createSubjectProfileReport` has mainly two purposes:
 	# create report
 	system.time(createSubjectProfileReport(
 		listPlots = list(
-			dmPlots, mhPlots, cmPlotsTimeSV, 
-			exPlots, aePlots, 
-			lbLinePlots, lbPlotsColor
+			dmPlots, 
+			mhPlots, 
+			cmPlotsTimeSV, 
+			exPlots, 
+			aePlots, 
+			lbLinePlots, 
+			lbPlotsColor
 		),
 		refLines = refLinesParam,
-		outputFile = "subjectProfile_SDTM_referenceLinesFromSAP.pdf",
+		timeLim = c(-20, 52),
+		outputFile = "subjectProfile_SDTM_referenceLinesFromSAP_test.pdf",
 		exportFigures = TRUE
-	))
+	)) # 9 mins
 
 ```
 

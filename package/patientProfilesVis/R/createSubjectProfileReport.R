@@ -11,7 +11,6 @@
 #' should be sorted in the report, by default same as \code{bookmarkData}
 #' @param subjectSortVar variable(s) of \code{data} indicating the order for the subjects in the report,
 #' by default same as \code{bookmarkVar}
-#' @param heightLineIn height of a line in inches
 #' @param timeLim vector of length 2 with time limits.
 #' If not specified, these are set to the time limits specified
 #' when creating each module (stored in \code{attributes(x)$metaData$timeLim})
@@ -262,7 +261,7 @@ subjectProfileCombineOnce <- function(...,
 		
 	# 'empty' plot in case a specific plot is not available for this subject
 	isEmpty <- which(sapply(listGgPlotsToCombineInit, is.null))
-	if(any(isEmpty)){
+	if(length(isEmpty) > 0){
 		listGgPlotsToCombineInit[isEmpty] <- lapply(isEmpty, function(i)
 			if(labels[i] != ""){
 				gg <- ggplot() + theme_bw() + 
@@ -294,7 +293,7 @@ subjectProfileCombineOnce <- function(...,
 				if(!is.null(timeLim))	
 					gg <- gg + coord_cartesian(xlim = timeLim, default = FALSE)
 						
-				gg <- addReferenceLinesProfilePlot(
+				plot <- addReferenceLinesProfilePlot(
 					gg = gg, 
 					subjectVar = subjectVar,
 					refLines = refLines,
@@ -306,14 +305,28 @@ subjectProfileCombineOnce <- function(...,
 				)
 						
 			})
+	
+			# extract new plot(s) with possibly reference lines
+			newPlotWithLabels <- which(!sapply(newPlots, inherits, "ggplot"))
+			newPlotsGG <- newPlots
+			if(length(newPlotWithLabels) > 0)
+				newPlotsGG[newPlotWithLabels] <- lapply(newPlotsGG[newPlotWithLabels], function(x) x$gg)
+			listGgPlotsToCombine[plotsToModify] <- newPlotsGG
 			
-			listGgPlotsToCombine[plotsToModify] <- newPlots
-			# add number of lines used for labels reference lines in plot
-			nLinesPlot[plotsToModify] <- nLinesPlot[plotsToModify] +
-				sapply(newPlots, function(gg){
-					nLinesRef <- attributes(gg)$metaData$nLinesLabelRefLines
-					ifelse(is.null(nLinesRef), 0, nLinesRef)
-			})
+			# extract plot with label of reference lines
+			if(length(newPlotWithLabels) > 0){
+				plotRefLinesLabels <- lapply(newPlots[newPlotWithLabels], function(x) x$ggRefLines)[[1]]
+				listGgPlotsToCombine <- c(listGgPlotsToCombine, list(plotRefLinesLabels))
+				nLinesPlot <- c(nLinesPlot, attributes(plotRefLinesLabels)$metaData$nLinesLabelRefLines)
+			}
+
+#			# add number of lines used for labels reference lines in plot
+#			nLinesPlot[plotsToModify] <- nLinesPlot[plotsToModify] +
+#				sapply(newPlots, function(gg){
+#					nLinesRef <- attributes(gg)$metaData$nLinesLabelRefLines
+#					ifelse(is.null(nLinesRef), 0, nLinesRef)
+#			})
+		
 		}
 		
 		# wrapper function to combine plots with 'subplot'
@@ -321,7 +334,7 @@ subjectProfileCombineOnce <- function(...,
 			# relative height of each plot
 			relHeights <- nLinesPlot/sum(nLinesPlot)
 			# combine all plots
-			plot <- combineVerticallyGGplot(listPlots = listGgPlotsToCombine, height = relHeights, package = "egg")
+			plot <- combineVerticallyGGplot(listPlots = listGgPlotsToCombine, heights = relHeights, package = "egg")
 			# store the number of lines in the y-axis (used to adapt size during export)
 			attributes(plot) <- c(attributes(plot), 
 				list(nLinesPlot = sum(nLinesPlot), nSubplots = length(listGgPlotsToCombine))
@@ -362,7 +375,9 @@ subjectProfileCombineOnce <- function(...,
 getXLimSubjectProfilePlots <- function(listPlots){
 	
 	# in case the time limits were specified for a specific plot
-	timeLim <- range(unlist(lapply(listPlots, function(x) attributes(x)$metaData$timeLim)), na.rm = TRUE)
+	timeLimPlots <- unlist(lapply(listPlots, function(x) attributes(x)$metaData$timeLim))
+	if(!is.null(timeLimPlots))
+		timeLim <- range(timeLimPlots, na.rm = TRUE)
 	
 	if(is.null(timeLim)){
 		
@@ -413,7 +428,8 @@ getXLimSubjectProfilePlots <- function(listPlots){
 #' @param addLabel logical, if TRUE (FALSE by default) add the label of the reference line(s) at the bottom of the plot
 #' @param timeLim vector of length 2 with time limits
 #' @inheritParams subjectProfileIntervalPlot
-#' @return if \code{addLabel} is TRUE, \code{\link[gtable]{gtable}} object,
+#' @return if \code{addLabel} is TRUE, list with:
+#' 'gg': \code{\link[ggplot2]{ggplot2}} and 'ggRefLines': \code{\link[ggplot2]{ggplot2}} with labels,
 #' \code{\link[ggplot2]{ggplot2}} otherwise
 #' @author Laure Cougnaud
 #' @import ggplot2
@@ -488,22 +504,24 @@ addReferenceLinesProfilePlot <- function(
 			# add label(s)
 			colors <- setNames(refLinesColor, refLinesLabels)
 			dataText <- data.frame(x = refLinesTime, label = refLinesLabels)
-			ggText <- ggplot(data = dataText) +
+			ggRefLines <- ggplot(data = dataText) +
 				geom_text(aes(x = x, label = label, colour = label, y = 0), 
 					angle = 90, hjust = 0.5, show.legend = FALSE
 				) + theme_void() +
 				scale_color_manual(values = colors, limits = names(colors))
-			if(!is.null(timeLim))	ggText <- ggText + coord_cartesian(xlim = timeLim)
+			if(!is.null(timeLim))	ggRefLines <- ggRefLines + coord_cartesian(xlim = timeLim)
+			
+			attributes(ggRefLines)$metaData$nLinesLabelRefLines  <- nLinesRefLines
 		
-			nLinesPlot <- c(getNLinesYGgplot(gg), nLinesRefLines)
-			relHeights <- nLinesPlot/sum(nLinesPlot)
-			# combine all plots
-			ggT <- combineVerticallyGGplot(listPlots = list(gg, ggText), height = relHeights, 
-				package = "cowplot")
+#			nLinesPlot <- c(getNLinesYGgplot(gg), nLinesRefLines)
+#			relHeights <- nLinesPlot/sum(nLinesPlot)
+#			# combine all plots
+#			ggT <- combineVerticallyGGplot(listPlots = list(gg, ggRefLines), height = relHeights, 
+#				package = "cowplot")
 			
-			attr(ggT, "metaData") <- c(attr(gg, "metaData"), list(nLinesLabelRefLines = nLinesRefLines))
+#			attr(ggT, "metaData") <- c(attr(gg, "metaData"), list(nLinesLabelRefLines = nLinesRefLines))
 			
-			ggT
+			list(gg = gg, ggRefLines = ggRefLines)
 			
 		}else gg
 				
