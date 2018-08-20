@@ -88,8 +88,10 @@ Three plot types/modules are currently available in the package:
 * **'line'** module: representation of evolution of a value across time via the 
 `subjectProfileLinePlot`
   
-Each of this function returns a list of plots (`ggplot` object), one for each
-subject. 
+Each of this function returns a nested list of plots (`ggplot` object).
+Each element of the list contains the plots for a specific subject.
+The subject profile plot for a specific module is possibly into
+multiple plots to fit in the final report (`formatReport` parameter).
   
 ## Text module
 
@@ -113,9 +115,9 @@ the parameter value (`paramValueVar`).
 	
 ```
 
-```{r exampleTestModule-wideFormat-include, echo = FALSE, fig.height = getNLinesYGgplot(dmPlots[[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Demographic information with the 'subjectProfileTextPlot' function for patient:", names(dmPlots)[1])}
+```{r exampleTestModule-wideFormat-include, echo = FALSE, fig.height = getNLinesYGgplot(dmPlots[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Demographic information with the 'subjectProfileTextPlot' function for patient:", names(dmPlots)[1])}
 
-	print(dmPlots[[1]])
+	print(dmPlots[[1]][[1]])
 
 ```
 
@@ -137,9 +139,9 @@ the parameter value (`paramValueVar`).
 		
 ```
 
-```{r exampleTestModule-longFormat-noGrouping-include, echo = FALSE, fig.height = getNLinesYGgplot(mhPlots[[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlots)[1])}
+```{r exampleTestModule-longFormat-noGrouping-include, echo = FALSE, fig.height = getNLinesYGgplot(mhPlots[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlots)[1])}
 
-	print(mhPlots[[1]])
+	print(mhPlots[[1]][[1]])
 
 ```
 
@@ -164,9 +166,9 @@ the parameter value (`paramValueVar`).
 		
 ```
 
-```{r exampleTestModule-longFormat-multipleVariables-include, echo = FALSE, fig.height = getNLinesYGgplot(mhPlotsMultipleVars[[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlotsMultipleVars)[1])}
+```{r exampleTestModule-longFormat-multipleVariables-include, echo = FALSE, fig.height = getNLinesYGgplot(mhPlotsMultipleVars[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlotsMultipleVars)[1])}
 
-	print(mhPlotsMultipleVars[[1]])
+	print(mhPlotsMultipleVars[[1]][[1]])
 
 ```
 
@@ -187,9 +189,9 @@ the parameter value (`paramValueVar`).
 	
 ```
 
-```{r exampleTestModule-longFormat-grouping-include, echo = FALSE, fig.height = getNLinesYGgplot(mhPlotsGroup[[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlotsGroup)[1])}
+```{r exampleTestModule-longFormat-grouping-include, echo = FALSE, fig.height = getNLinesYGgplot(mhPlotsGroup[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlotsGroup)[1])}
 
-	print(mhPlotsGroup[[1]])
+	print(mhPlotsGroup[[1]][[1]])
 
 ```
 
@@ -224,9 +226,9 @@ missing start/end date are represented.
 	
 ```
 
-```{r exampleIntervalModule-ae-include, echo = FALSE, fig.height = getNLinesYGgplot(aePlots[[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", names(aePlots)[1])}
+```{r exampleIntervalModule-ae-include, echo = FALSE, fig.height = getNLinesYGgplot(aePlots[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", names(aePlots)[1])}
 
-	print(aePlots[[1]])
+	print(aePlots[[1]][[1]])
 
 ```
 
@@ -254,9 +256,9 @@ for a specific subject from the subject-level SDTM dataset.
 	
 ```
 
-```{r exampleIntervalModule-ae-timeLimData-include, echo = FALSE, fig.height = getNLinesYGgplot(aePlotsTimLimFromSV[[1]])*heightLineIn, fig.width = 14, fig.cap = paste0("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", names(aePlotsTimLimFromSV)[1], ". Missing start/end date are extracted from the subject-level datasets.")}
+```{r exampleIntervalModule-ae-timeLimData-include, echo = FALSE, fig.height = getNLinesYGgplot(aePlotsTimLimFromSV[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste0("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", names(aePlotsTimLimFromSV)[1], ". Missing start/end date are extracted from the subject-level datasets.")}
 
-	print(aePlotsTimLimFromSV[[1]])
+	print(aePlotsTimLimFromSV[[1]][[1]])
 
 ```
 
@@ -280,9 +282,9 @@ this time interval visualization
 
 ```
 
-```{r exampleIntervalModule-exinclude, echo = FALSE, fig.height = getNLinesYGgplot(exPlots[[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Exposure interval with the 'subjectProfileIntervalPlot' function for patient:", names(aePlots)[1])}
+```{r exampleIntervalModule-exinclude, echo = FALSE, fig.height = getNLinesYGgplot(exPlots[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Exposure interval with the 'subjectProfileIntervalPlot' function for patient:", names(aePlots)[1])}
 
-	print(exPlots[[1]])
+	print(exPlots[[1]][[1]])
 
 ```
 
@@ -304,9 +306,9 @@ this time interval visualization
 
 ```
 
-```{r exampleIntervalModule-cm-include, echo = FALSE, fig.height = getNLinesYGgplot(cmPlots[[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlots)[1])}
+```{r exampleIntervalModule-cm-include, echo = FALSE, fig.height = getNLinesYGgplot(cmPlots[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlots)[1])}
 
-	print(cmPlots[[1]])
+	print(cmPlots[[1]][[1]])
 
 ```
 
@@ -340,9 +342,9 @@ time range of the subject visits.
 
 ```
 
-```{r exampleIntervalModule-cm-restrictedTimeLimits-include, echo = FALSE, fig.height = getNLinesYGgplot(cmPlotsTimeSV[[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlots)[1], "with time limits restricted to subject visits")}
+```{r exampleIntervalModule-cm-restrictedTimeLimits-include, echo = FALSE, fig.height = getNLinesYGgplot(cmPlotsTimeSV[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlots)[1], "with time limits restricted to subject visits")}
 
-	print(cmPlotsTimeSV[[1]])
+	print(cmPlotsTimeSV[[1]][[1]])
 
 ```
 
@@ -366,9 +368,9 @@ time limits via the `timeLim` parameter:
 
 ```
 
-```{r exampleIntervalModule-cm-restrictedTimeLimits2-include, echo = FALSE, fig.height = getNLinesYGgplot(cmPlotsTimeSpec[[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlotsTimeSpec)[1], "with time limits restricted to: (", toString(timeLim), ")")}
+```{r exampleIntervalModule-cm-restrictedTimeLimits2-include, echo = FALSE, fig.height = getNLinesYGgplot(cmPlotsTimeSpec[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlotsTimeSpec)[1], "with time limits restricted to: (", toString(timeLim), ")")}
 
-	print(cmPlotsTimeSpec[[1]])
+	print(cmPlotsTimeSpec[[1]][[1]])
 
 ```
 
@@ -402,9 +404,9 @@ laboratory measurement (and corresponding time).
 
 ```
 
-```{r exampleEventModule-include, echo = FALSE, fig.height = getNLinesYGgplot(lbPlots[[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with the 'subjectProfileEventPlot' function for patient:", names(lbPlots)[1])}
+```{r exampleEventModule-include, echo = FALSE, fig.height = getNLinesYGgplot(lbPlots[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with the 'subjectProfileEventPlot' function for patient:", names(lbPlots)[1])}
 
-	print(lbPlots[[1]])
+	print(lbPlots[[1]][[1]])
 
 ```
 
@@ -434,9 +436,9 @@ in normal range.
 	
 ```
 
-```{r exampleEventModuleWithColor-include, echo = FALSE, fig.height = getNLinesYGgplot(lbPlotsColor[[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with reference range with the 'subjectProfileEventPlot' function for patient:", names(lbPlotsColor)[1])}
+```{r exampleEventModuleWithColor-include, echo = FALSE, fig.height = getNLinesYGgplot(lbPlotsColor[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with reference range with the 'subjectProfileEventPlot' function for patient:", names(lbPlotsColor)[1])}
 
-	print(lbPlotsColor[[1]])
+	print(lbPlotsColor[[1]][[1]])
 
 ```
 
@@ -460,14 +462,14 @@ hematology parameters.
 		labelVars = labelVarsSDTMPelican,
 		shapeVar = "LBNRIND",
 		shapePalette = c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24, 'NA' = 3),
-		title = "Laboratory test measurements: reference range indicator"
+		title = "Hematology test measurements: reference range indicator"
 	)
 	
 ```
 
-```{r exampleEventModuleWithSubset-include, echo = FALSE, fig.height = getNLinesYGgplot(lbPlotsSubset[[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Hematology data with the 'subjectProfileEventPlot' function for patient:", names(lbPlotsSubset)[1])}
+```{r exampleEventModuleWithSubset-include, echo = FALSE, fig.height = getNLinesYGgplot(lbPlotsSubset[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Hematology data with the 'subjectProfileEventPlot' function for patient:", names(lbPlotsSubset)[1])}
 
-	print(lbPlotsSubset[[1]])
+	print(lbPlotsSubset[[1]][[1]])
 
 ```
 
@@ -490,16 +492,15 @@ highlighted in the plot.
 		paramGroupVar = "LBSCAT",
 		paramValueRangeVar = c("LBSTNRLO", "LBSTNRHI"),
 		timeVar = "LBDY",
-		title = "Hematology test measurements: actual value",
-		label = "defaultSDTMLBLine",
+		title = "Laboratory test measurements: actual value",
 		labelVars = labelVarsSDTMPelican
 	)
 	
 ```
 
-```{r exampleLineModule-include, echo = FALSE, fig.height = getNLinesYGgplot(lbLinePlots[[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with the 'subjectProfileLinePlot' function for patient:", names(lbLinePlots)[1])}
+```{r exampleLineModule-include, echo = FALSE, fig.height = getNLinesYGgplot(lbLinePlots[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with the 'subjectProfileLinePlot' function for patient:", names(lbLinePlots)[1])}
 
-	print(lbLinePlots[[1]])
+	print(lbLinePlots[[1]][[1]])
 
 ```
 
@@ -546,18 +547,16 @@ The function `createSubjectProfileReport` has mainly two purposes:
 	)
 
 	# create report
-	createSubjectProfileReport(
+	system.time(createSubjectProfileReport(
 		listPlots = list(
-			dmPlots[1], mhPlots[1], cmPlotsTimeSV[1], 
-			exPlots[1], 
-			aePlots[1], 
-			lbLinePlots[1], 
-			lbPlotsColor[1]
+			dmPlots, mhPlots, cmPlotsTimeSV, 
+			exPlots, aePlots, 
+			lbLinePlots, lbPlotsColor
 		),
 		refLines = refLinesParam,
 		outputFile = "subjectProfile_SDTM_referenceLinesFromSAP.pdf",
 		exportFigures = TRUE
-	)
+	))
 
 ```
 

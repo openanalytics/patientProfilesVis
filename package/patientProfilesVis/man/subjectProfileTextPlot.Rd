@@ -8,7 +8,7 @@ subjectProfileTextPlot(data, paramValueVar, paramNameVar = NULL,
   paramGroupVar = NULL, subsetVar = NULL, subsetValue = NULL,
   subjectVar = "USUBJID", xLab = "", yLab = "",
   title = "Subject information", label = title, labelVars = NULL,
-  paramVarSep = " - ")
+  paramVarSep = " - ", formatReport = subjectProfileReportFormat())
 }
 \arguments{
 \item{data}{data.frame with data}
@@ -60,10 +60,14 @@ in the text when the plots are combined (e.g. if the plot is empty).}
 
 \item{paramVarSep}{string with character(s) used to concatenate multiple 
 \code{paramNameVar} or \code{paramValueVar}, ' - ' by default.}
+
+\item{formatReport}{list with parameters used to specify the format of the report,
+see parameters of the \code{\link{subjectProfileReportFormat}} function}
 }
 \value{
-list of \code{\link[ggplot2]{ggplot2} objects}, also of class
-\code{subjectProfileTextPlot}
+list of (across subjects) of list (across modules) of \code{\link[ggplot2]{ggplot2} objects}, 
+also of class \code{subjectProfileTextPlot}, with additional metaData attributes containing
+'label' and 'timeLim'.
 }
 \description{
 There are two ways to specify the variables of interest to include:

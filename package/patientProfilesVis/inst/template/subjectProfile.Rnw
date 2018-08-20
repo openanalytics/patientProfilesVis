@@ -32,13 +32,13 @@
 
 % decrease margins: 1.875 inches wide by default on 10pt
 <<setMargins>>=
-	cat(paste0("\\usepackage[margin=", inputParameters$margin, "in]{geometry}\n"))
+	cat(paste0("\\usepackage[margin=", inputParameters$formatReport$margin, "in]{geometry}\n"))
 @
 
 
 <<specifyLayout>>=
 
-	if(inputParameters$landscape)
+	if(inputParameters$formatReport$landscape)
 		cat("\n", "\\usepackage[landscape]{geometry}", "\n", sep = "\n")
 
 @
@@ -69,7 +69,7 @@
 	# extract height for each plot
 	figHeightInches <- sapply(listPlotsPerSubject, function(plotSubject)
 		# number of lines in plot panel
-		attr(plotSubject, "nLinesPlot") * inputParameters$heightLineIn
+		attr(plotSubject, "nLinesPlot") * inputParameters$formatReport$heightLineIn
 	)
 	
 	# extract labels 
@@ -80,11 +80,16 @@
 		c(name, rep("", length(listPlotsPerSubjectList[[name]])-1))))
 	
 #	textHeightPt <- ifelse(landscape, 345, 598)
-	textWidthInches <- 14 #ifelse(landscape, 598, 345)/72
+	textWidthInches <- getWidthPlot(
+		margin = inputParameters$formatReport$margin,
+		landscape = inputParameters$formatReport$landscape,
+		aspectRatio = inputParameters$formatReport$aspectRatio
+	)
+	#ifelse(landscape, 598, 345)/72
 #	figHeightInches <- paste0("'", round(textHeightPt/figHeightPt, 2), "\\textheight'")
 	knitPrintListPlotsKnitr(
 		plotsList = listPlotsPerSubject,
-		out.width = "'\\\\linewidth'",
+		out.width = "'\\\\textwidth'",
 		fig.height = figHeightInches,
 		fig.width = textWidthInches,
 		sectionTitles = sectionTitles,
