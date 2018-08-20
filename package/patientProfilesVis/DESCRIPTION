@@ -1,12 +1,12 @@
 Package: patientProfilesVis
 Type: Package
 Title: Visualization of patient profiles
-Version: 0.0-6
-Date: 2018-08-16
+Version: 0.0-7
+Date: 2018-08-20
 Author: Laure Cougnaud
 Maintainer: Laure Cougnaud <laure.cougnaud@openanalytics.eu>
 Description: This package enables the creation of report with customizable visualization of patient profiles.
-Imports: ggplot2, plyr, cowplot, haven, tools, reshape2, knitr, glpgStyle, grid, viridisLite, dplyr
+Imports: ggplot2, plyr, cowplot, egg, haven, tools, reshape2, knitr, glpgStyle, grid, viridisLite, dplyr
 Suggests: pander, shiny
 License: Software for Internal Use at Open Analytics NV
 RoxygenNote: 6.0.1
