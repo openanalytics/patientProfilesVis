@@ -40,7 +40,8 @@ Each sublist contains:
 \item{addLabel}{logical, if TRUE (FALSE by default) add the label of the reference line(s) at the bottom of the plot}
 }
 \value{
-if \code{addLabel} is TRUE, \code{\link[gtable]{gtable}} object,
+if \code{addLabel} is TRUE, list with:
+'gg': \code{\link[ggplot2]{ggplot2}} and 'ggRefLines': \code{\link[ggplot2]{ggplot2}} with labels,
 \code{\link[ggplot2]{ggplot2}} otherwise
 }
 \description{
