@@ -533,7 +533,7 @@ serverFunction <- function(input, output, session) {
 	# create the report
 	results$subjectProfileReport <- eventReactive(input$createSubjectProfileReport, {
     
-		validate(need(input$reportSelectedModules, "No module(s) are seledted yet."))
+		validate(need(input$reportSelectedModules, "No module(s) are selected yet."))
 
         withProgress(message = 'Create subject profile report..\n', 
 				
