@@ -119,7 +119,7 @@ getNLinesLabel <- function(gg,
 	elName <- match.arg(elName, several.ok = TRUE)
 	
 	if(is.null(elNLines))
-		elNLines <- c("x" = 2, "y" = 2, "title" = 3, "caption" = 2)[elName]
+		elNLines <- c("x" = 2, "y" = 2, "title" = 3, "caption" = 1)[elName]
 	
 	elValue <- ggplot_build(gg)$plot$labels[elName]
 	sum(unlist(
