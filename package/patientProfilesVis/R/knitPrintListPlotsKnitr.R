@@ -58,12 +58,14 @@ knitPrintListPlotsKnitr <- function(
 		if(!is.null(argsChunkTxt)) paste0(", ", toString(argsChunkTxt)),
 		">>=\n",
 		if(!is.null(sectionTitles))	
-			paste0("if(paste0('^^sectionTitle$$') != '')  cat(",
+			paste0("if('^^sectionTitle$$' != '')  cat(",
 				# insert section
 				"'\\\\", paste(rep("sub", sectionLevel-1), collapse = ""), 
 				"section{^^sectionTitle$$}'",
 				# insertBookmark
-				if(!is.null(bookmarkInfos))	paste0(",' ',", "bookmarkInfos[^^i$$]"),
+				if(!is.null(bookmarkInfos))
+					paste0(", ", "if('^^bookmarkInfos$$' != '')	",
+						"'^^bookmarkInfos$$'"),
 				", '\\n')\n"
 			),
 		if(type == "ggplot2")	"print(", 

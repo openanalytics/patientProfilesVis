@@ -15,6 +15,10 @@
 #' If not specified, these are set to the time limits specified
 #' when creating each module (stored in \code{attributes(x)$metaData$timeLim})
 #' otherwise to the maximum range contained in the data.
+#' Note that this doesn't modify the geoms of the plots, it only extends the
+#' axis range. So for interval module(s) if the specified \code{timeLim}
+#' is smaller than the time limits in the input plot, no arrows are created in case than
+#' the time goes above/below specified \code{timeLim} (the segment is cut).
 #' @inheritParams subjectProfileCombine
 #' @inheritParams defineIndex
 #' @inheritParams subjectProfileIntervalPlot
@@ -536,11 +540,19 @@ addReferenceLinesProfilePlot <- function(
 #' @inheritParams subjectProfileIntervalPlot
 #' @return list with elements:
 #' \itemize{
-#' \item{'indexDef':}{string with LaTeX code for creation of index}
+#' \item{'indexDef':}{string with LaTeX code for creation of index, 
+#' to be included directly with \code{\link{cat}} in a knitr document
+#' (two backslashes)
+#' }
 #' \item{'indexInfo': }{character vector, named with named with subject ID,
 #'  containing LaTeX code for index for each subject
-#' specified in \code{subjects} parameter.}
-#' \item{'indexPrint': }{string with LaTeX code for printing/inclusion of index}
+#' specified in \code{subjects} parameter, to be passed to the \code{\link{knit}} function as text
+#' (four backslashes)
+#' }
+#' \item{'indexPrint': }{string with LaTeX code for printing/inclusion of index, 
+#' to be included directly with \code{\link{cat}} in a knitr document
+#' (two backslashes)
+#' }
 #' }
 #' @importFrom plyr daply
 #' @author Laure Cougnaud
@@ -556,7 +568,7 @@ defineIndex <- function(
 	# extract name used in Index (labels are the variable column names)
 	indexTitles <- getLabelVar(var, labelVars = labelVars)
 	indexMake <- paste(
-		paste0("\\makeindex[intoc,name=", names(indexTitles), ",title={Index on ",  indexTitles, "}]"),
+		paste0("\\makeindex[intoc,name=", names(indexTitles), ",columns=1,title={Index based on ",  indexTitles, "}]"),
 		collapse = "\n"
 	)
 	
@@ -568,7 +580,7 @@ defineIndex <- function(
 			stop("Multiple information available for subject: ", unique(x[, subjectVar]), 
 				" for index construction.")
 		paste(
-			paste0("\\index[", names(indexX), "]{", indexX, "}"),
+			paste0("\\\\index[", names(indexX), "]{", indexX, "}"),
 			collapse = " "
 		)#	\index[person]{Heisenberg}
 	})
@@ -610,7 +622,7 @@ combineVerticallyGGplot <- function(listPlots, heights, package = c("egg", "cowp
 			)
 			# because the function ggplot2::ggplotGrob is called internally
 			# and open a new window
-			tmp <- dev.off()
+#			tmp <- dev.off()
 		}
 
 	)

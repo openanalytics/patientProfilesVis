@@ -559,7 +559,7 @@ The function `createSubjectProfileReport` has mainly two purposes:
 		),
 		refLines = refLinesParam,
 		timeLim = c(-20, 52),
-		outputFile = "subjectProfile_SDTM_referenceLinesFromSAP_test.pdf",
+		outputFile = "subjectProfile_SDTM_referenceLinesFromSAP.pdf",
 		exportFigures = TRUE
 	)) # 9 mins
 
