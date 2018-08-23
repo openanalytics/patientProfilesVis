@@ -27,6 +27,3 @@ sapply(uiFiles, function(from) {
 	}
     file.copy(from = file.path(uiDir, from), to = to, overwrite = TRUE)
 })  
-
-enableBookmarking(store = "url")
-

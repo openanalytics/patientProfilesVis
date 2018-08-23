@@ -51,6 +51,9 @@ serverFunction <- function(input, output, session) {
 		)
 		names(data) <- initFileNames
 		
+		cat("reset plotsCurrent")
+		results$plotsCurrent <- NULL
+		
         return(data)
         
 	})
@@ -62,7 +65,6 @@ serverFunction <- function(input, output, session) {
 	
 	# create default modules for uploaded datasets
 	observe({
-#		cat("Update available modules")
 		results$availableModules <- getDefaultModules(data = results$dataAll())
 	})
 	results$defaultModulesNames <- reactive(names(results$availableModules))
@@ -105,7 +107,6 @@ serverFunction <- function(input, output, session) {
 
 	# save selected dataset
 	results$dataCurrent <- reactive({
-#		cat("Update current data\n")
 		if(!is.null(input$moduleData))	results$dataAll()[[input$moduleData]]
 	})
 	# and column names (variables)
@@ -340,22 +341,25 @@ serverFunction <- function(input, output, session) {
 			plotCurrent <- createSubjectProfileFromShinyInput(input = input, results = results)
 		, silent = TRUE)
 
-		if(inherits(plotCurrentError, "try-error")){
+		# Note: reset the plotsCurrent to NULL in case plot already created
+		results$plotsCurrent <- if(inherits(plotCurrentError, "try-error")){
 			output$moduleSaveMessage <- renderUI(
 				div(strong(paste("The patient profiles cannot be created:", attr(plotCurrentError, "condition")$message)), 
 				style = "color:red")
 			)
+			NULL
 		}else if(!input$moduleTitle %in% names(results$listPlots)){
 			output$moduleSaveMessage <- renderUI(
 				div(strong("Title already used, please specify a different title."), 
 					style = "color:red")
 			)
+			NULL
 		}else{
-			results$plotsCurrent <- plotCurrent
 			output$moduleSaveMessage <- renderUI(
 				div("The patient profiles have been created for the specified module, you can preview them in the right panel.", 
 					style = "color:green")
 			)
+			plotCurrent
 		}
 		
 	})
@@ -368,58 +372,77 @@ serverFunction <- function(input, output, session) {
 		tagList(	
 				
 			h3("Module preview"),
-			selectInput(inputId = "subjectCurrent", label = "Select subject",
-				choices = unique(results$dataCurrent()[, input$moduleSubjectVar])
+			fluidRow(
+				column(6, 
+					selectInput(inputId = "previewSubject", label = "Select subject",
+						choices = unique(results$dataCurrent()[, input$moduleSubjectVar])
+					)
+				),
+				column(6, uiOutput("previewPagePanel"))
 			),
-			uiOutput("moduleResultsMessage"),
-			plotOutput("plotSubject")		
+			uiOutput("previewMessage"),
+			plotOutput("previewPlotSubject")		
 		)
 
 	})
 
 	# extract the plot for specified subject
 	results$plotSubjectCurrent <- reactive({		
-		validate(need(input$subjectCurrent, "subject"), need(results$plotsCurrent, "plot"))
-		results$plotsCurrent[[input$subjectCurrent]]
+		validate(need(input$previewSubject, "subject"), need(results$plotsCurrent, "plot"))
+		results$plotsCurrent[[input$previewSubject]]
 	})
 	
-	# plot this plot in the 'preview' panel
+	# print message preview and extract pages
 	observe({	
 		plotSubjectError <- try(
-			plotSubject <- results$plotSubjectCurrent()
+			previewPlotSuject <- results$plotSubjectCurrent()
 		, silent = TRUE)
-		subject <- input$subjectCurrent
+		subject <- input$previewSubject
 		isolate({
 			if(inherits(plotSubjectError, "try-error")){
-				output$moduleResultsMessage <- renderUI(
+				output$previewMessage <- renderUI(
 					div(strong(paste0("The patient profile for the subject : '", subject, "'cannot be displayed: ", 
 						attr(plotSubjectError, "condition")$message)), 
 						style = "color:red"
 					)
 				)
 			}else{
-				if(is.null(plotSubject)){
-					output$moduleResultsMessage <- renderUI(
+				if(is.null(previewPlotSuject)){
+					output$previewMessage <- renderUI(
 						div(strong(
 							paste0("No data is available for the specified module for subject: '", 
 								subject, "', please select a different subject.")
 							), style = "color:red")
 						)
 				}else{			
-					output$moduleResultsMessage <- renderUI(
+					output$previewMessage <- renderUI(
 						div(
 							paste0("Please find a preview of the specified module for subject: '", 
-								input$subjectCurrent, "'."), 
+								input$previewSubject, "'."), 
 						style = "color:green")
 					)
-					output$plotSubject <- renderPlot(
-						expr = plotSubject,
-						height = getNLinesYGgplot(results$plotSubjectCurrent()) * 30
-					)	
+					output$previewPagePanel <- renderUI(
+						selectInput(
+							inputId = "previewPage", label = "page",
+							choices = seq_len(length(previewPlotSuject))
+						)
+					)
 				}
 			}	
 		})
 	})
+	
+	# print the plot in the preview panel
+	observe({
+		validate(
+			need(input$previewPage, "selected page"),
+			need(results$plotSubjectCurrent(), "plot for current subject")
+		)
+		plot <- results$plotSubjectCurrent()[[input$previewPage]]
+		output$previewPlotSubject <- renderPlot(
+			expr = plot, height = getNLinesYGgplot(plot) * 20
+		)
+	})	
 
 	## Save module
 	
@@ -429,17 +452,18 @@ serverFunction <- function(input, output, session) {
 		plotCurrentError <- try(
 			plotCurrent <- createSubjectProfileFromShinyInput(input = input, results = results)
 			, silent = TRUE)
-		if(inherits(plotCurrentError, "try-error")){
+		results$plotsCurrent <- if(inherits(plotCurrentError, "try-error")){
 			output$moduleSaveMessage <- renderUI(
 				div(strong(paste("The patient profiles cannot be created:", attr(plotCurrentError, "condition")$message)), 
 					style = "color:red")
 			)
+			NULL
 		}else{
-			results$plotsCurrent <- plotCurrent
 			output$moduleSaveMessage <- renderUI(
 				div("The patient profiles have been created for the specified module, you can preview them in the right panel.", 
 					style = "color:green")
 			)
+			plotCurrent
 		}
 		
 	})
@@ -476,7 +500,7 @@ serverFunction <- function(input, output, session) {
 					"'", names(newModule), "' in the selection box below."), 
 					style = "color:green")
 			)
-			output$moduleSaveMessage <- moduleResultsMessage <- renderUI("")
+			output$moduleSaveMessage <- previewMessage <- renderUI("")
 			
 			# delete current plot
 			results$plotsCurrent <- NULL
