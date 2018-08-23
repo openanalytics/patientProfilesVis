@@ -343,15 +343,13 @@ subjectProfileCombineOnce <- function(...,
 			return(plot)
 		}
 		
-		# split plots in case nLines > maxNLines
+		# split/combine plots to fit in a page with maximum number of lines: maxNLines
 		plot <- if(!is.null(maxNLines)){
-			plotsFact <- as.numeric(droplevels(
-				cut(cumsum(nLinesPlot), breaks = c(seq(1, sum(nLinesPlot), by = maxNLines), sum(nLinesPlot)), right = TRUE)
-			))
-			plots <- sapply(unique(plotsFact), function(fact){
-				idx <- which(plotsFact == fact)
+			plotPages <- getSplitVectorByInt(sizes = nLinesPlot, max = maxNLines)
+			plots <- sapply(unique(plotPages), function(page){
+				idx <- which(plotPages == page)
 				combineGGPlotsOnce(listGgPlotsToCombine[idx], nLinesPlot[idx])
-			}, simplify = FALSE)
+			}, simplify = FALSE)	
 		}else{
 			combineGGPlotsOnce(listGgPlotsToCombine, nLinesPlot)
 		}
@@ -376,10 +374,9 @@ getXLimSubjectProfilePlots <- function(listPlots){
 	
 	# in case the time limits were specified for a specific plot
 	timeLimPlots <- unlist(lapply(listPlots, function(x) attributes(x)$metaData$timeLim))
-	if(!is.null(timeLimPlots))
+	if(!is.null(timeLimPlots)){
 		timeLim <- range(timeLimPlots, na.rm = TRUE)
-	
-	if(is.null(timeLim)){
+	}else{
 		
 		listPlots1 <- unlist(unlist(listPlots, recursive = FALSE), recursive = FALSE)
 		
@@ -607,9 +604,17 @@ combineVerticallyGGplot <- function(listPlots, heights, package = c("egg", "cowp
 			align = "v", ncol = 1, axis = "lr", rel_heights = heights
 		),
 		
-		'egg' = ggarrange(plots = listPlots, ncol = 1, heights = heights)
+		'egg' = {
+			ggarrange(plots = listPlots, ncol = 1, heights = heights, 
+				draw = FALSE
+			)
+			# because the function ggplot2::ggplotGrob is called internally
+			# and open a new window
+			tmp <- dev.off()
+		}
 
 	)
+	
 	
 	return(res)
 }

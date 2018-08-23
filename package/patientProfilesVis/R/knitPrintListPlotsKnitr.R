@@ -49,8 +49,7 @@ knitPrintListPlotsKnitr <- function(
 		argsChunk[["fig.cap"]] <- paste0("'", argsChunk[["fig.cap"]], "'")
 	}
 	argsChunkTxt <- if(length(argsChunk) > 0)
-		paste0(names(argsChunk), "=", "^^", names(argsChunk), "$$"
-		)
+		paste0(names(argsChunk), "=", "^^", names(argsChunk), "$$")
 	
 	# chunk general template
 	# seems that plot object cannot be passed as argument to knit_expand?

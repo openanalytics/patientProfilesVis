@@ -69,8 +69,6 @@ In this case, the \code{shiny} package should be available.}
 
 \item{formatReport}{list with parameters used to specify the format of the report,
 see parameters of the \code{\link{subjectProfileReportFormat}} function}
-
-\item{heightLineIn}{height of a line in inches}
 }
 \value{
 no returned value, the report is created at the location
