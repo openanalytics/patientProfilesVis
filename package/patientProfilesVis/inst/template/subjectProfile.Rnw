@@ -76,9 +76,14 @@
 	labelPlots <- names(listPlotsPerSubject)
 	
 	# extract titles
-	sectionTitles <- unlist(lapply(names(listPlotsPerSubjectList), function(name) 
-		c(name, rep("", length(listPlotsPerSubjectList[[name]])-1))))
-	
+	sectionTitles <- unlist(lapply(names(listPlotsPerSubjectList), function(subject) 
+		c(subject, rep("", length(listPlotsPerSubjectList[[subject]])-1))))
+
+	# extract titles
+	bookmarkInfos <- if(!is.null(inputParameters$index))
+		unlist(lapply(names(listPlotsPerSubjectList), function(subject) 
+			c(inputParameters$index$indexEntry[subject], rep("", length(listPlotsPerSubjectList[[subject]])-1))))
+		
 #	textHeightPt <- ifelse(landscape, 345, 598)
 	textWidthInches <- getWidthPlot(
 		margin = inputParameters$formatReport$margin,
@@ -94,7 +99,7 @@
 		fig.width = textWidthInches,
 		sectionTitles = sectionTitles,
 		labels = labelPlots,
-		bookmarkInfos = inputParameters$index$indexEntry
+		bookmarkInfos = bookmarkInfos
 	)
 	
 @
