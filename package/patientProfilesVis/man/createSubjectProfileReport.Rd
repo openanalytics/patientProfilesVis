@@ -21,7 +21,11 @@ createSubjectProfileReport(listPlots,
 \item{timeLim}{vector of length 2 with time limits.
 If not specified, these are set to the time limits specified
 when creating each module (stored in \code{attributes(x)$metaData$timeLim})
-otherwise to the maximum range contained in the data.}
+otherwise to the maximum range contained in the data.
+Note that this doesn't modify the geoms of the plots, it only extends the
+axis range. So for interval module(s) if the specified \code{timeLim}
+is smaller than the time limits in the input plot, no arrows are created in case than
+the time goes above/below specified \code{timeLim} (the segment is cut).}
 
 \item{refLines}{(optional) nested list with details for reference line(s).
 Each sublist contains:

@@ -5,6 +5,7 @@
     o getNLinesYGgplot: fix for interval plot
     o combineVerticallyGGplot: close plotting window in case the egg package is used
     o subjectProfileCombineOnce: fix automatic split of figures into multiple pages (new function: getSplitVectorByInt)
+    o bookmark: fixes for multiple plots per subject in knitPrintListPlotsKnitr and double backslash in defineIndex, only one column
 0.0.6
     o subjectProfileLinePlot: include colorPalette
     o subjectProfileIntervalPlot: don't delete records without start date, different arrows for missing start/end dates
