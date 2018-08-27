@@ -1,5 +1,8 @@
 0.0.4
     o remove moduleLabel
+    o labelVars
+    o fix automic splitting within a module
+    o bookmark button
 0.0.3
     o fix issue saving parameters for line plot, add error tracking around plot preview
 0.0.2

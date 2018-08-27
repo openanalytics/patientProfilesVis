@@ -93,13 +93,15 @@ createSubjectProfileFromShinyInput <- function(input, results){
 #' (e.g. sublist of output of the \code{\link{getDefaultModules}} function).
 #' @param listParams list of parameters
 #' @param data data.frame with data
+#' @param labelVars named vector with label of the variables
 #' @return subject profile plot(s)
 #' @author Laure Cougnaud
 #' @export
-createSubjectProfileFromParam <- function(listParams, data){
+createSubjectProfileFromParam <- function(listParams, data, labelVars){
 	
 	type <- listParams$type
 	listParams$data <- data[[listParams$data]]
+	listParams$labelVars <- labelVars
 	listParams$type <- NULL
 	createSubjectProfileType(listParams, type = type)
 	

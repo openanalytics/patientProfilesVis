@@ -533,7 +533,9 @@ serverFunction <- function(input, output, session) {
 				actionButton(inputId = "createSubjectProfileReport", label = "Create subject profile report"),
 				br(),
 				uiOutput("downloadSubjectProfileReportPanel")
-			)
+			),
+			hr(),
+			bookmarkButton()
 		)		
 				
 	})
@@ -583,6 +585,7 @@ serverFunction <- function(input, output, session) {
 						results$availableModules[selModNotCreated], 
 						createSubjectProfileFromParam, 
 						data = results$dataAll(), 
+						labelVars = results$labelVars(),
 						simplify = FALSE
 					)
 					listPlots <- c(listPlots, listPlotsDefaults)

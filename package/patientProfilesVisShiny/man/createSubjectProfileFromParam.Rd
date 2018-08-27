@@ -5,12 +5,14 @@
 \title{Create subject profile plot for list of parameters 
 (e.g. sublist of output of the \code{\link{getDefaultModules}} function).}
 \usage{
-createSubjectProfileFromParam(listParams, data)
+createSubjectProfileFromParam(listParams, data, labelVars)
 }
 \arguments{
 \item{listParams}{list of parameters}
 
 \item{data}{data.frame with data}
+
+\item{labelVars}{named vector with label of the variables}
 }
 \value{
 subject profile plot(s)
