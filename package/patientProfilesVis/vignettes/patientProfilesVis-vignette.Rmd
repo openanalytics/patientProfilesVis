@@ -98,8 +98,8 @@ multiple plots to fit in the final report (`formatReport` parameter).
 The 'text' module enables to specify meta-information for each subject.
 There are two ways to specify such information, either by specifying a set of
 variables/columns of the data (`paramValueVar` only), or by a variable/column
-containing the parameter name (`paramNameVar`) and a variable/column containing
-the parameter value (`paramValueVar`).
+containing the parameter name (`paramNameVar`) and variable(s)/column(s)
+containing the parameter value (`paramValueVar`).
 
 ### Wide format
 
@@ -123,7 +123,10 @@ the parameter value (`paramValueVar`).
 
 ### Long format
 
-#### No grouping
+#### General
+
+It is possible to specify multiple variable to represent in the plot
+for a certain variable name.
 
 ```{r exampleTestModule-longFormat-noGrouping}	
 
@@ -131,8 +134,8 @@ the parameter value (`paramValueVar`).
 	# by specifying a combination of parameter value/name
 	mhPlots <- subjectProfileTextPlot(
 		data = SDTMDataPelican$MH,
-		paramNameVar = "MHDECOD",
-		paramValueVar = "MHENRTPT",
+		paramNameVar = "MHTERM",
+		paramValueVar = c("MHCAT", "MHSTDTC", "MHENDTC"),
 		title = "Medical History: status",
 		labelVars = labelVarsSDTMPelican
 	)
@@ -145,7 +148,11 @@ the parameter value (`paramValueVar`).
 
 ```
 
-### Multiple variables
+#### Customization for multiple variables
+
+In case multiple variable are used as `paramValueVar` and
+they should be concatenated with a specific format, a function
+ can be specified via the parameter: `paramValueVar`.
 
 ```{r exampleTestModule-longFormat-multipleVariables}	
 
@@ -172,7 +179,7 @@ the parameter value (`paramValueVar`).
 
 ```
 
-### With grouping
+#### With grouping
 
 ```{r exampleTestModule-longFormat-grouping}	
 
@@ -561,7 +568,7 @@ The function `createSubjectProfileReport` has mainly two purposes:
 		timeLim = c(-20, 52),
 		outputFile = "subjectProfile_SDTM_referenceLinesFromSAP.pdf",
 		exportFigures = TRUE
-	)) # 9 mins
+	)) # 14 mins
 
 ```
 

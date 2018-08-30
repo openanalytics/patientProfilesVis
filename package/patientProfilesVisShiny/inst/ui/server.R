@@ -320,9 +320,11 @@ serverFunction <- function(input, output, session) {
 			'2' = fluidRow(
 				column(6, 
 					createWidgetVariable(inputId = "moduleTextParamValueVarPair", 
-						label = "Column with parameter value",
+						label = "Column(s) with parameter value",
 						selected = if(!is.null(results$currentModule()))	
-							results$currentModule()$paramValueVar)
+							results$currentModule()$paramValueVar,
+						multiple = TRUE
+					)
 				),
 				column(6, createWidgetVariable(inputId = "moduleTextParamNameVarPair",
 					label = "Column with parameter name",

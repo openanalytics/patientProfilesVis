@@ -1,3 +1,5 @@
+0.0.5
+    o support multiple variables for moduleTextParamValueVarPair in case moduleTextParamNameVarPair is specified
 0.0.4
     o remove moduleLabel
     o labelVars
