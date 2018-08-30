@@ -15,8 +15,9 @@
 #' \itemize{
 #' \item{if used in combination with \code{paramNameVar}: }{
 #' \itemize{
-#' \item{string containing the variable of \code{data} with parameter
-#' value to represent}
+#' \item{vector with names of variable(s) (multiple possible) 
+#' of \code{data} with parameter value to represent.
+#' }
 #' \item{function taking \code{data} as input and 
 #' returning a new variable (of length equal to number of rows in \code{data}
 #' ) with parameter value to represent}
@@ -65,6 +66,9 @@ subjectProfileTextPlot <- function(
 		subsetVar = subsetVar, 
 		subsetValue = subsetValue
 	)
+	
+	combineMultipleVars <- function(vars)
+		do.call(paste, c(as.list(data[, vars, drop = FALSE]), list(sep = paramVarSep)))
 		
 	if(is.null(paramNameVar)){
 
@@ -72,9 +76,7 @@ subjectProfileTextPlot <- function(
 		varsToConcatenate <- grep("|", paramValueVar, value = TRUE, fixed = TRUE)
 		if(length(varsToConcatenate) > 1){
 			varsToConcatenateList <- strsplit(varsToConcatenate, split = "|", fixed = TRUE)
-			data[, varsToConcatenate] <- lapply(varsToConcatenateList, function(vars){
-				do.call(paste, c(as.list(data[, vars, drop = TRUE]), list(sep = paramVarSep)))
-			})
+			data[, varsToConcatenate] <- lapply(varsToConcatenateList, combineMultipleVars)
 			if(!is.null(labelVars))
 				labelVars[varsToConcatenate] <- sapply(varsToConcatenateList, function(name)
 					paste(labelVars[name], collapse = paramVarSep))
@@ -111,8 +113,7 @@ subjectProfileTextPlot <- function(
 		
 		# extract the value to display in the plot
 		data$value <- if(is.function(paramValueVar))
-			paramValueVar(data)	else
-			data[, paramValueVar]
+			paramValueVar(data)	else	combineMultipleVars(paramValueVar)
 		# in case multiple value for the same variable, concatenate them
 		dataPlot <- ddply(data, c(subjectVar, paramNameVar, paramGroupVar), function(x)
 			data.frame(value = paste(unique(x$value), collapse = paramVarSep), stringsAsFactors = FALSE)

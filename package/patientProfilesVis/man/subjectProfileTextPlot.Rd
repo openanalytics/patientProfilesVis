@@ -18,8 +18,9 @@ Either:
 \itemize{
 \item{if used in combination with \code{paramNameVar}: }{
 \itemize{
-\item{string containing the variable of \code{data} with parameter
-value to represent}
+\item{vector with names of variable(s) (multiple possible) 
+of \code{data} with parameter value to represent.
+}
 \item{function taking \code{data} as input and 
 returning a new variable (of length equal to number of rows in \code{data}
 ) with parameter value to represent}
