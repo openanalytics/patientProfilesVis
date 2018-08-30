@@ -5,6 +5,12 @@
 #' @param paramValueRangeVar character vector of length 2 containing variables of \code{data}
 #' with minimum and maximum range for \code{paramValueVar},
 #' e.g. to represent the reference range of the variable.
+#' @param colorVar string, variable of \code{data} with color, used for the points only.
+#' @param colorLab string, label for \code{colorVar}
+#' @param colorPalette named vector with color for \code{colorVar}
+#' @param shapeVar string, variable of \code{data} with shape, used for the points only.
+#' @param shapeLab string, label for \code{shapeVar}
+#' @param shapePalette named vector with shape for \code{shapeVar}
 #' @inheritParams subjectProfileIntervalPlot
 #' @return list of (across subjects) of list (across modules) of \code{\link[ggplot2]{ggplot2} objects}, 
 #' also of class \code{subjectProfileLinePlot}, with additional metaData attributes containing
@@ -21,6 +27,8 @@ subjectProfileLinePlot <- function(
 	paramValueRangeVar = NULL,
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
 	colorPalette = NULL,
+	shapeVar = colorVar, shapeLab = getLabelVar(shapeVar, labelVars = labelVars),
+	shapePalette = NULL,
 	paramGroupVar = NULL,
 	timeVar, 
 	subjectVar = "USUBJID",
@@ -71,13 +79,9 @@ subjectProfileLinePlot <- function(
 		subject <- unique(dataSubject[, subjectVar])
 		
 		listPlots <- dlply(dataSubject, "pagePlot", function(dataSubjectPage){
-					
-			aesArgs <- c(
-				list(x = timeVar, y = "yVar"),
-				if(!is.null(colorVar))	list(color = colorVar, group = colorVar)	else	list(group = 1)
-			)
 			
 			# create the plot
+			aesArgs <- list(x = timeVar, y = "yVar")
 			gg <- ggplot(data = dataSubjectPage, do.call(aes_string, aesArgs))
 			
 			# range of the variable
@@ -95,8 +99,21 @@ subjectProfileLinePlot <- function(
 					)
 			}
 			
-			# base plot
-			gg <- gg + geom_point() + geom_line() +
+			# line
+			gg <- gg + geom_line()
+			
+			# point
+			aesArgsPoint <- c(
+				if(!is.null(colorVar))	list(color = colorVar),
+				if(!is.null(shapeVar))	list(shape = shapeVar)
+			)
+			gg <- gg +
+				if(length(aesArgsPoint) > 0){
+					geom_point(do.call(aes_string, aesArgsPoint))
+				}else geom_point()
+			
+			# general
+			gg <- gg + 
 				subjectProfileTheme() +
 				labs(title = title, x = xLab, y = yLab) +
 				theme(axis.text.y = element_text(size = 7))
@@ -116,7 +133,12 @@ subjectProfileLinePlot <- function(
 			# color palette and name for color legend
 			if(!is.null(colorVar))
 				gg <- gg + 
-					getAesScaleManual(lab = colorLab, palette = colorPalette, type = "color")		
+					getAesScaleManual(lab = colorLab, palette = colorPalette, type = "color")	
+		
+			if(!is.null(shapeVar))
+				gg <- gg + 
+					getAesScaleManual(lab = shapeLab, palette = shapePalette, type = "shape")		
+		
 		
 			if(!is.null(timeLim))
 				gg <- gg + coord_cartesian(xlim = timeLim)

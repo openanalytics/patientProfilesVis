@@ -482,6 +482,8 @@ hematology parameters.
 
 ## Line module
 
+### General
+
 The 'line' module enables to represent value of a variable across time.
 
 This is used to represent the evolution of the lab parameters.
@@ -508,6 +510,34 @@ highlighted in the plot.
 ```{r exampleLineModule-include, echo = FALSE, fig.height = getNLinesYGgplot(lbLinePlots[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with the 'subjectProfileLinePlot' function for patient:", names(lbLinePlots)[1])}
 
 	print(lbLinePlots[[1]][[1]])
+
+```
+
+### Color/symbols
+
+
+```{r exampleLineModule-colorShape}
+
+	# create plot
+	lbLinePlotsColorShape <- subjectProfileLinePlot(
+		data = dataLB,
+		paramNameVar = "LBTEST", 
+		paramValueVar = "LBSTRESN",
+		colorVar = "LBNRIND",
+		shapeVar = "LBNRIND",
+		shapePalette = c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24, 'NA' = 3),
+		paramGroupVar = "LBSCAT",
+		paramValueRangeVar = c("LBSTNRLO", "LBSTNRHI"),
+		timeVar = "LBDY",
+		title = "Laboratory test measurements: actual value",
+		labelVars = labelVarsSDTMPelican
+	)
+	
+```
+
+```{r exampleLineModule-colorShape-include, echo = FALSE, fig.height = getNLinesYGgplot(lbLinePlotsColorShape[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with reference range with the 'subjectProfileLinePlot' function for patient:", names(lbLinePlotsColorShape)[1])}
+
+	print(lbLinePlotsColorShape[[1]][[1]])
 
 ```
 
