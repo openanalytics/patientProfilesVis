@@ -1,6 +1,7 @@
 0.0.8
     o subjectProfileCombine/prepareSubjectProfile/combineVerticallyGGplot: changes to align plots across pages
     o subjectProfileTextPlot: possibility to have multiple paramValueVar if paramNameVar specified
+    o subjectProfileLinePlot: shapeVar/colorVar for point only 
 0.0.7
     o subjectProfileCombine: adapt progress message
     o use egg package to combine plots across modules
