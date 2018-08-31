@@ -48,7 +48,7 @@
 subjectProfileTextPlot <- function(
 	data,
 	paramValueVar,
-	paramNameVar = NULL,
+	paramNameVar = NULL, 
 	paramGroupVar = NULL,
 	subsetVar = NULL, subsetValue = NULL,
 	subjectVar = "USUBJID",
@@ -104,10 +104,14 @@ subjectProfileTextPlot <- function(
 		dataPlot$variable <- if(!is.null(labelVars)){
 			varsLabels <- getLabelVar(paramValueVar, labelVars = labelVars)
 			factor(
-				varsLabels[as.character(dataPlot$variable)],
+				unname(varsLabels[as.character(dataPlot$variable)]),
 				levels = rev(labelVars[paramValueVar])
-			)
+			)		
 		}else factor(dataPlot$variable, levels = rev(paramValueVar))
+		dataPlot$variable <- formatParamVar(
+			data = dataPlot, paramVar = "variable", 
+			width = formatReport$yLabelWidth
+		)
 
 	}else{
 		
@@ -122,8 +126,10 @@ subjectProfileTextPlot <- function(
 		
 		# if paramGroupVar is specified: change order levels of 'variable'
 		dataPlot$variable <- formatParamVar(
-			data = dataPlot, paramVar = "variable", paramGroupVar = paramGroupVar,
-			revert = TRUE
+			data = dataPlot, paramVar = "variable", 
+			paramGroupVar = paramGroupVar,
+			revert = TRUE, 
+			width = formatReport$yLabelWidth
 		)
 		
 	}

@@ -61,7 +61,7 @@ subjectProfileEventPlot <- function(
 	# format variable
 	data$yVar <- formatParamVar(
 		data = data, paramVar = "yVar", paramGroupVar = paramGroupVar,
-		revert = TRUE
+		revert = TRUE, width = formatReport$yLabelWidth
 	)
 	
 	listPlots <- dlply(data, subjectVar, function(dataSubject){	

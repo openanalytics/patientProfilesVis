@@ -5,9 +5,10 @@
 \title{Combine subject profile plots.}
 \usage{
 subjectProfileCombine(listPlots,
-  timeLim = getXLimSubjectProfilePlots(listPlots), subjectVar = "USUBJID",
-  maxNLines = NULL, refLines = NULL, refLinesData = NULL,
-  refLinesTimeVar = NULL, refLinesLabelVar = NULL, shiny = FALSE)
+  timeLim = getXLimSubjectProfilePlots(listPlots),
+  subjectVar = "USUBJID", maxNLines = NULL, refLines = NULL,
+  refLinesData = NULL, refLinesTimeVar = NULL,
+  refLinesLabelVar = NULL, shiny = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{listPlots}{list of subject profiles (modules/subjects)}
@@ -42,6 +43,8 @@ Each sublist contains:
 Messages during report creation will be included in the Shiny interface,
 and it will be mentioned at the end of the report.
 In this case, the \code{shiny} package should be available.}
+
+\item{verbose}{logical, if TRUE print messages during execution}
 }
 \value{
 a list of \code{subjectProfilePlot} object, containing the combined

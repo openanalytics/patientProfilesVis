@@ -5,9 +5,10 @@
 \title{include list of plots with different figure height, size, label in a knitr document}
 \usage{
 knitPrintListPlotsKnitr(plotsList, generalLabel = "plotsList",
-  sectionTitles = NULL, sectionLevel = 2, labels = paste0(generalLabel,
-  seq_along(plotsList)), type = c("ggplot2", "plotly"),
-  includeNewpage = TRUE, bookmarkInfos = NULL, ...)
+  sectionTitles = NULL, sectionLevel = 2,
+  labels = paste0(generalLabel, seq_along(plotsList)),
+  type = c("ggplot2", "plotly"), includeNewpage = TRUE,
+  bookmarkInfos = NULL, ...)
 }
 \arguments{
 \item{plotsList}{list of plots, e.g. \code{ggplot} objects

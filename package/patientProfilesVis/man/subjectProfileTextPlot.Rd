@@ -63,7 +63,7 @@ in the text when the plots are combined (e.g. if the plot is empty).}
 \code{paramNameVar} or \code{paramValueVar}, ' - ' by default.}
 
 \item{formatReport}{list with parameters used to specify the format of the report,
-see parameters of the \code{\link{subjectProfileReportFormat}} function}
+e.g. output of the \code{\link{subjectProfileReportFormat}} function}
 }
 \value{
 list of (across subjects) of list (across modules) of \code{\link[ggplot2]{ggplot2} objects}, 

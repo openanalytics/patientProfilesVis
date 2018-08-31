@@ -5,8 +5,8 @@
 \title{prepare list of subject profile (s) to be combined with the \code{\link{combineVerticallyGGplot}}}
 \usage{
 prepareSubjectProfile(..., labels, timeLim = NULL, refLines = NULL,
-  refLinesData = NULL, refLinesTimeVar = NULL, refLinesLabelVar = NULL,
-  subjectVar = "USUBJID")
+  refLinesData = NULL, refLinesTimeVar = NULL,
+  refLinesLabelVar = NULL, subjectVar = "USUBJID")
 }
 \arguments{
 \item{...}{list of subject profiles (across modules)}
