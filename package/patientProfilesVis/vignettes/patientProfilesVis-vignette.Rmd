@@ -515,6 +515,10 @@ highlighted in the plot.
 
 ### Color/symbols
 
+The color and the shape of the points can be specified via the 
+`colorVar` and `shapeVar` parameters, similarly as for
+the `subjectProfileEventPlot` function.
+The reference range measurement is represented via these parameters.
 
 ```{r exampleLineModule-colorShape}
 
@@ -525,7 +529,7 @@ highlighted in the plot.
 		paramValueVar = "LBSTRESN",
 		colorVar = "LBNRIND",
 		shapeVar = "LBNRIND",
-		shapePalette = c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24, 'NA' = 3),
+		shapePalette = c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24),
 		paramGroupVar = "LBSCAT",
 		paramValueRangeVar = c("LBSTNRLO", "LBSTNRHI"),
 		timeVar = "LBDY",
