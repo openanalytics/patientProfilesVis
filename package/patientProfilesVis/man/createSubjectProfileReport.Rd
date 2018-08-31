@@ -6,12 +6,13 @@
 \usage{
 createSubjectProfileReport(listPlots,
   timeLim = getXLimSubjectProfilePlots(listPlots), refLines = NULL,
-  refLinesData = NULL, refLinesTimeVar = NULL, refLinesLabelVar = NULL,
-  bookmarkData = NULL, bookmarkVar = NULL, subjectSortData = bookmarkData,
-  subjectSortVar = bookmarkVar, subjectVar = "USUBJID",
-  outputFile = "subjectProfile.pdf", exportFigures = FALSE,
-  labelVars = NULL, maxNLines = NULL, shiny = FALSE,
-  formatReport = subjectProfileReportFormat())
+  refLinesData = NULL, refLinesTimeVar = NULL,
+  refLinesLabelVar = NULL, bookmarkData = NULL, bookmarkVar = NULL,
+  subjectSortData = bookmarkData, subjectSortVar = bookmarkVar,
+  subjectVar = "USUBJID", outputFile = "subjectProfile.pdf",
+  exportFigures = FALSE, labelVars = NULL, maxNLines = NULL,
+  shiny = FALSE, formatReport = subjectProfileReportFormat(),
+  verbose = FALSE)
 }
 \arguments{
 \item{listPlots}{nested list of plots, as returned by the \code{\link{subjectProfileTextPlot}},
@@ -72,7 +73,9 @@ and it will be mentioned at the end of the report.
 In this case, the \code{shiny} package should be available.}
 
 \item{formatReport}{list with parameters used to specify the format of the report,
-see parameters of the \code{\link{subjectProfileReportFormat}} function}
+e.g. output of the \code{\link{subjectProfileReportFormat}} function}
+
+\item{verbose}{logical, if TRUE print messages during execution}
 }
 \value{
 no returned value, the report is created at the location

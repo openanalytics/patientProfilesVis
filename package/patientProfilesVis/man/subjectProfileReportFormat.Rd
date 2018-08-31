@@ -6,7 +6,7 @@
 setting default for entire workflow}
 \usage{
 subjectProfileReportFormat(heightLineIn = 0.2, margin = 0.75,
-  landscape = FALSE, aspectRatio = 0.5)
+  landscape = FALSE, aspectRatio = 0.5, yLabelWidth = 30)
 }
 \arguments{
 \item{heightLineIn}{height of a line in inches}
@@ -18,6 +18,9 @@ subjectProfileReportFormat(heightLineIn = 0.2, margin = 0.75,
 \item{aspectRatio}{ratio between size of image in inches 
 (derived from specified margin, landscape and heightLineIn)
 and real size for exported image}
+
+\item{yLabelWidth}{integer with approximate maximum width of parameters, 20 by default.
+If parameter is longer, it will be splitted between words in separated lines.}
 }
 \value{
 list with input parameters.

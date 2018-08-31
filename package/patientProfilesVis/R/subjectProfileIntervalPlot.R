@@ -16,12 +16,11 @@
 #' @param label string, label used in the plot.
 #' This label is used to report the name of the panel 
 #' in the text when the plots are combined (e.g. if the plot is empty).
-#' @param formatReport list with parameters used to specify the format of the report,
-#' see parameters of the \code{\link{subjectProfileReportFormat}} function
 #' @inheritParams getLabelVar
 #' @inheritParams filterData
 #' @inheritParams formatParamVar
 #' @inheritParams formatTimeInterval
+#' @inheritParams getPageVar
 #' @return list of (across subjects) of list (across modules) of \code{\link[ggplot2]{ggplot2} objects}, 
 #' also of class \code{subjectProfileIntervalPlot}, with additional metaData attributes containing
 #' 'label' and 'timeLim'.
@@ -97,7 +96,7 @@ subjectProfileIntervalPlot <- function(
 	# if paramGroupVar is specified: change order levels of 'variable'
 	data$yVar <- formatParamVar(
 		data = data, paramVar = "yVar", paramGroupVar = paramGroupVar,
-		revert = TRUE
+		revert = TRUE, width = formatReport$yLabelWidth
 	)
 	
 	# convert color variable to factor

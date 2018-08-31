@@ -4,6 +4,7 @@
 #' Messages during report creation will be included in the Shiny interface,
 #' and it will be mentioned at the end of the report.
 #' In this case, the \code{shiny} package should be available.
+#' @param verbose logical, if TRUE print messages during execution
 #' @return a list of \code{subjectProfilePlot} object, containing the combined
 #' profile plots for each subject.
 #' @importFrom cowplot ggdraw draw_label
@@ -20,7 +21,7 @@ subjectProfileCombine <- function(
 	refLinesData = NULL,
 	refLinesTimeVar = NULL,
 	refLinesLabelVar = NULL,
-	shiny = FALSE){
+	shiny = FALSE, verbose = FALSE){
 	
 	if(shiny && !requireNamespace("shiny", quietly = TRUE))
 		stop("The package 'shiny' is required to report progress.")
@@ -36,7 +37,9 @@ subjectProfileCombine <- function(
 		list
 	})
 	
-	if(shiny)	incProgress(0.1, detail = "Create empty profile, set common time limits and reference lines.")
+	msgProgress <- "Create empty profile, set common time limits and reference lines."
+	if(verbose)	message(msgProgress)
+	if(shiny)	incProgress(0.1, detail = msgProgress)
 	
 	# extract label
 	plotLabels <- sapply(listPlotsAll, function(x){
@@ -52,7 +55,6 @@ subjectProfileCombine <- function(
 				MoreArgs = list(
 					labels = plotLabels, 
 					timeLim = timeLim,
-					maxNLines = maxNLines,
 					refLines = refLines, refLinesData = refLinesData, 
 					refLinesTimeVar = refLinesTimeVar, refLinesLabelVar = refLinesLabelVar,
 					subjectVar = subjectVar
@@ -60,11 +62,16 @@ subjectProfileCombine <- function(
 			),
 			listPlotsAll
 		)
-	)
+	)	
 	
 	# add title
-	if(shiny)	incProgress(0.5, detail = "Combine profiles across subjects/modules.")
-	listPlotsPerSubject <- combineVerticallyGGplot(listPlots = listPlotsPerSubject, maxNLines = maxNLines)
+	msgProgress <- "Combine profiles across subjects/modules."
+	if(verbose)	message(msgProgress)
+	if(shiny)	incProgress(0.5, detail = msgProgress)
+	listPlotsPerSubject <- combineVerticallyGGplot(
+		listPlots = listPlotsPerSubject, 
+		maxNLines = maxNLines
+	)
 	
 	return(listPlotsPerSubject)
 	

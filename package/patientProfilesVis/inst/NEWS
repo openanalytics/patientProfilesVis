@@ -2,6 +2,7 @@
     o subjectProfileCombine/prepareSubjectProfile/combineVerticallyGGplot: changes to align plots across pages
     o subjectProfileTextPlot: possibility to have multiple paramValueVar if paramNameVar specified
     o subjectProfileLinePlot: shapeVar/colorVar for point only 
+    o formatParamVar/subjectProfileReportFormat: set maximum length y-variable: yLabelWidth
 0.0.7
     o subjectProfileCombine: adapt progress message
     o use egg package to combine plots across modules

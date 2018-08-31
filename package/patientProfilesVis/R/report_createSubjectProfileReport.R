@@ -44,14 +44,16 @@ createSubjectProfileReport <- function(
 	labelVars = NULL,
 	maxNLines = NULL,
 	shiny = FALSE,
-	formatReport = subjectProfileReportFormat()){
+	formatReport = subjectProfileReportFormat(),
+	verbose = FALSE){
 
 	if(shiny && !requireNamespace("shiny", quietly = TRUE))
 		stop("The package 'shiny' is required to report progress.")
 
 	# margin of document in inches
 	if(is.null(maxNLines)){
-		maxNLines <- do.call(getMaxNLinesCombinePlot, formatReport)
+		inputGetMNL <- formatReport[names(formatReport) != "yLabelWidth"]
+		maxNLines <- do.call(getMaxNLinesCombinePlot, inputGetMNL)
 	}
 
 	# combine plots
@@ -62,7 +64,8 @@ createSubjectProfileReport <- function(
 		refLinesTimeVar = refLinesTimeVar, refLinesLabelVar = refLinesLabelVar,
 		subjectVar = subjectVar,
 		maxNLines = maxNLines,
-		shiny = shiny
+		shiny = shiny,
+		verbose = verbose
 	)
 	
 	if(!is.null(subjectSortData) & !is.null(subjectSortVar)){
@@ -88,7 +91,9 @@ createSubjectProfileReport <- function(
 			labelVars = labelVars
 		)
 	
-	if(shiny)	incProgress(0.1, detail = "Create subject profile report.")
+	msgProgress <- "Create subject profile report."
+	if(verbose)	message(msgProgress)
+	if(shiny)	incProgress(0.1, detail = msgProgress)
 	
 	pathTemplate <- getPathTemplate("subjectProfile.Rnw")
 	

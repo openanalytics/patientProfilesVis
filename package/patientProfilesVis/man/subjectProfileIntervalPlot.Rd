@@ -7,12 +7,13 @@ If no start and/or end date is available, specific arrows are created.}
 \usage{
 subjectProfileIntervalPlot(data, paramVar,
   paramLab = toString(getLabelVar(paramVar, labelVars = labelVars)),
-  paramGroupVar = NULL, timeStartVar, timeEndVar, subjectVar = "USUBJID",
-  subsetVar = NULL, subsetValue = NULL, timeLim = NULL,
-  timeLimData = NULL, timeLimStartVar = NULL, timeLimEndVar = NULL,
-  rangeSimilarStartEnd = NULL, xLab = paste(getLabelVar(c(timeStartVar,
-  timeEndVar), labelVars = labelVars), collapse = "/"), yLab = "",
-  colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
+  paramGroupVar = NULL, timeStartVar, timeEndVar,
+  subjectVar = "USUBJID", subsetVar = NULL, subsetValue = NULL,
+  timeLim = NULL, timeLimData = NULL, timeLimStartVar = NULL,
+  timeLimEndVar = NULL, rangeSimilarStartEnd = NULL,
+  xLab = paste(getLabelVar(c(timeStartVar, timeEndVar), labelVars =
+  labelVars), collapse = "/"), yLab = "", colorVar = NULL,
+  colorLab = getLabelVar(colorVar, labelVars = labelVars),
   colorPalette = NULL, title = paramLab, label = title,
   labelVars = NULL, formatReport = subjectProfileReportFormat())
 }
@@ -71,7 +72,7 @@ in the text when the plots are combined (e.g. if the plot is empty).}
 \item{labelVars}{named string with variable labels (names are the variable code)}
 
 \item{formatReport}{list with parameters used to specify the format of the report,
-see parameters of the \code{\link{subjectProfileReportFormat}} function}
+e.g. output of the \code{\link{subjectProfileReportFormat}} function}
 }
 \value{
 list of (across subjects) of list (across modules) of \code{\link[ggplot2]{ggplot2} objects}, 

@@ -23,7 +23,7 @@
 subjectProfileLinePlot <- function(
 	data,
 	paramValueVar, paramLab = toString(getLabelVar(paramValueVar, labelVars = labelVars)),
-	paramNameVar = NULL,
+	paramNameVar = NULL, 
 	paramValueRangeVar = NULL,
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
 	colorPalette = NULL,
@@ -55,7 +55,8 @@ subjectProfileLinePlot <- function(
 	
 	# format variable
 	data[, paramNameVar] <- formatParamVar(
-		data = data, paramVar = paramNameVar, paramGroupVar = paramGroupVar
+		data = data, paramVar = paramNameVar, paramGroupVar = paramGroupVar,
+		width = formatReport$yLabelWidth
 	)
 		
 	# convert aesthetic variables to factor
@@ -119,9 +120,11 @@ subjectProfileLinePlot <- function(
 				theme(axis.text.y = element_text(size = 7))
 			
 			if(!is.null(paramNameVar))
-				gg <- gg + facet_grid(paste0(paramNameVar, "~."), 
-					scales = "free_y", switch = "y",
-					labeller = label_wrap_gen(width = Inf)) +
+				gg <- gg + facet_grid(
+					paste0(paramNameVar, "~."), 
+					scales = "free_y", switch = "y"#,
+#					labeller = label_wrap_gen(width = Inf)
+					) +
 					theme(
 						strip.placement = "outside", 
 						strip.text.y = element_text(

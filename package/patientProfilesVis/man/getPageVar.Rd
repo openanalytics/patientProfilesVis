@@ -6,8 +6,8 @@
 used for automatic paging of a plot}
 \usage{
 getPageVar(data, var, typeVar = c("y", "panel"),
-  formatReport = subjectProfileReportFormat(), title = TRUE, xLab = TRUE,
-  caption = TRUE)
+  formatReport = subjectProfileReportFormat(), title = TRUE,
+  xLab = TRUE, caption = TRUE)
 }
 \arguments{
 \item{data}{data.frame with data}
@@ -16,8 +16,8 @@ getPageVar(data, var, typeVar = c("y", "panel"),
 
 \item{typeVar}{string, type of the variable, either 'y' or 'panel'}
 
-\item{formatReport}{list of output from the 
-\code{\link{subjectProfileReportFormat}} function}
+\item{formatReport}{list with parameters used to specify the format of the report,
+e.g. output of the \code{\link{subjectProfileReportFormat}} function}
 
 \item{title}{logical, has the plot a title?}
 
