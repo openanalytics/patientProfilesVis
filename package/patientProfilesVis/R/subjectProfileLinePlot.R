@@ -64,6 +64,10 @@ subjectProfileLinePlot <- function(
 		data[, colorVar] <- convertAesVar(data, colorVar)
 		if(is.null(colorPalette))	colorPalette <- getPatientColorPalette(x = data[, colorVar])
 	}
+	if(!is.null(shapeVar)){
+		data[, shapeVar] <- convertAesVar(data, var = shapeVar)
+		if(is.null(shapePalette))	shapePalette <- getPatientShapePalette(x = data[, shapeVar])
+	}
 	
 	listPlots <- dlply(data, subjectVar, function(dataSubject){	
 				
@@ -105,7 +109,7 @@ subjectProfileLinePlot <- function(
 			
 			# point
 			aesArgsPoint <- c(
-				if(!is.null(colorVar))	list(color = colorVar),
+				if(!is.null(colorVar))	list(color = colorVar, fill = colorVar),
 				if(!is.null(shapeVar))	list(shape = shapeVar)
 			)
 			gg <- gg +
@@ -136,7 +140,8 @@ subjectProfileLinePlot <- function(
 			# color palette and name for color legend
 			if(!is.null(colorVar))
 				gg <- gg + 
-					getAesScaleManual(lab = colorLab, palette = colorPalette, type = "color")	
+					getAesScaleManual(lab = colorLab, palette = colorPalette, type = "color") +
+					getAesScaleManual(lab = colorLab, palette = colorPalette, type = "fill")
 		
 			if(!is.null(shapeVar))
 				gg <- gg + 
