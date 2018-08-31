@@ -116,3 +116,29 @@ combineVerticallyGGplot <- function(listPlots, maxNLines){
 	return(listCombinePlotsPage)
 
 }
+
+#' Split/combine a vector of size(s) to have a fixed combined size
+#' @param sizes vector with size
+#' @param max integer with maximum combined size in output
+#' @return vector of same length as \code{sizeVect},
+#' containing corresponding class
+#' @author Laure Cougnaud
+getSplitVectorByInt <- function(sizes, max){
+	
+	i <- 1
+	class <- vector(length = length(sizes))
+	curClass <- 1
+	curNLines <- 0
+	while(i <= length(sizes)){
+		curNLines <- curNLines + sizes[i]
+		if(curNLines > max){
+			curClass <- curClass + 1
+			curNLines <- sizes[i]
+		}
+		class[i] <- curClass
+		i <- i + 1
+	}
+	
+	return(class)
+	
+}

@@ -6,7 +6,8 @@
 either from a vector of names for the palette, or
 from a specified length.}
 \usage{
-getPatientColorPalette(n = NULL, x = NULL, type = c("GLPG", "viridis"))
+getPatientColorPalette(n = NULL, x = NULL, type = c("GLPG",
+  "viridis"))
 }
 \arguments{
 \item{n}{number of elements in the palette}

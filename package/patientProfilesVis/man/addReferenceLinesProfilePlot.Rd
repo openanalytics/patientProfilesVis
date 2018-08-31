@@ -4,10 +4,10 @@
 \alias{addReferenceLinesProfilePlot}
 \title{Add reference lines to a profile plot}
 \usage{
-addReferenceLinesProfilePlot(gg, subjectVar = "USUBJID", refLines = NULL,
-  refLinesData = NULL, refLinesTimeVar = NULL, refLinesLabelVar = NULL,
-  refLinesColor = "black", refLinesLinetype = "dotted", timeLim = NULL,
-  addLabel = FALSE)
+addReferenceLinesProfilePlot(gg, subjectVar = "USUBJID",
+  refLines = NULL, refLinesData = NULL, refLinesTimeVar = NULL,
+  refLinesLabelVar = NULL, refLinesColor = "black",
+  refLinesLinetype = "dotted", timeLim = NULL, addLabel = FALSE)
 }
 \arguments{
 \item{gg}{\code{\link[ggplot2]{ggplot2}} object}

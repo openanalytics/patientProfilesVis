@@ -6,7 +6,7 @@
 of a grouping variable}
 \usage{
 formatParamVar(data, paramVar = NULL, paramGroupVar = NULL,
-  revert = FALSE)
+  revert = FALSE, width = 20)
 }
 \arguments{
 \item{data}{data.frame with data}
@@ -17,6 +17,8 @@ formatParamVar(data, paramVar = NULL, paramGroupVar = NULL,
 If specified, the parameters will be grouped by this(these) variable(s) in the y-axis.}
 
 \item{revert}{logical, if TRUE revert the order of the levels of the variable}
+
+\item{width}{max}
 }
 \value{
 vector with re-formatted \code{paramVar}, NULL if empty

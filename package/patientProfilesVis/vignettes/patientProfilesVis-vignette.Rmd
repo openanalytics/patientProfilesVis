@@ -103,7 +103,7 @@ containing the parameter value (`paramValueVar`).
 
 ### Wide format
 
-```{r exampleTestModule-wideFormat}
+```{r exampleTextModule-wideFormat}
 
 	# annotate subject demographics meta-data
 	# by specifying a set of variables to include
@@ -115,7 +115,7 @@ containing the parameter value (`paramValueVar`).
 	
 ```
 
-```{r exampleTestModule-wideFormat-include, echo = FALSE, fig.height = getNLinesYGgplot(dmPlots[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Demographic information with the 'subjectProfileTextPlot' function for patient:", names(dmPlots)[1])}
+```{r exampleTextModule-wideFormat-include, echo = FALSE, fig.height = getNLinesYGgplot(dmPlots[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Demographic information with the 'subjectProfileTextPlot' function for patient:", names(dmPlots)[1])}
 
 	print(dmPlots[[1]][[1]])
 
@@ -211,9 +211,9 @@ some parameters/events of interest.
 
 It is used here to represent the start/end date of the adverse events.
 
-Please have a look at the section 'Details' of the documentation of the
+Please **have a look at the section 'Details' of the documentation of the
 `subjectProfileIntervalPlot` function for further information on records with
-missing start/end date are represented.
+missing start/end date are represented**.
 
 ```{r exampleIntervalModule-ae}
 
@@ -243,7 +243,7 @@ To set the values represented for records with missing start/end dates,
 the time limits can be specified via the `timeLim` parameter or a dataset,
 or extracted from a specified dataset containing the start/end date for each
 patient via the `timeLimData` and `timeLimVar` parameters.
-The second option is used below to extract the time limits based on all visist
+The second option is used below to extract the time limits based on all visits
 for a specific subject from the subject-level SDTM dataset.
 
 ```{r exampleIntervalModule-ae-timeLimData}
@@ -597,7 +597,8 @@ The function `createSubjectProfileReport` has mainly two purposes:
 		refLines = refLinesParam,
 		timeLim = c(-20, 52),
 		outputFile = "subjectProfile_SDTM_referenceLinesFromSAP.pdf",
-		exportFigures = TRUE
+		exportFigures = TRUE,
+		verbose = TRUE
 	)) # 14 mins
 
 ```

@@ -12,14 +12,23 @@ getPathTemplate <- function(file){
 #' @inheritParams getNLinesLabel
 #' @inherit getNLinesLabel return
 #' @importFrom ggplot2 ggplot_build
+#' @importFrom stringr str_count
 #' @export
 getNLinesYGgplot <- function(gg){
 	
-	dataPlot <- ggplot_build(gg)$data
 	nLinesPlot <- if(inherits(gg, "subjectProfileLinePlot")){
-		sum(length(unique(unlist(lapply(dataPlot, function(x)		unique(x$PANEL)))))) * 4
+		facetVar <- names(gg$facet$params$rows)
+		facetLabels <- ggplot_build(gg)$layout$layout[, facetVar]
+		# at minimum 4 lines for the line plot
+		nLinesPlot <- sum(
+			Vectorize(
+				FUN = function(x){max(c(x, 4))}
+			)(countNLines(facetLabels))
+		)
 	}else{
-		sum(length(unique(unlist(lapply(dataPlot, function(x)		unique(x$y))))))
+		nElLayout <- nrow(ggplot_build(gg)$layout$layout)
+		yBreaks <- unique(unlist(lapply(seq_len(nElLayout), function(i)	layer_scales(gg)$y$get_breaks())))
+		nLinesPlot <- sum(countNLines(yBreaks))
 	}
 
 	nLinesTitleAndXAxis <- sum(c(
@@ -31,13 +40,49 @@ getNLinesYGgplot <- function(gg){
 	return(nLines)
 }
 
+#' Get number of lines for specific label
+#' @param gg \code{\link[ggplot2]{ggplot2}} object
+#' @param elName string with name of label to extract,
+#' among 'x', 'y' and 'title'
+#' @param elNLines (optional) integer with number of lines,
+#' by default 2 for 'x'/'y' and 3 for 'title'
+#' @return vector with (approximated) number of lines
+#' @author Laure Cougnaud
+#' @importFrom ggplot2 ggplot_build
+getNLinesLabel <- function(gg, 
+	elName = c("x", "y", "title", "caption"),  elNLines = NULL){
+	
+	elName <- match.arg(elName, several.ok = TRUE)
+	
+	if(is.null(elNLines))
+		elNLines <- c("x" = 2, "y" = 2, "title" = 3, "caption" = 1)[elName]
+	
+	elValue <- ggplot_build(gg)$plot$labels[elName]
+	sum(unlist(
+		lapply(names(elValue), function(elNameI){
+			x <- elValue[[elNameI]]
+			if(!is.null(x) && !(is.character(x) && x == "")){
+				if(is.expression(x))	x <- as.character(x)
+				countNLines(x) * elNLines[elNameI]
+				}
+		})
+	))
+}
+
+#' Count number of lines ('\n' character) per character in a vector
+#' @param x character vector
+#' @return numeric vector with same length than \code{x}
+#' containing number of lines in each element
+#' @author Laure
+countNLines <- function(x)	str_count(x, "\n") + 1
+
 #' Get variable with page of the plot,
 #' used for automatic paging of a plot
 #' @param data data.frame with data
 #' @param var string, variable of \code{data} with variable for the y-axis
 #' @param typeVar string, type of the variable, either 'y' or 'panel'
-#' @param formatReport list of output from the 
-#' \code{\link{subjectProfileReportFormat}} function
+#' @param formatReport list with parameters used to specify the format of the report,
+#' e.g. output of the \code{\link{subjectProfileReportFormat}} function
 #' @param title logical, has the plot a title?
 #' @param xLab logical, has the plot a label for the x-axis?
 #' @param caption logical, has the plot a caption?
@@ -52,7 +97,8 @@ getPageVar <- function(data, var,
 	typeVar <- match.arg(typeVar)
 	
 	# maximum number of lines for the plot
-	maxNLines <- do.call(getMaxNLinesCombinePlot, formatReport) - 
+	inputGetMNL <- formatReport[names(formatReport) != "yLabelWidth"]
+	maxNLines <- do.call(getMaxNLinesCombinePlot, inputGetMNL) - 
 		sum(c(title, xLab, caption)) # let some space for title/x/caption
 	
 	# compute number of elements per page
@@ -77,62 +123,6 @@ getPageVar <- function(data, var,
 	return(data)
 	
 }
-
-#' Split/combine a vector of size(s) to have a fixed combined size
-#' @param sizes vector with size
-#' @param max integer with maximum combined size in output
-#' @return vector of same length as \code{sizeVect},
-#' containing corresponding class
-#' @author Laure Cougnaud
-getSplitVectorByInt <- function(sizes, max){
-	
-	i <- 1
-	class <- vector(length = length(sizes))
-	curClass <- 1
-	curNLines <- 0
-	while(i <= length(sizes)){
-		curNLines <- curNLines + sizes[i]
-		if(curNLines > max){
-			curClass <- curClass + 1
-			curNLines <- sizes[i]
-		}
-		class[i] <- curClass
-		i <- i + 1
-	}
-	
-	return(class)
-	
-}
-
-#' Get number of lines for specific label
-#' @param gg \code{\link[ggplot2]{ggplot2}} object
-#' @param elName string with name of label to extract,
-#' among 'x', 'y' and 'title'
-#' @param elNLines (optional) integer with number of lines,
-#' by default 2 for 'x'/'y' and 3 for 'title'
-#' @return vector with (approximated) number of lines
-#' @author Laure Cougnaud
-#' @importFrom ggplot2 ggplot_build
-getNLinesLabel <- function(gg, 
-	elName = c("x", "y", "title", "caption"),  elNLines = NULL){
-
-	elName <- match.arg(elName, several.ok = TRUE)
-	
-	if(is.null(elNLines))
-		elNLines <- c("x" = 2, "y" = 2, "title" = 3, "caption" = 1)[elName]
-	
-	elValue <- ggplot_build(gg)$plot$labels[elName]
-	sum(unlist(
-		lapply(names(elValue), function(elNameI){
-			x <- elValue[[elNameI]]
-			if(!is.null(x) && !(is.character(x) && x == "")){
-				if(is.expression(x))	x <- as.character(x)
-				length(unlist(strsplit(x, split = "\n"))) * elNLines[elNameI]
-			}
-		})
-	))
-}
-
 
 #' Get maximum number of lines of a 'combined plot'
 #' for a specific document
@@ -343,16 +333,29 @@ getAesScaleManual <- function(lab, palette, type){
 #' @param paramGroupVar (optional) character vector with variable(s) of \code{data} with grouping.
 #' If specified, the parameters will be grouped by this(these) variable(s) in the y-axis.
 #' @param revert logical, if TRUE revert the order of the levels of the variable
+#' @param width max
 #' @return vector with re-formatted \code{paramVar}, NULL if empty
 #' @importFrom dplyr n_distinct
 #' @author Laure Cougnaud
-formatParamVar <- function(data, paramVar = NULL, paramGroupVar = NULL, revert = FALSE){
+formatParamVar <- function(data, 
+	paramVar = NULL, paramGroupVar = NULL, 
+	revert = FALSE,
+	width = 20){
 	
 	res <- if(!is.null(paramVar)){
 		
 		paramVarVect <- if(!is.factor(data[, paramVar])){	
 			factor(data[, paramVar])
-		}else data[, paramVar]
+		}else{
+			data[, paramVar]
+		}
+
+		# cut too long labels
+		paramVarLevels <- formatLongLabel(x = levels(paramVarVect), width = width)
+		paramVarVect <- factor(paramVarVect, 
+			levels = names(paramVarLevels), 
+			labels = paramVarLevels
+		)
 	
 		# if paramGroupVar is specified: change order levels of 'variable'
 		if(!is.null(paramGroupVar)){
@@ -419,6 +422,8 @@ filterData <- function(data,
 #' @param aspectRatio ratio between size of image in inches 
 #' (derived from specified margin, landscape and heightLineIn)
 #' and real size for exported image
+#' @param yLabelWidth integer with approximate maximum width of parameters, 20 by default.
+#' If parameter is longer, it will be splitted between words in separated lines.
 #' @return list with input parameters.
 #' If not specified, default are used.
 #' @author Laure Cougnaud
@@ -427,13 +432,34 @@ subjectProfileReportFormat <- function(
 	heightLineIn = 0.2,
 	margin = 0.75,
 	landscape = FALSE,
-	aspectRatio = 0.5){
+	aspectRatio = 0.5,
+	yLabelWidth = 30){
 
 	paramFormat <- list(
 		heightLineIn = heightLineIn, margin = margin, 
-		landscape = landscape, aspectRatio = aspectRatio
+		landscape = landscape, aspectRatio = aspectRatio,
+		yLabelWidth = yLabelWidth
 	)
 	
 	return(paramFormat)
 
+}
+
+#' Custom formatting function for labels in plot.
+#' @param x character vector with labels to format
+#' @param width target maximum size. Note: a word
+#' longer that this width won't be split (see \code{\link{strwrap}}).
+#' @return vector with formatted labels
+#' @author Laure Cougnaud
+formatLongLabel <- function(x, width = 20){
+	
+	xRF <- vapply(x, function(x1)
+		xRF <- paste(strwrap(x1, width = width), collapse = "\n"),
+		FUN.VALUE = character(1)
+	)
+	if(length(x) != length(xRF))
+		stop("Reformatting of labels failed.")
+	
+	return(xRF)
+	
 }
