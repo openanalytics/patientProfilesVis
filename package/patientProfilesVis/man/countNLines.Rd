@@ -2,7 +2,7 @@
 % Please edit documentation in R/miscellaneous.R
 \name{countNLines}
 \alias{countNLines}
-\title{Count number of lines ('\n' character) per character in a vector}
+\title{Count number of lines ('\\n' character) per character in a vector}
 \usage{
 countNLines(x)
 }
@@ -14,7 +14,7 @@ numeric vector with same length than \code{x}
 containing number of lines in each element
 }
 \description{
-Count number of lines ('\n' character) per character in a vector
+Count number of lines ('\\n' character) per character in a vector
 }
 \author{
 Laure
