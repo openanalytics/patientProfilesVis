@@ -12,7 +12,6 @@ getPathTemplate <- function(file){
 #' @inheritParams getNLinesLabel
 #' @inherit getNLinesLabel return
 #' @importFrom ggplot2 ggplot_build
-#' @importFrom stringr str_count
 #' @export
 getNLinesYGgplot <- function(gg){
 	
@@ -69,10 +68,11 @@ getNLinesLabel <- function(gg,
 	))
 }
 
-#' Count number of lines ('\n' character) per character in a vector
+#' Count number of lines ('\\n' character) per character in a vector
 #' @param x character vector
 #' @return numeric vector with same length than \code{x}
 #' containing number of lines in each element
+#' @importFrom stringr str_count
 #' @author Laure
 countNLines <- function(x)	str_count(x, "\n") + 1
 
