@@ -4,8 +4,8 @@ library(patientProfilesVis)
 library(tools)
 library(plyr)
 
-# to increase the limit of size of 5MB for each uploaded file
-options(shiny.maxRequestSize = 30*1024^2) 
+# to increase the limit of size of 5MB for each uploaded file to 10Gbs
+options(shiny.maxRequestSize = 10*10^3*1024^2) 
 
 serverFunction <- function(input, output, session) {
   

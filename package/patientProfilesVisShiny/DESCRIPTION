@@ -2,11 +2,11 @@ Package: patientProfilesVisShiny
 Type: Package
 Title: Shiny application for visualization of patient profiles
 Version: 0.0-5
-Date: 2018-08-30
+Date: 2018-08-31
 Author: Laure Cougnaud
 Maintainer: Laure Cougnaud <laure.cougnaud@openanalytics.eu>
 Description: This package contains a shiny application to visualize patient profiles.
 License: Software for Internal Use at Open Analytics NV
 Imports: 
 	shiny, patientProfilesVis, tools, plyr
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
