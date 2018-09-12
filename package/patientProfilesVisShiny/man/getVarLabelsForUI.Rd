@@ -7,6 +7,11 @@ This concatenate the variable code (column in data) and variable labels}
 \usage{
 getVarLabelsForUI(data, labelVars)
 }
+\arguments{
+\item{data}{data.frame with data}
+
+\item{labelVars}{named string with variable labels (names are the variable code)}
+}
 \value{
 named vector with variables
 }

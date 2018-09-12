@@ -32,11 +32,22 @@ createSubjectProfileFromShinyInput <- function(input, results){
 				colorVar = input$moduleColorVar,
 				shapeVar = input$moduleEventShapeVar
 			),
-			'interval' = list(
-				paramVar = input$moduleParamVar,
-				timeStartVar = input$moduleIntervalTimeStartVar,
-				timeEndVar = input$moduleIntervalTimeEndVar,
-				colorVar = input$moduleColorVar
+			'interval' = c(
+				list(
+					paramVar = input$moduleParamVar,
+					timeStartVar = input$moduleIntervalTimeStartVar,
+					timeEndVar = input$moduleIntervalTimeEndVar,
+					colorVar = input$moduleColorVar
+				),
+				switch(input$moduleIntervalTimeLimSelect,
+					"fixed" = list(timeLim = input$moduleIntervalTimeLim),
+					"subject-specific" = list(
+						timeLimData = results$timeLimData(),
+						timeLimStartVar = input$moduleIntervalTimeLimStartVar,
+						timeLimEndVar = input$moduleIntervalTimeLimEndVar
+					)
+				)
+				
 			),
 			'line' = list(
 				paramNameVar = input$moduleLineParamNameVar,
@@ -50,6 +61,10 @@ createSubjectProfileFromShinyInput <- function(input, results){
 	
 	namesParam <- c(
 		'data' = 'data', 'title' = 'title', 'label' = 'label',
+		'timeLim' = 'time limits',
+		'timeLimData' = 'time limits dataset',
+		'timeLimStartVar' = 'time limits start variable',
+		'timeLimEndVar' = 'time limits end variable',
 		'subjectVar' = "subject identifier",
 		'paramGroupVar' = "grouping variable",
 		'paramValueVar' = 'column with parameter value',
@@ -101,6 +116,8 @@ createSubjectProfileFromParam <- function(listParams, data, labelVars){
 	
 	type <- listParams$type
 	listParams$data <- data[[listParams$data]]
+	if("timeLimData" %in% names(listParams))
+		listParams$timeLimData <- data[[listParams$timeLimData]]
 	listParams$labelVars <- labelVars
 	listParams$type <- NULL
 	createSubjectProfileType(listParams, type = type)

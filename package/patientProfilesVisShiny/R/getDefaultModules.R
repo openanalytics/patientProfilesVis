@@ -6,6 +6,10 @@
 #' @export
 getDefaultModules <- function(data){
 	
+	# time limits datasets
+	timeLimParams <- if("SV" %in% names(data) && all(c("SVSTDY", "SVENDY") %in% names(data$SV)))
+		list(timeLimSelect = "subject-specific", timeLimData = "SV", timeLimStartVar = "SVSTDY", timeLimEndVar = "SVENDY")
+	
 	defaultModules <- c(
 		if("DM" %in% names(data)){
 			params <- c("SEX", "AGE", "RACE", "COUNTRY", "ARM")
@@ -45,7 +49,7 @@ getDefaultModules <- function(data){
 		},
 		if("AE" %in% names(data) &&
 			all(c("AETERM", "AESTDY", "AEENDY") %in% colnames(data$AE))){
-			list('Adverse events (default, interval)' = 
+			list('Adverse events (default, interval)' = c(
 				list(
 					data = "AE",
 					paramVar = "AETERM",
@@ -56,8 +60,10 @@ getDefaultModules <- function(data){
 					title = "Adverse events",
 					subjectVar =  "USUBJID"
 				),
-				if("AESEV" %in% colnames(data$AE))	list(colorVar = "AESEV")
+				if("AESEV" %in% colnames(data$AE))	list(colorVar = "AESEV"),
+				timeLimParams
 			)
+		)
 			
 		},
 		if("LB" %in% names(data) &&
@@ -118,7 +124,8 @@ getDefaultModules <- function(data){
 						subjectVar =  "USUBJID"
 					),
 					if("EXDOSFRM" %in% names(data$EX))
-						list(colorVar = "EXDOSFRM")
+						list(colorVar = "EXDOSFRM"),
+					timeLimParams
 				)
 			)
 		}

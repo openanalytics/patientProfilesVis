@@ -29,3 +29,13 @@ getVarLabelsForUI <- function(data, labelVars){
 	names(vars) <- paste0(getLabelVar(var = vars, labelVars = labelVars), " (", vars, ")")
 	return(vars)	
 }
+
+#' Get potential time variables in the dataset
+#' @param data data.frame with data
+#' @return character vector with potential time variables
+#' @author Laure Cougnaud
+#' @export
+getTimeVars <- function(data){
+	possibleVars <- names(which(unlist(colwise(is.numeric)(data))))
+	return(possibleVars)
+}

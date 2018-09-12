@@ -41,9 +41,7 @@ runPatientProfilesVisShiny <- function(installDependencies = FALSE, ...){
 		toDir <- dirname(to)
 		
 		if (!dir.exists(toDir)) {
-			
 			dir.create(path = toDir, recursive = TRUE)
-			
 		}
 		
 		file.copy(from = file.path(uiDir, from), to = to, overwrite = TRUE)
