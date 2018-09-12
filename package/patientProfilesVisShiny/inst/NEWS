@@ -1,3 +1,5 @@
+0.0.6
+    o functionality to export module settings
 0.0.5
     o support multiple variables for moduleTextParamValueVarPair in case moduleTextParamNameVarPair is specified
     o increase shiny.maxRequestSize to 10Gbs

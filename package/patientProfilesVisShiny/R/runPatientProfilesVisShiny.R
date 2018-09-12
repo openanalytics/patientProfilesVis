@@ -53,7 +53,7 @@ runPatientProfilesVisShiny <- function(installDependencies = FALSE, ...){
 	
 	# (3) Run the application
 	library(shiny)
-	enableBookmarking(store = "server")
+#	enableBookmarking(store = "server")
 	runApp(appDir = tmpDir, ...)
 	
 }

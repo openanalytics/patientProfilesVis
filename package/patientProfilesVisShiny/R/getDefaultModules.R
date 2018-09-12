@@ -6,7 +6,6 @@
 #' @export
 getDefaultModules <- function(data){
 	
-	defaultModules <- list()
 	defaultModules <- c(
 		if("DM" %in% names(data)){
 			params <- c("SEX", "AGE", "RACE", "COUNTRY", "ARM")

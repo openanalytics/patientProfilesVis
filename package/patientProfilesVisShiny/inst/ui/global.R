@@ -1,3 +1,9 @@
+# ABSOLUTE output path for module settings
+# TO CHANGE when pushing to server!!
+outputPath <- "/home/lcougnaud/git/GLPGPatientProfiles/shiny/moduleSettings"
+if(!dir.exists(outputPath))	dir.create(outputPath, recursive = TRUE)
+# "/root/shiny/patientProfilesVisShiny/moduleSettings"
+
 # for initial tests, set wd to /ui/
 # remove this code later
 suppressWarnings({if(!require(patientProfilesVisShiny)) {
@@ -27,3 +33,5 @@ sapply(uiFiles, function(from) {
 	}
     file.copy(from = file.path(uiDir, from), to = to, overwrite = TRUE)
 })  
+
+

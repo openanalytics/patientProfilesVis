@@ -28,7 +28,12 @@ serverFunction <- function(input, output, session) {
 		
 	})
 	
-	results <- reactiveValues(listPlots = NULL, availableModules = NULL, plotsCurrent = NULL)
+	results <- reactiveValues(
+		listPlots = NULL, 
+		availableModules = NULL, 
+		plotsCurrent = NULL,
+		modulePreDefinedID = file_path_sans_ext(list.files(outputPath))
+	)
   
 	## Data
 	
@@ -62,20 +67,123 @@ serverFunction <- function(input, output, session) {
 	results$dataAll <- reactive(results$dataRes()) # list of data.frame
 	results$labelVars <- reactive(attributes(results$dataRes())$labelVars) # named vector with variable labels
 	results$datasets <- reactive(names(results$dataAll()))
-	
-	# create default modules for uploaded datasets
-	observe({
-		results$availableModules <- getDefaultModules(data = results$dataAll())
-	})
-	results$defaultModulesNames <- reactive(names(results$availableModules))
   
 	## Module specification:
+	
+	# select default or pre-defined module
 	output$module <- renderUI({
 					
 		validate(need(results$dataRes(), "Please upload some data."))
-				
-#		cat("Update entire module\n")
+
+		# module settings
+		tagList(
+			h4("Module settings"),
+#			h5("Import"),
+			fluidRow(
+				column(6, 
+					selectInput("moduleGeneral", 
+						label = "Choose module settings:", 
+						choices = c(
+							"default (from uploaded data)" = "default", 
+							"pre-defined (from previous export)" = "pre-defined"
+						)
+					)
+				),
+				column(6, uiOutput("moduleGeneralPreDefinedPanel"))
+			),
+#			h5("Export"),
+			fluidRow(
+				column(5, 
+					actionButton(inputId = "moduleExportSettings", label = "Export current settings")
+				),
+				column(5, textInput("moduleExportSettingsID", label = NULL, placeholder = "with export ID"))
+			),
+			uiOutput("moduleExportSettingsMessage"),
 			
+			# module
+			h4("Preview/create new module"),
+			uiOutput("moduleGeneralPanel")
+		)
+	})
+
+
+	# in case of pre-defined module, allow the user to specify the ID
+	observe({
+		validate(need(input$moduleGeneral, ""))
+		output$moduleGeneralPreDefinedPanel <- renderUI({
+			if(input$moduleGeneral == "pre-defined" && isTruthy(results$modulePreDefinedID)){
+				selectInput(
+					inputId = "modulePreDefinedID",
+					label = "Export ID",
+					choices = results$modulePreDefinedID
+				)
+			}
+		})
+		if(input$moduleGeneral == "pre-defined" && !isTruthy(results$modulePreDefinedID)){
+			output$moduleExportSettingsMessage <- renderUI(
+				div(
+					"No module settings are available, please choose the 'default' settings.", 
+					style = "color:red"
+				)
+			)
+		}		
+	})
+
+	# create default modules for uploaded datasets or load pre-defined module
+	observe({
+		validate(need(input$moduleGeneral, ""))
+		switch(input$moduleGeneral,
+			'default' = {
+				results$availableModules <- getDefaultModules(data = results$dataAll())
+			},
+			'pre-defined' = {
+				if(isTruthy(input$modulePreDefinedID)){
+					load(file.path(outputPath, paste0(input$modulePreDefinedID, ".RData")))
+					results$availableModules <- moduleSettings
+				}
+			}
+		)
+	})
+	results$defaultModulesNames <- reactive({names(results$availableModules)})
+	
+	# export current module settings
+	observeEvent(input$moduleExportSettings, {
+		if(is.null(results$availableModules)){
+			output$moduleExportSettingsMessage <- renderUI(
+				div(
+					"No module settings available so they are not exported.", 
+					style = "color:red"
+				)
+			)
+		}else if(!isTruthy(input$moduleExportSettingsID)){
+			output$moduleExportSettingsMessage <- renderUI(
+				div(
+					"Please specify a export ID.", 
+					style = "color:red"
+				)
+			)
+		}else if(input$moduleExportSettingsID %in% results$modulePreDefinedID){
+			output$moduleExportSettingsMessage <- renderUI(
+				div(
+					"Module settings already exported with this ID, please select a different ID.", 
+					style = "color:red"
+				)
+			)
+		}else{
+			moduleSettings <- results$availableModules
+			save(moduleSettings, 
+				file = file.path(outputPath, paste0(input$moduleExportSettingsID, ".RData"))
+			)
+			output$moduleExportSettingsMessage <- renderUI(
+				div("Module settings exported.", style = "color:green")
+			)
+			results$modulePreDefinedID <- c(results$modulePreDefinedID, input$moduleExportSettingsID)
+		}		
+	})
+	
+	
+	# select a module
+	output$moduleGeneralPanel <- renderUI({
 		tagList(
 			uiOutput("moduleMessage"),
 			selectInput("moduleChoice", label = "Choose module", 
@@ -84,10 +192,9 @@ serverFunction <- function(input, output, session) {
 			# module specification
 			uiOutput("modulePanel")
 		)
-
 	})
 
-	# currently selected module
+	# extract the module currently selected
 	results$currentModule <- reactive({
 		validate(need(isTruthy(input$moduleChoice) && input$moduleChoice != "none", 
 			"To create a new module or display existing module(s), please choose a module.")
@@ -498,9 +605,10 @@ serverFunction <- function(input, output, session) {
 			
 			# update progress message(s)
 			output$moduleMessage <- renderUI(
-				div(paste0("Module has been saved, you can preview it by selecting:", br(), 
-					"'", names(newModule), "' in the selection box below."), 
-					style = "color:green")
+				div("Module has been saved, you can preview it by selecting:", br(), 
+					paste0("'", names(newModule), "' in the selection box below."), 
+					style = "color:green"
+				)
 			)
 			output$moduleSaveMessage <- previewMessage <- renderUI("")
 			
@@ -532,12 +640,11 @@ serverFunction <- function(input, output, session) {
 				column(6, uiOutput("reportSubjectSortVarPanel"))
 			),
 			fluidRow(
-				actionButton(inputId = "createSubjectProfileReport", label = "Create subject profile report"),
-				br(),
-				uiOutput("downloadSubjectProfileReportPanel")
-			),
-			hr(),
-			bookmarkButton()
+				column(6, actionButton(inputId = "createSubjectProfileReport", label = "Create report")),
+				column(6, uiOutput("downloadSubjectProfileReportPanel"))
+			)#,
+#			hr(),
+#			bookmarkButton()
 		)		
 				
 	})
@@ -626,7 +733,7 @@ serverFunction <- function(input, output, session) {
 				)
 			)
 		)
-        downloadButton("downloadSubjectProfileReport", label = "Download subject profile report")
+        downloadButton("downloadSubjectProfileReport", label = "Download report")
 	})
   
 }
