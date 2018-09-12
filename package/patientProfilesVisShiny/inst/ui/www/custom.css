@@ -1,0 +1,58 @@
+/****************************************/
+/* OA CSS FILE FOR MARKDOWN REPORTING   */
+/*                                      */
+/* author:                              */
+/*   elisabeth.deviere@openanalytics.eu */
+/****************************************/
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+
+/*** default styling ***/
+html, body, h1, h2, h3, h4, h5, h6 {
+	font-family: 'Open Sans', sans-serif;
+	font-size: 1rem;
+	color: rgb(0, 0, 0);
+	font-weight: 400;
+	line-height: 1.6;
+}
+
+em {
+	color: rgb(0, 0, 0);
+}
+
+/*** color of sidebar panel ***/
+// .well {
+   background-color:rgb(236, 236, 236);
+}
+
+/*** headings ***/
+h1 {
+	margin-top: 2.5rem;
+	color: rgb(0, 70, 62);
+  font-size: 1.7rem;
+  letter-spacing: 0.02rem;
+  font-weight: 900;
+}
+h2 {
+	color: rgb(245, 136, 0);
+	font-size: 1.5rem;
+}
+
+h3 {
+	color: rgb(153, 153, 153);
+	font-size: 1.4rem;
+}
+
+h4 {
+	color: rgb(245, 136, 0);
+	font-size: 1.3rem;
+}
+
+h5 {
+	color: rgb(153, 153, 153);
+	font-size: 1.2rem;
+}
+
+h6 {
+	color: rgb(245, 136, 0);
+	font-size: 1.1rem;
+}

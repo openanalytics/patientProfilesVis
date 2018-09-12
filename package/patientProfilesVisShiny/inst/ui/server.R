@@ -77,12 +77,12 @@ serverFunction <- function(input, output, session) {
 
 		# module settings
 		tagList(
-			h4("Module settings"),
+			h2("Module settings"),
 #			h5("Import"),
 			fluidRow(
 				column(6, 
 					selectInput("moduleGeneral", 
-						label = "Choose module settings:", 
+						label = "Module settings", 
 						choices = c(
 							"default (from uploaded data)" = "default", 
 							"pre-defined (from previous export)" = "pre-defined"
@@ -101,7 +101,7 @@ serverFunction <- function(input, output, session) {
 			uiOutput("moduleExportSettingsMessage"),
 			
 			# module
-			h4("Preview/create new module"),
+			h2("Preview/create new module"),
 			uiOutput("moduleGeneralPanel")
 		)
 	})
@@ -479,7 +479,7 @@ serverFunction <- function(input, output, session) {
 		
 		tagList(	
 				
-			h3("Module preview"),
+			h1("Module preview"),
 			fluidRow(
 				column(6, 
 					selectInput(inputId = "previewSubject", label = "Select subject",
@@ -629,10 +629,11 @@ serverFunction <- function(input, output, session) {
 				choices = results$defaultModulesNames(),
 				selected = results$defaultModulesNames()
 			),
+			strong("Subjects ordered based on:"),
 			fluidRow(
 				column(6,
 					selectInput(inputId = "reportSubjectSortData",
-						label = "Sort subjects based on dataset:", multiple = FALSE,
+						label = "Dataset", multiple = FALSE,
 						choices = c('<none>' = 'none', results$datasets())
 					)
 				),
@@ -659,7 +660,7 @@ serverFunction <- function(input, output, session) {
 			)
 		selectInput(
 			inputId = "reportSubjectSortVar", 
-			label = "with variable:", multiple = FALSE,
+			label = "Variable:", multiple = FALSE,
 			choices = reportSubjectSortVars, selected = reportSubjectSortVars[1]
 		)
 	})

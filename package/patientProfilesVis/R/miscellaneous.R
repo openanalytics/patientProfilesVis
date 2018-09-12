@@ -58,21 +58,29 @@ getNLinesLegend <- function(gg){
 	
 	# extract legend grobs
 	idxLegend <- which(sapply(ggTable$grobs, function(x) x$name) == "guide-box")
-	grobLegend <- ggTable$grobs[[idxLegend]]
-	idxLegendGuides <- which(grobLegend$layout$name == "guides")
 	
-	# extract number of lines in each legend
-	nLinesLegend <- vapply(seq_along(idxLegendGuides), function(i){
-		grobLegendI <- grobLegend$grobs[[i]]
-		idxLegendILabels <- grep("^label", grobLegendI$layout$name)
-		nLinesLegendILabels <- n_distinct(grobLegendI$layout[idxLegendILabels, "t"])
-		nLinesLegendITitle <- sum(grobLegendI$layout$name == "title")
-		nLinesLegendILabels + nLinesLegendITitle
-	}, FUN.VALUE = numeric(1))
+	nLinesLegendTotal <- if(length(idxLegend) > 0){
+		
+		grobLegend <- ggTable$grobs[[idxLegend]]
+		idxLegendGuides <- which(grobLegend$layout$name == "guides")
+		
+		if(length(idxLegendGuides) > 0){
+		
+			# extract number of lines in each legend
+			nLinesLegend <- vapply(seq_along(idxLegendGuides), function(i){
+				grobLegendI <- grobLegend$grobs[[i]]
+				idxLegendILabels <- grep("^label", grobLegendI$layout$name)
+				nLinesLegendILabels <- n_distinct(grobLegendI$layout[idxLegendILabels, "t"])
+				nLinesLegendITitle <- sum(grobLegendI$layout$name == "title")
+				nLinesLegendILabels + nLinesLegendITitle
+			}, FUN.VALUE = numeric(1))
+		
+			# add extra line which separate legend guides
+			sum(nLinesLegend) + length(idxLegendGuides) - 1
+	
+		}else 0
 
-	# add extra line which separate legend guides
-	nLinesLegendTotal <- sum(nLinesLegend) + 
-		ifelse(length(idxLegendGuides) > 0, length(idxLegendGuides) - 1, 0)
+	}else 0
 	
 	return(nLinesLegendTotal)
 	

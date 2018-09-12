@@ -4,6 +4,8 @@ uiFunction <- function(request){
 	
 	fluidPage(
 			
+		theme = "custom.css",
+			
 		# For debugging
 		h4("Debugging & testing options"), 
 		fluidRow(
@@ -19,10 +21,15 @@ uiFunction <- function(request){
 			)
 		),
 		
-		titlePanel(title = div(img(
-			src = "logo-with-fish.png", 
-			float = "top", height = "60px", hspace = "70px"),
-			"Visualization of patient profile"),
+		titlePanel(
+			title = h1(
+				img(
+					src = "logo-with-fish.png", 
+					float = "top", height = "100px", hspace = "70px"
+				),
+				"Visualization of patient profile",
+				style = "font-size: 3rem;"
+			),
 			windowTitle = "patientProfiles"
 		),
 		
@@ -30,7 +37,7 @@ uiFunction <- function(request){
 	        
 	        sidebarPanel(
 	            
-	            h3("Data upload"),
+	            h1("Data upload"),
 	            
 				# upload data file(s)
 	            fileInput(inputId = 'dataFiles', label = NULL, 
@@ -38,23 +45,27 @@ uiFunction <- function(request){
 				),
 	            
 				# new module specification
-				h3("Module specification"),
+				h1("Module specification"),
 				uiOutput("module"),
-				br(),
 				
 				# creation of subject profile report
-				h3("Report creation"),
+				h1("Report creation"),
 				uiOutput("reportCreation")
 	        ), 
 	        
 	        mainPanel(
 	            
-	            h3("Preview subject profiles"),
+	            h1("Preview subject profiles"),
 				uiOutput("moduleResults")
 	        
 	        )
 	    
-	    )
+	    ),
+		
+		em(hr(),
+		"This Shiny App was created in collaboration with the Development biostatistics group in Galapagos.", 
+			#br(),
+		 "For questions/remarks, please contact: laure.cougnaud@openanalytics.eu.")
 	
 	)
 	
