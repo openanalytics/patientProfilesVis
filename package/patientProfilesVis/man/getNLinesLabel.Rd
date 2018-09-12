@@ -2,7 +2,7 @@
 % Please edit documentation in R/miscellaneous.R
 \name{getNLinesLabel}
 \alias{getNLinesLabel}
-\title{Get number of lines for specific label}
+\title{Get number of lines for specific label in a \code{\link[ggplot2]{ggplot2}} object}
 \usage{
 getNLinesLabel(gg, elName = c("x", "y", "title", "caption"),
   elNLines = NULL)
@@ -17,10 +17,10 @@ among 'x', 'y' and 'title'}
 by default 2 for 'x'/'y' and 3 for 'title'}
 }
 \value{
-vector with (approximated) number of lines
+integer with (approximated) number of lines
 }
 \description{
-Get number of lines for specific label
+Get number of lines for specific label in a \code{\link[ggplot2]{ggplot2}} object
 }
 \author{
 Laure Cougnaud

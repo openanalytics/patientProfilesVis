@@ -260,7 +260,7 @@ serverFunction <- function(input, output, session) {
 #				helpText("The label is used to uniquely identify a specified module when combining modules."),
 				createWidgetVariable(
 					inputId = "moduleSubjectVar",
-					label = "Column with subject identifier",
+					label = "Subject identifier",
 					selected = ifelse(!is.null(results$currentModule()), results$currentModule()$subjectVar,
 						ifelse("USUBJID" %in% results$variablesDataCurrent(), "USUBJID", results$variablesDataCurrent()[1])
 					)
@@ -277,7 +277,7 @@ serverFunction <- function(input, output, session) {
 					column(6, uiOutput("moduleSubsetValuePanel"))
 				),
 				uiOutput("moduleSpecificType"),
-				createWidgetVariable(inputId = "moduleParamGroupVar", label = "Column with grouping", optional = TRUE,
+				createWidgetVariable(inputId = "moduleParamGroupVar", label = "Grouping variable", optional = TRUE,
 					selected = ifelse(!is.null(results$currentModule()) & !is.null(results$currentModule()$paramGroupVar), 
 						results$currentModule()$paramGroupVar, "<none>"
 					)
@@ -314,28 +314,26 @@ serverFunction <- function(input, output, session) {
 	})
 
 	# create widgets specific of certain module type
-	output$moduleSpecificType <- renderUI({
-				
-#		cat("module specific type")		
+	output$moduleSpecificType <- renderUI({	
 				
 		validate(need(input$moduleType, "moduleType"))
 		
 		# widgets common to the 'event' and 'interval' modules
 		widgetParamVar <- createWidgetVariable(
 			inputId = "moduleParamVar", 
-			label = "Column with variable(s)", 
+			label = "Parameter variable(s)", 
 			multiple = TRUE,
 			selected = if(!is.null(results$currentModule()))	results$currentModule()$paramVar
 		)
 		widgetColorVar <- createWidgetVariable(
 			inputId = "moduleColorVar", 
-			label = "Column with variable used for color",
+			label = "Color variable",
 			optional = TRUE,
 			selected = if(!is.null(results$currentModule()))	results$currentModule()$colorVar
 		)		
 		widgetTimeVar <- createWidgetVariable(
 			inputId = "moduleTimeVar", 
-			label = "Column with time variable",
+			label = "Time variable",
 			choices = results$variablesTimeDataCurrent(),
 			selected = if(!is.null(results$currentModule()))	results$currentModule()$timeVar
 		)
@@ -363,7 +361,7 @@ serverFunction <- function(input, output, session) {
 				list(
 					createWidgetVariable(
 						inputId = "moduleEventShapeVar", 
-						label = "Column with variable used for symbol",
+						label = "Symbol variable",
 						optional = TRUE,
 						selected = if(!is.null(results$currentModule()))	results$currentModule()$shapeVar
 					)
@@ -374,13 +372,13 @@ serverFunction <- function(input, output, session) {
 				list(
 					createWidgetVariable(
 						inputId = "moduleIntervalTimeStartVar", 
-						label = "Column with start time variable",
+						label = "Start time variable",
 						choices = results$variablesTimeDataCurrent(),
 						selected = if(!is.null(results$currentModule()))	results$currentModule()$timeStartVar
 					),
 					createWidgetVariable(
 						inputId = "moduleIntervalTimeEndVar", 
-						label = "Column with end time variable",
+						label = "End time variable",
 						choices = results$variablesTimeDataCurrent(),
 						selected = if(!is.null(results$currentModule()))	results$currentModule()$timeEndVar
 					)
@@ -392,17 +390,17 @@ serverFunction <- function(input, output, session) {
 				list(
 					widgetTimeVar, 
 					createWidgetVariable(inputId = "moduleLineParamValueVar", 
-						label = "Column with parameter value",
+						label = "Parameter value variable",
 						selected = if(!is.null(results$currentModule()))	
 							results$currentModule()$paramValueVar
 					),
 					createWidgetVariable(inputId = "moduleLineParamNameVar",
-						label = "Column with parameter name",
+						label = "Parameter name variable",
 						selected = if(!is.null(results$currentModule()))	
 							results$currentModule()$paramNameVar
 					),
 					createWidgetVariable(inputId = "moduleLineParamValueRangeVar",
-						label = "Columns with reference range (minimum and maximum)",
+						label = "Reference range (minimum and maximum) variable",
 						selected = if(!is.null(results$currentModule()))	
 							results$currentModule()$paramValueRangeVar,
 						multiple = TRUE
@@ -414,6 +412,7 @@ serverFunction <- function(input, output, session) {
 		
 	})
 
+	# create modules specific of the text panel
 	output$moduleTextVarPanel <- renderUI({
 				
 		validate(need(input$moduleTextVarSpecType, "moduleTextVarSpecType"))
@@ -427,14 +426,14 @@ serverFunction <- function(input, output, session) {
 			'2' = fluidRow(
 				column(6, 
 					createWidgetVariable(inputId = "moduleTextParamValueVarPair", 
-						label = "Column(s) with parameter value",
+						label = "Parameter value variable(s)",
 						selected = if(!is.null(results$currentModule()))	
 							results$currentModule()$paramValueVar,
 						multiple = TRUE
 					)
 				),
 				column(6, createWidgetVariable(inputId = "moduleTextParamNameVarPair",
-					label = "Column with parameter name",
+					label = "Parameter name variable",
 					selected = if(!is.null(results$currentModule()))	results$currentModule()$paramNameVar)
 				)
 			)
