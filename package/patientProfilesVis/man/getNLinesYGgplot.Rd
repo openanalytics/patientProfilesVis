@@ -2,7 +2,11 @@
 % Please edit documentation in R/miscellaneous.R
 \name{getNLinesYGgplot}
 \alias{getNLinesYGgplot}
-\title{Get approximately the number of lines in the y-axis of the plot.
+\title{Get approximately the number of 'lines' in the vertical direction
+of a \code{\link[ggplot2]{ggplot2}} plot.
+This is extracted from the presence of labels in the y-axis,
+labels and title in the x-axis, general title and number of lines
+in the legend.
 Can be used to specify plot-specific height during the export.}
 \usage{
 getNLinesYGgplot(gg)
@@ -14,7 +18,11 @@ getNLinesYGgplot(gg)
 integer with (approximated) number of lines
 }
 \description{
-Get approximately the number of lines in the y-axis of the plot.
+Get approximately the number of 'lines' in the vertical direction
+of a \code{\link[ggplot2]{ggplot2}} plot.
+This is extracted from the presence of labels in the y-axis,
+labels and title in the x-axis, general title and number of lines
+in the legend.
 Can be used to specify plot-specific height during the export.
 }
 \author{
