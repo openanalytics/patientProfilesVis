@@ -1,3 +1,5 @@
+0.0.9
+    o getNLinesGgplot: check/extract number of lines in legend (getNLinesLegend new function)
 0.0.8
     o subjectProfileCombine/prepareSubjectProfile/combineVerticallyGGplot: changes to align plots across pages
     o subjectProfileTextPlot: possibility to have multiple paramValueVar if paramNameVar specified

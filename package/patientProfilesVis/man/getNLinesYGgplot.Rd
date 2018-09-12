@@ -11,7 +11,7 @@ getNLinesYGgplot(gg)
 \item{gg}{\code{\link[ggplot2]{ggplot2}} object}
 }
 \value{
-vector with (approximated) number of lines
+integer with (approximated) number of lines
 }
 \description{
 Get approximately the number of lines in the y-axis of the plot.

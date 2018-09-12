@@ -6,7 +6,11 @@ getPathTemplate <- function(file){
 	system.file(file.path("template", file), package = "patientProfilesVis")
 }
 
-#' Get approximately the number of lines in the y-axis of the plot.
+#' Get approximately the number of 'lines' in the vertical direction
+#' of a \code{\link[ggplot2]{ggplot2}} plot.
+#' This is extracted from the presence of labels in the y-axis,
+#' labels and title in the x-axis, general title and number of lines
+#' in the legend.
 #' Can be used to specify plot-specific height during the export.
 #' @author Laure Cougnaud
 #' @inheritParams getNLinesLabel
@@ -26,9 +30,13 @@ getNLinesYGgplot <- function(gg){
 		)
 	}else{
 		nElLayout <- nrow(ggplot_build(gg)$layout$layout)
-		yBreaks <- unique(unlist(lapply(seq_len(nElLayout), function(i)	layer_scales(gg)$y$get_breaks())))
+		yBreaks <- unique(unlist(lapply(seq_len(nElLayout), function(i)	layer_scales(gg, i = i)$y$get_breaks())))
 		nLinesPlot <- sum(countNLines(yBreaks))
 	}
+
+	# in case long legend
+	nLinesLegend <- getNLinesLegend(gg)
+	nLinesPlot <- max(nLinesPlot, nLinesLegend)
 
 	nLinesTitleAndXAxis <- sum(c(
 		getNLinesLabel(gg = gg, elName = "title"), 
@@ -39,13 +47,44 @@ getNLinesYGgplot <- function(gg){
 	return(nLines)
 }
 
-#' Get number of lines for specific label
+#' Get number of lines in the legend of a \code{\link[ggplot2]{ggplot2}} object
+#' @param gg \code{\link[ggplot2]{ggplot2}} object
+#' @return integer with (approximated) number of lines
+#' @author Laure Cougnaud
+#' @importFrom ggplot2 ggplot_gtable ggplot_build
+getNLinesLegend <- function(gg){
+	
+	ggTable <- ggplot_gtable(ggplot_build(gg))
+	
+	# extract legend grobs
+	idxLegend <- which(sapply(ggTable$grobs, function(x) x$name) == "guide-box")
+	grobLegend <- ggTable$grobs[[idxLegend]]
+	idxLegendGuides <- which(grobLegend$layout$name == "guides")
+	
+	# extract number of lines in each legend
+	nLinesLegend <- vapply(seq_along(idxLegendGuides), function(i){
+		grobLegendI <- grobLegend$grobs[[i]]
+		idxLegendILabels <- grep("^label", grobLegendI$layout$name)
+		nLinesLegendILabels <- n_distinct(grobLegendI$layout[idxLegendILabels, "t"])
+		nLinesLegendITitle <- sum(grobLegendI$layout$name == "title")
+		nLinesLegendILabels + nLinesLegendITitle
+	}, FUN.VALUE = numeric(1))
+
+	# add extra line which separate legend guides
+	nLinesLegendTotal <- sum(nLinesLegend) + 
+		ifelse(length(idxLegendGuides) > 0, length(idxLegendGuides) - 1, 0)
+	
+	return(nLinesLegendTotal)
+	
+}
+
+#' Get number of lines for specific label in a \code{\link[ggplot2]{ggplot2}} object
 #' @param gg \code{\link[ggplot2]{ggplot2}} object
 #' @param elName string with name of label to extract,
 #' among 'x', 'y' and 'title'
 #' @param elNLines (optional) integer with number of lines,
 #' by default 2 for 'x'/'y' and 3 for 'title'
-#' @return vector with (approximated) number of lines
+#' @return integer with (approximated) number of lines
 #' @author Laure Cougnaud
 #' @importFrom ggplot2 ggplot_build
 getNLinesLabel <- function(gg, 
