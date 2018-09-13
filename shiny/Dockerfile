@@ -25,26 +25,26 @@ RUN R CMD INSTALL /root/glpgStyle_0.2.2.tar.gz
 RUN rm /root/glpgStyle_0.2.2.tar.gz
 
 # dependencies of patientProfilesVis from CRAN
-RUN R -e "install.packages(c('ggplot2', 'plyr', 'cowplot', 'haven', 'reshape2', 'knitr', 'grid', 'viridisLite', 'dplyr'), repos = 'https://cloud.r-project.org/')"
+RUN R -e "install.packages(c('ggplot2', 'plyr', 'cowplot', 'haven', 'reshape2', 'knitr', 'grid', 'viridisLite', 'dplyr', 'stringr'), repos = 'https://cloud.r-project.org/')"
 
 # install patientProfilesVis
-COPY ./packages/patientProfilesVis_0.0-4.tar.gz /root/
-RUN R CMD INSTALL /root/patientProfilesVis_0.0-4.tar.gz
-RUN rm /root/patientProfilesVis_0.0-4.tar.gz
+COPY ./packages/patientProfilesVis_0.0-9.tar.gz /root/
+RUN R CMD INSTALL /root/patientProfilesVis_0.0-9.tar.gz
+RUN rm /root/patientProfilesVis_0.0-9.tar.gz
 
 # dependencies of patientProfilesVisShiny from CRAN
 RUN R -e "install.packages(c('shiny', 'plyr'), repos = 'https://cloud.r-project.org/')"
 
 # install patientProfilesVisShiny
-COPY ./packages/patientProfilesVisShiny_0.0-1.tar.gz /root/
-RUN R CMD INSTALL /root/patientProfilesVisShiny_0.0-1.tar.gz
-RUN rm /root/patientProfilesVisShiny_0.0-1.tar.gz
+COPY ./packages/patientProfilesVisShiny_0.0-6.tar.gz /root/
+RUN R CMD INSTALL /root/patientProfilesVisShiny_0.0-6.tar.gz
+RUN rm /root/patientProfilesVisShiny_0.0-6.tar.gz
 
 # copy the app to the image
 #RUN mkdir /root/apps/patientProfileVis
 #COPY euler /root/euler
 
-#COPY Rprofile.site /usr/lib/R/etc/
+COPY Rprofile.site /usr/lib/R/etc/
 
 EXPOSE 3838
 

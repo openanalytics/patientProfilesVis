@@ -1,4 +1,5 @@
 # build image
+cd /home/lcougnaud/git/GLPGPatientProfiles/shiny/
 sudo docker build -t openanalytics/patient-profiles-vis .
 
 # run image (without shinyproxy)
