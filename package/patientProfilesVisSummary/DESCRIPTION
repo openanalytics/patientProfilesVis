@@ -1,0 +1,13 @@
+Package: patientProfilesVisSummary
+Type: Package
+Title: Visualization of patient profiles
+Version: 0.0.1
+Date: 2018-09-13
+Author: Laure Cougnaud
+Maintainer: Laure Cougnaud <laure.cougnaud@openanalytics.eu>
+Description: This package enables the creation of report with customizable visualization of patient profiles.
+Imports: ggplot2, haven, glpgStyle
+License: Software for Internal Use at Open Analytics NV
+RoxygenNote: 6.1.0
+VignetteBuilder: knitr
+LazyData: true
