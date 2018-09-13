@@ -17,12 +17,13 @@ observeEvent(input$previewModule, {
 				style = "color:red")
 		)
 		NULL
-	}else if(!input$moduleTitle %in% names(results$listPlots)){
-		output$moduleSaveMessage <- renderUI(
-			div(strong("Title already used, please specify a different title."), 
-				style = "color:red")
-		)
-		NULL
+#	}else 
+#	if(inputModule != "<none>" & !input$moduleTitle %in% names(results$listPlots)){
+#		output$moduleSaveMessage <- renderUI(
+#			div(strong("Title already used, please specify a different title."), 
+#				style = "color:red")
+#		)
+#		NULL
 	}else{
 		output$moduleSaveMessage <- renderUI(
 			div("The patient profiles have been created for the specified module, you can preview them in the right panel.", 
@@ -117,27 +118,7 @@ observe({
 
 ## Save module
 
-# create the list of plot(s) for the specified module
-observeEvent(input$previewModule, {
-			
-	plotCurrentError <- try(
-		plotCurrent <- createSubjectProfileFromShinyInput(input = input, results = results)
-		, silent = TRUE)
-	results$plotsCurrent <- if(inherits(plotCurrentError, "try-error")){
-		output$moduleSaveMessage <- renderUI(
-			div(strong(paste("The patient profiles cannot be created:", attr(plotCurrentError, "condition")$message)), 
-			style = "color:red")
-		)
-		NULL
-	}else{
-		output$moduleSaveMessage <- renderUI(
-			div("The patient profiles have been created for the specified module, you can preview them in the right panel.", 
-			style = "color:green")
-		)
-		plotCurrent
-	}
-	
-})
+
 
 # save current module if requested
 observeEvent(input$saveModule, {
@@ -147,9 +128,9 @@ observeEvent(input$saveModule, {
 			div(strong("Please preview first your specified module."), 
 				style = "color:red"))
 	}else if(!is.null(input$moduleTitle) && 
-		length(results$listPlots > 0) && 
+		length(results$defaultModulesNames()) > 0 && 
 		# by default the label is set to the title
-		input$moduleTitle %in% sapply(results$listPlots, function(x) attr(x, "label"))){
+		input$moduleTitle %in% sub("(.+) \\(.+\\)", "\\1", results$defaultModulesNames())){
 		output$moduleSaveMessage <- renderUI(
 			div(strong("Title already used, please specify a different title."), 
 				style = "color:red"))
