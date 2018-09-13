@@ -19,7 +19,8 @@ simpleCap <- function(x, onlyFirst = FALSE, rev = FALSE) {
 
 #' Get variable labels for the interface.
 #' This concatenate the variable code (column in data) and variable labels
-#' @inheritParams patientProfilesVis::getLabelVar
+#' @param data data.frame with data
+#' @param labelVars named string with variable labels (names are the variable code)
 #' @return named vector with variables
 #' @author Laure Cougnaud
 #' @importFrom patientProfilesVis getLabelVar
@@ -34,6 +35,7 @@ getVarLabelsForUI <- function(data, labelVars){
 #' @param data data.frame with data
 #' @return character vector with potential time variables
 #' @author Laure Cougnaud
+#' @importFrom plyr colwise
 #' @export
 getTimeVars <- function(data){
 	possibleVars <- names(which(unlist(colwise(is.numeric)(data))))
