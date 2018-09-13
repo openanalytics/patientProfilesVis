@@ -1,5 +1,7 @@
 0.0.9
     o getNLinesGgplot: check/extract number of lines in legend (getNLinesLegend new function)
+    o formatTimeInterval: fix issue extraction limits
+    o filterData/formatParamVar: warning in case variable not in data
 0.0.8
     o subjectProfileCombine/prepareSubjectProfile/combineVerticallyGGplot: changes to align plots across pages
     o subjectProfileTextPlot: possibility to have multiple paramValueVar if paramNameVar specified

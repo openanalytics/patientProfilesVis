@@ -297,7 +297,9 @@ formatTimeInterval <- function(data,
 		
 		xTimeData <- if(timeLimDataSpec){
 			xTimeData <- subset(timeLimData, get(subjectVar) == subject)[, c(timeLimStartVar, timeLimEndVar)]
-			if(all(is.na(xTimeData)))	timeLimData[, c(timeLimStartVar, timeLimEndVar)]
+			if(all(is.na(xTimeData))){
+				timeLimData[, c(timeLimStartVar, timeLimEndVar)]
+			}else xTimeData
 		}
 		
 		if(is.null(xTimeData) || all(is.na(xTimeData)))

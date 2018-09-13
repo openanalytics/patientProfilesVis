@@ -406,21 +406,25 @@ formatParamVar <- function(data,
 	
 		# if paramGroupVar is specified: change order levels of 'variable'
 		if(!is.null(paramGroupVar)){
-			if(is.null(paramVar)){
-				warning("The variable used for grouping ('paramGroupVar') is not used",
-					"because no variable for parameter ('paramVar') is not specified.")
+			if(!paramGroupVar %in% names(data)){
+				warning("The variable used for grouping is not used because not in the data.")
 			}else{
-				groupVariable <- if(length(paramGroupVar) > 1){
-					interaction(data[, paramGroupVar])
+				if(is.null(paramVar)){
+					warning("The variable used for grouping ('paramGroupVar') is not used",
+						"because no variable for parameter ('paramVar') is not specified.")
 				}else{
-					if(!is.factor(data[, paramGroupVar]))
-						factor(data[, paramGroupVar])	else	data[, paramGroupVar]
-				}	
-				if(!all(tapply(groupVariable, paramVarVect, n_distinct) == 1)){
-					warning(paste("The grouping variable:", groupVariable, "is not used, ",
-						"because it is not unique for all parameters."))
-				}else{
-					paramVarVect <- reorder(paramVarVect, groupVariable, unique)
+					groupVariable <- if(length(paramGroupVar) > 1){
+						interaction(data[, paramGroupVar])
+					}else{
+						if(!is.factor(data[, paramGroupVar]))
+							factor(data[, paramGroupVar])	else	data[, paramGroupVar]
+					}	
+					if(!all(tapply(groupVariable, paramVarVect, n_distinct) == 1)){
+						warning(paste("The grouping variable:", groupVariable, "is not used, ",
+							"because it is not unique for all parameters."))
+					}else{
+						paramVarVect <- reorder(paramVarVect, groupVariable, unique)
+					}
 				}
 			}
 		}
@@ -449,11 +453,15 @@ filterData <- function(data,
 ){
 	
 	if(!is.null(subsetVar)){
-		if(is.null(subsetValue)){
-			warning("Subset variable: ", subsetVar, 
-				"not used, because no value of interest is specified.")
+		if(!subsetVar %in% names(data)){
+			warning("Subset variable not used because not in the data.")
 		}else{
-			data <- data[which(data[, subsetVar] %in% subsetValue), ]
+			if(is.null(subsetValue)){
+				warning("Subset variable: ", subsetVar, 
+					"not used, because no value of interest is specified.")
+			}else{
+				data <- data[which(data[, subsetVar] %in% subsetValue), ]
+			}
 		}
 	}
 	
