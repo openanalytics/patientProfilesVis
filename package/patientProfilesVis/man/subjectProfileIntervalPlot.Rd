@@ -69,8 +69,6 @@ By default, a thousandth of the range of \code{timeLim}
 This label is used to report the name of the panel 
 in the text when the plots are combined (e.g. if the plot is empty).}
 
-\item{labelVars}{named string with variable labels (names are the variable code)}
-
 \item{formatReport}{list with parameters used to specify the format of the report,
 e.g. output of the \code{\link{subjectProfileReportFormat}} function}
 }
