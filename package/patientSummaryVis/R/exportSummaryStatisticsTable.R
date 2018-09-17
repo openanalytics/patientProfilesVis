@@ -18,7 +18,7 @@ exportSummaryStatisticsTable <- function(data,
 	byAcross = NULL, byAcrossLab = getLabelVar(byAcross, labelVars = labelVars),
 	byWithin = NULL, 
 	labelVars = NULL, 
-	file = NULL){
+	file = NULL, landscape = TRUE){
 
 	# convert from wide to long format
 	statsVar <- c("N", "Mean", "SD", "SE", "Median", "Min", "Max")
@@ -72,9 +72,15 @@ exportSummaryStatisticsTable <- function(data,
 	# set to correct headers
 	ft <- do.call(set_header_labels, c(list(x = ft), as.list(colsData)))
 	
+	# set fontsize
+	ft <- fontsize(ft, size = 8, part = "all")
+	
 	if(!is.null(file)){
 		doc <- read_docx()
-		doc <- body_add_flextable(doc, value = ft)
+		doc <- doc %>%
+#			body_add_par(value = '\r\n') %>%
+			body_add_flextable(value = ft) #%>%
+#			body_end_section_landscape()
 		print(doc, target = file)
 	}
 	

@@ -37,6 +37,8 @@ e.g. produced with the \code{\link{getSummaryStatisticsTable}}}
 
 \item{colorPalette}{(named) vector with color palette}
 
+\item{labelVars}{named string with variable labels (names are the variable code)}
+
 \item{useLinetype}{logical, if TRUE (FALSE by default) use also linetype
 to differenciate the variable specified via \code{colorVar} in the mean line}
 

@@ -11,7 +11,7 @@ dataADaM <- loadDataADaMSDTM(files = dataFiles)
 
 #res <- getTimeVsReference(dataList)
 
-ADaMDataPelican <- dataADaM
+ADaMDataPelican <- dataADaM$ADRE
 save(ADaMDataPelican, file = "../data/ADaMDataPelican.RData")
 
 labelVarsADaMPelican <- attr(dataADaM, "labelVars")
