@@ -11,3 +11,4 @@ tests/
 *.log
 *.Rcheck
 shiny/moduleSettings
+*.docx
