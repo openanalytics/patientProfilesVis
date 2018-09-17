@@ -1,5 +1,5 @@
 ---
-title: "Vignette of the `patientProfilesVisSummary` package"
+title: "Vignette of the `patientSummaryVis` package"
 author: "Laure Cougnaud"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output: 
@@ -9,7 +9,7 @@ output:
       collapsed: true
     number_sections: true
 vignette: >
-  %\VignetteIndexEntry{patientProfilesVis package}
+  %\VignetteIndexEntry{patientSummaryVis package}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -36,7 +36,7 @@ profiles.
 
 ```{r loadPackages}
 
-#	library(patientProfilesVisSummary)
+	library(patientSummaryVis)
 	library(pander)
 
 ```
@@ -56,29 +56,39 @@ package is used.
 ```{r loadData}	
 	
 	pathData <- "../../../../GLPGSAPCysticFibrosis/data/Pelican/ADAM/20180525 study/study_ADAM_2018_08AUG_01_ADRE/adre.sas7bdat"
-	library(patientProfilesVis)
+	library(patientVisUtility)
 	dataAll <- loadDataADaMSDTM(files = pathData)
 	data <- dataAll$ADRE
 	labelVars <- attr(dataAll,"labelVars")
-	
-	# example dataset(s) formatted as a list of data.frame
-	data(ADaMDataPelican)
-	
-	# and corresponding labels
-	data(labelVarsADaMPelican)
 
 ```
 
 # Patient summarized profile
 
-## Mean+-SE plot
-
 ```{r}
 
-	subjectProfileSummary(
+	# create the summary table
+	summaryTable <- getSummaryStatisticsTable(
 		data = data,
+		byAcross = c("PARAMCD", "AVISIT"),
+		byWithin = "TRTP"
+	)
+
+	# create the plot
+	gg <- subjectProfileSummaryPlot(
+		data = summaryTable,
+		xVar = "AVISIT",
+		facetVar = "PARAMCD",
+		colorVar = "TRTP",
+		labelVars = labelVars
+	)
+	
+	# format and export the table in Word format
+	exportSummaryStatisticsTable(
+		data = summaryTable, 
+		byAcross = c("PARAMCD", "AVISIT"), byWithin = "TRTP",
 		labelVars = labelVars,
-		treatVar = 
+		file = "summaryStatisticsTable.docx"
 	)
 
 ```
