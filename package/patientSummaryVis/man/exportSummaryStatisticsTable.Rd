@@ -19,6 +19,8 @@ used for grouping in rows.}
 
 \item{byWithin}{string with variable of \code{data} used for grouping in column.}
 
+\item{labelVars}{named string with variable labels (names are the variable code)}
+
 \item{file}{string with path of the file where the table should be exported}
 }
 \value{

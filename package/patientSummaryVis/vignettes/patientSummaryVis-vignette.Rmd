@@ -55,21 +55,18 @@ package is used.
 
 ```{r loadData}	
 	
-	pathData <- "../../../../GLPGSAPCysticFibrosis/data/Pelican/ADAM/20180525 study/study_ADAM_2018_08AUG_01_ADRE/adre.sas7bdat"
-	library(patientVisUtility)
-	dataAll <- loadDataADaMSDTM(files = pathData)
-	data <- dataAll$ADRE
-	labelVars <- attr(dataAll,"labelVars")
+	data(ADaMDataPelican)
+	data(labelVarsADaMPelican)
 
 ```
 
 # Patient summarized profile
 
-```{r}
+```{r createMeanSEStats}
 
 	# create the summary table
 	summaryTable <- getSummaryStatisticsTable(
-		data = data,
+		data = ADaMDataPelican,
 		byAcross = c("PARAMCD", "AVISIT"),
 		byWithin = "TRTP"
 	)
@@ -80,16 +77,17 @@ package is used.
 		xVar = "AVISIT",
 		facetVar = "PARAMCD",
 		colorVar = "TRTP",
-		labelVars = labelVars
+		labelVars = labelVarsADaMPelican
 	)
 	
 	# format and export the table in Word format
-	exportSummaryStatisticsTable(
+	ft <- exportSummaryStatisticsTable(
 		data = summaryTable, 
 		byAcross = c("PARAMCD", "AVISIT"), byWithin = "TRTP",
-		labelVars = labelVars,
+		labelVars = labelVarsADaMPelican,
 		file = "summaryStatisticsTable.docx"
 	)
+	print(ft)
 
 ```
 
