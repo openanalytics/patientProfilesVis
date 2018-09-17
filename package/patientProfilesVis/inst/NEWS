@@ -1,3 +1,5 @@
+0.0.10
+    o externalise the functions getPatient[Color|Shape]Palette, and data function in patientProfilesUtility
 0.0.9
     o getNLinesGgplot: check/extract number of lines in legend (getNLinesLegend new function)
     o formatTimeInterval: fix issue extraction limits

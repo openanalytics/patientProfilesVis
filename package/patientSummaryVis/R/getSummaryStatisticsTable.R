@@ -1,77 +1,40 @@
-#' 
-
-#' @return 
-#' @author Laure Cougnaud
-
-#' @importFrom patientProfilesVis getLabelVars
-#' @export
-subjectProfileSummary <- function(data, 
-	paramVar = "PARAM",
-	paramLab = getLabelVar(paramVar, labelVars = labelVars),
-	var = "AVAL",
-	varLab = getLabelVar(paramVar, labelVars = labelVars),
-	by = "TRTP", 
-	subjectVar = "USUBJID",
-	includeTotal = TRUE,
-	labelVars = NULL){
-	
-	# compute 
-	summaryTable <- getSummaryTable(
-		data = data, 
-		paramVar = paramVar,
-		var = var, 
-		by = by,
-		subjectVar = subjectVar,
-		includeTotal = TRUE
-	)
-	
-	# create the plot
-	subjectProfileSummaryPlot(
-		data = data
-	)
-		
-	
-	
-}
-
-subjectProfileSummaryPlot <- function(data, paramVar){
-	
-#	ggplot(data = summaryTable) +
-		
-	
-}
-
 #' Get summary statistics for a specific dataset and variables of interest
-#' @param by string, variable of \code{data} with grouping variable,
-#' if NULL (by default) no grouping variable is considered
-#' @param paramVar string, variable of \code{data} with parameter,
-#' 'PARAMCD' by default
-#' @param includeTotal logical, if TRUE (by default) and \code{by} is specified,
+#' @param totalInclude logical, if TRUE (by default) and \code{by} is specified,
 #' include also the summary statistics for the entire dataset
+#' @param totalLabel string label for the column with the total,
+#' in case \code{totalInclude} is TRUE,
+#' 'total' by default.
+#' @param byWithin variable of \code{data} used 
+#' for grouping. If \code{totalInclude} is TRUE, the total will be 
+#' included across groups of this variable.
+#' @param byAcross character vector with variable(s) of \code{data} used 
+#' for grouping. No total is included for this column if \code{totalInclude} is TRUE. 
 #' @inheritParams getSummaryStatistics
 #' @inherit getSummaryStatistics return
 #' @author Laure Cougnaud
-#' @importFrom dplyr ddply n_distinct
-#' @importFrom plyr rbind.fill
+#' @importFrom dplyr n_distinct
+#' @importFrom plyr ddply rbind.fill
 #' @export
-getSummaryTable <- function(data, 
-	paramVar = "PARAM", 
+getSummaryStatisticsTable <- function(data,  
 	var = "AVAL", 
-	by = "TRTP", 
+	byAcross = NULL,
+	byWithin = NULL,
 	subjectVar = "USUBJID",
-	includeTotal = TRUE
+	totalInclude = TRUE,
+	totalLabel = "Total"
 ){
 	
 	# get general statistics (by group if specified)
-	summaryTable <- ddply(data, c(paramVar, by), function(x){
+	summaryTable <- ddply(data, c(byAcross, byWithin),function(x){
 		getSummaryStatistics(data = x, var = var)
 	})
 	
 	# get statistics for the entire dataset
-	if(includeTotal & !is.null(by)){
-		summaryTableTotal <- ddply(data, paramVar, function(x)
+	if(totalInclude & !is.null(byWithin)){
+		summaryTableTotal <- ddply(data, byAcross, function(x)
 			getSummaryStatistics(data = x, var = var)
 		)
+		summaryTableTotal[, byWithin] <- totalLabel
 		summaryTable <- rbind.fill(summaryTable, summaryTableTotal)
 	}
 	
@@ -83,7 +46,7 @@ getSummaryTable <- function(data,
 #' @param data data.frame with data
 #' @param var string, variable of \code{data} with variable to use,
 #' 'AVAL' by default
-#' @param USUBJID string, variable of \code{data} with subject ID,
+#' @param subjectVar string, variable of \code{data} with subject ID,
 #' 'USUBJID' by default
 #' @return data.frame with summary statistics in columns:
 #' \itemize{
@@ -96,13 +59,14 @@ getSummaryTable <- function(data,
 #' \item{'Max': }{maximum of \code{var}}
 #' }
 #' @author Laure Cougnaud
+#' @importFrom stats na.omit median sd
 #' @export
 getSummaryStatistics <- function(data, var,
 	subjectVar = "USUBJID"){
 	
 	val <- data[, var]
 	res <- data.frame(
-		N = n_distinct(data[, subjectVar]),
+		N = as.integer(n_distinct(data[, subjectVar])),
 		Mean = mean(val),
 		SD = sd(val),
 		SE = sd(val)/sqrt(length(val)),

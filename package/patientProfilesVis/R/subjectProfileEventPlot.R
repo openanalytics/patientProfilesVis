@@ -11,6 +11,7 @@
 #' @import ggplot2
 #' @importFrom plyr dlply
 #' @importFrom stats reorder
+#' @importFrom patientVisUtility getLabelVar getPatientColorPalette getPatientShapePalette
 #' @export
 subjectProfileEventPlot <- function(
 	data,

@@ -62,8 +62,6 @@ by default same as \code{bookmarkVar}}
 \item{exportFigures}{logical, if TRUE (FALSE by default) the figures are also exported
 in png format in a 'figures' folder}
 
-\item{labelVars}{named string with variable labels (names are the variable code)}
-
 \item{maxNLines}{maximum number of lines for a combined plot,
 to fit in the page height}
 
