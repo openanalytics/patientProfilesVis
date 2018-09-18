@@ -16,6 +16,8 @@ defineIndex(subjects, data, var, subjectVar = "USUBJID",
 \item{var}{variable(s) of \code{data} of interest for the index}
 
 \item{subjectVar}{string, variable of \code{data} with subject ID}
+
+\item{labelVars}{named string with variable labels (names are the variable code)}
 }
 \value{
 list with elements:

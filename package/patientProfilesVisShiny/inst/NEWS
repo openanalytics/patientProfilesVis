@@ -1,3 +1,5 @@
+0.0.7
+    o change dependency package for getLabelVar
 0.0.6
     o functionality to export module settings
     o timeLim specification for interval module

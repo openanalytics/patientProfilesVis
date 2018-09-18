@@ -1,6 +1,6 @@
-#library(rmarkdown)
-#library(tools)  
+
 library(patientProfilesVis)
+library(patientVisUtility) # for 'loadDataADaMSDTM'
 library(tools)
 library(plyr)
 

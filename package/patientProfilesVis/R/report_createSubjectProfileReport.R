@@ -25,7 +25,8 @@
 #' @return no returned value, the report is created at the location
 #' specified by \code{outputFile}
 #' @author Laure Cougnaud
-#' @importFrom tools texi2pdf
+#' @importFrom tools texi2pdf file_path_sans_ext
+#' @importFrom plyr ddply
 #' @export
 createSubjectProfileReport <- function(
 	listPlots, 

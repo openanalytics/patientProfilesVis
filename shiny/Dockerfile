@@ -20,25 +20,31 @@ RUN R -e "install.packages(c('shiny'), repos='https://cloud.r-project.org/')"
 
 # glpgStyle, dependency of patientProfilesVis
 RUN R -e "install.packages(c('rmarkdown', 'knitr', 'bookdown'), repos = 'https://cloud.r-project.org/')" # its dependencies
-COPY ./packages/glpgStyle_0.2.2.tar.gz /root/
-RUN R CMD INSTALL /root/glpgStyle_0.2.2.tar.gz
-RUN rm /root/glpgStyle_0.2.2.tar.gz
+COPY ./packages/glpgStyle_0.2.4.tar.gz /root/
+RUN R CMD INSTALL /root/glpgStyle_0.2.4.tar.gz
+RUN rm /root/glpgStyle_0.2.4.tar.gz
+
+# patientVisUtility, dependency of patientProfilesVis and patientProfilesVisShiny
+RUN R -e "install.packages(c('haven', 'plyr', 'viridisLite'), repos = 'https://cloud.r-project.org/')" # its dependencies
+COPY ./packages/patientVisUtility_0.0.1.tar.gz /root/
+RUN R CMD INSTALL /root/patientVisUtility_0.0.1.tar.gz
+RUN rm /root/patientVisUtility_0.0.1.tar.gz
 
 # dependencies of patientProfilesVis from CRAN
-RUN R -e "install.packages(c('ggplot2', 'plyr', 'cowplot', 'haven', 'reshape2', 'knitr', 'grid', 'viridisLite', 'dplyr', 'stringr'), repos = 'https://cloud.r-project.org/')"
+RUN R -e "install.packages(c('ggplot2', 'plyr', 'cowplot', 'reshape2', 'knitr', 'grid', 'dplyr', 'stringr'), repos = 'https://cloud.r-project.org/')"
 
 # install patientProfilesVis
-COPY ./packages/patientProfilesVis_0.0-9.tar.gz /root/
-RUN R CMD INSTALL /root/patientProfilesVis_0.0-9.tar.gz
-RUN rm /root/patientProfilesVis_0.0-9.tar.gz
+COPY ./packages/patientProfilesVis_0.0.10.tar.gz /root/
+RUN R CMD INSTALL /root/patientProfilesVis_0.0.10.tar.gz
+RUN rm /root/patientProfilesVis_0.0.10.tar.gz
 
 # dependencies of patientProfilesVisShiny from CRAN
 RUN R -e "install.packages(c('shiny', 'plyr'), repos = 'https://cloud.r-project.org/')"
 
 # install patientProfilesVisShiny
-COPY ./packages/patientProfilesVisShiny_0.0-6.tar.gz /root/
-RUN R CMD INSTALL /root/patientProfilesVisShiny_0.0-6.tar.gz
-RUN rm /root/patientProfilesVisShiny_0.0-6.tar.gz
+COPY ./packages/patientProfilesVisShiny_0.0.7.tar.gz /root/
+RUN R CMD INSTALL /root/patientProfilesVisShiny_0.0.7.tar.gz
+RUN rm /root/patientProfilesVisShiny_0.0.7.tar.gz
 
 # copy the app to the image
 #RUN mkdir /root/apps/patientProfileVis
