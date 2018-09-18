@@ -50,7 +50,8 @@ RUN rm /root/patientProfilesVisShiny_0.0.7.tar.gz
 #RUN mkdir /root/apps/patientProfileVis
 #COPY euler /root/euler
 
-COPY Rprofile.site /usr/lib/R/etc/
+#COPY Rprofile.site /usr/lib/R/etc/
+RUN echo "local({options(shiny.port = 3838, shiny.host = '0.0.0.0')})" >> /usr/lib/R/etc/Rprofile.site
 
 EXPOSE 3838
 
