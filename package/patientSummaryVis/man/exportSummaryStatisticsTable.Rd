@@ -6,7 +6,7 @@
 \usage{
 exportSummaryStatisticsTable(data, byAcross = NULL,
   byAcrossLab = getLabelVar(byAcross, labelVars = labelVars),
-  byWithin = NULL, labelVars = NULL, file = NULL)
+  byWithin = NULL, labelVars = NULL, file = NULL, landscape = TRUE)
 }
 \arguments{
 \item{data}{data.frame with summary statistics to represent in the plot,

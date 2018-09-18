@@ -16,7 +16,7 @@
 #' @param label string, label used in the plot.
 #' This label is used to report the name of the panel 
 #' in the text when the plots are combined (e.g. if the plot is empty).
-#' @inheritParams getLabelVar
+#' @param labelVars named string with variable labels (names are the variable code)
 #' @inheritParams filterData
 #' @inheritParams formatParamVar
 #' @inheritParams formatTimeInterval
@@ -278,6 +278,7 @@ subjectProfileIntervalPlot <- function(
 #' either extracted from \code{timeLim} or from \code{timeLimData}
 #' }
 #' }
+#' @importFrom plyr ddply
 #' @author Laure Cougnaud
 formatTimeInterval <- function(data, 
 	timeStartVar, timeEndVar, 

@@ -134,6 +134,8 @@ the: \Sexpr{format(Sys.time(), format = "%Y-%m-%d at %H:%M:%S")}.
 	sessionInfoTex <- toLatex(sessionInfo())
 	# highlight versions of patientProfilesVis and patientProfilesVisShiny packages
 	sessionInfoTex <- gsub("(patientProfilesVis[Shiny]*~[^,]*)", "\\\\textbf{\\1}", sessionInfoTex)
+	sessionInfoTex <- gsub("(patientVisUtility~[^,]*)", "\\\\textbf{\\1}", sessionInfoTex)
+	
 	print(sessionInfoTex)
 	
 @

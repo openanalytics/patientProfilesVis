@@ -42,7 +42,7 @@
 #' 'label' and 'timeLim'.
 #' @author Laure Cougnaud
 #' @import ggplot2
-#' @importFrom plyr dlply
+#' @importFrom plyr dlply ddply
 #' @importFrom reshape2 melt
 #' @importFrom patientVisUtility getLabelVar
 #' @export

@@ -16,7 +16,7 @@
 #' to differenciate the variable specified via \code{colorVar} in the mean line
 #' @param linetypePalette vector with linetype(s), in case \code{useLinetype} is TRUE
 #' @param title string with title for the plot
-#' @inheritParams patientVisUtility::getLabelVar
+#' @param labelVars named string with variable labels (names are the variable code)
 #' @return \code{\link[ggplot2]{ggplot}} object
 #' @author Laure Cougnaud
 #' @importFrom patientVisUtility getPatientColorPalette getLabelVar
