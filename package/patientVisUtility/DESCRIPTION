@@ -1,7 +1,7 @@
 Package: patientVisUtility
 Type: Package
 Title: Utility functions for patient profiles
-Version: 0.0-1
+Version: 0.0.1
 Date: 2018-09-17
 Author: Laure Cougnaud
 Maintainer: Laure Cougnaud <laure.cougnaud@openanalytics.eu>

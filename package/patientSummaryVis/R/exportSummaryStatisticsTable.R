@@ -5,7 +5,6 @@
 #' @param byWithin string with variable of \code{data} used for grouping in column.
 #' @param file string with path of the file where the table should be exported
 #' @inheritParams subjectProfileSummaryPlot
-#' @inheritParams patientVisUtility::getLabelVar
 #' @return \code{\link[flextable]{flextable}} object
 #' @author Laure Cougnaud
 #' @importFrom reshape2 melt dcast
@@ -13,6 +12,7 @@
 #' @importFrom patientVisUtility getLabelVar
 #' @importFrom officer read_docx
 #' @import flextable
+#' @importFrom magrittr "%>%"
 #' @export
 exportSummaryStatisticsTable <- function(data, 
 	byAcross = NULL, byAcrossLab = getLabelVar(byAcross, labelVars = labelVars),
