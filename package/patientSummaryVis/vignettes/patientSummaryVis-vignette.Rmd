@@ -66,8 +66,8 @@ package is used.
 
 	# create the summary table
 	summaryTable <- getSummaryStatisticsTable(
-		data = ADaMDataPelican,
-		byAcross = c("PARAMCD", "AVISIT"),
+		data = subset(ADaMDataPelican, PARAMCD == "FEV1PP"),
+		byAcross = "AVISIT",
 		byWithin = "TRTP"
 	)
 
@@ -75,7 +75,6 @@ package is used.
 	gg <- subjectProfileSummaryPlot(
 		data = summaryTable,
 		xVar = "AVISIT",
-		facetVar = "PARAMCD",
 		colorVar = "TRTP",
 		labelVars = labelVarsADaMPelican
 	)
@@ -83,7 +82,7 @@ package is used.
 	# format and export the table in Word format
 	ft <- exportSummaryStatisticsTable(
 		data = summaryTable, 
-		byAcross = c("PARAMCD", "AVISIT"), byWithin = "TRTP",
+		byAcross = "AVISIT", byWithin = "TRTP",
 		labelVars = labelVarsADaMPelican,
 		file = "summaryStatisticsTable.docx"
 	)

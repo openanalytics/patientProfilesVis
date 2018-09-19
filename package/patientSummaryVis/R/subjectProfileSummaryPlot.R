@@ -17,6 +17,7 @@
 #' @param linetypePalette vector with linetype(s), in case \code{useLinetype} is TRUE
 #' @param title string with title for the plot
 #' @param labelVars named string with variable labels (names are the variable code)
+#' @param jitter numeric with jitter for the x-axis, only used if \code{colorVar} specified
 #' @return \code{\link[ggplot2]{ggplot}} object
 #' @author Laure Cougnaud
 #' @importFrom patientVisUtility getPatientColorPalette getLabelVar
@@ -50,7 +51,7 @@ subjectProfileSummaryPlot <- function(data,
 	)
 	aesLine <- c(
 		list(y = meanVar),
-		if(!is.null(colorVar))	list(group = colorVar)
+		list(group = ifelse(!is.null(colorVar), colorVar, 1))
 	)
 	gg <- ggplot(data = data, mapping = do.call(aes_string, aesBase)) +
 		geom_line(do.call(aes_string, aesLine), position = pd) +
