@@ -87,7 +87,7 @@ package is used.
 		labelVars = labelVarsADaMPelican,
 		file = "summaryStatisticsTable.docx"
 	)
-	print(ft)
+	ft
 
 ```
 
