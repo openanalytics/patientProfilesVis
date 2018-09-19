@@ -44,6 +44,8 @@ to differenciate the variable specified via \code{colorVar} in the mean line}
 
 \item{linetypePalette}{vector with linetype(s), in case \code{useLinetype} is TRUE}
 
+\item{jitter}{numeric with jitter for the x-axis, only used if \code{colorVar} specified}
+
 \item{title}{string with title for the plot}
 }
 \value{
