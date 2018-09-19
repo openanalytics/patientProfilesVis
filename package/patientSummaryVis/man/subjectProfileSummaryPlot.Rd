@@ -10,7 +10,7 @@ subjectProfileSummaryPlot(data, xVar = NULL, xLab = getLabelVar(xVar,
   facetScale = "free_y", colorVar = NULL,
   colorLab = getLabelVar(colorVar, labelVars = labelVars),
   colorPalette = NULL, labelVars = NULL, useLinetype = FALSE,
-  linetypePalette = NULL, title = NULL)
+  linetypePalette = NULL, jitter = NULL, title = NULL)
 }
 \arguments{
 \item{data}{data.frame with summary statistics to represent in the plot,

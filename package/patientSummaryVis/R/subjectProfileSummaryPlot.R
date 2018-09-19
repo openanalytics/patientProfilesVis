@@ -31,6 +31,7 @@ subjectProfileSummaryPlot <- function(data,
 	labelVars = NULL,
 	useLinetype = FALSE,
 	linetypePalette = NULL,
+	jitter = NULL,
 	title = NULL){
 
 	if(!is.null(xVar) & is.null(jitter))
