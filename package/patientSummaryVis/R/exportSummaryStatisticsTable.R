@@ -1,78 +1,109 @@
 #' Export a summary table in \code{docx} format.
-#' @param byAcross character vector with variable(s) of \code{data}
-#' used for grouping in rows.
-
 #' @param file string with path of the file where the table should be exported
+#' @inheritParams formatSummaryStatisticsForExport
+#' @inheritParams convertSummaryStatisticsTableToFlextable
 #' @author Laure Cougnaud
-
 #' @importFrom patientVisUtility getLabelVar
-#' @importFrom officer read_docx
-#' @import flextable
+#' @import officer
 #' @importFrom magrittr "%>%"
 #' @export
 exportSummaryStatisticsTable <- function(data, 
 	byAcross = NULL, byAcrossLab = getLabelVar(byAcross, labelVars = labelVars),
 	byWithin = NULL, 
 	labelVars = NULL, 
-	file = NULL, landscape = TRUE, margin = 1,
+	file = NULL, landscape = TRUE, 
 	title = "Table: Descriptive statistics",
 	subtitle = NULL){
+
+	margin <- 1
 
 	## format table
 	summaryTableLong <- formatSummaryStatisticsForExport(
 		data = data,
-		byAcross = byAcross, byWithin = byWithin
+		byAcross = byAcross, byAcrossLab = byAcrossLab,
+		byWithin = byWithin
 	)
 	
-	# create flextable only with header to extract dimensions header
-	summaryTableFt <- convertSummaryStatisticsToFlextable(
-		data = summaryTableLong, 
-		landscape = landscape, margin = margin,
-		title = title,
-		subtitle = subtitle
-	)	
+	convertSummaryStatisticsTableToFlextableCustom <- function(...){
+		convertSummaryStatisticsTableToFlextable(...,
+			landscape = landscape, margin = margin,
+			title = title,
+			subtitle = subtitle,
+			byAcross = byAcrossLab
+		)	
+	}
 	
-	# split table to fit in the page
-	widthPage <- getWidthPage(landscape = landscape, margin = margin)
+	# create flextable only with header to extract dimensions header
+	summaryTableFt <- convertSummaryStatisticsTableToFlextableCustom(data = summaryTableLong)	
+	
+	##  split table between different sections
+	# Note: there is an automated implementation in the officer package
+	# to split table across pages
+	
+	# extract maximum width page and width of header and each row (in inches)
+	heightPage <- getDimPage(type = "height", landscape = landscape, margin = margin)
 	headerHeight <- sum(summaryTableFt$header$rowheights)
 	bodyHeights <- summaryTableFt$body$rowheights
 	
+	# extract rows where the table should be split
+	statsVar <- c("N", "Mean", "SD", "SE", "Median", "Min", "Max")
+	idxEndSection <- which(summaryTableLong$Statistic == statsVar[length(statsVar)]) # cut by section
 	bodyHeightsCumsum <- cumsum(bodyHeights)
-	breaks <- c(seq(from = 0, to = max(bodyHeightsCumsum), by = widthPage - headerHeight), Inf)
-	idxRowsByPage <- cut(bodyHeightsCumsum, breaks)
-	tableList <- by(summaryTableLong, idxRowsByPage, function(table)
-		convertSummaryStatisticsToFlextable(
-			data = table, 
-			landscape = landscape, margin = margin,
-			title = title,
-			subtitle = subtitle
-		)
-	)
+	heightPageForTable <- heightPage - headerHeight
+	breaks <- c(seq(from = 0, to = max(bodyHeightsCumsum), by = heightPageForTable), Inf)
+	idxSectionByPage <- findInterval(bodyHeightsCumsum[idxEndSection], breaks)
+	
+	# build the list of tables
+	summaryTableFtList <- lapply(unique(idxSectionByPage), function(i){
+		iRowStart <- ifelse(i == 1, 1, max(idxEndSection[which(idxSectionByPage == (i - 1))]) + 1)
+		iRowEnd <-  max(idxEndSection[which(idxSectionByPage == i)])
+		table <- summaryTableLong[seq.int(from = iRowStart, to = iRowEnd), ]
+		convertSummaryStatisticsTableToFlextableCustom(data = table)
+	})
 
-	## TODO: print to docx	
-	if(!is.null(file)){
+	# include the tables in a Word document
+	if(!is.null(file)){	
+		
 		doc <- read_docx()
-		doc <- doc %>%
-#			body_add_par(value = '\r\n') %>%
-			body_add_flextable(value = ft) #%>%
-#			body_end_section_landscape()
+		if(landscape)	doc <- doc %>% body_end_section_landscape()
+		
+		for(i in seq_along(summaryTableFtList)){
+			doc <- doc %>% body_add_flextable(value = summaryTableFtList[[i]])
+			if(i != length(summaryTableFtList))
+				doc <- doc %>% body_add_break()
+		}
+		if(landscape){
+			doc <- doc %>%
+				# a paragraph needs to be included after the table otherwise the layout is not landscape
+				body_add_par(value = "", style = "Normal") %>%
+				body_end_section_landscape()
+		}
 		print(doc, target = file)
+		
 	}
 	
-	return(ft)
+	return(summaryTableFt)
 	
 }
 
 #' Format summary statistics table for export
 #' @inheritParams subjectProfileSummaryPlot
-#' @param byAcrossLab label for each variable of \code{byAcross}.
 #' @param byWithin string with variable of \code{data} used for grouping in column.
+#' @param byAcross character vector with variable(s) of \code{data}
+#' used for grouping in rows.
+#' @param byAcrossLab label for each variable of \code{byAcross}.
+#' @inheritParams subjectProfileSummaryPlot
 #' @return data reformatted in long format
 #' @author Laure Cougnaud
+#' @importFrom patientVisUtility getLabelVar
 #' @importFrom reshape2 melt dcast
 #' @importFrom stats as.formula
 formatSummaryStatisticsForExport <- function(data,
-	byAcross = NULL, byWithin = NULL){
+	byAcross = NULL, 
+	byAcrossLab = getLabelVar(byAcross, labelVars = labelVars),
+	byWithin = NULL,
+	labelVars = NULL
+	){
 	
 	# convert from wide to long format
 	statsVar <- c("N", "Mean", "SD", "SE", "Median", "Min", "Max")
@@ -104,21 +135,24 @@ formatSummaryStatisticsForExport <- function(data,
 	
 }
 
-#' 
+#' Convert summary statistics table to flextable
 #' @param data summary statistics table in long format,
 #' as returned by \code{\link{formatSummaryStatisticsForExport}}
-#' @param landscape logical, if TRUE (by defaut) the table is presented in landscape
-#' format
-#' @param margin margin in the document in inches
 #' @param title string with title for the table.
 #' Set to NULL if no title should be included.
 #' @param subtitle string with subtitle for the table,
 #' empty (NULL) by default.
+#' @inheritParams getDimPage
+#' @inheritParams formatSummaryStatisticsForExport
 #' @return \code{\link[flextable]{flextable}} object
+#' @import flextable
+#' @importFrom officer fp_border
+#' @importFrom stats setNames
 #' @author Laure Cougnaud
-convertSummaryStatisticsToFlextable <- function(data, 
+convertSummaryStatisticsTableToFlextable <- function(data, 
 	landscape = TRUE, margin = 1,
 	title = "Table: Descriptive statistics",
+	byAcross = NULL,
 	subtitle = NULL
 	){
 	
@@ -133,10 +167,10 @@ convertSummaryStatisticsToFlextable <- function(data,
 	ft <- flextable(data)
 	
 	if(!is.null(byAcross))
-		ft <- merge_v(ft, j = getNewCol(byAcrossLab)) # merge rows
+		ft <- merge_v(ft, j = getNewCol(byAcross)) # merge rows
 	
 	# set correct alignments
-	colsAlignLeft <- getNewCol(c("Statistic", byAcrossLab))
+	colsAlignLeft <- getNewCol(c("Statistic", byAcross))
 	colsAlignCenter <- setdiff(names(colsData), colsAlignLeft)
 	ft <- align(ft, j = colsAlignLeft, align = "left", part = "all")
 	ft <- align(ft, j = colsAlignCenter, align = "center", part = "all")
@@ -158,7 +192,7 @@ convertSummaryStatisticsToFlextable <- function(data,
 	ft <- fontsize(ft, size = 8, part = "all")
 	
 	# adjust to fit in document:
-	widthPage <- getWidthPage(landscape = landscape, margin = margin)
+	widthPage <- getDimPage(type = "width", landscape = landscape, margin = margin)
 	varFixed <- getNewCol(setdiff(c("Statistic", "Total"), colnames(data)))
 	varFixedWidth <- 0.5
 	ft <- width(ft, j = varFixed, width = 0.5)
@@ -176,8 +210,21 @@ convertSummaryStatisticsToFlextable <- function(data,
 	
 }
 
-getWidthPage <- function(landscape = TRUE, margin = 1){
+#' Return page dimension of interest
+#' @param type string dimension of interest, 'width' or 'height'
+#' @param landscape logical, if TRUE (by defaut) the table is presented in landscape
+#' format
+#' @param margin margin in the document in inches
+#' @return integer with dimension of interest
+#' @author Laure Cougnaud
+getDimPage <- function(type = c("width", "height"), landscape = TRUE, margin = 1){
 	# landscape: 29.7 * 21 cm ~ 11 * 8 inches ~ 2138.4 * 1512 ptx
-	widthPage <- ifelse(landscape, 11, 8) - 2 * margin
-	return(widthPage)
+	type <- match.arg(type)
+	a4Dim <- c(21, 29.7)/2.54 # inches
+	typeDim <- switch(type,
+		'width' = ifelse(landscape, a4Dim[2], a4Dim[1]),
+		'height' = ifelse(landscape, a4Dim[1], a4Dim[2])
+	)
+	dimPage <- typeDim - 2 * margin
+	return(dimPage)
 }
