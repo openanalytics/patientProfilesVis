@@ -1,6 +1,7 @@
 0.0.7
     o change dependency package for getLabelVar
     o change output path
+    o standardize moduleSettings parameters in UI and remove theme in getUIParamModule
 0.0.6
     o functionality to export module settings
     o timeLim specification for interval module

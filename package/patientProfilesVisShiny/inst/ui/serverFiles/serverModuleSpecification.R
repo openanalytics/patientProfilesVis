@@ -4,7 +4,7 @@
 ###############################################################################
 
 # select a module
-output$moduleGeneralPanel <- renderUI({
+output$moduleSettingsGeneralPanel <- renderUI({
 	tagList(
 		uiOutput("moduleMessage"),
 		selectInput("moduleChoice", label = "Choose module", 

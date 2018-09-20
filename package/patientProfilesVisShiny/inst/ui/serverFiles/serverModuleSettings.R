@@ -14,7 +14,7 @@ output$module <- renderUI({
 #		h5("Import"),
 		fluidRow(
 			column(6, 
-				selectInput("moduleGeneral", 
+				selectInput("moduleSettingsGeneral", 
 					label = "Module settings", 
 					choices = c(
 						"default (from uploaded data)" = "default", 
@@ -22,39 +22,39 @@ output$module <- renderUI({
 					)
 				)
 			),
-			column(6, uiOutput("moduleGeneralPreDefinedPanel"))
+			column(6, uiOutput("moduleSettingsPreDefinedPanel"))
 		),
 		
 #		h5("Export"),
 		fluidRow(
 			column(5, 
-				actionButton(inputId = "moduleExportSettings", label = "Export current settings")
+				actionButton(inputId = "moduleSettingsExport", label = "Export current settings")
 			),
-			column(5, textInput("moduleExportSettingsID", label = NULL, placeholder = "with export ID"))
+			column(5, textInput("moduleSettingsExportID", label = NULL, placeholder = "with export ID"))
 		),
-		uiOutput("moduleExportSettingsMessage"),
+		uiOutput("moduleSettingsExportMessage"),
 					
 		# module
 		h2("Preview/create new module"),
-		uiOutput("moduleGeneralPanel")
+		uiOutput("moduleSettingsGeneralPanel")
 	)
 })
 
 
 # in case of pre-defined module, allow the user to specify the ID
 observe({
-	validate(need(input$moduleGeneral, ""))
-	output$moduleGeneralPreDefinedPanel <- renderUI({
-		if(input$moduleGeneral == "pre-defined" && isTruthy(results$modulePreDefinedID)){
+	validate(need(input$moduleSettingsGeneral, ""))
+	output$moduleSettingsPreDefinedPanel <- renderUI({
+		if(input$moduleSettingsGeneral == "pre-defined" && isTruthy(results$moduleSettingsPreDefinedID)){
 			selectInput(
-				inputId = "modulePreDefinedID",
+				inputId = "moduleSettingsPreDefinedID",
 				label = "Export ID",
-				choices = results$modulePreDefinedID
+				choices = results$moduleSettingsPreDefinedID
 			)
 		}
 	})
-	if(input$moduleGeneral == "pre-defined" && !isTruthy(results$modulePreDefinedID)){
-		output$moduleExportSettingsMessage <- renderUI(
+	if(input$moduleSettingsGeneral == "pre-defined" && !isTruthy(results$moduleSettingsPreDefinedID)){
+		output$moduleSettingsExportMessage <- renderUI(
 			div(
 				"No module settings are available, please choose the 'default' settings.", 
 				style = "color:red"
@@ -65,14 +65,14 @@ observe({
 
 # create default modules for uploaded datasets or load pre-defined module
 observe({
-	validate(need(input$moduleGeneral, ""))
-	switch(input$moduleGeneral,
+	validate(need(input$moduleSettingsGeneral, ""))
+	switch(input$moduleSettingsGeneral,
 		'default' = {
 			results$availableModules <- getDefaultModules(data = results$dataAll())
 		},
 		'pre-defined' = {
-			if(isTruthy(input$modulePreDefinedID)){
-				load(file.path(outputPath, paste0(input$modulePreDefinedID, ".RData")))
+			if(isTruthy(input$moduleSettingsPreDefinedID)){
+				load(file.path(outputPath, paste0(input$moduleSettingsPreDefinedID, ".RData")))
 				results$availableModules <- moduleSettings
 			}
 		}
@@ -81,23 +81,23 @@ observe({
 results$defaultModulesNames <- reactive({names(results$availableModules)})
 
 # export current module settings
-observeEvent(input$moduleExportSettings, {
+observeEvent(input$moduleSettingsExport, {
 	if(is.null(results$availableModules)){
-		output$moduleExportSettingsMessage <- renderUI(
+		output$moduleSettingsExportMessage <- renderUI(
 			div(
 				"No module settings available so they are not exported.", 
 				style = "color:red"
 			)
 		)
-	}else if(!isTruthy(input$moduleExportSettingsID)){
-		output$moduleExportSettingsMessage <- renderUI(
+	}else if(!isTruthy(input$moduleSettingsExportID)){
+		output$moduleSettingsExportMessage <- renderUI(
 			div(
 				"Please specify a export ID.", 
 				style = "color:red"
 			)
 		)
-	}else if(input$moduleExportSettingsID %in% results$modulePreDefinedID){
-		output$moduleExportSettingsMessage <- renderUI(
+	}else if(input$moduleSettingsExportID %in% results$moduleSettingsPreDefinedID){
+		output$moduleSettingsExportMessage <- renderUI(
 			div(
 				"Module settings already exported with this ID, please select a different ID.", 
 				style = "color:red"
@@ -106,11 +106,11 @@ observeEvent(input$moduleExportSettings, {
 	}else{
 		moduleSettings <- results$availableModules
 		save(moduleSettings, 
-			file = file.path(outputPath, paste0(input$moduleExportSettingsID, ".RData"))
+			file = file.path(outputPath, paste0(input$moduleSettingsExportID, ".RData"))
 		)
-		output$moduleExportSettingsMessage <- renderUI(
+		output$moduleSettingsExportMessage <- renderUI(
 			div("Module settings exported.", style = "color:green")
 		)
-		results$modulePreDefinedID <- c(results$modulePreDefinedID, input$moduleExportSettingsID)
+		results$moduleSettingsPreDefinedID <- c(results$moduleSettingsPreDefinedID, input$moduleSettingsExportID)
 	}		
 })

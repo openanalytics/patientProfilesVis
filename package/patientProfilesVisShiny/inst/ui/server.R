@@ -32,7 +32,7 @@ serverFunction <- function(input, output, session) {
 		listPlots = NULL, 
 		availableModules = NULL, 
 		plotsCurrent = NULL,
-		modulePreDefinedID = file_path_sans_ext(list.files(outputPath))
+		moduleSettingsPreDefinedID = file_path_sans_ext(list.files(outputPath))
 	)
   
 	## Data
