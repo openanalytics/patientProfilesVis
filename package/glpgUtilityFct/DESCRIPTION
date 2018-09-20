@@ -1,11 +1,11 @@
-Package: patientVisUtility
+Package: glpgUtilityFct
 Type: Package
-Title: Utility functions for patient profiles
+Title: General utility functions to be used in Galapagos
 Version: 0.0.1
 Date: 2018-09-17
 Author: Laure Cougnaud
 Maintainer: Laure Cougnaud <laure.cougnaud@openanalytics.eu>
-Description: This package contains utility functions to be used in the patientProfilesVis and patientProfilesViShiny package.
+Description: This package contains general utility functions (data loading, graphics customization) to be used in Galapagos.
 Imports: haven, glpgStyle, plyr, viridisLite
 License: Software for Internal Use at Open Analytics NV
 RoxygenNote: 6.1.0

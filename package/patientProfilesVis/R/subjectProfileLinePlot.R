@@ -19,7 +19,7 @@
 #' @import ggplot2
 #' @importFrom glpgStyle glpgColor
 #' @importFrom plyr dlply
-#' @importFrom patientVisUtility getLabelVar getPatientColorPalette getPatientShapePalette
+#' @importFrom glpgUtilityFct getLabelVar getPatientColorPalette getPatientShapePalette
 #' @export
 subjectProfileLinePlot <- function(
 	data,
