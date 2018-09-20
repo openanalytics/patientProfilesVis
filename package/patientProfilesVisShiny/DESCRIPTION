@@ -10,3 +10,4 @@ License: Software for Internal Use at Open Analytics NV
 Imports: 
 	shiny, patientProfilesVis, tools, plyr, glpgUtilityFct
 RoxygenNote: 6.1.0
+VignetteBuilder: knitr

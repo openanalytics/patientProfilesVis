@@ -95,7 +95,7 @@ observe({
 				)
 				output$previewPagePanel <- renderUI(
 					selectInput(
-						inputId = "previewPage", label = "page",
+						inputId = "previewPage", label = "Page",
 						choices = seq_len(length(previewPlotSuject))
 					)
 				)

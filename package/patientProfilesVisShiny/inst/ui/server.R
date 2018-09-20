@@ -1,5 +1,6 @@
 
 library(patientProfilesVis)
+library(patientProfilesVisShiny)
 library(glpgUtilityFct) # for 'loadDataADaMSDTM'
 library(tools)
 library(plyr)
@@ -34,6 +35,16 @@ serverFunction <- function(input, output, session) {
 		plotsCurrent = NULL,
 		moduleSettingsPreDefinedID = file_path_sans_ext(list.files(outputPath))
 	)
+	
+	output$downloadManual <- downloadHandler(
+		filename = "manual.html",
+		content = function(con) {
+			file.copy(
+				system.file(file.path("doc/patientProfilesVisShiny-manual.html"), package = "patientProfilesVisShiny"), 
+				con
+			)
+	   }
+	 )
   
 	## Data
 	source(file.path("./serverFiles", "serverLoadData.R"), local = TRUE)

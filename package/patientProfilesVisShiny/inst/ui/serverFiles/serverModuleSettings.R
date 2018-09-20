@@ -32,6 +32,7 @@ output$module <- renderUI({
 			),
 			column(5, textInput("moduleSettingsExportID", label = NULL, placeholder = "with export ID"))
 		),
+		helpText("It is advised to choose the export ID starting with your initials in upper case."),
 		uiOutput("moduleSettingsExportMessage"),
 					
 		# module

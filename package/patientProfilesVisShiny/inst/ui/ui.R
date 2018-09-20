@@ -6,20 +6,20 @@ uiFunction <- function(request){
 			
 		theme = "custom.css",
 			
-		# For debugging
-		h4("Debugging & testing options"), 
-		fluidRow(
-			column(4, 
-				tags$b("Print objects"),
-				verbatimTextOutput("debug_text")
-			),
-			column(4, 
-				tags$b("Connect with console"),
-				helpText(HTML("The console will display a Browse prompt: <code>Browse[1]></code>")),
-				helpText(HTML("Enter <code>c</code> at the prompt to stop communication with the console and resume with the shiny app")),
-				actionButton(inputId = "debug_console", label = "Connect with console")
-			)
-		),
+#		# For debugging
+#		h4("Debugging & testing options"), 
+#		fluidRow(
+#			column(4, 
+#				tags$b("Print objects"),
+#				verbatimTextOutput("debug_text")
+#			),
+#			column(4, 
+#				tags$b("Connect with console"),
+#				helpText(HTML("The console will display a Browse prompt: <code>Browse[1]></code>")),
+#				helpText(HTML("Enter <code>c</code> at the prompt to stop communication with the console and resume with the shiny app")),
+#				actionButton(inputId = "debug_console", label = "Connect with console")
+#			)
+#		),
 		
 		titlePanel(
 			title = h1(
@@ -37,6 +37,9 @@ uiFunction <- function(request){
 	        
 	        sidebarPanel(
 	            
+				downloadLink(outputId = "downloadManual", label = "Documentation",
+					style = "font-weight: bold; color: #00463E"),
+					
 	            h1("Data upload"),
 	            
 				# upload data file(s)
@@ -65,9 +68,8 @@ uiFunction <- function(request){
 	    ),
 		
 		em(hr(),
-		"This Shiny App was created in collaboration with the Development biostatistics group in Galapagos.", 
-			#br(),
-		 "For questions/remarks, please contact: laure.cougnaud@openanalytics.eu.")
+		"This Shiny App was created in collaboration with Paul Meyvisch and Bjorn Daems from the Galapagos Biometrics group.", 
+		 "For specific questions/remarks or bugs report, please contact: laure.cougnaud@openanalytics.eu.")
 	
 	)
 	

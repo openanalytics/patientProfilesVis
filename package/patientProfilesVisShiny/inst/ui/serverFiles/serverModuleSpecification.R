@@ -83,7 +83,7 @@ output$moduleParamPanel <- renderUI({
 		# subset of interest
 		fluidRow(
 			column(6, 
-				createWidgetVariable(inputId = "moduleSubsetVar", label = "Filter data based on:", optional = TRUE,
+				createWidgetVariable(inputId = "moduleSubsetVar", label = "Selection variable", optional = TRUE,
 					selected = ifelse(!is.null(results$currentModule()) & !is.null(results$currentModule()$subsetVar), 
 						results$currentModule()$subsetVar, "<none>"
 					)
@@ -119,7 +119,7 @@ output$moduleSubsetValuePanel <- renderUI({
 	
 	createWidgetVariable(
 		inputId = "moduleSubsetValue", 
-		label = "with group(s) of interest:", optional = FALSE,
+		label = "Group(s) of interest", optional = FALSE,
 		choices = subsetValues, selected = subsetValues[1],
 		multiple = TRUE
 	)
@@ -230,7 +230,8 @@ output$moduleSpecificType <- renderUI({
 						results$currentModule()$paramValueRangeVar,
 					multiple = TRUE
 				),
-				widgetColorVar
+				widgetColorVar,
+				helpText("This variable is used to color the points.")
 			)
 			
 		})

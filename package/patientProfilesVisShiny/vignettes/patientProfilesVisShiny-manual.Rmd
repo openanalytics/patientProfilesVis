@@ -1,0 +1,342 @@
+---
+title: "Manual for the 'Visualization of patient profile' Shiny application"
+author: "Laure Cougnaud, OpenAnalytics"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output: 
+  glpgStyle::html_report:
+    toc: true
+    toc_float:
+      collapsed: true
+    number_sections: true
+vignette: >
+  %\VignetteIndexEntry{patientProfilesVisShiny package}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+# Introduction
+
+```{r options, echo = FALSE}
+
+	library(glpgStyle)
+	
+	library(knitr)
+	opts_chunk$set(
+		echo = TRUE, results = 'asis', warning = FALSE, 
+		error = FALSE, message = FALSE, cache = FALSE,
+		fig.width = 8, fig.height = 7,
+		fig.path = "./figures_vignette/",
+		fig.align = 'center')
+	options(width = 170)
+	options(warn = 1)#instead of warn = 0 by default -> to have place where warnings occur in the call to Sweave function
+	
+```
+
+The current application enables the visualization of time profile of
+dataset/variables of interest per subject, e.g. subject-specific information in
+combination with treatment exposure, events of laboratory parameters of
+interest, ...
+
+**Please use Chrome/Firefox web browsers to run the application.**
+
+## Tools
+
+The application is built with the open-source base
+[`R`](https://cran.r-project.org/) software, and additional packages available
+via the [`Comprehensive R Archive Network`
+(`CRAN`)](https://cran.r-project.org/).
+The application backend is built with the [`Shiny`](https://shiny.rstudio.com/)
+technology.
+
+The creation of time profile visualization is implementated within the
+`patientProfilesVis` R package and the application itself in the
+`patientProfilesVisShiny` R package, created in collaboration with
+_Galapagos Biometrics_.
+
+# Application
+
+## Left panel
+
+### Data upload
+
+ADaM **or** SDTM SAS data files (`.sas7bdat`) files should be uploaded by
+clicking on the 'Browse' button.  
+Note that pre-defined module settings are only available for the `SDTM` format.
+
+![](./images/loadData.png)
+
+In the example, the Demographics (`dm.sas7bdat`), Adverse Event (`ae.sas7bdat`),
+Treatment Exposure (`ex.sas7bdat`), Laboratory Data (`lb.sas7bdat`), Medical
+History (`mh.sas7bdat`) and Subject Visit (`sv.sas7bdat`) _SDTM_ are imported.
+Pre-defined module settings are currently available only for these datasets.
+
+Upon dataset import, new options/widgets are available in the interface.
+
+The name of the uploaded file will be used in the widgets 'Dataset' of the
+application.
+
+### Module settings
+
+* `Module settings`: 
+There are two options to select pre-defined modules:
+
+    + `default`: in case case _SDTM_ datasets are uploaded, pre-defined module
+      settings are (possibly) available.  
+      These settings are purely based on
+      the name of the uploaded file, and name of the variables present in the
+      dataset. 
+      ![](./images/moduleSettings_default.png) 
+      
+    + `pre-defined`: to upload module(s) settings previously
+      exported (with the `Export current settings` button).
+      In this case, the label of the module settings should be
+      specified in the `Export ID` parameter.
+      ![](./images/moduleSettings_preDefined.png)
+The pre-defined modules are then available in the options of the `Choose module`
+      widget.
+      
+* `Export current settings`: export module settings, e.g. if custom
+  saved modules could be re-used for a new version of the dataset.  
+  The settings
+  of all modules available in the `Choose module` and
+  `Module(s) selected for the report` parameters are exported.  
+  In this case, an identifier for the module settings should be
+  specified via the `withExportID` textbox.  
+  It is advised to specify a meaningful export ID, starting with your
+  initials in upper case (e.g. 'LC...' for me).
+
+
+### Preview/create new module
+
+To preview one of the pre-defined module, you need to select the module of
+interest in the `Choose module` option. By selecting one of the pre-defined
+module, the corresponding settings are automatically uploaded in the
+application.
+
+#### `Choose module`
+
+The `Choose module` button enables to preview a pre-defined visualization module
+or to define your own visualization of interest:
+
+* `<none>` (by default): no modules are selected to be displayed/created
+* `New module`: to create your own module
+* other options, formatted as: '[module name] (default/custom
+  text/interval/event/line)': to select a pre-defined module
+
+#### `Dataset`
+
+A dataset of interest for the visualization should be selected.
+
+#### `Type`
+
+4 type of visualization modules are currently available: 'text', 'interval',
+'event' and 'line' module. The options available for the creation of the
+visualization differ between these module type.
+
+#### Module specification (module type specific)
+
+##### Text module
+
+The text module enables to represent subject-specific information formatted as
+text.
+
+Following options are available for the creation of a text module:
+
+* `Title`: title for the visualization
+* `Subject identifier`: variable of the dataset to uniquely identify a subject
+* Data selection: to select only subset of the dataset,
+  please choose a variable in the `Selection variable` option and the
+  corresponding `Group(s) of interest`.
+  For example, to select only the patients treated with a compound, choose
+  'ARM' in `Selection variable` and corresponding treatment label in 'Group(s)'
+  of interest.
+* `Variable(s) specification`: there are two ways to select the variables that
+  should be represented in the plot:
+    + `Column(s) with parameter`: to select variable of the dataset whose
+      content should be represented in the plot panel. Variable name are used as
+      label in the y-axis.
+      If multiple variable are selected, there are
+      displayed below each other.  
+      In the Demography default module, the age,
+      sex, race, arm and country variables are indicated for each patient.  
+    + `Pair of columns with parameter name/value`: to select distinct variables
+      to be used in the plot margin and plot panel. In this case, two parameters
+      are available:
+        + `Parameter value variable(s)`: variable(s) of the dataset to be
+          represented in the plot panel. In case multiple variables are
+          selected, they are concatenated in the same line.
+        + `Parameter name variable`: variable of the dataset to be represented
+          (label in the y-axis).
+      In the Medical History default module, the status of the medical history
+          ('MHENRTPT' `Parameter value variable(s)`) is represented for each
+          medical term ('MHDECOD' `Parameter name variable`).  
+* `Grouping variable`: variable of the dataset used to sort the parameter in
+  the y-axis of the visualization.  
+  
+Here are some examples of the text module:
+
+* Demography default module (available in case the Demography SDTM dataset
+  (`DM.sas7bdat`) is uploaded): 
+  
+<img width="48%" src="./images/module_text_DM.png"/> 
+<img width="48%" src="./images/previewModule_text_DM.png"/>
+  
+* Medical history default module (available in case the Medical History SDTM
+  dataset (`MH.sas7bdat`) is uploaded): 
+  
+<img width="48%" src="./images/module_text_MH.png"/> 
+<img width="48%" src="./images/previewModule_text_MH.png"/>
+  
+##### Interval module
+  
+The interval module enables to represent variable of interest with start and
+end date.
+
+Following options are available for the creation of a text module:
+
+* `Title`: title for the visualization
+* `Subject identifier`: variable of the dataset to uniquely identify a subject
+* Data selection: to select only subset of the dataset, please choose a variable
+  in the `Selection variable` option and the corresponding
+  `Group(s) of interest`. For example, to select only the patients treated with
+  a compound, choose 'ARM' in `Selection variable` and corresponding treatment
+  label in 'Group(s)' of interest.
+* Time specification:
+    + `Start time variable`: variable containing the start time of the interval
+    + `End time variable`: variable containing the end time of the interval
+    
+* `Time limits`: 
+    + `subject-specific` option: the minimum/maximum of the time range is
+      extracted by subject, and used in case the start/end time is missing
+      for a particular record.
+      In this case, three parameters should be specified:
+          + `Dataset`: dataset where the minimim/maximum time range is
+      extracted, by default from the subject-visit ('SV' dataset)
+         + `Start time variable`: variable used to extract the start time of the
+           interval in case of missing value, by default the minimum day of the
+           subject visit ('SVSTDY')
+         + `End time variable`: variable used to extract the end time of the
+           interval in case of missing value, by default the maximum day of the
+           subject visit ('SVENDY')
+    + `fixed` option: the minimum/maximum of the time range is set across
+      subjects. 
+      
+* `Parameter variable(s)`:  variable(s) of the dataset to be represented
+  (label in the y-axis).
+* `Color variable`: variable of the dataset used to color the time segment in
+  the plot.
+* `Grouping variable`: variable of the dataset used to sort the parameter in the
+  y-axis of the visualization.
+  
+An example test module is available in case the Adverse Event SDTM
+  dataset (`AE.sas7bdat`) is uploaded. 
+  
+<img width="48%" src="./images/module_interval_AE.png"/> 
+<img width="48%" src="./images/previewModule_interval_AE.png"/>
+  
+##### Event module
+  
+The event module enables to represent an event occuring at a specific time.
+
+Following options are available for the creation of a text module:
+
+* `Title`: title for the visualization
+* `Subject identifier`: variable of the dataset to uniquely identify a subject
+* Data selection: to select only subset of the dataset, please choose a variable
+  in the `Selection variable` option and the corresponding
+  `Group(s) of interest`. For example, to select only the patients treated with
+  a compound, choose 'ARM' in `Selection variable` and corresponding treatment
+  label in 'Group(s)' of interest.
+* `Time variable`: variable containing the time of the
+  event occurence
+* `Parameter variable(s)`:  variable(s) of the dataset to be represented (label
+  in the y-axis).
+* `Color variable`: variable of the dataset used for the color.
+* `Symbol variable`: variable of the dataset used for the symbol.
+* `Grouping variable`: variable of the dataset used to sort the parameter in the
+  y-axis of the visualization.
+  
+An example test module is available in case the Laboratory SDTM dataset
+(`LB.sas7bdat`) is uploaded.   
+
+<img width="48%" src="./images/module_event_LB.png"/> 
+<img width="48%" src="./images/previewModule_event_LB.png"/>
+  
+##### Line module
+  
+The line module enables to represent a metric time profile.
+
+Following options are available for the creation of a text module:
+
+* `Title`: title for the visualization
+* `Subject identifier`: variable of the dataset to uniquely identify a subject
+* Data selection: to select only subset of the dataset, please choose a variable
+  in the `Selection variable` option and the corresponding
+  `Group(s) of interest`. For example, to select only the patients treated with
+  a compound, choose 'ARM' in `Selection variable` and corresponding treatment
+  label in 'Group(s)' of interest.
+* `Time variable`: variable containing the time of the event occurence
+* `Parameter value variable(s)`: numeric variable of the dataset containing the
+  metric to be represented, e.g. actual value or change from baseline
+* `Parameter name variable`: variable of the dataset to be used for the label
+  (the y-axis), e.g. name of a laboratory test.
+* `Reference range (minimum and maximum) variable`: pair of variable(s) in the
+  dataset used to represent the reference range, indicated by a green ribbon
+  the visualization.
+* `Color variable`: variable of the dataset used to color the point in the
+  visualization.
+* `Grouping variable`: variable of the dataset used to sort the parameter in the
+  y-axis of the visualization.
+  
+An example test module is available in case the Laboratory SDTM dataset
+(`LB.sas7bdat`) is uploaded. 
+
+<img width="48%" src="./images/module_line_LB.png"/> 
+<img width="48%" src="./images/previewModule_line_LB.png"/>
+ 
+### Preview/Save a module
+
+* Click on the `Preview module` button to display the visualization on the right
+  panel corresponding to the current configured module.  
+* Click on the `Save module` button to save the
+  settings of the specified module as '[module title] (custom, [module type])'.
+  In this case, the specified module can be re-displayed via the `Choose module`
+  option and selected to be included in the report via the
+  `Module(s) selected for the report` option.
+![](./images/previewModule_save.png)
+
+### Report creation
+
+* `Module(s) selected for the report`: name of the module to be included in the
+  final report.
+  To select module in a specific order, either
+    + delete all selected module and click on the module in the order of
+  choice with the mouse
+    + include the cursor in the option box (click on the widget white box),
+  use 'Left arrow'/'Right arrow' to move in the list of the selected modules,
+  'Backspace' to remove one module, and type a module name to add a module in
+  the current cursor position.
+* `Sort subjects based on:`: to order subjects in the final report based on:
+    + `Dataset`: dataset where the variable used to sort is contained
+    + `Variable`: variable used to sort the subjects
+    For example, the subjects could be sorted/grouped by treatment arm in the
+      report by selecting the treatment variable (`ARM`) in the demography SDTM
+      dataset is loaded (`DM.sas7bdat`).
+* `Create report`: push the button to create a report.
+A progress window appear at the bottom right of the application.
+When the report is created successfully, a `Download report` appear to download
+  the subject profile report.
+  
+## Right panel
+
+### Preview subject profiles
+
+In case of custom or pre-defined module is configured in the right panel, and
+the `Preview module` is selected, the current module can be displayed in the
+right panel.
+
+In this case the corresponding visualization is displayed for the subject
+specified in `Select subject` parameter.
+In case the visualization doesn't fit in a A4 portrait document, it is split
+into multiple pages, selectable via the `Page` parameter.
+![](./images/previewModule_line_LB_page.png)

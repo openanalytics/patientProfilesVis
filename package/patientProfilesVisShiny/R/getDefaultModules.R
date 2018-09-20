@@ -97,6 +97,7 @@ getDefaultModules <- function(data){
 						paramValueRangeVar = if(all(c("LBSTNRLO", "LBSTNRHI") %in% colnames(data$LB)))
 							c("LBSTNRLO", "LBSTNRHI"),
 						timeVar = "LBDY",
+						colorVar = if("LBNRIND" %in% colnames(data$LB))	"LBNRIND",
 						type = "line",
 						title = "Laboratory test measurements: actual value",
 #						label = "defaultSDTMLBLine",

@@ -5,20 +5,21 @@
 
 output$reportCreation <- renderUI({
 			
-	validate(need(results$dataRes(), "Please upload some data."))		
+	validate(need(results$dataRes(), "Please upload some data."))
 	
 	tagList(
 		selectInput(inputId = "reportSelectedModules",
-			label = "Selected modules", multiple = TRUE,
+			label = "Module(s) selected for the report", multiple = TRUE,
 			choices = results$defaultModulesNames(),
-			selected = results$defaultModulesNames()
+			selected = results$defaultModulesNames()[1]
 		),
-		strong("Subjects ordered based on:"),
+		strong("Sort subjects based on:"),
 		fluidRow(
 			column(6,
 				selectInput(inputId = "reportSubjectSortData",
 					label = "Dataset", multiple = FALSE,
-					choices = c('<none>' = 'none', results$datasets())
+					choices = c('<none>' = 'none', results$datasets()),
+					selected = c('<none>' = 'none')
 				)
 			),
 			column(6, uiOutput("reportSubjectSortVarPanel"))
@@ -26,26 +27,27 @@ output$reportCreation <- renderUI({
 		fluidRow(
 			column(6, actionButton(inputId = "createSubjectProfileReport", label = "Create report")),
 			column(6, uiOutput("downloadSubjectProfileReportPanel"))
-		)#,
-#		hr(),
-#		bookmarkButton()
+		)
 	)		
 	
 })
 
 # extract the possible variable to sort subject by
 output$reportSubjectSortVarPanel <- renderUI({
+			
 	validate(need(input$reportSubjectSortData, "reportSubjectSortData"))
 	
-	reportSubjectSortVars  <- if(input$reportSubjectSortData != "none")
+	reportSubjectSortVars  <- if(input$reportSubjectSortData != "none"){
 		getVarLabelsForUI(
 			data = results$dataAll()[[input$reportSubjectSortData]], 
 			labelVars = results$labelVars()
 		)
+	}
 	selectInput(
 		inputId = "reportSubjectSortVar", 
-		label = "Variable:", multiple = FALSE,
-		choices = reportSubjectSortVars, selected = reportSubjectSortVars[1]
+		label = "Variable", multiple = FALSE,
+		choices = reportSubjectSortVars, 
+		selected = reportSubjectSortVars[1]
 	)
 })
 
