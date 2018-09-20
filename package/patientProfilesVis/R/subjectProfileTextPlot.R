@@ -44,7 +44,7 @@
 #' @import ggplot2
 #' @importFrom plyr dlply ddply
 #' @importFrom reshape2 melt
-#' @importFrom patientVisUtility getLabelVar
+#' @importFrom glpgUtilityFct getLabelVar
 #' @export
 subjectProfileTextPlot <- function(
 	data,

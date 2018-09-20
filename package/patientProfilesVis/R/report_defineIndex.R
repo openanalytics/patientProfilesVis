@@ -21,7 +21,7 @@
 #' }
 #' }
 #' @importFrom plyr daply
-#' @importFrom patientVisUtility getLabelVar
+#' @importFrom glpgUtilityFct getLabelVar
 #' @author Laure Cougnaud
 defineIndex <- function(
 	subjects, 

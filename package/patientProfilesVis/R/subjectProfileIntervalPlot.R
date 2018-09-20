@@ -28,7 +28,7 @@
 #' @import ggplot2
 #' @importFrom plyr dlply
 #' @importFrom stats reorder
-#' @importFrom patientVisUtility getLabelVar getPatientColorPalette
+#' @importFrom glpgUtilityFct getLabelVar getPatientColorPalette
 #' @export
 subjectProfileIntervalPlot <- function(
 	data,

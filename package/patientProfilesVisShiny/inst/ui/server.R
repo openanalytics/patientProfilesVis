@@ -1,6 +1,6 @@
 
 library(patientProfilesVis)
-library(patientVisUtility) # for 'loadDataADaMSDTM'
+library(glpgUtilityFct) # for 'loadDataADaMSDTM'
 library(tools)
 library(plyr)
 

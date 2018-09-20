@@ -43,6 +43,8 @@ uiFunction <- function(request){
 	            fileInput(inputId = 'dataFiles', label = NULL, 
 					accept = '.sas7bdat', multiple = TRUE
 				),
+				helpText("Please load ADaM and SDTM data files ('sas7bdat' format).",
+					br(), "Pre-defined settings are only available for the SDTM format."),
 	            
 				# new module specification
 				h1("Module specification"),

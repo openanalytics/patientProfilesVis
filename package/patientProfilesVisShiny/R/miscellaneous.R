@@ -23,7 +23,7 @@ simpleCap <- function(x, onlyFirst = FALSE, rev = FALSE) {
 #' @param labelVars named string with variable labels (names are the variable code)
 #' @return named vector with variables
 #' @author Laure Cougnaud
-#' @importFrom patientVisUtility getLabelVar
+#' @importFrom glpgUtilityFct getLabelVar
 #' @export
 getVarLabelsForUI <- function(data, labelVars){
 	vars <- colnames(data)

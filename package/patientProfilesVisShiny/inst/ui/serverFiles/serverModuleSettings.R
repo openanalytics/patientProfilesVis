@@ -24,6 +24,7 @@ output$module <- renderUI({
 			),
 			column(6, uiOutput("moduleGeneralPreDefinedPanel"))
 		),
+		
 #		h5("Export"),
 		fluidRow(
 			column(5, 
