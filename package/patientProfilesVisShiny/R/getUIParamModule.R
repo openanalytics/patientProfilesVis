@@ -11,7 +11,7 @@ getUIParamModule <- function(input){
 	moduleParamNames <- grep(
 		paste0(paramsToRemove, collapse = "|"),
 		moduleParamNames,
-		value = TRUE
+		value = TRUE, invert = TRUE
 	)
 	paramsModule <- sapply(moduleParamNames, function(name)
 		input[[name]]			
