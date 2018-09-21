@@ -1,0 +1,109 @@
+---
+title: "Patient profiling tool"
+subtitle: "R-Evolution TF Study Conduct Monitoring"
+author: 
+  name: "Paul Meyvisch, Laure Cougnaud (OpenAnalytics)"
+  company: ""
+
+date: "October 1st, 2018"
+output: glpgStyle::ioslides
+---
+
+```{r loadLibraries, echo = FALSE, message = FALSE}
+
+	library(glpgStyle)
+
+```
+
+## Goal
+
+* Tool to visualize patient time profile metrics for experiment of interest
+
+## Technology
+
+* Application to visualize patient profile
+* Open-source [R](https://www.r-project.org/) software and add-on R packages
+  packages: 
+     + data import: `haven`, visualization: `ggplot2`
+     + interface creation: `shiny`
+* Tools:
+    + for R expert: `patientProfilesVis` R package
+    + for Medics: application in the `patientProfilesVisShiny` R deployed in a
+      _Galapagos_ Development server
+      
+## General
+
+* Framework:
+    + Create time profile for each set of metrics of interest, e.g. main
+        endpoint, laboratory parameters, adverse event, subject-specific
+        metadata information
+    + Combine the different modules across time frame
+    + Create patient profile report
+* Modular approach: 4 types of modules: text, event, interval and line profile
+* Input: `SDTM` or `ADaM` files of study of interest in standardized format
+
+## Text module
+
+* to display subject-specific information
+    + Demography:  
+<img width="100%" src="./images/exampleTextModule-wideFormat-include-1.png"/> 
+
+    + Medical history:  
+<img width="100%" src="./images/exampleTestModule-longFormat-multipleVariables-include-1.png"/> 
+
+
+## Interval module
+
+* to display metric with start/end date (e.g. adverse
+      events)
+  
+<img width="100%" src="./images/exampleModule_interval_AE.png"/>
+
+## Event module
+
+* to display for metric with unique date
+
+<img width="100%" src="./images/exampleEventModuleWithSubset-include-1.png"/>
+
+
+## Line module
+
+* line: display evolution of actual value, change from baseline of
+parameters of interest in the time frame
+
+<img width="100%" src="./images/exampleLineModule-colorShape-include-1.png"/>
+
+## Final deliverable
+
+* Report (`pdf` format) with time profiles of interest per subject
+
+<img width="70%" src="./images/report1.png"/>
+
+## Application
+
+* Creation of the time profile visualization directly from a web browser
+* Default module settings available for `SDTM` format
+* Creation of user-custom visualization:
+    + preview panel
+    + Share settings with collaborators
+        + easier graphics creation for new version of the datasets
+
+## Application: 
+
+* Technical details:
+    + `Shiny` application embedded in the R package
+    + Local of server deployment
+    + Deployment with the [`ShinyProxy`](https://www.shinyproxy.io/) technology
+         + `Docker` container encapsule all tools -> fixed version of `R` base
+           and packages 
+         + Scale up to large number of users 
+
+
+
+<!-- TODO: add screenshots of the application -->
+
+* Demonstration
+
+## Last one {.centered}
+
+**Thank you!**
