@@ -16,7 +16,7 @@ vignette: >
 
 # Introduction
 
-```{r options, echo = FALSE}
+```{r options, echo = FALSE, message = FALSE}
 
 	library(glpgStyle)
 	
@@ -134,6 +134,9 @@ A dataset of interest for the visualization should be selected.
 visualization differ between these module type.
 
 #### Module specification (module type specific)
+
+**Time variable should be numeric, and consistent across the different
+event/interval/line modules, e.g. start/end, study day...**
 
 ##### Text module
 
