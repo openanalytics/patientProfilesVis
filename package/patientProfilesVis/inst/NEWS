@@ -1,3 +1,5 @@
+0.0.11
+    o subjectProfileTextPlot: fix in case subjectVar same as paramNameVar/paramValueVar
 0.0.10
     o externalise the functions getPatient[Color|Shape]Palette, and data function in glpgUtilityFct
 0.0.9

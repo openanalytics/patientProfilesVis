@@ -84,7 +84,7 @@ subjectProfileTextPlot <- function(
 		}
 		
 		# transform data from wide to long format
-		dataToTransform <- unique(data[, unique(c(subjectVar, paramValueVar))])
+		dataToTransform <- unique(data[, unique(c(subjectVar, paramValueVar)), drop = FALSE])
 		dataPlot <- melt(
 			dataToTransform, 
 			id.vars = subjectVar, 
@@ -123,7 +123,8 @@ subjectProfileTextPlot <- function(
 		dataPlot <- ddply(data, c(subjectVar, paramNameVar, paramGroupVar), function(x)
 			data.frame(value = paste(unique(x$value), collapse = paramVarSep), stringsAsFactors = FALSE)
 		)
-		colnames(dataPlot) <- c(subjectVar, 'variable', paramGroupVar, 'value')
+		colnames(dataPlot)[which(colnames(dataPlot) == paramNameVar)] <- "variable"
+		if(paramNameVar == subjectVar)	dataPlot[, subjectVar] <- dataPlot$variable
 		
 		# if paramGroupVar is specified: change order levels of 'variable'
 		dataPlot$variable <- formatParamVar(
