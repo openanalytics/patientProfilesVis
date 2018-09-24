@@ -2,7 +2,7 @@
 title: "Patient profiling tool"
 subtitle: "R-Evolution TF Study Conduct Monitoring"
 author: 
-  name: "Paul Meyvisch, Laure Cougnaud (OpenAnalytics)"
+  name: "Laure Cougnaud (OpenAnalytics), Bjorn Daems, Paul Meyvisch"
   company: ""
 
 date: "October 1st, 2018"
@@ -26,25 +26,19 @@ output:
 
 ## Goal
 
-* Application to visualize patient-time profile of metrics for specific trial:
+* Create subject profile report for specific trial:
     + main endpoint
     + laboratory data
     + adverse events
     + ...
 
-## Technology
+## General
 
-* Open-source [R](https://www.r-project.org/) software and add-on R packages: 
-     + import of SAS dataset: `haven`, visualization: `ggplot2`
-     + interface creation: `shiny`
-* Tools:
-    + for R expert: 
-        + all functionalities
-        + `patientProfilesVis` R package
-    + for Medics: 
-        + set of functionalities in web application
-        + `patientProfilesVisShiny` R package
-        + deployed in a _Galapagos_ R Biometrics server
+Two setups:
+
+* Non-statisticians/medics: user-friendly graphical interface for creation
+  of patient profile report
+* Statisticians/programmers: functionalities available via `R` package 
       
 ## General
 
@@ -153,17 +147,6 @@ include_graphics("./images/previewModule_interval_AE.png")
 include_graphics("./images/previewModule_save.png")
 ```
 
-
-## Application
-
-* Technical details:
-    + `Shiny` application embedded in the R package
-    + Local or server deployment
-    + Deployment with the [`ShinyProxy`](https://www.shinyproxy.io/) technology
-         + `Docker` container encapsule all pre-requisite tools  
-         $\rightarrow$ fixed version of `R` base and packages 
-         + Scale up to large number of users 
-
 <!-- TODO: add screenshots of the application -->
 
 * Demonstration PoC
@@ -176,5 +159,28 @@ include_graphics("./images/previewModule_save.png")
 </div>
 
 
+# Appendix
 
+## Implementation details
 
+* Open-source [R](https://www.r-project.org/) software and add-on R packages: 
+     + import of SAS dataset: `haven`, visualization: `ggplot2`
+     + interface creation: `shiny`
+* Tools:
+    + for R expert: 
+        + all functionalities
+        + `patientProfilesVis` R package
+    + for Medics: 
+        + set of functionalities in web application
+        + `patientProfilesVisShiny` R package
+        + deployed in a _Galapagos_ R Biometrics server
+
+## Application details
+
+* Technical details:
+    + `Shiny` application embedded in the R package
+    + Local or server deployment
+    + Deployment with the [`ShinyProxy`](https://www.shinyproxy.io/) technology
+         + `Docker` container encapsule all pre-requisite tools  
+         $\rightarrow$ fixed version of `R` base and packages 
+         + Scale up to large number of users 
