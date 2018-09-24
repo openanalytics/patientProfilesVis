@@ -42,7 +42,7 @@ results$variablesDataCurrent <- reactive({
 	getVarLabelsForUI(data = results$dataCurrent(), labelVars = results$labelVars())
 })
 # extract possible time variable (should be numeric)
-results$variablesTimeDataCurrent <- reactive(getTimeVars(results$dataCurrent()))
+results$variablesTimeDataCurrent <- reactive(getTimeVars(data = results$dataCurrent(), labelVars = results$labelVars()))
 
 # custom wrapper for selectInput based on column names
 createWidgetVariable <- function(..., optional = FALSE, multiple = FALSE, 
@@ -111,16 +111,18 @@ output$moduleSubsetValuePanel <- renderUI({
 			
 	validate(need(input$moduleSubsetVar, "moduleSubsetVar"))
 	
-	subsetValues <- if(!is.null(results$currentModule()) & !is.null(results$currentModule()$subsetValue)){ 
-		results$currentModule()$subsetValue
+	if(!is.null(results$currentModule()) & !is.null(results$currentModule()$subsetValue)){ 
+		selectedValues <- subsetValues <- results$currentModule()$subsetValue
 	}else{
-		unique(results$dataCurrent()[[input$moduleSubsetVar]])
+		subsetValues <- unique(results$dataCurrent()[[input$moduleSubsetVar]])
+		selectedValues <- subsetValues[1]
 	}
 	
 	createWidgetVariable(
 		inputId = "moduleSubsetValue", 
 		label = "Group(s) of interest", optional = FALSE,
-		choices = subsetValues, selected = subsetValues[1],
+		choices = subsetValues, 
+		selected = selectedValues, 
 		multiple = TRUE
 	)
 	
@@ -156,7 +158,7 @@ output$moduleSpecificType <- renderUI({
 		'text' = {
 			selected <- ifelse(
 				!is.null(results$currentModule()),
-				ifelse(!is.null(results$currentModule()$paramNameVar), 2, 1),
+				as.numeric(results$currentModule()$varSpecType),
 				1
 			)
 			list(
@@ -297,7 +299,7 @@ results$timeLimData <- reactive({
 
 output$moduleIntervalTimeLimVarsPanel <- renderUI({
 	validate(need(results$timeLimData(), ""))
-	timeLimVars <- getTimeVars(data = results$timeLimData())
+	timeLimVars <- getTimeVars(data = results$timeLimData(), labelVars = results$labelVars())
 	fluidRow(
 		column(6, 
 			createWidgetVariable(

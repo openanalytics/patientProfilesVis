@@ -4,13 +4,15 @@
 \alias{getTimeVars}
 \title{Get potential time variables in the dataset}
 \usage{
-getTimeVars(data)
+getTimeVars(data, labelVars)
 }
 \arguments{
 \item{data}{data.frame with data}
+
+\item{labelVars}{named string with variable labels (names are the variable code)}
 }
 \value{
-character vector with potential time variables
+named character vector with potential time variables
 }
 \description{
 Get potential time variables in the dataset

@@ -19,7 +19,8 @@ getDefaultModules <- function(data){
 					'Demography (default, text)' =
 					list(
 						data = "DM",
-						paramValueVar  = params,
+						varSpecType = 1,
+						paramValueVar = params,
 						type = "text",
 #						label = "defaultSDTMDMText",
 						title = "Demographical information",
@@ -38,6 +39,7 @@ getDefaultModules <- function(data){
 							data = "MH",
 							paramNameVar = "MHDECOD",
 							paramValueVar = "MHENRTPT",
+							varSpecType = 2,
 							type = "text",
 #							label = "defaultSDTMMHText",
 							title = "Medical history: status",

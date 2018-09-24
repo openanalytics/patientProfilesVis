@@ -121,7 +121,7 @@ createSubjectProfileFromParam <- function(listParams, data, labelVars){
 	listParams$labelVars <- labelVars
 	listParams$type <- listParams$timeLimSelect <- 
 		listParams$exportSettings <- listParams$exportSettingsID <- 
-		listParams$general <- NULL
+		listParams$general <- listParams$varSpecType <- NULL
 
 	idxParamsToRemove <- which(sapply(listParams, function(x) length(x) == 1 && x =="none"))
 	if(length(idxParamsToRemove) > 0)

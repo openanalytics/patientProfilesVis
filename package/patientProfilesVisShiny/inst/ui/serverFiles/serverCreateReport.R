@@ -11,7 +11,7 @@ output$reportCreation <- renderUI({
 		selectInput(inputId = "reportSelectedModules",
 			label = "Module(s) selected for the report", multiple = TRUE,
 			choices = results$defaultModulesNames(),
-			selected = results$defaultModulesNames()[1]
+			selected = results$defaultModulesNames()
 		),
 		strong("Sort subjects based on:"),
 		fluidRow(
@@ -84,6 +84,8 @@ results$subjectProfileReport <- eventReactive(input$createSubjectProfileReport, 
 					simplify = FALSE
 				)
 				listPlots <- c(listPlots, listPlotsDefaults)
+				# sort modules as specified in the UI
+				listPlots <- listPlots[input$reportSelectedModules]
 			}	
 			
 			potentialErrorMessage <- try(

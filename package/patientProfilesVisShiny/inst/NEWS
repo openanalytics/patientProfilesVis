@@ -1,3 +1,7 @@
+0.0.8
+    o getUIParamModule: fix issue paramValueVarPair not saved
+    o UI: fix to sort modules as selected in the UI for the report
+    o UI: fix save module for text parameters, fix save module for multiple group parameter
 0.0.7
     o change dependency package for getLabelVar
     o change output path

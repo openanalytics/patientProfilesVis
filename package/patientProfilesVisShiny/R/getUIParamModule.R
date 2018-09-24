@@ -7,19 +7,32 @@
 getUIParamModule <- function(input){
 	
 	moduleParamNames <- grep("^module", names(input), value = TRUE)
-	paramsToRemove <- c("moduleChoice", "moduleTextVarSpecType", "moduleSettings*")
+	paramsToRemove <- c("moduleChoice", "moduleSettings*") # "moduleTextVarSpecType"
 	moduleParamNames <- grep(
 		paste0(paramsToRemove, collapse = "|"),
 		moduleParamNames,
 		value = TRUE, invert = TRUE
 	)
+	# remove also parameters of other type of text module
+	if(input$moduleType == "text"){
+		paramsToRemoveText <- switch(
+				input$moduleTextVarSpecType,
+				"1" = c("moduleTextParamValueVarPair", "moduleTextParamNameVarPair"),
+				"2" = "moduleTextParamValueVar"
+		)
+		moduleParamNames <- moduleParamNames[moduleParamNames != paramsToRemoveText]
+	}
 	paramsModule <- sapply(moduleParamNames, function(name)
 		input[[name]]			
 	, simplify = FALSE)
-	names(paramsModule) <- simpleCap(
-		sub("^module(Event|Interval|Text|Line)*(.+)(Pair)*", "\\2", names(paramsModule)),
-		rev = TRUE
+	paramsModule <- paramsModule[!sapply(paramsModule, is.null)]
+	paramsModuleNameNew <- sub("Pair$", "",
+		simpleCap(
+			sub("^module(Event|Interval|Text|Line)*(.+)", "\\2", names(paramsModule)),
+			rev = TRUE
+		)
 	)
+	names(paramsModule) <-  paramsModuleNameNew
 	return(paramsModule)
 	
 }

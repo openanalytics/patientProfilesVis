@@ -13,7 +13,7 @@ getVarLabelsForUI(data, labelVars)
 \item{labelVars}{named string with variable labels (names are the variable code)}
 }
 \value{
-named vector with variables
+named character vector with variables
 }
 \description{
 Get variable labels for the interface.

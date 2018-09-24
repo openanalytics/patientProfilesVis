@@ -21,7 +21,7 @@ simpleCap <- function(x, onlyFirst = FALSE, rev = FALSE) {
 #' This concatenate the variable code (column in data) and variable labels
 #' @param data data.frame with data
 #' @param labelVars named string with variable labels (names are the variable code)
-#' @return named vector with variables
+#' @return named character vector with variables
 #' @author Laure Cougnaud
 #' @importFrom glpgUtilityFct getLabelVar
 #' @export
@@ -32,12 +32,14 @@ getVarLabelsForUI <- function(data, labelVars){
 }
 
 #' Get potential time variables in the dataset
-#' @param data data.frame with data
-#' @return character vector with potential time variables
+#' @inheritParams getVarLabelsForUI
+#' @return named character vector with potential time variables
 #' @author Laure Cougnaud
 #' @importFrom plyr colwise
 #' @export
-getTimeVars <- function(data){
+getTimeVars <- function(data, labelVars){
+	allVars <- getVarLabelsForUI(data = data, labelVars = labelVars)
 	possibleVars <- names(which(unlist(colwise(is.numeric)(data))))
+	possibleVars <- allVars[match(possibleVars, allVars)]
 	return(possibleVars)
 }
