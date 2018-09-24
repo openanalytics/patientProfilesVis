@@ -12,35 +12,52 @@ output: glpgStyle::ioslides
 ```{r loadLibraries, echo = FALSE, message = FALSE}
 
 	library(glpgStyle)
+	library(knitr)
+	opts_chunk$set(
+			echo = FALSE, results = 'asis', warning = FALSE, 
+			error = FALSE, message = FALSE, cache = FALSE,
+			fig.width = 8, fig.height = 7,
+			fig.path = "./figures_vignette/",
+			fig.align = 'center')
 
 ```
 
 ## Goal
 
-* Tool to visualize patient time profile metrics for experiment of interest
+* Application to visualize patient-time profile of metrics for specific trial:
+    + main endpoint
+    + laboratory data
+    + adverse events
+    + ...
 
 ## Technology
 
-* Application to visualize patient profile
-* Open-source [R](https://www.r-project.org/) software and add-on R packages
-  packages: 
-     + data import: `haven`, visualization: `ggplot2`
+* Open-source [R](https://www.r-project.org/) software and add-on R packages: 
+     + import of SAS dataset: `haven`, visualization: `ggplot2`
      + interface creation: `shiny`
 * Tools:
-    + for R expert: `patientProfilesVis` R package
-    + for Medics: application in the `patientProfilesVisShiny` R deployed in a
-      _Galapagos_ Development server
+    + for R expert: 
+        + all functionalities
+        + `patientProfilesVis` R package
+    + for Medics: 
+        + set of functionalities in web application
+        + `patientProfilesVisShiny` R package
+        + deployed in a _Galapagos_ R Biometrics server
       
 ## General
 
 * Framework:
-    + Create time profile for each set of metrics of interest, e.g. main
+    + Create visualization of time profile for each set of metrics of
+      interest:  
+    e.g. main
         endpoint, laboratory parameters, adverse event, subject-specific
         metadata information
     + Combine the different modules across time frame
     + Create patient profile report
-* Modular approach: 4 types of modules: text, event, interval and line profile
-* Input: `SDTM` or `ADaM` files of study of interest in standardized format
+* Modular approach: 
+    + 4 types of visualization: text, event, interval and line profile
+    + creation of visualization/`module` for each set of metrics of interest
+* Input: `SDTM` or `ADaM` files of study of interest in **standardized** format
 
 ## Text module
 
@@ -58,6 +75,8 @@ output: glpgStyle::ioslides
       events)
   
 <img width="100%" src="./images/exampleModule_interval_AE.png"/>
+* option to fill missing start/end date with extra variable, e.g. first/last visit (`subject-visit` dataset)
+
 
 ## Event module
 
@@ -68,10 +87,13 @@ output: glpgStyle::ioslides
 
 ## Line module
 
-* line: display evolution of actual value, change from baseline of
-parameters of interest in the time frame
+* line: display evolution of numeric metric of parameters of interest in the
+  time frame:  
+e.g. actual value, change from baseline  in the time
+  frame of laboratory parameters
 
 <img width="100%" src="./images/exampleLineModule-colorShape-include-1.png"/>
+* option for reference range
 
 ## Final deliverable
 
@@ -79,31 +101,61 @@ parameters of interest in the time frame
 
 <img width="70%" src="./images/report1.png"/>
 
+## Time settings
+
+* Time format consistent across modules (datasets): currently day
+
 ## Application
 
 * Creation of the time profile visualization directly from a web browser
 * Default module settings available for `SDTM` format
-* Creation of user-custom visualization:
-    + preview panel
-    + Share settings with collaborators
-        + easier graphics creation for new version of the datasets
 
-## Application: 
+<img width="70%" src="./images/appMainPage.png"/>
+
+
+## Application
+
+* Creation of user-custom visualization: preview panel
+
+<img width="35%" src="./images/module_interval_AE.png"/>
+<img width="35%" src="./images/previewModule_interval_AE.png"/>
+
+## Application
+
+* Creation of user-custom visualization:
+    + share settings with collaborators
+    + facilitate graphics creation for new version of the datasets
+    
+```{r fig.align = "center", out.width = "35%"}    
+include_graphics("./images/previewModule_save.png")
+```
+
+
+## Application
 
 * Technical details:
     + `Shiny` application embedded in the R package
-    + Local of server deployment
+    + Local or server deployment
     + Deployment with the [`ShinyProxy`](https://www.shinyproxy.io/) technology
-         + `Docker` container encapsule all tools -> fixed version of `R` base
-           and packages 
+         + `Docker` container encapsule all pre-requisite tools  
+         $\rightarrow$ fixed version of `R` base and packages 
          + Scale up to large number of users 
-
-
 
 <!-- TODO: add screenshots of the application -->
 
-* Demonstration
+* Demonstration PoC
 
-## Last one {.centered}
+## {.centered}
 
-**Thank you!**
+
+<div id='sample'>
+<span class='vertical'><font size="6">**Questions?**</font> </span>
+</div>
+
+## Appendix
+
+## Shiny application
+
+
+
+
