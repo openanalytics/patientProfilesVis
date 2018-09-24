@@ -6,7 +6,9 @@ author:
   company: ""
 
 date: "October 1st, 2018"
-output: glpgStyle::ioslides
+output:
+  glpgStyle::ioslides:
+    self_contained: true
 ---
 
 ```{r loadLibraries, echo = FALSE, message = FALSE}
@@ -63,18 +65,23 @@ output: glpgStyle::ioslides
 
 * to display subject-specific information
     + Demography:  
-<img width="100%" src="./images/exampleTextModule-wideFormat-include-1.png"/> 
-
+```{r fig.align = "center", out.width = "100%"}    
+include_graphics("./images/exampleTextModule-wideFormat-include-1.png")
+```
     + Medical history:  
-<img width="100%" src="./images/exampleTestModule-longFormat-multipleVariables-include-1.png"/> 
-
+```{r fig.align = "center", out.width = "100%"}    
+include_graphics("./images/exampleTestModule-longFormat-multipleVariables-include-1.png")
+```
 
 ## Interval module
 
 * to display metric with start/end date (e.g. adverse
       events)
-  
-<img width="100%" src="./images/exampleModule_interval_AE.png"/>
+
+```{r fig.align = "center", out.width = "100%"}    
+include_graphics("./images/exampleModule_interval_AE.png")
+```
+
 * option to fill missing start/end date with extra variable, e.g. first/last visit (`subject-visit` dataset)
 
 
@@ -82,24 +89,30 @@ output: glpgStyle::ioslides
 
 * to display for metric with unique date
 
-<img width="100%" src="./images/exampleEventModuleWithSubset-include-1.png"/>
-
+```{r fig.align = "center", out.width = "100%"}    
+include_graphics("./images/exampleEventModuleWithSubset-include-1.png")
+```
 
 ## Line module
 
-* line: display evolution of numeric metric of parameters of interest in the
+* to display evolution of numeric metric of parameters of interest in the
   time frame:  
 e.g. actual value, change from baseline  in the time
   frame of laboratory parameters
 
-<img width="100%" src="./images/exampleLineModule-colorShape-include-1.png"/>
+```{r fig.align = "center", out.width = "100%"}    
+include_graphics("./images/exampleLineModule-colorShape-include-1.png")
+```
 * option for reference range
+
 
 ## Final deliverable
 
 * Report (`pdf` format) with time profiles of interest per subject
 
-<img width="70%" src="./images/report1.png"/>
+```{r fig.align = "center", out.width = "70%"}    
+include_graphics("./images/report1.png")
+```
 
 ## Time settings
 
@@ -109,16 +122,26 @@ e.g. actual value, change from baseline  in the time
 
 * Creation of the time profile visualization directly from a web browser
 * Default module settings available for `SDTM` format
+* Option for custom-defined visualization
 
-<img width="70%" src="./images/appMainPage.png"/>
-
+```{r fig.align = "center", out.width = "80%"}    
+include_graphics("./images/appMainPage.png")
+```
 
 ## Application
 
 * Creation of user-custom visualization: preview panel
 
-<img width="35%" src="./images/module_interval_AE.png"/>
-<img width="35%" src="./images/previewModule_interval_AE.png"/>
+<div class="columns-2">
+```{r fig.align = "center", out.width = "80%"}    
+include_graphics("./images/module_interval_AE.png")
+```
+
+
+```{r fig.align = "center", out.width = "100%"}    
+include_graphics("./images/previewModule_interval_AE.png")
+```
+</div>
 
 ## Application
 
@@ -151,10 +174,6 @@ include_graphics("./images/previewModule_save.png")
 <div id='sample'>
 <span class='vertical'><font size="6">**Questions?**</font> </span>
 </div>
-
-## Appendix
-
-## Shiny application
 
 
 
