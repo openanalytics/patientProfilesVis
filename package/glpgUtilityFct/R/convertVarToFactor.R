@@ -5,6 +5,7 @@
 #' @param varNum character vector with associated numeric variable(s)
 #' @return data.frame with specified variable converted to factor
 #' @author Laure Cougnaud
+#' @importFrom stats reorder
 #' @export
 convertVarToFactor <- function(data, var, varNum){
 	
