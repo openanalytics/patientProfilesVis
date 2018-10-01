@@ -26,62 +26,78 @@ output:
 
 ## Goal
 
-* Create subject profile report for specific trial:
-    + main endpoint
-    + laboratory data
+* Create **patient profile visualization** for specific trial:
+    + main endpoint(s)
+    + laboratory measurements
     + adverse events
-    + ...
+    + treatment exposure ...
 
 ## General
 
 Two setups:
 
-* Non-statisticians/medics: user-friendly graphical interface for creation
+* **Non-statisticians/medics**: 
+    + user-friendly **graphical interface** for creation
   of patient profile report
-* Statisticians/programmers: functionalities available via `R` package 
+* **Statisticians/programmers**: 
+    + **functionalities** available via `R` package
+    + creation of visualization outside of the report 
       
-## General
+## Framework
 
-* Framework:
-    + Create visualization of time profile for each set of metrics of
+* Create visualization of time profile for each set of metrics of
       interest:  
     e.g. main
         endpoint, laboratory parameters, adverse event, subject-specific
         metadata information
-    + Combine the different modules across time frame
-    + Create patient profile report
+* Combine the different modules across time frame
+* Create patient profile report
+    
+## Input data    
+    
+* Data format: SAS dataset (_.sas7bdat_)
+* Data types:
+    + `SDTM`: _Study Data Tabulation Model_
+    + `ADaM`: _Analysis Data Model_
+* Advantage: **standardized format**:
+    + variable sensible name
+    + default modules in the interface
+    
+## Concept of 'modules'
+
 * Modular approach: 
     + 4 types of visualization: text, event, interval and line profile
     + creation of visualization/`module` for each set of metrics of interest
-* Input: `SDTM` or `ADaM` files of study of interest in **standardized** format
 
 ## Text module
 
-* to display subject-specific information
-    + Demography:  
+* subject-specific descriptive information
+    + Set of variables (e.g. demography)  
 ```{r fig.align = "center", out.width = "100%"}    
 include_graphics("./images/exampleTextModule-wideFormat-include-1.png")
 ```
-    + Medical history:  
+    + Pair of matched variable(s) (e.g. medical history)  
 ```{r fig.align = "center", out.width = "100%"}    
 include_graphics("./images/exampleTestModule-longFormat-multipleVariables-include-1.png")
 ```
 
 ## Interval module
 
-* to display metric with start/end date (e.g. adverse
+* metric with start/end time (e.g. adverse
       events)
 
 ```{r fig.align = "center", out.width = "100%"}    
 include_graphics("./images/exampleModule_interval_AE.png")
 ```
 
-* option to fill missing start/end date with extra variable, e.g. first/last visit (`subject-visit` dataset)
-
+* missing start/end date
+    + open arrow representation
+    + extra variable, e.g. first/last visit
+  (`subject-visit` dataset)
 
 ## Event module
 
-* to display for metric with unique date
+* metric with unique fixed time (e.g. laboratory measurements)
 
 ```{r fig.align = "center", out.width = "100%"}    
 include_graphics("./images/exampleEventModuleWithSubset-include-1.png")
@@ -89,15 +105,16 @@ include_graphics("./images/exampleEventModuleWithSubset-include-1.png")
 
 ## Line module
 
-* to display evolution of numeric metric of parameters of interest in the
-  time frame:  
-e.g. actual value, change from baseline  in the time
-  frame of laboratory parameters
+* time evolution of numeric metric of parameters of interest in the
+  time frame
+(e.g. actual value, change from baseline  in the time
+  frame of laboratory parameters)
 
 ```{r fig.align = "center", out.width = "100%"}    
 include_graphics("./images/exampleLineModule-colorShape-include-1.png")
 ```
-* option for reference range
+
+* option for dataset/variables specification for reference range
 
 
 ## Final deliverable
@@ -110,19 +127,24 @@ include_graphics("./images/report1.png")
 
 ## Time settings
 
-* Time format consistent across modules (datasets): currently day
+* Time
+    + **consistent across modules** (datasets)
+    + numeric format
+    + relative day (_DY_)
 
-## Application
+## Interface
 
-* Creation of the time profile visualization directly from a web browser
-* Default module settings available for `SDTM` format
+* Creation of the time profile visualization
+    + directly from a web browser
+    + user-friendly: default module settings available for `SDTM` format
+        + name dataset/variable (implemented _Pelican_ study)
 * Option for custom-defined visualization
 
 ```{r fig.align = "center", out.width = "80%"}    
 include_graphics("./images/appMainPage.png")
 ```
 
-## Application
+## Interface: Preview panel
 
 * Creation of user-custom visualization: preview panel
 
@@ -131,13 +153,12 @@ include_graphics("./images/appMainPage.png")
 include_graphics("./images/module_interval_AE.png")
 ```
 
-
 ```{r fig.align = "center", out.width = "100%"}    
 include_graphics("./images/previewModule_interval_AE.png")
 ```
 </div>
 
-## Application
+## Interface: settings export
 
 * Creation of user-custom visualization:
     + share settings with collaborators
@@ -147,23 +168,15 @@ include_graphics("./images/previewModule_interval_AE.png")
 include_graphics("./images/previewModule_save.png")
 ```
 
-<!-- TODO: add screenshots of the application -->
+## Interface {.centered}
 
 * Demonstration PoC
 
-## {.centered}
-
-
-<div id='sample'>
-<span class='vertical'><font size="6">**Questions?**</font> </span>
-</div>
-
-
-# Appendix
-
 ## Implementation details
 
-* Open-source [R](https://www.r-project.org/) software and add-on R packages: 
+* Open-source
+  [<img src="./images/Rlogo.png" alt="R logo" height="32">](https://www.r-project.org/)
+  software and add-on R packages: 
      + import of SAS dataset: `haven`, visualization: `ggplot2`
      + interface creation: `shiny`
 * Tools:
@@ -173,7 +186,7 @@ include_graphics("./images/previewModule_save.png")
     + for Medics: 
         + set of functionalities in web application
         + `patientProfilesVisShiny` R package
-        + deployed in a _Galapagos_ R Biometrics server
+        + PoC deployed in a _Galapagos_ R Biometrics server
 
 ## Application details
 
@@ -184,3 +197,24 @@ include_graphics("./images/previewModule_save.png")
          + `Docker` container encapsule all pre-requisite tools  
          $\rightarrow$ fixed version of `R` base and packages 
          + Scale up to large number of users 
+
+## Reproducibility
+
+* *ShinyProxy*: R/package(s) specific version in an isolated environment
+* R package version in report
+
+```{r fig.align = "center", out.width = "70%"}    
+include_graphics("./images/report_sessionInfo.png")
+```
+
+## Conclusion
+
+* User-friendly graphical interface for creation of patient-specific profile
+  report
+* Future work(s):
+    + _Galapagos_ authentification system
+    + Link to data storage: SAS _LSAF_ (Life Science Analytics Framework)
+      dataset
+* Questions?
+
+
