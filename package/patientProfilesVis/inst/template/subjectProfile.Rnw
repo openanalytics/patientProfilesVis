@@ -106,11 +106,11 @@
 		paste0(labelPlots, ".pdf")
 	)
 	# create the plots
-	system.time(tmp <- sapply(seq_along(listPlotsPerSubject), function(i){
+	tmp <- sapply(seq_along(listPlotsPerSubject), function(i){
 		pdf(fileNames[i], width = textWidthInches, height = figHeightInches[i])
 		print(listPlotsPerSubject[[i]])
 		tmp <- dev.off()
-	}))
+	})
 	
 	# include the graphics in the report
 	tmp <- sapply(seq_along(listPlotsPerSubject), function(i){
