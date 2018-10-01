@@ -49,6 +49,29 @@ getDefaultModules <- function(data){
 					)
 				)
 		},
+		if("EX" %in% names(data) &&
+			all(c("EXTRT", "EXSTDY", "EXENDY") %in% names(data$EX))){
+			list('Treatment exposure (default, interval)' = 
+				c(
+					list(
+						data = "EX",
+						paramVar = c("EXTRT",
+							if("EXDOSE" %in% names(data$EX))	"EXDOSE", 
+							if("EXDOSU" %in% names(data$EX))	"EXDOSU"
+						),
+						type = "interval",
+						timeStartVar = "EXSTDY",
+						timeEndVar = "EXENDY",
+#						label = "defaultSDTMEXInterval",
+						title = "Treatment exposure",
+						subjectVar =  "USUBJID"
+					),
+					if("EXDOSFRM" %in% names(data$EX))
+						list(colorVar = "EXDOSFRM"),
+					timeLimParams
+					)
+			)
+		},
 		if("AE" %in% names(data) &&
 			all(c("AETERM", "AESTDY", "AEENDY") %in% colnames(data$AE))){
 			list('Adverse events (default, interval)' = c(
@@ -109,29 +132,28 @@ getDefaultModules <- function(data){
 			)
 		},
 		
-		if("EX" %in% names(data) &&
-			all(c("EXTRT", "EXSTDY", "EXENDY") %in% names(data$EX))){
-			list('Treatment exposure (default, interval)' = 
-				c(
+		if("CM" %in% names(data) && 
+			all(c("CMDECOD", "CMSTDY", "CMENDY") %in% colnames(data$CM)) &&
+			"SV" %in% names(data) && 
+			all(c("SVSTDY", "SVENDY") %in% colnames(data$SV))){
+				list('Concomitant medications (default, interval)' = 
 					list(
-						data = "EX",
-						paramVar = c("EXTRT",
-							if("EXDOSE" %in% names(data$EX))	"EXDOSE", 
-							if("EXDOSU" %in% names(data$EX))	"EXDOSU"
-						),
+						data = "CM",
+						paramVar = "CMDECOD",
 						type = "interval",
-						timeStartVar = "EXSTDY",
-						timeEndVar = "EXENDY",
-#						label = "defaultSDTMEXInterval",
-						title = "Treatment exposure",
+						timeStartVar = "CMSTDY",
+						timeEndVar = "CMENDY",
+						# time limits specifications
+						timeLimSelect = "subject-specific",
+						title = "Concomitant medications",
+						timeLimData = "SV",
+						timeLimStartVar = "SVSTDY",
+						timeLimEndVar = "SVENDY",
 						subjectVar =  "USUBJID"
-					),
-					if("EXDOSFRM" %in% names(data$EX))
-						list(colorVar = "EXDOSFRM"),
-					timeLimParams
 				)
 			)
 		}
+
 	)
 	
 	return(defaultModules)
