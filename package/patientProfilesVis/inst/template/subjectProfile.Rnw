@@ -90,19 +90,45 @@
 		landscape = inputParameters$formatReport$landscape,
 		aspectRatio = inputParameters$formatReport$aspectRatio
 	)
-	#ifelse(landscape, 598, 345)/72
-#	figHeightInches <- paste0("'", round(textHeightPt/figHeightPt, 2), "\\textheight'")
-	knitPrintListPlotsKnitr(
-		plotsList = listPlotsPerSubject,
-		out.width = "'\\\\textwidth'",
-		fig.height = figHeightInches,
-		fig.width = textWidthInches,
-		sectionTitles = sectionTitles,
-		labels = labelPlots,
-		bookmarkInfos = bookmarkInfos
-	)
+	# option 1:
+#	system.time(knitPrintListPlotsKnitr(
+#		plotsList = listPlotsPerSubject,
+#		out.width = "'\\\\textwidth'",
+#		fig.height = figHeightInches,
+#		fig.width = textWidthInches,
+#		sectionTitles = sectionTitles,
+#		labels = labelPlots,
+#		bookmarkInfos = bookmarkInfos
+#	))
 	
+	# option 2:
+	fileNames <- file.path(inputParameters$outputDir, "figures/", 
+		paste0(labelPlots, ".pdf")
+	)
+	# create the plots
+	system.time(tmp <- sapply(seq_along(listPlotsPerSubject), function(i){
+		pdf(fileNames[i], width = textWidthInches, height = figHeightInches[i])
+		print(listPlotsPerSubject[[i]])
+		tmp <- dev.off()
+	}))
+	
+	# include the graphics in the report
+	tmp <- sapply(seq_along(listPlotsPerSubject), function(i){
+				
+		# section title
+		if(sectionTitles[i] != "")
+			cat("\\subsection{", sectionTitles[i], "}", 
+			if(!is.null(bookmarkInfos) && bookmarkInfos[i] != "")	bookmarkInfos[i],
+			"\n", sep = ""
+		)
+		cat("\\includegraphics[width=\\textwidth]{", fileNames[i], "}\n", sep = "")
+		cat('\\newpage\n')
+			
+	})
+
 @
+
+
 
 % add table of contents in 'Index'
 %\cleardoublepage
