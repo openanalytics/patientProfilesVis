@@ -598,7 +598,7 @@ The function `createSubjectProfileReport` has mainly two purposes:
 			lbLinePlots, 
 			lbPlotsColor
 		),
-		refLines = refLinesParam,
+#		refLines = refLinesParam,
 		timeLim = c(-20, 52),
 		outputFile = "subjectProfile_SDTM_referenceLinesFromSAP.pdf",
 		exportFigures = TRUE,
