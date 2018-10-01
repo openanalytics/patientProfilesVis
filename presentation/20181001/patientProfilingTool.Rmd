@@ -127,7 +127,7 @@ include_graphics("./images/report1.png")
 
 ## Time settings
 
-* Time
+* Time variable
     + **consistent across modules** (datasets)
     + numeric format
     + relative day (_DY_)
@@ -194,23 +194,25 @@ include_graphics("./images/previewModule_save.png")
     + `Shiny` application embedded in the R package
     + Local or server deployment
     + Deployment with the [`ShinyProxy`](https://www.shinyproxy.io/) technology
-         + `Docker` container encapsule all pre-requisite tools  
+         + `Docker` container encapsules all pre-requisite tools  
          $\rightarrow$ fixed version of `R` base and packages 
          + Scale up to large number of users 
 
 ## Reproducibility
 
+* R package: 
+    + code structure easily shareable
+    + versioned
 * *ShinyProxy*: R/package(s) specific version in an isolated environment
 * R package version in report
 
-```{r fig.align = "center", out.width = "70%"}    
+```{r fig.align = "center", out.width = "55%"}    
 include_graphics("./images/report_sessionInfo.png")
 ```
 
 ## Conclusion
 
-* User-friendly graphical interface for creation of patient-specific profile
-  report
+* User-friendly graphical interface patient profiling work
 * Future work(s):
     + _Galapagos_ authentification system
     + Link to data storage: SAS _LSAF_ (Life Science Analytics Framework)
