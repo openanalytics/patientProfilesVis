@@ -3,7 +3,7 @@ original/
 /data/
 documentation/
 *.html
-tests/
+/tests/
 *.pdf
 *.tex
 *.png
