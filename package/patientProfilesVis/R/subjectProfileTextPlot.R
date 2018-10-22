@@ -108,11 +108,7 @@ subjectProfileTextPlot <- function(
 				unname(varsLabels[as.character(dataPlot$variable)]),
 				levels = rev(labelVars[paramValueVar])
 			)		
-		}else factor(dataPlot$variable, levels = rev(paramValueVar))
-		dataPlot$variable <- formatParamVar(
-			data = dataPlot, paramVar = "variable", 
-			width = formatReport$yLabelWidth
-		)
+		}else factor(dataPlot$variable, levels = rev(paramValueVar))		
 
 	}else{
 
@@ -126,20 +122,21 @@ subjectProfileTextPlot <- function(
 		colnames(dataPlot)[which(colnames(dataPlot) == paramNameVar)] <- "variable"
 		if(paramNameVar == subjectVar)	dataPlot[, subjectVar] <- dataPlot$variable
 		
-		# if paramGroupVar is specified: change order levels of 'variable'
-		dataPlot$variable <- formatParamVar(
-			data = dataPlot, paramVar = "variable", 
-			paramGroupVar = paramGroupVar,
-			revert = TRUE, 
-			width = formatReport$yLabelWidth
-		)
-		
-	}
+	}	
 		
 	# create the plot
 	listPlots <- dlply(dataPlot, subjectVar, function(dataSubject){	
 				
 		subject <- unique(dataSubject[, subjectVar])
+		
+		# if paramGroupVar is specified: change order levels of 'variable'
+		dataSubject <- formatParamVarTextPlot(
+			data = dataSubject, 
+			paramVar = "variable", paramValueVar = "value",
+			paramGroupVar = if(!is.null(paramNameVar))	paramGroupVar,
+			revert = !is.null(paramNameVar), 
+			formatReport = formatReport
+		)
 		
 		# split plot into multiple page(s)
 		dataSubject <- getPageVar(
