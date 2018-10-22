@@ -121,7 +121,11 @@ getNLinesLabel <- function(gg,
 #' containing number of lines in each element
 #' @importFrom stringr str_count
 #' @author Laure
-countNLines <- function(x)	str_count(x, "\n") + 1
+countNLines <- function(x){
+	nLineBreaks <- str_count(x, "\n")
+	nLineBreaks[is.na(nLineBreaks)] <- 0
+	nLineBreaks + 1
+}
 
 #' Get variable with page of the plot,
 #' used for automatic paging of a plot
@@ -152,13 +156,15 @@ getPageVar <- function(data, var,
 	nElPerPage <- floor(maxNLines / switch(typeVar, 'y' = 1, 'panel' = 4))
 	
 	# in case some levels are not present for some subjects
-	data[, var] <- droplevels(data[, var])
+	# and convert to a factor
+	data[, var] <- droplevels(data[, var], exclude = NULL)
 	
 	# get vector with cumulative number of lines across plots
 	levelsRows <- seq_len(nlevels(data[, var]))
 
 	# cut the variable by the maximum number of lines
-	numVect <- .bincode(x  = levelsRows, 
+	numVect <- .bincode(
+		x  = levelsRows, 
 		breaks = c(seq(from = 1, to = max(levelsRows), by = nElPerPage), Inf),
 		right = FALSE
 	)

@@ -115,7 +115,7 @@ subjectProfileTextPlot <- function(
 		)
 
 	}else{
-		
+
 		# extract the value to display in the plot
 		data$value <- if(is.function(paramValueVar))
 			paramValueVar(data)	else	combineMultipleVars(paramValueVar)
