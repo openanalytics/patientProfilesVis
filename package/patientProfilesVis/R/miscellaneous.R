@@ -276,14 +276,16 @@ getAesScaleManual <- function(lab, palette, type){
 	
 }
 
-#' Format a variable as factor, and optionally sorted according to the levels
+#' Format a variable as factor, 
+#' wrap it across multiple lines if needed
+#' and optionally sorted according to the levels
 #' of a grouping variable
 #' @param data data.frame with data
 #' @param paramVar string, variable of \code{data} with parameter
 #' @param paramGroupVar (optional) character vector with variable(s) of \code{data} with grouping.
 #' If specified, the parameters will be grouped by this(these) variable(s) in the y-axis.
 #' @param revert logical, if TRUE revert the order of the levels of the variable
-#' @param width max
+#' @param width max number of characters in the code{paramVar} parameter.
 #' @return vector with re-formatted \code{paramVar}, NULL if empty
 #' @importFrom dplyr n_distinct
 #' @author Laure Cougnaud
@@ -339,6 +341,122 @@ formatParamVar <- function(data,
 	}
 	
 	return(res)
+	
+}
+
+#' Format text variables for the \code{\link{subjectProfileTextPlot}} function, 
+#' wrap it across multiple lines if needed,
+#' and optionally sorted according to the levels
+#' of a grouping variable
+#' @param paramValueVar  string, variable of \code{data} containing the parameter value. 
+#' @param widthValue max number of characters in the code{paramValueVar} parameter.
+#' @inheritParams formatParamVar
+#' @inheritParams getPageVar
+#' @return \code{data} with reformatted \code{paramVar} and \code{paramValueVar} variables.
+#' @author Laure Cougnaud
+formatParamVarTextPlot <- function(data, 
+	paramVar = NULL, 
+	paramValueVar = NULL,
+	paramGroupVar = NULL, 
+	revert = FALSE,
+	width = formatReport$yLabelWidth,
+	widthValue = ifelse(
+		formatReport$landscape,
+		240,
+		140
+	),
+	formatReport = subjectProfileReportFormat()){
+
+	## parameter value variable
+		
+#		# get width plot
+#		textWidthLaTeXIn <- getWidthPlot(
+#			margin = formatReport$margin, 
+#			landscape = formatReport$landscape, 
+#			aspectRatio = formatReport$aspectRatio
+#		)
+#		plotMarginIn <- sum(grid::convertX(theme_bw()$plot.margin[c(2, 4)], "inches", valueOnly = TRUE))
+#		textWidthPlotIn <- textWidthLaTeXIn-plotMarginIn
+		
+	# get width character
+	paramValueVect <- if(!is.factor(data[, paramValueVar])){	
+		factor(data[, paramValueVar])
+	}else{
+		data[, paramValueVar]
+	}
+	
+	# cut too long labels
+	paramValueLevels <- formatLongLabel(
+		x = levels(paramValueVect), width = widthValue
+	)
+	paramValueVect <- factor(paramValueVect, 
+		levels = names(paramValueLevels), 
+		labels = paramValueLevels
+	)
+	data[, paramValueVar] <- paramValueVect
+		
+	## parameter name variable
+	
+	paramVarVect <- if(!is.factor(data[, paramVar])){	
+		factor(data[, paramVar])
+	}else{
+		data[, paramVar]
+	}
+		
+	# cut too long labels
+	paramVarLevels <- formatLongLabel(
+		x = levels(paramVarVect), width = width
+	)
+	
+	nLinesValue <- tapply(
+		data[, paramValueVar],
+		paramVarVect,
+		function(x)
+		max(countNLines(x))
+	)
+	extraLines <- nLinesValue[match(names(paramVarLevels), names(nLinesValue))] - countNLines(paramVarLevels)
+	extraLines[extraLines < 0] <- 0	
+	
+	paramVarLevelsWithExtraLines <- paste0(paramVarLevels, 
+		unlist(mapply(rep, x = "\n", times = extraLines))
+	)
+	
+	paramVarVect <- factor(
+		paramVarVect, 
+		levels = names(paramVarLevels), 
+		labels = paramVarLevelsWithExtraLines
+	)
+	
+	# if paramGroupVar is specified: change order levels of 'variable'
+	if(!is.null(paramGroupVar)){
+		if(!paramGroupVar %in% names(data)){
+			warning("The variable used for grouping is not used because not in the data.")
+		}else{
+			if(is.null(paramVar)){
+				warning("The variable used for grouping ('paramGroupVar') is not used",
+						"because no variable for parameter ('paramVar') is not specified.")
+			}else{
+				groupVariable <- if(length(paramGroupVar) > 1){
+					interaction(data[, paramGroupVar])
+				}else{
+					if(!is.factor(data[, paramGroupVar]))
+						factor(data[, paramGroupVar])	else	data[, paramGroupVar]
+					}	
+				if(!all(tapply(groupVariable, paramVarVect, n_distinct) == 1)){
+					warning(paste("The grouping variable:", groupVariable, "is not used, ",
+						"because it is not unique for all parameters."))
+				}else{
+					paramVarVect <- reorder(paramVarVect, groupVariable, unique)
+				}
+			}
+		}
+	}
+	
+	data[, paramVar] <- if(revert){
+		factor(paramVarVect, levels = rev(levels(paramVarVect)))
+	}else	paramVarVect
+	
+	return(data)
 	
 }
 
