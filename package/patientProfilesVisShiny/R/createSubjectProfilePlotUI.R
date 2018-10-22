@@ -1,63 +1,16 @@
 #' Create subject profile plot(s) based on parameters from the Shiny UI
-#' @param input Shiny input object
-#' @param results reactiveValues object with list of results created from the server script
+#' @inheritParams getModuleParams
 #' @return subject profile plot(s)
 #' @author Laure Cougnaud
 #' @import shiny
 #' @export
 createSubjectProfileFromShinyInput <- function(input, results){
 
-	listParams <- c(
-		list(
-			data = results$dataCurrent(),
-			subjectVar = input$moduleSubjectVar,
-			title = input$moduleTitle,
-#			label = input$moduleLabel,
-			labelVars = results$labelVars(),
-			paramGroupVar = input$moduleParamGroupVar,
-			subsetVar = input$moduleSubsetVar,
-			subsetValue = input$moduleSubsetValue
-		),
-		switch(input$moduleType,
-			'text' = switch(input$moduleTextVarSpecType,
-				'1' = list(paramValueVar = input$moduleTextParamValueVar),
-				'2' = list(
-					paramValueVar = input$moduleTextParamValueVarPair,
-					paramNameVar = input$moduleTextParamNameVarPair
-				)
-			),
-			'event' = list(
-				paramVar = input$moduleParamVar,
-				timeVar = input$moduleTimeVar,
-				colorVar = input$moduleColorVar,
-				shapeVar = input$moduleEventShapeVar
-			),
-			'interval' = c(
-				list(
-					paramVar = input$moduleParamVar,
-					timeStartVar = input$moduleIntervalTimeStartVar,
-					timeEndVar = input$moduleIntervalTimeEndVar,
-					colorVar = input$moduleColorVar
-				),
-				switch(input$moduleIntervalTimeLimSelect,
-					"fixed" = list(timeLim = input$moduleIntervalTimeLim),
-					"subject-specific" = list(
-						timeLimData = results$timeLimData(),
-						timeLimStartVar = input$moduleIntervalTimeLimStartVar,
-						timeLimEndVar = input$moduleIntervalTimeLimEndVar
-					)
-				)
-				
-			),
-			'line' = list(
-				paramNameVar = input$moduleLineParamNameVar,
-				paramValueVar = input$moduleLineParamValueVar,
-				paramValueRangeVar = input$moduleLineParamValueRangeVar,
-				timeVar = input$moduleTimeVar,
-				colorVar = input$moduleColorVar				
-			)
-		)
-	)
+	listParams <- getModuleParams(
+		input = input, 
+		results = results,
+		use = "plotFunction"
+	)	
 	
 	namesParam <- c(
 		'data' = 'data', 'title' = 'title', 'label' = 'label',
@@ -80,11 +33,6 @@ createSubjectProfileFromShinyInput <- function(input, results){
 		'subsetVar' = "filtering variable",
 		'subsetValue' = "filtering value(s)"
 	)
-	
-	# remove empty optional parameters
-	listParams <- listParams[sapply(listParams, function(x) 
-		!(length(x) == 1 && x == "none")
-	)]
 	
 	# check if all parameter(s) are specified
 	reqParam <- c("data", "title",

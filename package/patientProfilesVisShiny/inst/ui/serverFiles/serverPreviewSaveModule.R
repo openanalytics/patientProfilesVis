@@ -41,7 +41,6 @@ output$moduleResults <- renderUI({
 		
 	tagList(	
 					
-#	h1("Module preview"),
 		fluidRow(
 			column(6, 
 				selectInput(inputId = "previewSubject", label = "Select subject",

@@ -7,9 +7,9 @@
 createSubjectProfileFromShinyInput(input, results)
 }
 \arguments{
-\item{input}{Shiny input object}
+\item{input}{Shiny input object.}
 
-\item{results}{reactiveValues object with list of results created from the server script}
+\item{results}{reactiveValues object with list of results created from the server script.}
 }
 \value{
 subject profile plot(s)

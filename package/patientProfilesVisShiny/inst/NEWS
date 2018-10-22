@@ -1,5 +1,7 @@
 0.0.9
     o add default concomitant medications panel
+    o getModuleParams: common fct for parameter extraction for use in createSubjectProfileFromShinyInput/getUIParamModule
+    o keep order selected parameters for createWidgets
 0.0.8
     o getUIParamModule: fix issue paramValueVarPair not saved
     o UI: fix to sort modules as selected in the UI for the report
