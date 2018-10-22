@@ -5,7 +5,10 @@
 <<optionsChunks, echo = FALSE, cache = FALSE, message = FALSE, warning = FALSE>>=
 
 	library(knitr)
-
+	
+	outputDirFig <- file.path(inputParameters$outputDir, "figures/")
+	if(!dir.exists(outputDirFig))	dir.create(outputDirFig, recursive = TRUE)
+	
 	knitr::opts_chunk$set(
 		echo = FALSE, 
 		message = FALSE,
@@ -14,7 +17,7 @@
 		error = FALSE, # stop-on-error
 		results = "asis",
 		fig.align = "center",
-		fig.path = file.path(inputParameters$outputDir, "figures/")
+		fig.path = outputDirFig
 	)
 	
 	options(warn = 1, width = 200)
@@ -102,9 +105,7 @@
 #	))
 	
 	# option 2:
-	fileNames <- file.path(inputParameters$outputDir, "figures/", 
-		paste0(labelPlots, ".pdf")
-	)
+	fileNames <- file.path(outputDirFig, paste0(labelPlots, ".pdf"))
 	# create the plots
 	tmp <- sapply(seq_along(listPlotsPerSubject), function(i){
 		pdf(fileNames[i], width = textWidthInches, height = figHeightInches[i])
