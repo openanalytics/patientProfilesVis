@@ -2,13 +2,13 @@ Package: patientProfilesVis
 Type: Package
 Title: Visualization Of Patient Profiles
 Version: 0.0.12
-Date: 2018-10-01
+Date: 2018-10-22
 Author: Laure Cougnaud
 Maintainer: Laure Cougnaud <laure.cougnaud@openanalytics.eu>
 Description: Creation of report with customizable visualization of patient profiles.
 Imports: ggplot2, plyr, cowplot, tools, reshape2, knitr, glpgStyle, grid, dplyr, stringr, glpgUtilityFct
 Suggests: pander, shiny, vdiffr
-License: Software for Internal Use at Galapagos and Open Analytics
+License: file LICENSE
 RoxygenNote: 6.1.0
 VignetteBuilder: knitr
 LazyData: true
