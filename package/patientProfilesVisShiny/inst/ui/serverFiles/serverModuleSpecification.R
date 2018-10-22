@@ -45,12 +45,24 @@ results$variablesDataCurrent <- reactive({
 results$variablesTimeDataCurrent <- reactive(getTimeVars(data = results$dataCurrent(), labelVars = results$labelVars()))
 
 # custom wrapper for selectInput based on column names
-createWidgetVariable <- function(..., optional = FALSE, multiple = FALSE, 
-	choices = c(
-		if(optional)	c('<none>' = 'none'), 
-		results$variablesDataCurrent())
-	)
-	selectInput(..., choices = choices, multiple = multiple)
+createWidgetVariable <- function(..., 
+	optional = FALSE, multiple = FALSE, 
+	choices = {
+		choices <- c(
+			if(optional)	c('<none>' = 'none'), 
+			results$variablesDataCurrent()
+		)
+		# sort choices as 'selected' (in case loaded from saved setting)
+		na.omit(if(!is.null(selected)){	
+			c(
+				choices[match(selected, choices)],
+				choices[!choices %in% selected]
+			)
+		}else	choices)
+	},
+	selected = NULL
+)
+	selectInput(..., selected = selected, choices = choices, multiple = multiple)
 
 # create widgets for module specification
 output$moduleParamPanel <- renderUI({

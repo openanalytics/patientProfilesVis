@@ -8,7 +8,7 @@
 getUIParamModule(input)
 }
 \arguments{
-\item{input}{Shiny input object}
+\item{input}{Shiny input object.}
 }
 \value{
 list of parameters

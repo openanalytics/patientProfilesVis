@@ -4,17 +4,21 @@
 #' @param ... further arguments that can be passed to \code{\link[shiny]{runApp}}
 #' @return no return value
 #' @importFrom shiny runApp
+#' @importFrom stats update
 #' @export
 runPatientProfilesVisShiny <- function(installDependencies = FALSE, ...){
 	
   # (1) Install all suggested R packages (see DESCRIPTION)
   if (installDependencies) {
     
-    ## (a) CRAN packages
-    update(dev_package_deps(
-		pkg = system.file("ui", package = "patientProfilesVisShiny"), dependencies = "Suggests")
-	)
-    
+	## (a) CRAN packages
+	if(requireNamespace("devtools")) 
+		update(
+		  devtools::dev_package_deps(
+			  pkg = system.file("ui", package = "patientProfilesVisShiny"), 
+			  dependencies = "Suggests"
+		  )
+	 )    
     
     ## (b) non-CRAN packages - by hand
 #    if (!requireNamespace("rhandsontable")) {
@@ -50,8 +54,6 @@ runPatientProfilesVisShiny <- function(installDependencies = FALSE, ...){
 	
 	
 	# (3) Run the application
-	library(shiny)
-#	enableBookmarking(store = "server")
 	runApp(appDir = tmpDir, ...)
 	
 }
