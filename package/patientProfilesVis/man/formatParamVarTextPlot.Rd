@@ -10,7 +10,7 @@ of a grouping variable}
 formatParamVarTextPlot(data, paramVar = NULL, paramValueVar = NULL,
   paramGroupVar = NULL, revert = FALSE,
   width = formatReport$yLabelWidth,
-  widthValue = ifelse(formatReport$landscape, 240, 140),
+  widthValue = ifelse(formatReport$landscape, 240, 190),
   formatReport = subjectProfileReportFormat())
 }
 \arguments{

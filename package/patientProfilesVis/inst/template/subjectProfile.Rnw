@@ -34,16 +34,12 @@
 \makeindex
 
 % decrease margins: 1.875 inches wide by default on 10pt
-<<setMargins>>=
-	cat(paste0("\\usepackage[margin=", inputParameters$formatReport$margin, "in]{geometry}\n"))
-@
-
-
-<<specifyLayout>>=
-
-	if(inputParameters$formatReport$landscape)
-		cat("\n", "\\usepackage[landscape]{geometry}", "\n", sep = "\n")
-
+<<setMarginsAndLayout>>=
+	cat(paste0("\\usepackage[",
+		if(inputParameters$formatReport$landscape)	"landscape,",
+		"margin=", inputParameters$formatReport$margin, "in",
+		"]{geometry}\n")
+	)
 @
 
 % make clickeable table of contents

@@ -20,6 +20,7 @@ getPathTemplate <- function(file){
 getNLinesYGgplot <- function(gg){
 	
 	nLinesPlot <- if(inherits(gg, "subjectProfileLinePlot")){
+				
 		facetVar <- names(gg$facet$params$rows)
 		facetLabels <- ggplot_build(gg)$layout$layout[, facetVar]
 		# at minimum 4 lines for the line plot
@@ -29,9 +30,21 @@ getNLinesYGgplot <- function(gg){
 			)(countNLines(facetLabels))
 		)
 	}else{
-		nElLayout <- nrow(ggplot_build(gg)$layout$layout)
-		yBreaks <- unique(unlist(lapply(seq_len(nElLayout), function(i)	layer_scales(gg, i = i)$y$get_breaks())))
-		nLinesPlot <- sum(countNLines(yBreaks))
+		
+		# for text profile
+		# as text content and y-axis labels can span multiple lines
+		# extract the number of lines as the maximum of number of lines of the text content and corresponding axis label
+		if(inherits(gg, "subjectProfileTextPlot")){
+			dataPanel <- layer_data(gg, i = 1)
+			nLinesLabelYAxis <- countNLines(layer_scales(gg, i = 1)$y$get_breaks()[dataPanel$y]) # lines of y-axis labels
+			nLinesTextPanel <- countNLines(as.character(dataPanel$label)) # lines of text panel
+			nLinesMax <- mapply(max, nLinesTextPanel, nLinesLabelYAxis) # max of n lines of panel and axis labels
+			nLinesPlot <- sum(nLinesMax) + 0.5 * (length(nLinesMax) - 1)
+		}else{
+			nElLayout <- nrow(ggplot_build(gg)$layout$layout)
+			yBreaks <- unique(unlist(lapply(seq_len(nElLayout), function(i)	layer_scales(gg, i = i)$y$get_breaks())))
+			nLinesPlot <- sum(countNLines(yBreaks))
+		}
 	}
 
 	# in case long legend
@@ -363,98 +376,25 @@ formatParamVarTextPlot <- function(data,
 	widthValue = ifelse(
 		formatReport$landscape,
 		240,
-		140
+		190
 	),
 	formatReport = subjectProfileReportFormat()){
 
 	## parameter value variable
-		
-#		# get width plot
-#		textWidthLaTeXIn <- getWidthPlot(
-#			margin = formatReport$margin, 
-#			landscape = formatReport$landscape, 
-#			aspectRatio = formatReport$aspectRatio
-#		)
-#		plotMarginIn <- sum(grid::convertX(theme_bw()$plot.margin[c(2, 4)], "inches", valueOnly = TRUE))
-#		textWidthPlotIn <- textWidthLaTeXIn-plotMarginIn
-		
-	# get width character
-	paramValueVect <- if(!is.factor(data[, paramValueVar])){	
-		factor(data[, paramValueVar])
-	}else{
-		data[, paramValueVar]
-	}
+	data[, paramValueVar] <- formatParamVar(
+		data = data, 
+		paramVar = paramValueVar,
+		revert = FALSE, paramGroupVar = NULL,
+		width = widthValue
+	)
 	
-	# cut too long labels
-	paramValueLevels <- formatLongLabel(
-		x = levels(paramValueVect), width = widthValue
-	)
-	paramValueVect <- factor(paramValueVect, 
-		levels = names(paramValueLevels), 
-		labels = paramValueLevels
-	)
-	data[, paramValueVar] <- paramValueVect
-		
 	## parameter name variable
-	
-	paramVarVect <- if(!is.factor(data[, paramVar])){	
-		factor(data[, paramVar])
-	}else{
-		data[, paramVar]
-	}
-		
-	# cut too long labels
-	paramVarLevels <- formatLongLabel(
-		x = levels(paramVarVect), width = width
+	data[, paramVar] <- formatParamVar(
+		data = data, 
+		paramVar = paramVar,
+		revert = revert, paramGroupVar = paramGroupVar,
+		width = width
 	)
-	
-	nLinesValue <- tapply(
-		data[, paramValueVar],
-		paramVarVect,
-		function(x)
-		max(countNLines(x))
-	)
-	extraLines <- nLinesValue[match(names(paramVarLevels), names(nLinesValue))] - countNLines(paramVarLevels)
-	extraLines[extraLines < 0] <- 0	
-	
-	paramVarLevelsWithExtraLines <- paste0(paramVarLevels, 
-		unlist(mapply(rep, x = "\n", times = extraLines))
-	)
-	
-	paramVarVect <- factor(
-		paramVarVect, 
-		levels = names(paramVarLevels), 
-		labels = paramVarLevelsWithExtraLines
-	)
-	
-	# if paramGroupVar is specified: change order levels of 'variable'
-	if(!is.null(paramGroupVar)){
-		if(!paramGroupVar %in% names(data)){
-			warning("The variable used for grouping is not used because not in the data.")
-		}else{
-			if(is.null(paramVar)){
-				warning("The variable used for grouping ('paramGroupVar') is not used",
-						"because no variable for parameter ('paramVar') is not specified.")
-			}else{
-				groupVariable <- if(length(paramGroupVar) > 1){
-					interaction(data[, paramGroupVar])
-				}else{
-					if(!is.factor(data[, paramGroupVar]))
-						factor(data[, paramGroupVar])	else	data[, paramGroupVar]
-					}	
-				if(!all(tapply(groupVariable, paramVarVect, n_distinct) == 1)){
-					warning(paste("The grouping variable:", groupVariable, "is not used, ",
-						"because it is not unique for all parameters."))
-				}else{
-					paramVarVect <- reorder(paramVarVect, groupVariable, unique)
-				}
-			}
-		}
-	}
-	
-	data[, paramVar] <- if(revert){
-		factor(paramVarVect, levels = rev(levels(paramVarVect)))
-	}else	paramVarVect
 	
 	return(data)
 	
