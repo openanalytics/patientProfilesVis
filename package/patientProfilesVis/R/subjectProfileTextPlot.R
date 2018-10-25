@@ -130,6 +130,7 @@ subjectProfileTextPlot <- function(
 		subject <- unique(dataSubject[, subjectVar])
 		
 		# if paramGroupVar is specified: change order levels of 'variable'
+		# wrap text in multiple lines if too long
 		dataSubject <- formatParamVarTextPlot(
 			data = dataSubject, 
 			paramVar = "variable", paramValueVar = "value",
