@@ -1,7 +1,9 @@
 0.0.12
     o include directly plots in report
     o getPageVar/countNLines: fix when variable contains missing value
-    o subjectProfileTextPlot: wrap text in panel across multiple lines (formatParamVarTextPlot)
+    o subjectProfileTextPlot: wrap text in panel across multiple lines (formatParamVarTextPlot new function)
+    o getNLinesYGgplot: fix for text plot + increase size for text
+    o report: fix for margins and landscape layout
 0.0.11
     o subjectProfileTextPlot: fix in case subjectVar same as paramNameVar/paramValueVar
 0.0.10

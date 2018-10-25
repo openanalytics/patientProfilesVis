@@ -86,8 +86,8 @@ results$subjectProfileReport <- eventReactive(input$createSubjectProfileReport, 
 				listPlots <- c(listPlots, listPlotsDefaults)
 				# sort modules as specified in the UI
 				listPlots <- listPlots[input$reportSelectedModules]
-			}	
-			
+			}
+						
 			potentialErrorMessage <- try(
 				createSubjectProfileReport(
 					listPlots = listPlots,
