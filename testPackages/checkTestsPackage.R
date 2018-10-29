@@ -1,4 +1,4 @@
-# Check test coverage for the 'patientProfileVis' package
+# Run tests and check tests coverage for the 'patientProfileVis' package
 # 
 # Author: Laure Cougnaud
 ###############################################################################
