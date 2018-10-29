@@ -1,5 +1,6 @@
 0.0.13
     o remove knitPrintListPlotsKnitr function
+    o include tests for each subjectProfile[*]Plot function with vdiffr package
 0.0.12
     o include directly plots in report
     o getPageVar/countNLines: fix when variable contains missing value
