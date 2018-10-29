@@ -28,10 +28,10 @@ check_built(path = pkgTarballPath)
 
 library(covr)
 
-# test coverage in tests + examples + vignettes for all 'subjectProfile'*'Plot' functions
+# test coverage all 'subjectProfile'*'Plot' functions
 pc <- package_coverage(
 	path = packagePath, 
-	type = c("tests", "vignettes"), # tests + vignettes + examples
+	type = c("tests", "vignettes"), # tests + vignettes
 	function_exclusions = "^(?!subjectProfile.*Plot)", # only subject profile plot function
 	combine_types = TRUE # report coverage for each type
 )
