@@ -15,6 +15,7 @@ library(vdiffr)
 # if different, the order of the parameters in the y-axis of the plot might differ
 Sys.setlocale(category = "LC_COLLATE", locale = "C")
 
+# create reference figures in 'tests/fig' package
 validate_cases(collect_cases(package = packagePath))
 
 ## create the package
