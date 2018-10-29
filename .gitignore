@@ -13,3 +13,5 @@ documentation/
 shiny/moduleSettings
 *.docx
 testPackages/lib
+package/*/tests/figs
+.Rproj.user
