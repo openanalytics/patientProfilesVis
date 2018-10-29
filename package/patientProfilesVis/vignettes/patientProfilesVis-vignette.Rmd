@@ -402,7 +402,7 @@ laboratory measurement (and corresponding time).
 	# create plot
 	lbPlots <- subjectProfileEventPlot(
 		data = dataLB,
-		paramVar = "LBTEST",
+		paramVar = c("LBSCAT", "LBTEST"),
 		paramGroupVar = "LBSCAT",
 		timeVar = "LBDY",
 		labelVars = labelVarsSDTMPelican,
