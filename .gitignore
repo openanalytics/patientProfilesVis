@@ -12,3 +12,4 @@ documentation/
 *.Rcheck
 shiny/moduleSettings
 *.docx
+testPackages/lib

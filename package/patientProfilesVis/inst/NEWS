@@ -1,3 +1,5 @@
+0.0.13
+    o remove knitPrintListPlotsKnitr function
 0.0.12
     o include directly plots in report
     o getPageVar/countNLines: fix when variable contains missing value
