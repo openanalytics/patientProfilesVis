@@ -1,5 +1,5 @@
 0.0.10
-    o add reportSubjectSort[Data|Var|Value]
+    o add reportSubjectSubset[Data|Var|Value]
 0.0.9
     o add default concomitant medications panel
     o getModuleParams: common fct for parameter extraction for use in createSubjectProfileFromShinyInput/getUIParamModule
