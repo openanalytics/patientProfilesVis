@@ -8,11 +8,14 @@ output$reportCreation <- renderUI({
 	validate(need(results$dataRes(), "Please upload some data."))
 	
 	tagList(
+		h2("Module selection"),
 		selectInput(inputId = "reportSelectedModules",
 			label = "Module(s) selected for the report", multiple = TRUE,
 			choices = results$defaultModulesNames(),
 			selected = results$defaultModulesNames()
 		),
+		
+		h2("Subjects selection/ordering"),
 		strong("Sort subjects based on:"),
 		fluidRow(
 			column(6,
@@ -24,6 +27,18 @@ output$reportCreation <- renderUI({
 			),
 			column(6, uiOutput("reportSubjectSortVarPanel"))
 		),
+		strong("Select subjects based on:"),
+		fluidRow(
+			column(4,
+				selectInput(inputId = "reportSubjectSubsetData",
+					label = "Dataset", multiple = FALSE,
+					choices = c('<none>' = 'none', results$datasets()),
+					selected = c('<none>' = 'none')
+				)
+			),
+			column(8, uiOutput("reportSubjectSubsetVarPanel"))
+		),
+		h2("Report creation"),
 		fluidRow(
 			column(6, actionButton(inputId = "createSubjectProfileReport", label = "Create report")),
 			column(6, uiOutput("downloadSubjectProfileReportPanel"))
@@ -32,7 +47,7 @@ output$reportCreation <- renderUI({
 	
 })
 
-# extract the possible variable to sort subject by
+# extract the possible variable to sort subject(s) by
 output$reportSubjectSortVarPanel <- renderUI({
 			
 	validate(need(input$reportSubjectSortData, "reportSubjectSortData"))
@@ -49,6 +64,50 @@ output$reportSubjectSortVarPanel <- renderUI({
 		choices = reportSubjectSortVars, 
 		selected = reportSubjectSortVars[1]
 	)
+})
+
+# extract the possible variable to select subject(s) on...
+output$reportSubjectSubsetVarPanel <- renderUI({
+			
+	validate(need(input$reportSubjectSubsetData, "reportSubjectSubsetData"))
+	
+	reportSubjectSubsetVars  <- if(input$reportSubjectSubsetData != "none"){
+		getVarLabelsForUI(
+			data = results$dataAll()[[input$reportSubjectSubsetData]], 
+			labelVars = results$labelVars()
+		)
+	}
+	
+	fluidRow(
+		column(6,
+			selectInput(
+				inputId = "reportSubjectSubsetVar", 
+				label = "Variable", multiple = FALSE,
+				choices = reportSubjectSubsetVars, 
+				selected = reportSubjectSubsetVars[1]
+			)
+		),
+		column(6, uiOutput("reportSubjectSubsetValuePanel"))
+	)
+
+})
+
+# ... and corresponding available values
+output$reportSubjectSubsetValuePanel <- renderUI({
+							
+	reportSubjectSubsetValues <- 
+		if(!is.null(input$reportSubjectSubsetVar) && input$reportSubjectSubsetVar != "")
+			unique(
+				results$dataAll()[[input$reportSubjectSubsetData]][, input$reportSubjectSubsetVar]
+			)
+	
+	selectInput(
+		inputId = "reportSubjectSubsetValue", 
+		label = "Group(s)", multiple = TRUE,
+		choices = reportSubjectSubsetValues, 
+		selected = reportSubjectSubsetValues[1]
+	)
+	
 })
 
 # create the report
@@ -95,6 +154,9 @@ results$subjectProfileReport <- eventReactive(input$createSubjectProfileReport, 
 					labelVars = results$labelVars(),
 					subjectSortData = results$dataAll()[[input$reportSubjectSortData]],
 					subjectSortVar = input$reportSubjectSortVar,
+					subjectSubsetData = results$dataAll()[[input$reportSubjectSubsetData]],
+					subjectSubsetVar = input$reportSubjectSubsetVar,
+					subjectSubsetValue = input$reportSubjectSubsetValue,
 					shiny = TRUE
 				),
 				silent = TRUE

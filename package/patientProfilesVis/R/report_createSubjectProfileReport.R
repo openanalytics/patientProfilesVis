@@ -11,6 +11,11 @@
 #' should be sorted in the report, by default same as \code{bookmarkData}
 #' @param subjectSortVar variable(s) of \code{data} indicating the order for the subjects in the report,
 #' by default same as \code{bookmarkVar}
+#' @param subjectSubsetData data.frame with data used to select subset of subjects of interest.
+#' It should contain the \code{subjectVar} variable.
+#' @param subjectSubsetVar string with variable of \code{subjectSubsetData} used for subsetting.
+#' @param subjectSubsetValue Character vector with value(s) of \code{subjectSubsetVar}
+#' of interest to select subjects on.
 #' @param timeLim vector of length 2 with time limits.
 #' If not specified, these are set to the time limits specified
 #' when creating each module (stored in \code{attributes(x)$metaData$timeLim})
@@ -30,7 +35,7 @@
 #' @export
 createSubjectProfileReport <- function(
 	listPlots, 
-	timeLim = getXLimSubjectProfilePlots(listPlots),
+	timeLim = NULL,
 	refLines = NULL,
 	refLinesData = NULL,
 	refLinesTimeVar = NULL,
@@ -40,6 +45,9 @@ createSubjectProfileReport <- function(
 	subjectSortData = bookmarkData,
 	subjectSortVar = bookmarkVar,
 	subjectVar = "USUBJID",
+	subjectSubsetData = NULL,
+	subjectSubsetVar = NULL,
+	subjectSubsetValue = NULL,
 	outputFile = "subjectProfile.pdf",
 	exportFigures = FALSE,
 	labelVars = NULL,
@@ -57,6 +65,26 @@ createSubjectProfileReport <- function(
 		maxNLines <- do.call(getMaxNLinesCombinePlot, inputGetMNL)
 	}
 
+	# filter subjects if subset[Data/Var/Value] is specified
+	if(!is.null(subjectSubsetData)){
+		
+		# extract subjects for specified subset
+		dataSubjectSubset <- filterData(
+			data = subjectSubsetData, 
+			subsetVar = subjectSubsetVar, 
+			subsetValue = subjectSubsetValue
+		)
+		subjectsSubset <- unique(as.character(dataSubjectSubset[, subjectVar]))
+		
+		# filter 'listPlots' to only retain selected subjects
+		listPlots <- sapply(listPlots, function(x) x[which(names(x) %in% subjectsSubset)], simplify = FALSE)		
+		listPlots <- listPlots[sapply(listPlots, length) > 0]
+		
+	}
+	
+	if(is.null(timeLim))
+		timeLim <- getXLimSubjectProfilePlots(listPlots)
+	
 	# combine plots
 	listPlotsPerSubjectList <- subjectProfileCombine(
 		listPlots, 
@@ -79,7 +107,6 @@ createSubjectProfileReport <- function(
 			warning("The subjects are not ordered according to the specified 'subjectSortVar',",
 				"because not all subjects are contained in the 'subjectSortData'.")
 		}
-		
 	}
 	
 	# extract bookmark(s) (if any)
