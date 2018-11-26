@@ -4,15 +4,15 @@
 \alias{createSubjectProfileReport}
 \title{Create subject profile report}
 \usage{
-createSubjectProfileReport(listPlots,
-  timeLim = getXLimSubjectProfilePlots(listPlots), refLines = NULL,
+createSubjectProfileReport(listPlots, timeLim = NULL, refLines = NULL,
   refLinesData = NULL, refLinesTimeVar = NULL,
   refLinesLabelVar = NULL, bookmarkData = NULL, bookmarkVar = NULL,
   subjectSortData = bookmarkData, subjectSortVar = bookmarkVar,
-  subjectVar = "USUBJID", outputFile = "subjectProfile.pdf",
-  exportFigures = FALSE, labelVars = NULL, maxNLines = NULL,
-  shiny = FALSE, formatReport = subjectProfileReportFormat(),
-  verbose = FALSE)
+  subjectVar = "USUBJID", subjectSubsetData = NULL,
+  subjectSubsetVar = NULL, subjectSubsetValue = NULL,
+  outputFile = "subjectProfile.pdf", exportFigures = FALSE,
+  labelVars = NULL, maxNLines = NULL, shiny = FALSE,
+  formatReport = subjectProfileReportFormat(), verbose = FALSE)
 }
 \arguments{
 \item{listPlots}{nested list of plots, as returned by the \code{\link{subjectProfileTextPlot}},
@@ -56,6 +56,14 @@ should be sorted in the report, by default same as \code{bookmarkData}}
 by default same as \code{bookmarkVar}}
 
 \item{subjectVar}{string, variable of \code{data} with subject ID}
+
+\item{subjectSubsetData}{data.frame with data used to select subset of subjects of interest.
+It should contain the \code{subjectVar} variable.}
+
+\item{subjectSubsetVar}{string with variable of \code{subjectSubsetData} used for subsetting.}
+
+\item{subjectSubsetValue}{Character vector with value(s) of \code{subjectSubsetVar}
+of interest to select subjects on.}
 
 \item{outputFile}{string, path to the output report}
 
