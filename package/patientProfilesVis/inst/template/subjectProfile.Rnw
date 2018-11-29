@@ -6,7 +6,7 @@
 
 	library(knitr)
 	
-	outputDirFig <- file.path(inputParameters$outputDir, "figures/")
+	outputDirFig <- file.path(inputParameters$outputDir, "figures")
 	if(!dir.exists(outputDirFig))	dir.create(outputDirFig, recursive = TRUE)
 	
 	knitr::opts_chunk$set(
@@ -103,12 +103,25 @@
 	
 	# option 2:
 	fileNames <- file.path(outputDirFig, paste0(labelPlots, ".pdf"))
+	
+	if(inputParameters$shiny)	requireNamespace("shiny")
+	
 	# create the plots
+	begin <- Sys.time()
 	tmp <- sapply(seq_along(listPlotsPerSubject), function(i){
+		if(inputParameters$shiny)	incProgress(detail = paste("Export profile:", names(listPlotsPerSubject)[i]))
 		pdf(fileNames[i], width = textWidthInches, height = figHeightInches[i])
+#		png(
+#			fileNames[i], 
+#			width = textWidthInches, height = figHeightInches[i],
+#			units = "in",
+#			res = 300
+#		)
 		print(listPlotsPerSubject[[i]])
 		tmp <- dev.off()
 	})
+	end <- Sys.time()
+	end-begin
 	
 	# include the graphics in the report
 	tmp <- sapply(seq_along(listPlotsPerSubject), function(i){
