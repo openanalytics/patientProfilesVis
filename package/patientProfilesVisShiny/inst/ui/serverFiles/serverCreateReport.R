@@ -38,6 +38,7 @@ output$reportCreation <- renderUI({
 			),
 			column(8, uiOutput("reportSubjectSubsetVarPanel"))
 		),
+		helpText("If case 'Variable'/'Group(s)' are not specified, only patient(s) in specified dataset are retained."),
 		h2("Report creation"),
 		fluidRow(
 			column(6, actionButton(inputId = "createSubjectProfileReport", label = "Create report")),
@@ -72,10 +73,10 @@ output$reportSubjectSubsetVarPanel <- renderUI({
 	validate(need(input$reportSubjectSubsetData, "reportSubjectSubsetData"))
 	
 	reportSubjectSubsetVars  <- if(input$reportSubjectSubsetData != "none"){
-		getVarLabelsForUI(
+		c('<none>' = 'none', getVarLabelsForUI(
 			data = results$dataAll()[[input$reportSubjectSubsetData]], 
 			labelVars = results$labelVars()
-		)
+		))
 	}
 	
 	fluidRow(
@@ -83,7 +84,7 @@ output$reportSubjectSubsetVarPanel <- renderUI({
 			selectInput(
 				inputId = "reportSubjectSubsetVar", 
 				label = "Variable", multiple = FALSE,
-				choices = reportSubjectSubsetVars, 
+				choices = reportSubjectSubsetVars,
 				selected = reportSubjectSubsetVars[1]
 			)
 		),
@@ -96,7 +97,7 @@ output$reportSubjectSubsetVarPanel <- renderUI({
 output$reportSubjectSubsetValuePanel <- renderUI({
 							
 	reportSubjectSubsetValues <- 
-		if(!is.null(input$reportSubjectSubsetVar) && input$reportSubjectSubsetVar != "")
+		if(!is.null(input$reportSubjectSubsetVar) && !input$reportSubjectSubsetVar %in% c("", "none"))
 			unique(
 				results$dataAll()[[input$reportSubjectSubsetData]][, input$reportSubjectSubsetVar]
 			)

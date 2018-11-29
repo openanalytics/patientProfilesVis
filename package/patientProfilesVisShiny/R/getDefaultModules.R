@@ -22,9 +22,7 @@ getDefaultModules <- function(data){
 						varSpecType = 1,
 						paramValueVar = params,
 						type = "text",
-#						label = "defaultSDTMDMText",
-						title = "Demographical information",
-						subjectVar =  "USUBJID"
+						title = "Demographical information"
 					)
 				)
 		},
@@ -41,9 +39,7 @@ getDefaultModules <- function(data){
 							paramValueVar = "MHENRTPT",
 							varSpecType = 2,
 							type = "text",
-#							label = "defaultSDTMMHText",
-							title = "Medical history: status",
-							subjectVar =  "USUBJID"
+							title = "Medical history: status"
 						),
 						if("MHCAT" %in% colnames(data))	list(paramGroupVar = "MHCAT")
 					)
@@ -62,14 +58,12 @@ getDefaultModules <- function(data){
 						type = "interval",
 						timeStartVar = "EXSTDY",
 						timeEndVar = "EXENDY",
-#						label = "defaultSDTMEXInterval",
-						title = "Treatment exposure",
-						subjectVar =  "USUBJID"
+						title = "Treatment exposure"
 					),
 					if("EXDOSFRM" %in% names(data$EX))
 						list(colorVar = "EXDOSFRM"),
 					timeLimParams
-					)
+				)
 			)
 		},
 		if("AE" %in% names(data) &&
@@ -81,9 +75,7 @@ getDefaultModules <- function(data){
 					timeStartVar = "AESTDY",
 					timeEndVar = "AEENDY",
 					type = "interval",
-#					label = "defaultSDTMAEInterval",
-					title = "Adverse events",
-					subjectVar =  "USUBJID"
+					title = "Adverse events"
 				),
 				if("AESEV" %in% colnames(data$AE))	list(colorVar = "AESEV"),
 				timeLimParams
@@ -124,32 +116,23 @@ getDefaultModules <- function(data){
 						timeVar = "LBDY",
 						colorVar = if("LBNRIND" %in% colnames(data$LB))	"LBNRIND",
 						type = "line",
-						title = "Laboratory test measurements: actual value",
-#						label = "defaultSDTMLBLine",
-						subjectVar =  "USUBJID"
+						title = "Laboratory test measurements: actual value"
 					)
 				)
 			)
 		},
 		
-		if("CM" %in% names(data) && 
-			all(c("CMDECOD", "CMSTDY", "CMENDY") %in% colnames(data$CM)) &&
-			"SV" %in% names(data) && 
-			all(c("SVSTDY", "SVENDY") %in% colnames(data$SV))){
-				list('Concomitant medications (default, interval)' = 
+		if("CM" %in% names(data) && all(c("CMDECOD", "CMSTDY", "CMENDY") %in% colnames(data$CM))){
+				list('Concomitant medications (default, interval)' = c(
 					list(
 						data = "CM",
 						paramVar = "CMDECOD",
 						type = "interval",
 						timeStartVar = "CMSTDY",
 						timeEndVar = "CMENDY",
-						# time limits specifications
-						timeLimSelect = "subject-specific",
-						title = "Concomitant medications",
-						timeLimData = "SV",
-						timeLimStartVar = "SVSTDY",
-						timeLimEndVar = "SVENDY",
-						subjectVar =  "USUBJID"
+						title = "Concomitant medications"
+					),
+					timeLimParams
 				)
 			)
 		}
