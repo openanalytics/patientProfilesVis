@@ -11,22 +11,22 @@ serverFunction <- function(input, output, session) {
   
 	## Advanced debugging
 	
-	observe({
-				
-		if (is.null(input$debug_console))
-			return(NULL)
-		
-		if (input$debug_console > 0) {
-			
-			options(browserNLdisabled = TRUE)
-			saved_console <- ".RDuetConsole"
-			if (file.exists(saved_console)) {load(saved_console)}
-			isolate(browser())
-			save(file = saved_console, list = ls(environment()))
-			
-		}
-		
-	})
+#	observe({
+#				
+#		if (is.null(input$debug_console))
+#			return(NULL)
+#		
+#		if (input$debug_console > 0) {
+#			
+#			options(browserNLdisabled = TRUE)
+#			saved_console <- ".RDuetConsole"
+#			if (file.exists(saved_console)) {load(saved_console)}
+#			isolate(browser())
+#			save(file = saved_console, list = ls(environment()))
+#			
+#		}
+#		
+#	})
 	
 	results <- reactiveValues(
 		listPlots = NULL, 
