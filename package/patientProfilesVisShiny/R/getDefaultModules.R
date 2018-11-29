@@ -22,7 +22,8 @@ getDefaultModules <- function(data){
 						varSpecType = 1,
 						paramValueVar = params,
 						type = "text",
-						title = "Demographical information"
+						title = "Demographical information",
+						subjectVar =  "USUBJID"
 					)
 				)
 		},
@@ -39,7 +40,8 @@ getDefaultModules <- function(data){
 							paramValueVar = "MHENRTPT",
 							varSpecType = 2,
 							type = "text",
-							title = "Medical history: status"
+							title = "Medical history: status",
+							subjectVar =  "USUBJID"
 						),
 						if("MHCAT" %in% colnames(data))	list(paramGroupVar = "MHCAT")
 					)
@@ -58,7 +60,8 @@ getDefaultModules <- function(data){
 						type = "interval",
 						timeStartVar = "EXSTDY",
 						timeEndVar = "EXENDY",
-						title = "Treatment exposure"
+						title = "Treatment exposure",
+						subjectVar =  "USUBJID"
 					),
 					if("EXDOSFRM" %in% names(data$EX))
 						list(colorVar = "EXDOSFRM"),
@@ -75,7 +78,8 @@ getDefaultModules <- function(data){
 					timeStartVar = "AESTDY",
 					timeEndVar = "AEENDY",
 					type = "interval",
-					title = "Adverse events"
+					title = "Adverse events",
+					subjectVar =  "USUBJID"
 				),
 				if("AESEV" %in% colnames(data$AE))	list(colorVar = "AESEV"),
 				timeLimParams
@@ -116,7 +120,8 @@ getDefaultModules <- function(data){
 						timeVar = "LBDY",
 						colorVar = if("LBNRIND" %in% colnames(data$LB))	"LBNRIND",
 						type = "line",
-						title = "Laboratory test measurements: actual value"
+						title = "Laboratory test measurements: actual value",
+						subjectVar =  "USUBJID"
 					)
 				)
 			)
@@ -130,7 +135,8 @@ getDefaultModules <- function(data){
 						type = "interval",
 						timeStartVar = "CMSTDY",
 						timeEndVar = "CMENDY",
-						title = "Concomitant medications"
+						title = "Concomitant medications",
+						subjectVar =  "USUBJID"
 					),
 					timeLimParams
 				)

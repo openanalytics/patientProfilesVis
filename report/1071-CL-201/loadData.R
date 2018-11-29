@@ -20,5 +20,9 @@ library(tidyverse)
 table((data$DM %>% group_by(USUBJID, SUBJID) %>% tally())$n)
 
 n_distinct(data$DM$USUBJID) # 661 patients
+n_distinct(data$CM$USUBJID) # 235 with CM patients
+n_distinct(data$AE$USUBJID) # 17 with AE patients (sub-group)
+all(data$AE$USUBJID %in% data$CM$USUBJID)
+
 
 range(data$SV[, c("SVSTDY", "SVENDY")], na.rm = TRUE)
