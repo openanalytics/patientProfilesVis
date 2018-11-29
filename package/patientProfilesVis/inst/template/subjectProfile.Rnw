@@ -72,7 +72,8 @@
 	)
 	
 	# extract labels 
-	labelPlots <- names(listPlotsPerSubject)
+	# remove space and file separator character(s) if present
+	labelPlots <- gsub(paste0(.Platform$file.sep, "| "), "-", names(listPlotsPerSubject))
 	
 	# extract titles
 	sectionTitles <- unlist(lapply(names(listPlotsPerSubjectList), function(subject) 
