@@ -1,6 +1,7 @@
 0.0.14
     o createSubjectProfileReport: add subjectSubset[Data|Var|Value] parameters
     o child document: remove space and file separator for file name of exported image, include shiny progress message for each patient
+    o formatParamVar: fix in case similar levels with space difference
 0.0.13
     o remove knitPrintListPlotsKnitr function
     o include tests for each subjectProfile[*]Plot function with vdiffr package
