@@ -317,10 +317,11 @@ formatParamVar <- function(data,
 
 		# cut too long labels
 		paramVarLevels <- formatLongLabel(x = levels(paramVarVect), width = width)
-		paramVarVect <- factor(paramVarVect, 
-			levels = names(paramVarLevels), 
-			labels = paramVarLevels
-		)
+		
+		# convert paramVar
+		# don't use directly ( labels to avoid error: duplicated factor levels
+		paramVarVectNew <- paramVarLevels[as.character(paramVarVect)]
+		paramVarVect <- factor(paramVarVectNew,	levels = unique(paramVarLevels))
 	
 		# if paramGroupVar is specified: change order levels of 'variable'
 		if(!is.null(paramGroupVar)){
