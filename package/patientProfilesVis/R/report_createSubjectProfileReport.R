@@ -77,7 +77,12 @@ createSubjectProfileReport <- function(
 		subjectsSubset <- unique(as.character(dataSubjectSubset[, subjectVar]))
 		
 		# filter 'listPlots' to only retain selected subjects
-		listPlots <- sapply(listPlots, function(x) x[which(names(x) %in% subjectsSubset)], simplify = FALSE)		
+		listPlots <- sapply(listPlots, function(x){
+			metaDataX <- attributes(x)$metaData
+			newX <- x[which(names(x) %in% subjectsSubset)]
+			attributes(newX)$metaData <- metaDataX
+			newX
+		}, simplify = FALSE)		
 		listPlots <- listPlots[sapply(listPlots, length) > 0]
 		
 	}
