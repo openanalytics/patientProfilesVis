@@ -1,5 +1,6 @@
 0.0.10
     o add reportSubjectSubset[Data|Var|Value]
+    o fix display timeLim (fixed) from saved module
 0.0.9
     o add default concomitant medications panel
     o getModuleParams: common fct for parameter extraction for use in createSubjectProfileFromShinyInput/getUIParamModule

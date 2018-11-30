@@ -65,7 +65,7 @@ results$plotSubjectCurrent <- reactive({
 # print message preview and extract pages
 observe({	
 	plotSubjectError <- try(
-		previewPlotSuject <- results$plotSubjectCurrent()
+		previewPlotSubject <- results$plotSubjectCurrent()
 		, silent = TRUE)
 	subject <- input$previewSubject
 	isolate({
@@ -77,7 +77,7 @@ observe({
 				)
 			)
 		}else{
-			if(is.null(previewPlotSuject)){
+			if(is.null(previewPlotSubject)){
 				output$previewMessage <- renderUI(
 					div(strong(
 						paste0("No data is available for the specified module for subject: '", 
@@ -95,7 +95,7 @@ observe({
 				output$previewPagePanel <- renderUI(
 					selectInput(
 						inputId = "previewPage", label = "Page",
-						choices = seq_len(length(previewPlotSuject))
+						choices = seq_len(length(previewPlotSubject))
 					)
 				)
 			}

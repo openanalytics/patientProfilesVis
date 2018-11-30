@@ -272,16 +272,21 @@ output$moduleIntervalTimeLimPanel <- renderUI({
 			
 			if(isTruthy(input$moduleSubsetVar) & isTruthy(input$moduleSubsetValue))
 				currentData <- currentData[which(currentData[, input$moduleSubsetVar] %in% input$moduleSubsetValue), ]
-			timeLim <- range(
+			
+			timeLimTotal <- range(
 				currentData[, c(input$moduleIntervalTimeStartVar, input$moduleIntervalTimeEndVar)],
 				na.rm = TRUE
 			)
+			
+			timeLim <- if(!is.null(results$currentModule()) && "timeLim" %in% names(results$currentModule())){
+				results$currentModule()$timeLim
+			}else	timeLimTotal
 			tagList(
 				helpText("Time range is restricted to the following time limits."),
 				sliderInput(
 					inputId = "moduleIntervalTimeLim",
 					label = "Time limits",
-					min = timeLim[1], max = timeLim[2], value = timeLim
+					min = timeLimTotal[1], max = timeLimTotal[2], value = timeLim
 				)
 			)
 		},
