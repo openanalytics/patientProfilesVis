@@ -308,7 +308,7 @@ An example test module is available in case the Laboratory SDTM dataset
   `Module(s) selected for the report` option.
 ![](./images/previewModule_save.png)
 
-### Report creation
+### Create report
 
 * `Module(s) selected for the report`: name of the module to be included in the
   final report.
@@ -325,10 +325,23 @@ An example test module is available in case the Laboratory SDTM dataset
     For example, the subjects could be sorted/grouped by treatment arm in the
       report by selecting the treatment variable (`ARM`) in the demography SDTM
       dataset is loaded (`DM.sas7bdat`).
+* `Select subjects based on:`: filter subjects to consider in final
+  report based on:
+    + `Dataset`: dataset containing subjects of interest.
+    If `Variable` is not specified, only subjects present in this dataset are
+      considered (e.g. to consider only subjects with adverse events, select
+      the adverse events dataset).
+    + `Variable`: variable used to select the subjects on (in combination
+      with `Group(s)`).
+    + `Group(s)`: group(s) indicated in `Variable` to consider. For example,
+      to select only the treated subjects, choose 'ARM' in
+      `Variable` and corresponding treatment label in 'Group(s)' of
+      interest.
 * `Create report`: push the button to create a report.
 A progress window appear at the bottom right of the application.
 When the report is created successfully, a `Download report` appear to download
-  the subject profile report.
+  the subject profile report.  
+![](./images/createReport.png)
   
 ## Right panel
 
