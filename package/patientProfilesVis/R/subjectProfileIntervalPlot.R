@@ -28,7 +28,7 @@
 #' @import ggplot2
 #' @importFrom plyr dlply
 #' @importFrom stats reorder
-#' @importFrom glpgUtilityFct getLabelVar getPatientColorPalette
+#' @importFrom glpgUtilityFct getLabelVar getGLPGColorPalette
 #' @export
 subjectProfileIntervalPlot <- function(
 	data,
@@ -103,7 +103,7 @@ subjectProfileIntervalPlot <- function(
 	# convert color variable to factor
 	if(!is.null(colorVar)){
 		data[, colorVar] <- convertAesVar(data, colorVar)
-		if(is.null(colorPalette))	colorPalette <- getPatientColorPalette(x = data[, colorVar])
+		if(is.null(colorPalette))	colorPalette <- getGLPGColorPalette(x = data[, colorVar])
 	}
 	
 	listPlots <- dlply(data, subjectVar, function(dataSubject){	

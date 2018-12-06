@@ -1,5 +1,7 @@
 0.0.3
     o simpleCap function
+    o getPatientColorPalette -> getGLPGColorPalette, getPatientShapePalette -> getGLPGShapePalette
+    o getGLPGLinetypePalette
 0.0.2
     o add convertVarToFactor function
 0.0.1
