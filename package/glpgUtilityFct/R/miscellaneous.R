@@ -101,4 +101,22 @@ getPatientShapePalette <- function(n = NULL, x = NULL){
 	
 }
 
+#' capitalize the first letter of a word, from the help of the 'toupper' function
+#' @param x string
+#' @param onlyFirst logical, if TRUE (by default)
+#' capitalize the first letter of the first forward only
+#' @param rev logical, if TRUE (FALSE by default), set first letter to lower case (otherwise upper case)
+#' @return string with first letter capitalized
+#' @author author of the 'toupper' function?
+#' @export
+simpleCap <- function(x, onlyFirst = TRUE, rev = FALSE) {
+	paste0c <- function(...) paste(..., sep = "", collapse = " ")
+	fctToUse <- get(ifelse(rev, "tolower", "toupper"))
+	simpleCap1 <- function(s) paste0c(fctToUse(substring(s, 1, 1)), substring(s, 2))
+	sapply(x, function(x){	
+		s <- strsplit(x, " ")[[1]]
+		if(onlyFirst)	paste0c(c(simpleCap1(s[1]), s[-1]))	else	simpleCap1(s)
+	})
+}
+
 
