@@ -11,7 +11,7 @@
 #' @import ggplot2
 #' @importFrom plyr dlply
 #' @importFrom stats reorder
-#' @importFrom glpgUtilityFct getLabelVar getPatientColorPalette getPatientShapePalette
+#' @importFrom glpgUtilityFct getLabelVar getGLPGColorPalette getGLPGShapePalette
 #' @export
 subjectProfileEventPlot <- function(
 	data,
@@ -52,11 +52,11 @@ subjectProfileEventPlot <- function(
 	# convert aesthetic variables to factor
 	if(!is.null(colorVar)){
 		data[, colorVar] <- convertAesVar(data, colorVar)
-		if(is.null(colorPalette))	colorPalette <- getPatientColorPalette(x = data[, colorVar])
+		if(is.null(colorPalette))	colorPalette <- getGLPGColorPalette(x = data[, colorVar])
 	}
 	if(!is.null(shapeVar)){
 		data[, shapeVar] <- convertAesVar(data, var = shapeVar)
-		if(is.null(shapePalette))	shapePalette <- getPatientShapePalette(x = data[, shapeVar])
+		if(is.null(shapePalette))	shapePalette <- getGLPGShapePalette(x = data[, shapeVar])
 	}
 	
 	# format variable

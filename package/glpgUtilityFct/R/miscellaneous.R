@@ -33,7 +33,7 @@ getLabelVar <- function(var, data = NULL, labelVars = NULL){
 	return(res)
 }
 
-#' Get viridis color palette of specified length,
+#' Get color palette of specified length,
 #' either from a vector of names for the palette, or
 #' from a specified length.
 #' @param x vector with elements used as names for the palette.
@@ -46,12 +46,12 @@ getLabelVar <- function(var, data = NULL, labelVars = NULL){
 #' named with the elements in \code{x} if \code{x} is specified.
 #' @author Laure Cougnaud
 #' @examples 
-#' getPatientColorPalette(n = 10)
-#' getPatientColorPalette(x = paste('treatment', 1:4))
+#' getGLPGColorPalette(n = 10)
+#' getGLPGColorPalette(x = paste('treatment', 1:4))
 #' @importFrom viridisLite viridis
 #' @importFrom glpgStyle glpgPaletteCharts
 #' @export
-getPatientColorPalette <- function(n = NULL, x = NULL, type = c("GLPG", "viridis")){
+getGLPGColorPalette <- function(n = NULL, x = NULL, type = c("GLPG", "viridis")){
 	
 	type <- match.arg(type)
 	
@@ -74,14 +74,14 @@ getPatientColorPalette <- function(n = NULL, x = NULL, type = c("GLPG", "viridis
 	
 }
 
-#' Get shape palette for \code{\link[plotly]{plotly}}
+#' Get shape palette.
 #' 
 #' Note that 20 unique symbols are available at maximum.
-#' @inheritParams getPatientColorPalette
+#' @inheritParams getGLPGColorPalette
 #' @return vector of integer values with shape
 #' @author Laure Cougnaud
 #' @export
-getPatientShapePalette <- function(n = NULL, x = NULL){
+getGLPGShapePalette <- function(n = NULL, x = NULL){
 	
 	if(is.null(x) & is.null(n))
 		stop("A vector ('x') or number of colors ('n') ",
@@ -92,6 +92,33 @@ getPatientShapePalette <- function(n = NULL, x = NULL){
 	if(is.null(n)) n <- length(x)
 	
 	basePalette <- c(19, 15, 23:25, 1:14)
+	
+	palette <- rep(basePalette, length.out = n)
+	
+	if(!is.null(x)) names(palette) <- x	else	palette <- unname(palette)
+	
+	return(palette)
+	
+}
+
+#' Get linetype palette.
+#' 
+#' Note that 7 unique symbols are available at maximum.
+#' @inheritParams getGLPGColorPalette
+#' @return character vector values with linetype
+#' @author Laure Cougnaud
+#' @export
+getGLPGLinetypePalette <- function(n = NULL, x = NULL){
+	
+	if(is.null(x) & is.null(n))
+		stop("A vector ('x') or number of colors ('n') ",
+				"should be specified.")
+	
+	x <- if(is.factor(x))	levels(x)	else unique(x)
+	x[is.na(x)] <- 'NA'
+	if(is.null(n)) n <- length(x)
+	
+	basePalette <- c("blank", "solid", "dashed", "dotted", "dotdash", "longdash", "twodash") 
 	
 	palette <- rep(basePalette, length.out = n)
 	
