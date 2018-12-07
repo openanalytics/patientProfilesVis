@@ -2,6 +2,7 @@
     o changes for glpgUtilityFct version 0.0.3
     o subjectProfile[Event|Interval]Plot: paramVarSep, by default ' - ' instead of ' '
     o getNLinesYGgplot: add space for subject profile event and interval
+    o formatParamVar: fix when empty string in paramVar
 0.0.14
     o createSubjectProfileReport: add subjectSubset[Data|Var|Value] parameters
     o child document: remove space and file separator for file name of exported image, include shiny progress message for each patient

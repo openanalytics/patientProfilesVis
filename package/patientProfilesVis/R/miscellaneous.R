@@ -321,7 +321,7 @@ formatParamVar <- function(data,
 		
 		# convert paramVar
 		# don't use directly ( labels to avoid error: duplicated factor levels
-		paramVarVectNew <- paramVarLevels[as.character(paramVarVect)]
+		paramVarVectNew <- paramVarLevels[as.character(paramVarVect)]		
 		paramVarVect <- factor(paramVarVectNew,	levels = unique(paramVarLevels))
 	
 		# if paramGroupVar is specified: change order levels of 'variable'
@@ -339,7 +339,7 @@ formatParamVar <- function(data,
 						if(!is.factor(data[, paramGroupVar]))
 							factor(data[, paramGroupVar])	else	data[, paramGroupVar]
 					}	
-					if(!all(tapply(groupVariable, paramVarVect, n_distinct) == 1)){
+					if(!all(tapply(groupVariable, paramVarVect, n_distinct) == 1, na.rm = TRUE)){
 						warning(paste("The grouping variable:", groupVariable, "is not used, ",
 							"because it is not unique for all parameters."))
 					}else{
