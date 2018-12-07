@@ -39,11 +39,12 @@ getNLinesYGgplot <- function(gg){
 			nLinesLabelYAxis <- countNLines(layer_scales(gg, i = 1)$y$get_breaks()[dataPanel$y]) # lines of y-axis labels
 			nLinesTextPanel <- countNLines(as.character(dataPanel$label)) # lines of text panel
 			nLinesMax <- mapply(max, nLinesTextPanel, nLinesLabelYAxis) # max of n lines of panel and axis labels
-			nLinesPlot <- sum(nLinesMax) + 0.5 * (length(nLinesMax) - 1)
+			nLinesPlot <- sum(nLinesMax) + 0.8 * (length(nLinesMax) - 1)
 		}else{
 			nElLayout <- nrow(ggplot_build(gg)$layout$layout)
 			yBreaks <- unique(unlist(lapply(seq_len(nElLayout), function(i)	layer_scales(gg, i = i)$y$get_breaks())))
-			nLinesPlot <- sum(countNLines(yBreaks))
+			nLines <- countNLines(yBreaks)
+			nLinesPlot <- sum(nLines) + 0.8 * (length(nLines) - 1)
 		}
 	}
 

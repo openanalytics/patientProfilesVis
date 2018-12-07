@@ -1,3 +1,6 @@
+0.0.16
+    o subjectProfile[Event|Interval]Plot: paramVarSep, by default ' - ' instead of ' '
+    o getNLinesYGgplot: add space for subject profile event and interval
 0.0.15
     o changes for glpgUtilityFct version 0.0.3
 0.0.14
