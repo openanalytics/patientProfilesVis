@@ -17,6 +17,8 @@
 #' This label is used to report the name of the panel 
 #' in the text when the plots are combined (e.g. if the plot is empty).
 #' @param labelVars named string with variable labels (names are the variable code)
+#' @param paramVarSep string with character(s) used to concatenate multiple 
+#' \code{paramVar}, ' - ' by default.
 #' @inheritParams filterData
 #' @inheritParams formatParamVar
 #' @inheritParams formatTimeInterval
@@ -32,7 +34,8 @@
 #' @export
 subjectProfileIntervalPlot <- function(
 	data,
-	paramVar, paramLab = toString(getLabelVar(paramVar, labelVars = labelVars)),
+	paramVar, paramVarSep = " - ",
+	paramLab = toString(getLabelVar(paramVar, labelVars = labelVars)),
 	paramGroupVar = NULL,
 	timeStartVar,
 	timeEndVar,
@@ -83,7 +86,7 @@ subjectProfileIntervalPlot <- function(
 	
 	# concatenate variable(s) if multiple are specified
 	data$yVar <- if(length(paramVar) > 1)
-		apply(data[, paramVar], 1, paste, collapse = " ")	else	data[, paramVar]
+		apply(data[, paramVar], 1, paste, collapse = paramVarSep)	else	data[, paramVar]
 
 	# remove records without parameter variable
 	data <- data[with(data, !is.na(yVar) & yVar != ""), ]

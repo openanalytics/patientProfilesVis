@@ -16,6 +16,7 @@
 subjectProfileEventPlot <- function(
 	data,
 	paramVar, paramLab = toString(getLabelVar(paramVar, labelVars = labelVars)),
+	paramVarSep = " - ",
 	paramGroupVar = NULL,
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
 	colorPalette = NULL,
@@ -35,7 +36,7 @@ subjectProfileEventPlot <- function(
 	
 	# concatenate variable(s) if multiple are specified
 	data[, "yVar"] <- if(length(paramVar) > 1){
-		apply(data[, paramVar], 1, paste, collapse = " ")
+		apply(data[, paramVar], 1, paste, collapse = paramVarSep)
 	}else{
 		data[, paramVar]
 	}

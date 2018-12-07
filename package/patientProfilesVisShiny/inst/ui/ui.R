@@ -36,6 +36,8 @@ uiFunction <- function(request){
 	    sidebarLayout(
 	        
 	        sidebarPanel(
+					
+				style = "overflow-y:scroll; position:relative; max-height:700px",
 	            
 				downloadLink(outputId = "downloadManual", label = "Documentation",
 					style = "font-weight: bold; color: #00463E"),
@@ -56,6 +58,7 @@ uiFunction <- function(request){
 				# creation of subject profile report
 				h1("Report creation"),
 				uiOutput("reportCreation")
+
 	        ), 
 	        
 	        mainPanel(

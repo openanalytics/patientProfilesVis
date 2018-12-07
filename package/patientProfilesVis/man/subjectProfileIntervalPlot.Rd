@@ -5,7 +5,7 @@
 \title{Create plot of subject profiles with segments for range of parameters 
 If no start and/or end date is available, specific arrows are created.}
 \usage{
-subjectProfileIntervalPlot(data, paramVar,
+subjectProfileIntervalPlot(data, paramVar, paramVarSep = " - ",
   paramLab = toString(getLabelVar(paramVar, labelVars = labelVars)),
   paramGroupVar = NULL, timeStartVar, timeEndVar,
   subjectVar = "USUBJID", subsetVar = NULL, subsetValue = NULL,
@@ -21,6 +21,9 @@ subjectProfileIntervalPlot(data, paramVar,
 \item{data}{data.frame with data}
 
 \item{paramVar}{string, variable of \code{data} with parameter (used in the y-axis)}
+
+\item{paramVarSep}{string with character(s) used to concatenate multiple 
+\code{paramVar}, ' - ' by default.}
 
 \item{paramLab}{string, label for \code{paramVar}}
 

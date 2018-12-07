@@ -6,7 +6,7 @@
 \usage{
 subjectProfileEventPlot(data, paramVar,
   paramLab = toString(getLabelVar(paramVar, labelVars = labelVars)),
-  paramGroupVar = NULL, colorVar = NULL,
+  paramVarSep = " - ", paramGroupVar = NULL, colorVar = NULL,
   colorLab = getLabelVar(colorVar, labelVars = labelVars),
   colorPalette = NULL, shapeVar = colorVar,
   shapeLab = getLabelVar(shapeVar, labelVars = labelVars),
@@ -22,6 +22,9 @@ subjectProfileEventPlot(data, paramVar,
 \item{paramVar}{string, variable of \code{data} with parameter (used in the y-axis)}
 
 \item{paramLab}{string, label for \code{paramVar}}
+
+\item{paramVarSep}{string with character(s) used to concatenate multiple 
+\code{paramVar}, ' - ' by default.}
 
 \item{paramGroupVar}{(optional) character vector with variable(s) of \code{data} with grouping.
 If specified, the parameters will be grouped by this(these) variable(s) in the y-axis.}
