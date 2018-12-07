@@ -128,6 +128,7 @@ subjectProfileTextPlot <- function(
 	listPlots <- dlply(dataPlot, subjectVar, function(dataSubject){	
 				
 		subject <- unique(dataSubject[, subjectVar])
+#		print(subject)
 		
 		# if paramGroupVar is specified: change order levels of 'variable'
 		# wrap text in multiple lines if too long
