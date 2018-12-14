@@ -19,6 +19,8 @@
 #' @param labelVars named string with variable labels (names are the variable code)
 #' @param paramVarSep string with character(s) used to concatenate multiple 
 #' \code{paramVar}, ' - ' by default.
+#' @param timeLabel string with general time label, used
+#' in the footnote for the explanation of the arrow, 'time' by default.
 #' @inheritParams filterData
 #' @inheritParams formatParamVar
 #' @inheritParams formatTimeInterval
@@ -39,6 +41,7 @@ subjectProfileIntervalPlot <- function(
 	paramGroupVar = NULL,
 	timeStartVar,
 	timeEndVar,
+	timeLabel = "time",
 	subjectVar = "USUBJID",
 	subsetVar = NULL, subsetValue = NULL,
 	timeLim = NULL, timeLimData = NULL, timeLimStartVar = NULL, timeLimEndVar = NULL,
@@ -107,6 +110,8 @@ subjectProfileIntervalPlot <- function(
 	if(!is.null(colorVar)){
 		data[, colorVar] <- convertAesVar(data, colorVar)
 		if(is.null(colorPalette))	colorPalette <- getGLPGColorPalette(x = data[, colorVar])
+	}else{
+		if(is.null(colorPalette))	colorPalette <- getGLPGColorPalette(n = 1)
 	}
 	
 	listPlots <- dlply(data, subjectVar, function(dataSubject){	
@@ -187,7 +192,7 @@ subjectProfileIntervalPlot <- function(
 				subjectProfileTheme() +
 				labs(title = title, 
 					x = xLab, y = yLab,
-					caption = "Arrow represents missing start/end time."
+					caption = paste0("Arrow represents missing start/end ", timeLabel, ".")
 				) + theme(plot.caption = element_text(hjust = 0.5))
 		
 			# set labels for linetype in legend
@@ -212,8 +217,9 @@ subjectProfileIntervalPlot <- function(
 	#			)
 		
 			# color palette and name for color legend
-			if(!is.null(colorVar))
-				gg <- gg + getAesScaleManual(lab = colorLab, palette = colorPalette, type = "color")				
+			if(!is.null(colorVar)){
+				gg <- gg + getAesScaleManual(lab = colorLab, palette = colorPalette, type = "color")
+			}else	gg <- gg + scale_color_manual(values = colorPalette)
 					
 			# set time limits for the x-axis
 			if(!is.null(timeLim))
