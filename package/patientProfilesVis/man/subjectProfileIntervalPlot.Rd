@@ -7,7 +7,7 @@ If no start and/or end date is available, specific arrows are created.}
 \usage{
 subjectProfileIntervalPlot(data, paramVar, paramVarSep = " - ",
   paramLab = toString(getLabelVar(paramVar, labelVars = labelVars)),
-  paramGroupVar = NULL, timeStartVar, timeEndVar,
+  paramGroupVar = NULL, timeStartVar, timeEndVar, timeLabel = "time",
   subjectVar = "USUBJID", subsetVar = NULL, subsetValue = NULL,
   timeLim = NULL, timeLimData = NULL, timeLimStartVar = NULL,
   timeLimEndVar = NULL, rangeSimilarStartEnd = NULL,
@@ -33,6 +33,9 @@ If specified, the parameters will be grouped by this(these) variable(s) in the y
 \item{timeStartVar}{string, variable of \code{data} with start of range}
 
 \item{timeEndVar}{string, variable of \code{data} with end of range}
+
+\item{timeLabel}{string with general time label, used
+in the footnote for the explanation of the arrow, 'time' by default.}
 
 \item{subjectVar}{string, variable of \code{data} with subject ID}
 

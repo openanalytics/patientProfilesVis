@@ -1,0 +1,216 @@
+---
+title: "1972-CL-201 study"
+subtitle: "Patient profiles creation"
+author: "Laure Cougnaud"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output: 
+  rmarkdown::html_document:
+    toc: true
+    toc_float:
+      collapsed: true
+    number_sections: true
+---
+
+# Introduction
+
+```{r options, echo = FALSE}
+	
+	library(knitr)
+	opts_chunk$set(
+		echo = TRUE, results = 'asis', warning = FALSE, 
+		error = FALSE, message = FALSE, cache = FALSE,
+		fig.width = 8, fig.height = 7,
+		fig.path = "./figures_vignette/",
+		#out.width = '0.7\\textwidth', 
+		fig.align = 'center')#, out.height = 0.5\\textwidth', fig.path = 'graphs/') 
+	options(width = 170)#, stringsAsFactors = FALSE
+	options(warn = 1)#instead of warn = 0 by default -> to have place where warnings occur in the call to Sweave function
+	
+	heightLineIn  <- 0.2
+	
+```
+
+This package `patientProfilesVis` enables to create report containing subject
+profiles.
+
+```{r loadPackages}
+
+	library(patientProfilesVis)
+	library(pander)
+
+```
+
+# Load the data
+
+```{r loadData}	
+	
+	library(glpgUtilityFct)
+	
+	# load subject-level, subject-visit, concomitant medications, medical history and adverse events data
+	files <- list.files(
+		pattern = "^(sl|sv|ae|cm|mh|dm|ex).sas7bdat",
+		path = "../../data/1072-CL-201/DM010 SDTM locked DB/DSMB Snapshots/transfer 01 20181206/",
+		full.names = TRUE
+	)
+	data <- loadDataADaMSDTM(files = files)
+	labelVars <- attributes(data)$labelVars
+#	labelVars[grep("FL$", names(labelVars))]
+	
+	# some checks
+#	library(tidyverse)
+#	
+#	# all SUBJID <-> USUBJID
+#	table((data$DM %>% group_by(USUBJID, SUBJID) %>% tally())$n)
+#	
+#	n_distinct(data$DM$USUBJID) # 661 patients
+#	n_distinct(data$CM$USUBJID) # 235 with CM patients
+#	n_distinct(data$AE$USUBJID) # 17 with AE patients (sub-group)
+#	all(data$AE$USUBJID %in% data$CM$USUBJID)
+#	
+#	
+#	range(data$SV[, c("SVSTDY", "SVENDY")], na.rm = TRUE)
+
+	timeLimSV <- range(data$SV[, c("SVSTDY", "SVENDY")], na.rm = TRUE)
+
+```
+
+# Create the different modules
+
+```{r demographicModule}
+
+	paramDemo <- c("SEX", "AGE", "RACE", "COUNTRY", "ARM")
+	paramDemo <- intersect(paramDemo, colnames(data$DM))
+	demoPlots <- subjectProfileTextPlot(
+		data$DM,
+		paramValueVar = paramDemo,
+		title = "Demographical information",
+		labelVars = labelVars
+	)
+
+```
+
+```{r mhModule}
+
+	dataMH <- data$MH
+	
+	# fixes for start/end data
+	dataMH[dataMH$MHENRF == "BEFORE", "MHSTDTC"] <- "Before"
+	dataMH[dataMH$MHENRF == "DURING/AFTER", "MHENDTC"] <- "Ongoing"
+	# is empty: NA
+	dataMH[, c("MHSTDTC", "MHENDTC")][dataMH[, c("MHSTDTC", "MHENDTC")] == ""] <- "Unknown"
+	
+	mhPlots <- subjectProfileTextPlot(
+		dataMH,
+		paramNameVar = "MHTERM",
+		paramValueVar = c("MHSTDTC", "MHENDTC"),
+		paramGroupVar = "MHCAT",
+		title = "Medical history (Start - End)",
+		labelVars = labelVars
+	)
+
+```
+
+```{r exModule}
+
+	exPlots <- subjectProfileIntervalPlot(
+		data$EX,
+		paramVar = c("EXDOSFRM", "EXROUTE", "EXDOSFRQ", "VISIT"),
+		paramGroupVar = "EXCAT",
+		timeStartVar = "EXSTDY",
+		timeEndVar = "EXENDY",
+		title = "Treatment exposure",
+		timeLimData = data$SV,
+		timeLimStartVar = "SVSTDY", 
+		timeLimEndVar = "SVENDY",
+		labelVars = labelVars,
+		timeLabel = "date(time)"
+	)
+
+
+```
+
+```{r cmModule}
+
+	cmPlots <- subjectProfileIntervalPlot(
+		data$CM,
+		paramVar = c("CMINDC", "CMTRT"),
+		paramGroupVar = "CMINDC",
+		colorVar = "CMCAT",
+		timeStartVar = "CMSTDY",
+		timeEndVar = "CMENDY",
+		title = "Concomitant Medications",
+		timeLim = timeLimSV,
+		labelVars = labelVars,
+		timeLabel = "date(time)"
+	)
+
+```
+
+```{r aeModule}
+
+	dataAE <- data$AE
+
+	# re-format variable for the intensity
+	dataAE$AETOXGRRF <- factor(
+		dataAE$AETOXGR,
+		levels = 1:5,
+		labels = c('1' = "Mild", '2' = "Moderate", '3' = "Severe",
+			'4' = "Life-threatening", '5' = "Death"
+		)
+	)
+	labelVars["AETOXGRRF"] <- labelVars["AETOXGR"]
+	
+	aePlots <- subjectProfileIntervalPlot(
+		dataAE,
+		paramVar = "AEDECOD",
+		colorVar = "AETOXGRRF",
+		timeStartVar = "AESTDY",
+		timeEndVar = "AEENDY",
+		title = "Adverse events",
+		timeLimData = data$SV,
+		timeLimStartVar = "SVSTDY", 
+		timeLimEndVar = "SVENDY",
+		labelVars = labelVars,
+		timeLabel = "date(time)"
+	)
+
+```
+
+
+# Create the report
+
+The following code create the different modules, and the resulting report.
+Please note that the `createSubjectProfileReport` should be called in the R
+session directly (not within the call to `knitr`).
+
+```{r createReport, eval = FALSE}
+
+	# without treatment exposure
+	system.time(
+		createSubjectProfileReport(
+			listPlots = list(demoPlots, mhPlots, cmPlots, aePlots),
+			outputFile = "subjectProfile_AE.pdf",
+			subjectSubsetData = data$AE
+		)
+	)
+	
+	# with treatment exposure
+	system.time(
+		createSubjectProfileReport(
+			listPlots = list(demoPlots, mhPlots, exPlots, cmPlots, aePlots),
+			outputFile = "subjectProfile_AE_withEX.pdf",
+			subjectSubsetData = data$AE
+		)
+	)
+
+```
+
+# Appendix
+
+## Session information
+
+```{r includeSessionInfo, echo = FALSE}
+
+	pander(sessionInfo())
+
+```

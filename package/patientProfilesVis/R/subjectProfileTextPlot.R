@@ -80,7 +80,7 @@ subjectProfileTextPlot <- function(
 			data[, varsToConcatenate] <- lapply(varsToConcatenateList, combineMultipleVars)
 			if(!is.null(labelVars))
 				labelVars[varsToConcatenate] <- sapply(varsToConcatenateList, function(name)
-					paste(labelVars[name], collapse = paramVarSep))
+					toString(labelVars[name]))
 		}
 		
 		# transform data from wide to long format
@@ -117,7 +117,7 @@ subjectProfileTextPlot <- function(
 			paramValueVar(data)	else	combineMultipleVars(paramValueVar)
 		# in case multiple value for the same variable, concatenate them
 		dataPlot <- ddply(data, c(subjectVar, paramNameVar, paramGroupVar), function(x)
-			data.frame(value = paste(unique(x$value), collapse = paramVarSep), stringsAsFactors = FALSE)
+			data.frame(value = toString(unique(x$value)), stringsAsFactors = FALSE)
 		)
 		colnames(dataPlot)[which(colnames(dataPlot) == paramNameVar)] <- "variable"
 		if(paramNameVar == subjectVar)	dataPlot[, subjectVar] <- dataPlot$variable

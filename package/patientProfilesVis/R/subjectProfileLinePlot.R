@@ -64,7 +64,7 @@ subjectProfileLinePlot <- function(
 	if(!is.null(colorVar)){
 		data[, colorVar] <- convertAesVar(data, colorVar)
 		if(is.null(colorPalette))	colorPalette <- getGLPGColorPalette(x = data[, colorVar])
-	}
+	}else	colorPalette <- getGLPGColorPalette(n = 1)
 	if(!is.null(shapeVar)){
 		data[, shapeVar] <- convertAesVar(data, var = shapeVar)
 		if(is.null(shapePalette))	shapePalette <- getGLPGShapePalette(x = data[, shapeVar])
@@ -139,10 +139,15 @@ subjectProfileLinePlot <- function(
 					)
 		
 			# color palette and name for color legend
-			if(!is.null(colorVar))
+			if(!is.null(colorVar)){
 				gg <- gg + 
 					getAesScaleManual(lab = colorLab, palette = colorPalette, type = "color") +
 					getAesScaleManual(lab = colorLab, palette = colorPalette, type = "fill")
+			}else{
+				gg <- gg + 
+					scale_color_manual(values = colorPalette) +
+					scale_fill_manual(values = colorPalette)
+			}
 		
 			if(!is.null(shapeVar))
 				gg <- gg + 

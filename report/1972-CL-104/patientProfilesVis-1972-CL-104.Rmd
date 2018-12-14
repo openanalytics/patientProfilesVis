@@ -8,10 +8,6 @@ output:
     toc_float:
       collapsed: true
     number_sections: true
-vignette: >
-  %\VignetteIndexEntry{patientProfilesVis package}
-  %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
 ---
 
 # Introduction
