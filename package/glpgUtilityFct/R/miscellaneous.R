@@ -118,7 +118,7 @@ getGLPGLinetypePalette <- function(n = NULL, x = NULL){
 	x[is.na(x)] <- 'NA'
 	if(is.null(n)) n <- length(x)
 	
-	basePalette <- c("blank", "solid", "dashed", "dotted", "dotdash", "longdash", "twodash") 
+	basePalette <- c("solid", "dashed", "dotted", "dotdash", "longdash", "twodash") 
 	
 	palette <- rep(basePalette, length.out = n)
 	
