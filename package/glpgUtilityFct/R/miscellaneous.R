@@ -27,7 +27,7 @@ getLabelVar <- function(var, data = NULL, labelVars = NULL){
 					labelVars[x]	else
 					attr(data[, x], "label")
 				)
-				ifelse(is.null(attrX) | is.na(attrX), x, attrX)
+				ifelse(is.null(attrX) || is.na(attrX), x, attrX)
 			})
 		}
 	}
