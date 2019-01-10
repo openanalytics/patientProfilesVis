@@ -23,11 +23,12 @@ getLabelVar <- function(var, data = NULL, labelVars = NULL){
 		}else{
 			#		stop("'data' or 'labelVars' should be specified for the label(s) extraction.")
 			res <- sapply(var, function(x){
-						attrX <- if(!is.null(labelVars))
-									labelVars[x]	else
-									attr(data[, x], "label")
-						ifelse(is.null(attrX), x, attrX)
-					})
+				attrX <- unname(if(!is.null(labelVars))
+					labelVars[x]	else
+					attr(data[, x], "label")
+				)
+				ifelse(is.null(attrX) | is.na(attrX), x, attrX)
+			})
 		}
 	}
 	return(res)
