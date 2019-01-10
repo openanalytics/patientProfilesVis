@@ -1,3 +1,6 @@
+0.0.5
+    o getLabelVar: fix when labelVars specified but variable not in labelVars
+    o knitPrintListObjects function
 0.0.4
     o getGLPGLinetypePalette: remove blank linetype
 0.0.3

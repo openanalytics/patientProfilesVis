@@ -5,27 +5,19 @@
 \title{include list of plots with different figure height, size, label in a knitr document}
 \usage{
 knitPrintListPlots(plotsList, generalLabel = "plotsList",
-  labels = paste0(generalLabel, seq_along(plotsList)), titles = NULL,
-  titleLevel = 2, type = c("ggplot2", "plotly"), ...)
+  type = c("ggplot2", "plotly"), ...)
 }
 \arguments{
 \item{plotsList}{list of plots, e.g. \code{\link{ggplot2}[ggplot]}}
 
 \item{generalLabel}{general label for the chunks, used to build the \code{labels}.
 The labels are constructed as '\code{generalLabel}[i]',
-with i the plot number (from sequence spanning the length of \code{plotsList}).
+with i the list index.
 Only use if \code{labels} is not specified.}
 
-\item{labels}{vector with labels for each chunk}
+\item{type}{string with plot type: 'ggplot2', 'plotly'}
 
-\item{titles}{vector with section titles}
-
-\item{titleLevel}{integer with level for section header}
-
-\item{type}{string with plot type, 'ggplot2', 'plotly' or 'gtableBaAP'}
-
-\item{...}{any chunk parameters, will be replicated if necessary
-See \code{\link{knitr}[opts_chunk]} for further details on available options.}
+\item{...}{Additional parameters for the \code{\link{knitPrintListObjects}} function.}
 }
 \value{
 no returned value, a text is printed with chunk content

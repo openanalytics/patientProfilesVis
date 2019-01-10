@@ -1,11 +1,11 @@
 Package: glpgUtilityFct
 Type: Package
 Title: General utility functions to be used in Galapagos
-Version: 0.0.4
-Date: 2018-12-18
+Version: 0.0.5
+Date: 2019-01-10
 Author: Laure Cougnaud
 Maintainer: Laure Cougnaud <laure.cougnaud@openanalytics.eu>
 Description: This package contains general utility functions (data loading, graphics customization) to be used in Galapagos.
-Imports: haven, glpgStyle, plyr, viridisLite
-License: Software for Internal Use at Open Analytics NV
+Imports: haven, glpgStyle, plyr, viridisLite, knitr
+License: file LICENSE
 RoxygenNote: 6.1.0
