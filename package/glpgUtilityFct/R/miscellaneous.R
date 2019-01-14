@@ -142,8 +142,10 @@ simpleCap <- function(x, onlyFirst = TRUE, rev = FALSE) {
 	fctToUse <- get(ifelse(rev, "tolower", "toupper"))
 	simpleCap1 <- function(s) paste0c(fctToUse(substring(s, 1, 1)), substring(s, 2))
 	sapply(x, function(x){	
-		s <- strsplit(x, " ")[[1]]
-		if(onlyFirst)	paste0c(c(simpleCap1(s[1]), s[-1]))	else	simpleCap1(s)
+		if(!is.na(x)){
+			s <- strsplit(x, " ")[[1]]
+			if(onlyFirst)	paste0c(c(simpleCap1(s[1]), s[-1]))	else	simpleCap1(s)
+		}else x
 	})
 }
 
