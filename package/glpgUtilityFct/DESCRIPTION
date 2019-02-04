@@ -1,8 +1,8 @@
 Package: glpgUtilityFct
 Type: Package
 Title: General utility functions to be used in Galapagos
-Version: 0.0.5
-Date: 2019-01-14
+Version: 0.0.6
+Date: 2019-02-04
 Author: Laure Cougnaud
 Maintainer: Laure Cougnaud <laure.cougnaud@openanalytics.eu>
 Description: This package contains general utility functions (data loading, graphics customization) to be used in Galapagos.
