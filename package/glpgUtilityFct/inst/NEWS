@@ -1,3 +1,5 @@
+0.0.6
+    o getGLPGColorPalette: fix names color palette when no x is specified
 0.0.5
     o getLabelVar: fix when labelVars specified but variable not in labelVars
     o knitPrintListObjects function

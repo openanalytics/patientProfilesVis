@@ -60,13 +60,15 @@ getGLPGColorPalette <- function(n = NULL, x = NULL, type = c("GLPG", "viridis"))
 		stop("A vector ('x') or number of colors ('n') ",
 				"should be specified.")
 	
-	x <- if(is.factor(x))	levels(x)	else unique(x)
-	x[is.na(x)] <- 'NA'
-	if(is.null(n)) n <- length(x)
+	if(!is.null(x)){
+		x <- if(is.factor(x))	levels(x)	else unique(x)
+		x[is.na(x)] <- 'NA'
+		if(is.null(n)) n <- length(x)
+	}
 	
 	palette <- switch(type,
-			'viridis' = viridis(n),
-			'GLPG' = rep(glpgPaletteCharts(), length.out = n)
+		'viridis' = viridis(n),
+		'GLPG' = rep(glpgPaletteCharts(), length.out = n)
 	)
 	
 	if(!is.null(x)) names(palette) <- x	else	palette <- unname(palette)
