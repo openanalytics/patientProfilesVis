@@ -8,7 +8,8 @@
 #' @param dateVars vector of columns in \code{data} containing date/time,
 #' or pattern for this columns.
 #' By default all columns ending with 'DTC' are used (dateVars is: 'DTC$').
-#' @param verbose logical, if TRUE (by default) progress messages are printed during execution
+#' @param verbose logical, if TRUE (by default) progress messages are printed during execution.
+#' @param ... Additional parameters for the \code{\link[haven]{read_sas}} function.
 #' @return list of data.frame with data of each ADAM file (if not empty),
 #' with special attributes 'labelVars': named vector with label of the variables.
 #' Each data.frame contains an additional column: 'dataset' specifying the name of the 
@@ -20,7 +21,7 @@
 #' @export
 loadDataADaMSDTM <- function(files, 
 	convertToDate = FALSE, dateVars = "DTC$",
-	verbose = TRUE){
+	verbose = TRUE, ...){
 	
 	# extract ADaM name
 	names(files) <- toupper(file_path_sans_ext(basename(files)))
@@ -37,7 +38,7 @@ loadDataADaMSDTM <- function(files,
 			message("Import ", name, " dataset.")
 				
 		# read data
-		data <- as.data.frame(read_sas(files[name]))
+		data <- as.data.frame(read_sas(files[name], ...))
 		
 		if(nrow(data) > 0){
 		

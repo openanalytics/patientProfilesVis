@@ -5,7 +5,7 @@
 \title{Load data from ADaM file(s).}
 \usage{
 loadDataADaMSDTM(files, convertToDate = FALSE, dateVars = "DTC$",
-  verbose = TRUE)
+  verbose = TRUE, ...)
 }
 \arguments{
 \item{files}{string with path to ADaM file(s)}
@@ -17,7 +17,9 @@ loadDataADaMSDTM(files, convertToDate = FALSE, dateVars = "DTC$",
 or pattern for this columns.
 By default all columns ending with 'DTC' are used (dateVars is: 'DTC$').}
 
-\item{verbose}{logical, if TRUE (by default) progress messages are printed during execution}
+\item{verbose}{logical, if TRUE (by default) progress messages are printed during execution.}
+
+\item{...}{Additional parameters for the \code{\link[haven]{read_sas}} function.}
 }
 \value{
 list of data.frame with data of each ADAM file (if not empty),
