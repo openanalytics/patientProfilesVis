@@ -89,9 +89,10 @@ knitPrintListObjects <- function(
 	
 	# chunk general template
 	# seems that plot object cannot be passed as argument to knit_expand?
-	chunkTemplate <- paste0("```{r {{label}}, ", toString(argsChunkTxt), "}\n",
+	chunkTemplate <- paste0(
+		"```{r {{label}}, ", toString(argsChunkTxt), "}\n",
 		if(!is.null(titles))	
-			paste0("cat('", paste(rep("#", titleLevel), collapse = ""), " {{title}}\\n')\n"),
+			paste0('cat("\\n", paste(rep("#", titleLevel), collapse = ""), " {{title}}\\n", sep = "")\n'),
 		if(printObject)	"print(", 
 		"xList[[{{i}}]]",
 		if(printObject)	")", 
