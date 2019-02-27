@@ -1,5 +1,6 @@
 0.1.0
     o loadDataADaMSDTM: ... parameters for read_sas
+    o knitPrintListObjects: fix when quote are present in title
 0.0.6
     o getGLPGColorPalette: fix names color palette when no x is specified
 0.0.5
