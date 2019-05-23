@@ -59,12 +59,14 @@ This function returns two objects:
 * a vector containing the labels for each column of the data (used e.g. for
   default titles of the figures), stored in the `$labelVars` slot
 
-A few `sdtm` datasets from the _Pelican_ study are included in the package for
-the demonstration, via the dataset `SDTMDataPelican` and corresponding variable
-labels `labelVarsSDTMPelican`.
+A few `sdtm` datasets from the _Pelican_ study are included in the
+`glpgUtilityFct` package for the demonstration, via the dataset
+`SDTMDataPelican` and corresponding variable labels `labelVarsSDTMPelican`.
 
 ```{r loadData}	
 	
+	library(glpgUtilityFct)
+
 	# example dataset(s) formatted as a list of data.frame
 	data(SDTMDataPelican)
 	pander(lapply(SDTMDataPelican, head, 1))
