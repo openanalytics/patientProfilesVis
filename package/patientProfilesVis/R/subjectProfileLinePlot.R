@@ -19,7 +19,7 @@
 #' @import ggplot2
 #' @importFrom glpgStyle glpgColor
 #' @importFrom plyr dlply
-#' @importFrom glpgUtilityFct getLabelVar getGLPGColorPalette getGLPGShapePalette
+#' @importFrom glpgUtilityFct getLabelVar getGLPGShapePalette
 #' @export
 subjectProfileLinePlot <- function(
 	data,
@@ -63,8 +63,8 @@ subjectProfileLinePlot <- function(
 	# convert aesthetic variables to factor
 	if(!is.null(colorVar)){
 		data[, colorVar] <- convertAesVar(data, colorVar)
-		if(is.null(colorPalette))	colorPalette <- getGLPGColorPalette(x = data[, colorVar])
-	}else	colorPalette <- getGLPGColorPalette(n = 1)
+		if(is.null(colorPalette))	colorPalette <- getGLPGColorPaletteVis(x = data[, colorVar])
+	}else	colorPalette <- getGLPGColorPaletteVis(n = 1)
 	if(!is.null(shapeVar)){
 		data[, shapeVar] <- convertAesVar(data, var = shapeVar)
 		if(is.null(shapePalette))	shapePalette <- getGLPGShapePalette(x = data[, shapeVar])
