@@ -11,7 +11,7 @@
 #' @import ggplot2
 #' @importFrom plyr dlply
 #' @importFrom stats reorder
-#' @importFrom glpgUtilityFct getLabelVar getGLPGShapePalette
+#' @importFrom glpgUtilityFct getLabelVar getShapeGLPGPalette
 #' @export
 subjectProfileEventPlot <- function(
 	data,
