@@ -1,5 +1,9 @@
 context("Compare 'subjectProfileIntervalPlot' with previous version")
 
+library(glpgUtilityFct)
+data(SDTMDataPelican)
+data(labelVarsSDTMPelican)
+
 # AEPTCD: preferred term code
 dataPlot <- SDTMDataPelican$AE
 # specify order of value in 'AESEV'

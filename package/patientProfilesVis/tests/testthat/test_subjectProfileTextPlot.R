@@ -1,5 +1,9 @@
 context("Compare 'subjectProfileTextPlot' with previous version")
 
+library(glpgUtilityFct)
+data(SDTMDataPelican)
+data(labelVarsSDTMPelican)
+
 test_that("subjectProfileTextPlot - specification of parameter value only", {
 			
 	dmPlots <- subjectProfileTextPlot(
