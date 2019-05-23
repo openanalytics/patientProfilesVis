@@ -1,5 +1,9 @@
 context("Compare 'subjectProfileEventPlot' with previous version")
 
+library(glpgUtilityFct)
+data(SDTMDataPelican)
+data(labelVarsSDTMPelican)
+
 # prepare data for plots:
 dataLB <- SDTMDataPelican$LB
 # sort the categories (empty values '' becomes NA)

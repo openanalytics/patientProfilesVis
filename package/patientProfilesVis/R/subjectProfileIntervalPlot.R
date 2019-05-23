@@ -109,9 +109,9 @@ subjectProfileIntervalPlot <- function(
 	# convert color variable to factor
 	if(!is.null(colorVar)){
 		data[, colorVar] <- convertAesVar(data, colorVar)
-		if(is.null(colorPalette))	colorPalette <- getGLPGColorPaletteVis(x = data[, colorVar])
+		if(is.null(colorPalette))	colorPalette <- getGLPGColorPalettePatientProfile(x = data[, colorVar])
 	}else{
-		if(is.null(colorPalette))	colorPalette <- getGLPGColorPaletteVis(n = 1)
+		if(is.null(colorPalette))	colorPalette <- getGLPGColorPalettePatientProfile(n = 1)
 	}
 	
 	listPlots <- dlply(data, subjectVar, function(dataSubject){	
