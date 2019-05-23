@@ -1,5 +1,6 @@
 0.1.0
     o example datasets moved to the glpgUtilityFct package
+    o getGLPGColorPalettePatientProfile/getGLPGLinetypePalettePatientProfile
 0.0.16
     o subjectProfileTextPlot: concatenate multiple value variable with ', '
     o subjectProfileIntervalPlot: timeLabel
