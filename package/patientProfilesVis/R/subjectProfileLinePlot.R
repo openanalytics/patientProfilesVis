@@ -124,7 +124,7 @@ subjectProfileLinePlot <- function(
 				labs(title = title, x = xLab, y = yLab) +
 				theme(axis.text.y = element_text(size = 7))
 			
-			if(!is.null(paramNameVar))
+			if(!is.null(paramNameVar)){
 				gg <- gg + facet_grid(
 					paste0(paramNameVar, "~."), 
 					scales = "free_y", switch = "y"#,
@@ -137,6 +137,11 @@ subjectProfileLinePlot <- function(
 						),
 						strip.background = element_rect(color = NA, fill = NA)
 					)
+			
+				# count number of lines each facet will take
+				nLinesPlot <- countNLines(unique(dataSubjectPage[, paramNameVar]))
+				
+			}else	nLinesPlot <- 4
 		
 			# color palette and name for color legend
 			if(!is.null(colorVar)){
@@ -151,8 +156,11 @@ subjectProfileLinePlot <- function(
 		
 			if(!is.null(shapeVar))
 				gg <- gg + 
-					getAesScaleManual(lab = shapeLab, palette = shapePalette, type = "shape")		
+					getAesScaleManual(lab = shapeLab, palette = shapePalette, type = "shape")	
 		
+			nLinesLegend <- if(!is.null(colorVar)){
+				countNLines(unique(dataSubjectPage[, colorVar])) + if(!is.null(colorLab))	1
+			}
 		
 			if(!is.null(timeLim))
 				gg <- gg + coord_cartesian(xlim = timeLim)
