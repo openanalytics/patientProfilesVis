@@ -506,11 +506,10 @@ highlighted in the plot.
 		title = "Laboratory test measurements: actual value",
 		labelVars = labelVarsSDTMPelican
 	))
-	stop("test")
 	
 ```
 
-```{r exampleLineModule-include, echo = FALSE, fig.height = getNLinesYGgplot(lbLinePlots[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with the 'subjectProfileLinePlot' function for patient:", names(lbLinePlots)[1])}
+```{r exampleLineModule-include, echo = FALSE, fig.height = attributes(lbLinePlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with the 'subjectProfileLinePlot' function for patient:", names(lbLinePlots)[1])}
 
 	print(lbLinePlots[[1]][[1]])
 
@@ -542,7 +541,7 @@ The reference range measurement is represented via these parameters.
 	
 ```
 
-```{r exampleLineModule-colorShape-include, echo = FALSE, fig.height = getNLinesYGgplot(lbLinePlotsColorShape[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with reference range with the 'subjectProfileLinePlot' function for patient:", names(lbLinePlotsColorShape)[1])}
+```{r exampleLineModule-colorShape-include, echo = FALSE, fig.height = attributes(lbLinePlotsColorShape[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with reference range with the 'subjectProfileLinePlot' function for patient:", names(lbLinePlotsColorShape)[1])}
 
 	print(lbLinePlotsColorShape[[1]][[1]])
 
