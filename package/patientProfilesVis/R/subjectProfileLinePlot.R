@@ -143,6 +143,7 @@ subjectProfileLinePlot <- function(
 			
 				# count number of lines each facet will take
 				nLinesPlot <- countNLines(unique(dataSubjectPage[, paramNameVar]))
+				nLinesPlot <- Vectorize(FUN = function(x){max(c(x, 4))})(nLinesPlot)
 				
 			}else	nLinesPlot <- 4
 		
@@ -178,7 +179,7 @@ subjectProfileLinePlot <- function(
 				# 1 line to separate the two legends if color and shape are specified and different
 				# (ggplot will create separate legend if the title differ)
 				if(!is.null(colorVar) & !is.null(shapeVar) && (colorVar != shapeVar || colorLab != shapeLab))	1
-			nLinesPlot <- max(nLinesPlot, nLinesLegend)
+			nLinesPlot <- max(sum(nLinesPlot), nLinesLegend)
 			
 			# in title and axes
 			nLinesTitleAndXAxis <- sum(c(
