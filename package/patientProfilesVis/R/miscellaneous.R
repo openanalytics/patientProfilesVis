@@ -113,33 +113,60 @@ getNLinesLegend <- function(gg, values, title){
 	
 }
 
-#' Get number of lines for specific label in a \code{\link[ggplot2]{ggplot2}} object
+#' Get number of lines for specific label either
+#' from a \code{\link[ggplot2]{ggplot2}} object via \code{gg}
+#' or from the label  via \code{value}
 #' @param gg \code{\link[ggplot2]{ggplot2}} object
+#' @param value String with label value.
 #' @param elName string with name of label to extract,
 #' among 'x', 'y' and 'title'
-#' @param elNLines (optional) integer with number of lines,
-#' by default 2 for 'x'/'y' and 3 for 'title'
+#' @param elNLines (optional) Named integer with number of lines,
+#' by default 2 for 'x'/'y', 3 for 'title' and 1 for caption.
 #' @return integer with (approximated) number of lines
 #' @author Laure Cougnaud
 #' @importFrom ggplot2 ggplot_build
-getNLinesLabel <- function(gg, 
+getNLinesLabel <- function(
+	gg,
+	value,
 	elName = c("x", "y", "title", "caption"),  elNLines = NULL){
 	
-	elName <- match.arg(elName, several.ok = TRUE)
+	# element should be of length 1 if 'value' is specified
+	elName <- match.arg(
+		elName, 
+		choices = c("x", "y", "title", "caption"), 
+		several.ok = !missing(gg)
+	)
 	
 	if(is.null(elNLines))
 		elNLines <- c("x" = 2, "y" = 2, "title" = 3, "caption" = 1)[elName]
 	
-	elValue <- ggplot_build(gg)$plot$labels[elName]
-	sum(unlist(
-		lapply(names(elValue), function(elNameI){
-			x <- elValue[[elNameI]]
-			if(!is.null(x) && !(is.character(x) && x == "")){
-				if(is.expression(x))	x <- as.character(x)
-				countNLines(x) * elNLines[elNameI]
-				}
+	if(!missing(gg)){
+		elValue <- ggplot_build(gg)$plot$labels[elName]
+		elValue <- elValue[!sapply(elValue, is.null)]
+		nLinesList <- lapply(names(elValue), function(elNameI){
+			getNLinesLabel(
+				value = elValue[[elNameI]], 
+				elName = elNameI,
+				elNLines = elNLines
+			)
+#				if(!is.null(x) && !(is.character(x) && x == "")){
+#					if(is.expression(x))	x <- as.character(x)
+#					countNLines(x) * elNLines[elNameI]
+#				}
 		})
-	))
+		sum(unlist(nLinesList))
+		
+	}else	if(!missing(value)){
+		
+		if(!is.null(value) && !(is.character(value) && value == "")){
+			
+			if(is.expression(value))	value <- as.character(value)
+			countNLines(value) * elNLines[elName]
+			
+		}
+		
+	}else stop("Element value 'value' or a ggplot2 object via 'gg' should be specified.")
+	
 }
 
 #' Count number of lines ('\\n' character) per character in a vector

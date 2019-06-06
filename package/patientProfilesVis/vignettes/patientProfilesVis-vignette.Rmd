@@ -496,7 +496,7 @@ highlighted in the plot.
 ```{r exampleLineModule}
 
 	# create plot
-	lbLinePlots <- subjectProfileLinePlot(
+	system.time(lbLinePlots <- subjectProfileLinePlot(
 		data = dataLB,
 		paramNameVar = "LBTEST", 
 		paramValueVar = "LBSTRESN",
@@ -505,7 +505,8 @@ highlighted in the plot.
 		timeVar = "LBDY",
 		title = "Laboratory test measurements: actual value",
 		labelVars = labelVarsSDTMPelican
-	)
+	))
+	stop("test")
 	
 ```
 

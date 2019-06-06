@@ -2,18 +2,28 @@
 % Please edit documentation in R/miscellaneous.R
 \name{getNLinesLegend}
 \alias{getNLinesLegend}
-\title{Get number of lines in the legend of a \code{\link[ggplot2]{ggplot2}} object}
+\title{Get number of lines in the legend,
+either from directly the \code{\link[ggplot2]{ggplot2}} object,
+or from the values of the legend (\code{legendValues})
+and title (\code{legendTitle})}
 \usage{
-getNLinesLegend(gg)
+getNLinesLegend(gg, values, title)
 }
 \arguments{
 \item{gg}{\code{\link[ggplot2]{ggplot2}} object}
+
+\item{values}{Vector with unique legend values}
+
+\item{title}{Vector with legend title}
 }
 \value{
 integer with (approximated) number of lines
 }
 \description{
-Get number of lines in the legend of a \code{\link[ggplot2]{ggplot2}} object
+Get number of lines in the legend,
+either from directly the \code{\link[ggplot2]{ggplot2}} object,
+or from the values of the legend (\code{legendValues})
+and title (\code{legendTitle})
 }
 \author{
 Laure Cougnaud
