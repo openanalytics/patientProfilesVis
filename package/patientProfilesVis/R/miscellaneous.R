@@ -61,40 +61,53 @@ getNLinesYGgplot <- function(gg){
 	return(nLines)
 }
 
-#' Get number of lines in the legend of a \code{\link[ggplot2]{ggplot2}} object
+#' Get number of lines in the legend,
+#' either from directly the \code{\link[ggplot2]{ggplot2}} object,
+#' or from the values of the legend (\code{legendValues})
+#' and title (\code{legendTitle})
 #' @param gg \code{\link[ggplot2]{ggplot2}} object
+#' @param values Vector with unique legend values
+#' @param title Vector with legend title
 #' @return integer with (approximated) number of lines
 #' @author Laure Cougnaud
 #' @importFrom ggplot2 ggplot_gtable ggplot_build
-getNLinesLegend <- function(gg){
+getNLinesLegend <- function(gg, values, title){
 	
-	ggTable <- ggplot_gtable(ggplot_build(gg))
+	if(!missing(gg)){
 	
-	# extract legend grobs
-	idxLegend <- which(sapply(ggTable$grobs, function(x) x$name) == "guide-box")
-	
-	nLinesLegendTotal <- if(length(idxLegend) > 0){
+		ggTable <- ggplot_gtable(ggplot_build(gg))
 		
-		grobLegend <- ggTable$grobs[[idxLegend]]
-		idxLegendGuides <- which(grobLegend$layout$name == "guides")
+		# extract legend grobs
+		idxLegend <- which(sapply(ggTable$grobs, function(x) x$name) == "guide-box")
 		
-		if(length(idxLegendGuides) > 0){
+		nLinesLegendTotal <- if(length(idxLegend) > 0){
+			
+			grobLegend <- ggTable$grobs[[idxLegend]]
+			idxLegendGuides <- which(grobLegend$layout$name == "guides")
+			
+			if(length(idxLegendGuides) > 0){
+			
+				# extract number of lines in each legend
+				nLinesLegend <- vapply(seq_along(idxLegendGuides), function(i){
+					grobLegendI <- grobLegend$grobs[[i]]
+					idxLegendILabels <- grep("^label", grobLegendI$layout$name)
+					nLinesLegendILabels <- n_distinct(grobLegendI$layout[idxLegendILabels, "t"])
+					nLinesLegendITitle <- sum(grobLegendI$layout$name == "title")
+					nLinesLegendILabels + nLinesLegendITitle
+				}, FUN.VALUE = numeric(1))
+			
+				# add extra line which separate legend guides
+				sum(nLinesLegend) + length(idxLegendGuides) - 1
 		
-			# extract number of lines in each legend
-			nLinesLegend <- vapply(seq_along(idxLegendGuides), function(i){
-				grobLegendI <- grobLegend$grobs[[i]]
-				idxLegendILabels <- grep("^label", grobLegendI$layout$name)
-				nLinesLegendILabels <- n_distinct(grobLegendI$layout[idxLegendILabels, "t"])
-				nLinesLegendITitle <- sum(grobLegendI$layout$name == "title")
-				nLinesLegendILabels + nLinesLegendITitle
-			}, FUN.VALUE = numeric(1))
-		
-			# add extra line which separate legend guides
-			sum(nLinesLegend) + length(idxLegendGuides) - 1
+			}else 0
 	
 		}else 0
 
-	}else 0
+	}else	if(!missing(values)){
+		
+		sum(countNLines(values)) + if(!is.missing(title))	countNLines(title)
+		
+	}else	stop("Legend values via 'values' or a ggplot2 object via 'gg' should be specified.")
 	
 	return(nLinesLegendTotal)
 	
@@ -145,7 +158,10 @@ countNLines <- function(x){
 #' used for automatic paging of a plot
 #' @param data data.frame with data
 #' @param var string, variable of \code{data} with variable for the y-axis
-#' @param typeVar string, type of the variable, either 'y' or 'panel'
+#' @param typeVar string, type of the variable, either:
+#' 'y': the variable is displayed in the x-axis or 
+#' 'panel': the variable is displayed as separated facets.
+#' This is used to compute height for each line of the plot.
 #' @param formatReport list with parameters used to specify the format of the report,
 #' e.g. output of the \code{\link{subjectProfileReportFormat}} function
 #' @param title logical, has the plot a title?
