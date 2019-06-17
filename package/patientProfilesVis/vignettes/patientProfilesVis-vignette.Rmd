@@ -74,6 +74,11 @@ A few `sdtm` datasets from the _Pelican_ study are included in the
 	# and corresponding labels
 	data(labelVarsSDTMPelican)
 	pander(head(labelVarsSDTMPelican))
+	
+	# load example ADaM dataset
+	data(ADaMDataPelican)
+	# ... and corresponding labels
+	data(labelVarsADaMPelican)
 
 ```
 
@@ -547,6 +552,92 @@ The reference range measurement is represented via these parameters.
 
 ```
 
+# Specification of the the color/shape variables
+
+## Missing values 
+
+The missing values are always represented in the legend: color/shape palettes.
+
+If the variable is specified as character (by default when the dataset is loaded
+into R), the **variable is converted to a factor and empty
+values ('', if any) in the variable are converted to missing (NA)**.
+
+If the variable is specified as factor, the missing values are included in the
+levels of the factor (`exclude = NULL`  in `factor`).
+
+## Order of the categories
+
+By **default**, if a character vector is specified, the categories are sorted in
+**alphabetical order** when the variable is converted to a factor in R.
+
+```{r lab-SDTM-categories-default, fig.height = attributes(lbPlotsColor[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14}
+
+	## SDTM dataset
+
+	sdtmLB <- SDTMDataPelican$LB
+			
+	# LBRIND is a character: elements sorted in alphabetical order
+	lbPlotsColor <- subjectProfileEventPlot(
+		data = sdtmLB,
+		paramVar = "LBTEST",
+			paramGroupVar = "LBSCAT",
+		timeVar = "LBDY",
+		colorVar = "LBNRIND",
+		labelVars = labelVarsSDTMPelican,
+		title = "Laboratory test measurements: reference range indicator"
+	)
+	print(lbPlotsColor[[1]][[1]])
+	
+```	
+
+To **specify the elements of the variable in a specific order** (e.g. ordered
+categories), the variable should be converted to a **factor with its levels
+sorted in the order of interest**. 
+
+For example, the reference ranges for the laboratory measurements are sorted
+from low to high in the legend: 
+
+```{r lab-SDTM-categories-sorted, fig.height = attributes(lbPlotsColor[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14}
+	
+	# sort LBRIND
+	sdtmLB$LBNRIND <- with(sdtmLB, factor(LBNRIND, levels = c("LOW", "NORMAL", "HIGH")))
+	lbPlotsColor <- subjectProfileEventPlot(
+		data = sdtmLB,
+		paramVar = "LBTEST",
+		paramGroupVar = "LBSCAT",
+		timeVar = "LBDY",
+		colorVar = "LBNRIND",
+		labelVars = labelVarsSDTMPelican,
+		title = "Laboratory test measurements: reference range indicator"
+	)
+	print(lbPlotsColor[[1]][[1]])
+	
+```
+
+In the `ADaM` dataset, for some specific variables with categories, the
+corresponding numeric variable can be used for sorting:
+
+```{r lab-ADaM-categories-sorted, fig.height = attributes(lbPlotsColor[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14}	
+	
+	## ADaM
+	
+	# in ADaM, the reference range can be sorted based on the corresponding numeric variable
+	ADLB <- ADaMDataPelican$ADLB
+	ADLB$ANRIND <- with(ADLB, reorder(ANRIND, ANRINDN))
+	lbPlotsColor <- subjectProfileEventPlot(
+		data = ADLB,
+		paramVar = "PARAM",
+		paramGroupVar = "PARCAT1",
+		timeVar = "ADY",
+		colorVar = "ANRIND",
+		labelVars = labelVarsADaMPelican,
+		title = "Laboratory test measurements: reference range indicator"
+	)
+	print(lbPlotsColor[[1]][[1]])
+
+```
+
+
 # Creation of subject report
 
 The function `createSubjectProfileReport` has mainly two purposes:
@@ -640,11 +731,6 @@ subject.
 ADaM dataset can also be used in the same framework.
 
 ```{r createReportFromADAMDataset, eval = FALSE}
-
-	# load example ADaM dataset
-	data(ADaMDataPelican)
-	# ... and corresponding labels
-	data(labelVarsADaMPelican)
 
 	# subject information
 	slPlotsADaM <- subjectProfileTextPlot(
