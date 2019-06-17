@@ -22,7 +22,7 @@
 #' @import ggplot2
 #' @importFrom glpgStyle glpgColor
 #' @importFrom plyr dlply
-#' @importFrom glpgUtilityFct getLabelVar getGLPGShapePalette
+#' @importFrom glpgUtilityFct getLabelVar
 #' @export
 subjectProfileLinePlot <- function(
 	data,
@@ -70,7 +70,7 @@ subjectProfileLinePlot <- function(
 	}else	colorPalette <- getGLPGColorPalettePatientProfile(n = 1)
 	if(!is.null(shapeVar)){
 		data[, shapeVar] <- convertAesVar(data, var = shapeVar)
-		if(is.null(shapePalette))	shapePalette <- getGLPGShapePalette(x = data[, shapeVar])
+		if(is.null(shapePalette))	shapePalette <- getGLPGShapePalettePatientProfile(x = data[, shapeVar])
 	}
 	
 	listPlots <- dlply(data, subjectVar, function(dataSubject){	
