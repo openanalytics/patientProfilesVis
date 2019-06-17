@@ -73,9 +73,12 @@ in the text when the plots are combined (e.g. if the plot is empty).}
 e.g. output of the \code{\link{subjectProfileReportFormat}} function}
 }
 \value{
-list of (across subjects) of list (across modules) of \code{\link[ggplot2]{ggplot2} objects}, 
-also of class \code{subjectProfileLinePlot}, with additional metaData attributes containing
-'label' and 'timeLim'.
+List of (across subjects) of list (across modules) 
+of \code{\link[ggplot2]{ggplot2} objects}, 
+also of class \code{subjectProfileLinePlot}.
+Each subject profile contains attributes: 'subjectID' and 'nLines' 
+(estimated number of lines of space the plot will take).
+The entire list also contains attributes: '\code{label}' and 'timeLim'.
 }
 \description{
 Create spaghetti plot for subject profiles

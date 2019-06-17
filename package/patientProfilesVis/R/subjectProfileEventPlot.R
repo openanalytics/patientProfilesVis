@@ -11,7 +11,7 @@
 #' @import ggplot2
 #' @importFrom plyr dlply
 #' @importFrom stats reorder
-#' @importFrom glpgUtilityFct getLabelVar getGLPGShapePalette
+#' @importFrom glpgUtilityFct getLabelVar
 #' @export
 subjectProfileEventPlot <- function(
 	data,
@@ -57,7 +57,7 @@ subjectProfileEventPlot <- function(
 	}else	colorPalette <- getGLPGColorPalettePatientProfile(n = 1)
 	if(!is.null(shapeVar)){
 		data[, shapeVar] <- convertAesVar(data, var = shapeVar)
-		if(is.null(shapePalette))	shapePalette <- getGLPGShapePalette(x = data[, shapeVar])
+		if(is.null(shapePalette))	shapePalette <- getGLPGShapePalettePatientProfile(x = data[, shapeVar])
 	}
 	
 	# format variable
@@ -114,8 +114,34 @@ subjectProfileEventPlot <- function(
 			if(!is.null(timeLim))
 				gg <- gg + coord_cartesian(xlim = timeLim)
 			
-			attr(gg, 'metaData') <- list(subjectID = subject)
+			## extract number of lines
 			
+			# labels y-axis:
+			nLines <- countNLines(unique(dataSubjectPage[, "yVar"]))
+			nLinesPlot <- sum(nLines) + 0.8 * (length(nLines) - 1)
+			
+			# legend:
+			nLinesLegend <- 0 +
+				if(!is.null(colorVar))
+					getNLinesLegend(values = unique(dataSubjectPage[, colorVar]), title = colorLab) +
+				if(!is.null(shapeVar))
+					getNLinesLegend(values = unique(dataSubjectPage[, shapeVar]), title = shapeLab) +
+				# 1 line to separate the two legends if color and shape are specified and different
+				# (ggplot will create separate legend if the title differ)
+				if(!is.null(colorVar) & !is.null(shapeVar) && (colorVar != shapeVar || colorLab != shapeLab))	1
+				
+			nLinesPlot <- max(sum(nLinesPlot), nLinesLegend)	
+			
+			# in title and axes
+			nLinesTitleAndXAxis <- sum(c(
+				getNLinesLabel(value = title, elName = "title"), 
+				getNLinesLabel(value = xLab, elName = "x")
+			))
+			nLines <- nLinesPlot + nLinesTitleAndXAxis
+
+			## set attributes
+			
+			attr(gg, 'metaData') <- list(subjectID = subject, nLines = nLines)
 			class(gg) <- c("subjectProfileEventPlot", class(gg))
 			
 			gg

@@ -74,6 +74,11 @@ A few `sdtm` datasets from the _Pelican_ study are included in the
 	# and corresponding labels
 	data(labelVarsSDTMPelican)
 	pander(head(labelVarsSDTMPelican))
+	
+	# load example ADaM dataset
+	data(ADaMDataPelican)
+	# ... and corresponding labels
+	data(labelVarsADaMPelican)
 
 ```
 
@@ -117,7 +122,7 @@ containing the parameter value (`paramValueVar`).
 	
 ```
 
-```{r exampleTextModule-wideFormat-include, echo = FALSE, fig.height = getNLinesYGgplot(dmPlots[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Demographic information with the 'subjectProfileTextPlot' function for patient:", names(dmPlots)[1])}
+```{r exampleTextModule-wideFormat-include, echo = FALSE, fig.height = attributes(dmPlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Demographic information with the 'subjectProfileTextPlot' function for patient:", names(dmPlots)[1])}
 
 	print(dmPlots[[1]][[1]])
 
@@ -144,7 +149,7 @@ for a certain variable name.
 		
 ```
 
-```{r exampleTextModule-longFormat-noGrouping-include, echo = FALSE, fig.height = getNLinesYGgplot(mhPlots[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlots)[1])}
+```{r exampleTextModule-longFormat-noGrouping-include, echo = FALSE, fig.height = attributes(mhPlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlots)[1])}
 
 	print(mhPlots[[1]][[1]])
 
@@ -175,7 +180,7 @@ they should be concatenated with a specific format, a function
 		
 ```
 
-```{r exampleTextModule-longFormat-multipleVariables-include, echo = FALSE, fig.height = getNLinesYGgplot(mhPlotsMultipleVars[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlotsMultipleVars)[1])}
+```{r exampleTextModule-longFormat-multipleVariables-include, echo = FALSE, fig.height = attributes(mhPlotsMultipleVars[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlotsMultipleVars)[1])}
 
 	print(mhPlotsMultipleVars[[1]][[1]])
 
@@ -198,7 +203,7 @@ they should be concatenated with a specific format, a function
 	
 ```
 
-```{r exampleTextModule-longFormat-grouping-include, echo = FALSE, fig.height = getNLinesYGgplot(mhPlotsGroup[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlotsGroup)[1])}
+```{r exampleTextModule-longFormat-grouping-include, echo = FALSE, fig.height = attributes(mhPlotsGroup[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlotsGroup)[1])}
 
 	print(mhPlotsGroup[[1]][[1]])
 
@@ -235,7 +240,7 @@ missing start/end date are represented**.
 	
 ```
 
-```{r exampleIntervalModule-ae-include, echo = FALSE, fig.height = getNLinesYGgplot(aePlots[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", names(aePlots)[1])}
+```{r exampleIntervalModule-ae-include, echo = FALSE, fig.height = attributes(aePlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", names(aePlots)[1])}
 
 	print(aePlots[[1]][[1]])
 
@@ -265,7 +270,7 @@ for a specific subject from the subject-level SDTM dataset.
 	
 ```
 
-```{r exampleIntervalModule-ae-timeLimData-include, echo = FALSE, fig.height = getNLinesYGgplot(aePlotsTimLimFromSV[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste0("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", names(aePlotsTimLimFromSV)[1], ". Missing start/end date are extracted from the subject-level datasets.")}
+```{r exampleIntervalModule-ae-timeLimData-include, echo = FALSE, fig.height = attributes(aePlotsTimLimFromSV[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste0("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", names(aePlotsTimLimFromSV)[1], ". Missing start/end date are extracted from the subject-level datasets.")}
 
 	print(aePlotsTimLimFromSV[[1]][[1]])
 
@@ -291,7 +296,7 @@ this time interval visualization
 
 ```
 
-```{r exampleIntervalModule-exinclude, echo = FALSE, fig.height = getNLinesYGgplot(exPlots[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Exposure interval with the 'subjectProfileIntervalPlot' function for patient:", names(aePlots)[1])}
+```{r exampleIntervalModule-exinclude, echo = FALSE, fig.height = attributes(exPlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Exposure interval with the 'subjectProfileIntervalPlot' function for patient:", names(aePlots)[1])}
 
 	print(exPlots[[1]][[1]])
 
@@ -304,7 +309,7 @@ this time interval visualization
 	# AEPTCD: preferred term codes
 	cmPlots <- subjectProfileIntervalPlot(
 		data = SDTMDataPelican$CM,
-		paramVar = c("CMINDC", "CMDECOD", "CMDOSTXT", "CMDOSU", "CMROUTE", "CMDOSFRQ"),
+		paramVar = c("CMINDC", "CMTRT", "CMDOSTXT", "CMDOSU", "CMROUTE", "CMDOSFRQ"),
 		timeStartVar = "CMSTDY",
 		timeEndVar = "CMENDY",
 		paramGroupVar = "CMINDC",
@@ -315,7 +320,7 @@ this time interval visualization
 
 ```
 
-```{r exampleIntervalModule-cm-include, echo = FALSE, fig.height = getNLinesYGgplot(cmPlots[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlots)[1])}
+```{r exampleIntervalModule-cm-include, echo = FALSE, fig.height = attributes(cmPlots[["study-4905-02"]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlots)[1])}
 
 	print(cmPlots[[1]][[1]])
 
@@ -337,7 +342,7 @@ time range of the subject visits.
 
 	cmPlotsTimeSV <- subjectProfileIntervalPlot(
 		data = SDTMDataPelican$CM,
-		paramVar = c("CMINDC", "CMDECOD", "CMDOSTXT", "CMDOSU", "CMROUTE", "CMDOSFRQ"),
+		paramVar = c("CMINDC", "CMTRT", "CMDOSTXT", "CMDOSU", "CMROUTE", "CMDOSFRQ"),
 		timeStartVar = "CMSTDY",
 		timeEndVar = "CMENDY",
 		paramGroupVar = "CMINDC",
@@ -351,7 +356,7 @@ time range of the subject visits.
 
 ```
 
-```{r exampleIntervalModule-cm-restrictedTimeLimits-include, echo = FALSE, fig.height = getNLinesYGgplot(cmPlotsTimeSV[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlots)[1], "with time limits restricted to subject visits")}
+```{r exampleIntervalModule-cm-restrictedTimeLimits-include, echo = FALSE, fig.height = attributes(cmPlotsTimeSV[["study-4905-02"]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlots)[1], "with time limits restricted to subject visits")}
 
 	print(cmPlotsTimeSV[[1]][[1]])
 
@@ -365,7 +370,7 @@ time limits via the `timeLim` parameter:
 	timeLim <- c(-28, 53)
 	cmPlotsTimeSpec <- subjectProfileIntervalPlot(
 		data = SDTMDataPelican$CM,
-		paramVar = c("CMINDC", "CMDECOD", "CMDOSTXT", "CMDOSU", "CMROUTE", "CMDOSFRQ"),
+		paramVar = c("CMINDC", "CMTRT", "CMDOSTXT", "CMDOSU", "CMROUTE", "CMDOSFRQ"),
 		timeStartVar = "CMSTDY",
 		timeEndVar = "CMENDY",
 		paramGroupVar = "CMINDC",
@@ -377,7 +382,7 @@ time limits via the `timeLim` parameter:
 
 ```
 
-```{r exampleIntervalModule-cm-restrictedTimeLimits2-include, echo = FALSE, fig.height = getNLinesYGgplot(cmPlotsTimeSpec[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlotsTimeSpec)[1], "with time limits restricted to: (", toString(timeLim), ")")}
+```{r exampleIntervalModule-cm-restrictedTimeLimits2-include, echo = FALSE, fig.height = attributes(cmPlotsTimeSpec[["study-4905-02"]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlotsTimeSpec)[1], "with time limits restricted to: (", toString(timeLim), ")")}
 
 	print(cmPlotsTimeSpec[[1]][[1]])
 
@@ -413,7 +418,7 @@ laboratory measurement (and corresponding time).
 
 ```
 
-```{r exampleEventModule-include, echo = FALSE, fig.height = getNLinesYGgplot(lbPlots[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with the 'subjectProfileEventPlot' function for patient:", names(lbPlots)[1])}
+```{r exampleEventModule-include, echo = FALSE, fig.height = attributes(lbPlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with the 'subjectProfileEventPlot' function for patient:", names(lbPlots)[1])}
 
 	print(lbPlots[[1]][[1]])
 
@@ -445,7 +450,7 @@ in normal range.
 	
 ```
 
-```{r exampleEventModuleWithColor-include, echo = FALSE, fig.height = getNLinesYGgplot(lbPlotsColor[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with reference range with the 'subjectProfileEventPlot' function for patient:", names(lbPlotsColor)[1])}
+```{r exampleEventModuleWithColor-include, echo = FALSE, fig.height = attributes(lbPlotsColor[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with reference range with the 'subjectProfileEventPlot' function for patient:", names(lbPlotsColor)[1])}
 
 	print(lbPlotsColor[[1]][[1]])
 
@@ -476,7 +481,7 @@ hematology parameters.
 	
 ```
 
-```{r exampleEventModuleWithSubset-include, echo = FALSE, fig.height = getNLinesYGgplot(lbPlotsSubset[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Hematology data with the 'subjectProfileEventPlot' function for patient:", names(lbPlotsSubset)[1])}
+```{r exampleEventModuleWithSubset-include, echo = FALSE, fig.height = attributes(lbPlotsSubset[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Hematology data with the 'subjectProfileEventPlot' function for patient:", names(lbPlotsSubset)[1])}
 
 	print(lbPlotsSubset[[1]][[1]])
 
@@ -509,7 +514,7 @@ highlighted in the plot.
 	
 ```
 
-```{r exampleLineModule-include, echo = FALSE, fig.height = getNLinesYGgplot(lbLinePlots[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with the 'subjectProfileLinePlot' function for patient:", names(lbLinePlots)[1])}
+```{r exampleLineModule-include, echo = FALSE, fig.height = attributes(lbLinePlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with the 'subjectProfileLinePlot' function for patient:", names(lbLinePlots)[1])}
 
 	print(lbLinePlots[[1]][[1]])
 
@@ -541,11 +546,97 @@ The reference range measurement is represented via these parameters.
 	
 ```
 
-```{r exampleLineModule-colorShape-include, echo = FALSE, fig.height = getNLinesYGgplot(lbLinePlotsColorShape[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with reference range with the 'subjectProfileLinePlot' function for patient:", names(lbLinePlotsColorShape)[1])}
+```{r exampleLineModule-colorShape-include, echo = FALSE, fig.height = attributes(lbLinePlotsColorShape[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with reference range with the 'subjectProfileLinePlot' function for patient:", names(lbLinePlotsColorShape)[1])}
 
 	print(lbLinePlotsColorShape[[1]][[1]])
 
 ```
+
+# Specification of the the color/shape variables
+
+## Missing values 
+
+The missing values are always represented in the legend: color/shape palettes.
+
+If the variable is specified as character (by default when the dataset is loaded
+into R), the **variable is converted to a factor and empty
+values ('', if any) in the variable are converted to missing (NA)**.
+
+If the variable is specified as factor, the missing values are included in the
+levels of the factor (`exclude = NULL`  in `factor`).
+
+## Order of the categories
+
+By **default**, if a character vector is specified, the categories are sorted in
+**alphabetical order** when the variable is converted to a factor in R.
+
+```{r lab-SDTM-categories-default, fig.height = attributes(lbPlotsColor[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14}
+
+	## SDTM dataset
+
+	sdtmLB <- SDTMDataPelican$LB
+			
+	# LBRIND is a character: elements sorted in alphabetical order
+	lbPlotsColor <- subjectProfileEventPlot(
+		data = sdtmLB,
+		paramVar = "LBTEST",
+			paramGroupVar = "LBSCAT",
+		timeVar = "LBDY",
+		colorVar = "LBNRIND",
+		labelVars = labelVarsSDTMPelican,
+		title = "Laboratory test measurements: reference range indicator"
+	)
+	print(lbPlotsColor[[1]][[1]])
+	
+```	
+
+To **specify the elements of the variable in a specific order** (e.g. ordered
+categories), the variable should be converted to a **factor with its levels
+sorted in the order of interest**. 
+
+For example, the reference ranges for the laboratory measurements are sorted
+from low to high in the legend: 
+
+```{r lab-SDTM-categories-sorted, fig.height = attributes(lbPlotsColor[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14}
+	
+	# sort LBRIND
+	sdtmLB$LBNRIND <- with(sdtmLB, factor(LBNRIND, levels = c("LOW", "NORMAL", "HIGH")))
+	lbPlotsColor <- subjectProfileEventPlot(
+		data = sdtmLB,
+		paramVar = "LBTEST",
+		paramGroupVar = "LBSCAT",
+		timeVar = "LBDY",
+		colorVar = "LBNRIND",
+		labelVars = labelVarsSDTMPelican,
+		title = "Laboratory test measurements: reference range indicator"
+	)
+	print(lbPlotsColor[[1]][[1]])
+	
+```
+
+In the `ADaM` dataset, for some specific variables with categories, the
+corresponding numeric variable can be used for sorting:
+
+```{r lab-ADaM-categories-sorted, fig.height = attributes(lbPlotsColor[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14}	
+	
+	## ADaM
+	
+	# in ADaM, the reference range can be sorted based on the corresponding numeric variable
+	ADLB <- ADaMDataPelican$ADLB
+	ADLB$ANRIND <- with(ADLB, reorder(ANRIND, ANRINDN))
+	lbPlotsColor <- subjectProfileEventPlot(
+		data = ADLB,
+		paramVar = "PARAM",
+		paramGroupVar = "PARCAT1",
+		timeVar = "ADY",
+		colorVar = "ANRIND",
+		labelVars = labelVarsADaMPelican,
+		title = "Laboratory test measurements: reference range indicator"
+	)
+	print(lbPlotsColor[[1]][[1]])
+
+```
+
 
 # Creation of subject report
 
@@ -641,11 +732,6 @@ ADaM dataset can also be used in the same framework.
 
 ```{r createReportFromADAMDataset, eval = FALSE}
 
-	# load example ADaM dataset
-	data(ADaMDataPelican)
-	# ... and corresponding labels
-	data(labelVarsADaMPelican)
-
 	# subject information
 	slPlotsADaM <- subjectProfileTextPlot(
 		ADaMDataPelican$ADSL,
@@ -680,9 +766,11 @@ ADaM dataset can also be used in the same framework.
 		labelVars = labelVarsADaMPelican,
 		title = "Adverse events"
 	)
-	# laboratory	
+	# laboratory
+	adlb <- ADaMDataPelican$ADLB
+	adlb$ANRIND <- factor(with(adlb, reorder(ifelse(ANRIND == "", NA, ANRIND), ANRINDN)), exclude = NULL)
 	lbPlotsADaM <- subjectProfileEventPlot(
-		data = ADaMDataPelican$ADLB,
+		data = adlb,
 		paramVar = "PARAM",
 		paramGroupVar = c("PARCAT1", "PARCAT2"),
 		timeVar = "ADY",
@@ -694,20 +782,18 @@ ADaM dataset can also be used in the same framework.
 	)
 
 	# create report
-	createSubjectProfileReport(
-		listPlots = list(slPlotsADaM, mhPlotsADaM, 
-			exPlotsADaM, aePlotsADaM, lbPlotsADaM
-		),
+	listPlotsADaM <- list(slPlotsADaM, mhPlotsADaM, exPlotsADaM, aePlotsADaM, lbPlotsADaM)
+	system.time(createSubjectProfileReport(
+		listPlotsADaM,
 		refLines = refLinesParam,
 		outputFile = "subjectProfile_ADAM.pdf"
-	)
+	))
 
 ```
 
 # Appendix
 
 ## Session information
-
 
 ```{r includeSessionInfo, echo = FALSE}
 

@@ -187,12 +187,13 @@ subjectProfileIntervalPlot <- function(
 				)
 			
 			# remove paramneters without data, set theme and labels
+			caption <- paste0("Arrow represents missing start/end ", timeLabel, ".")
 			gg <- gg +
 				scale_y_discrete(drop = TRUE) +
 				subjectProfileTheme() +
 				labs(title = title, 
 					x = xLab, y = yLab,
-					caption = paste0("Arrow represents missing start/end ", timeLabel, ".")
+					caption = caption
 				) + theme(plot.caption = element_text(hjust = 0.5))
 		
 			# set labels for linetype in legend
@@ -225,8 +226,34 @@ subjectProfileIntervalPlot <- function(
 			if(!is.null(timeLim))
 				gg <- gg + coord_cartesian(xlim = timeLim)
 			
-			attr(gg, 'metaData') <- list(subjectID = subject)
 			
+			## extract number of lines
+			
+			# plot content
+			nLines <- countNLines(unique(dataSubjectPage[, "yVar"]))
+			nLinesPlot <- sum(nLines) + 0.8 * (length(nLines) - 1)
+			
+			# legend:
+
+			nLinesLegend <- 0
+			# for the color variable
+			if(!is.null(colorVar))
+				nLinesLegend <- getNLinesLegend(
+					values = unique(dataSubjectPage[, colorVar]), 
+					title = colorLab
+				)
+			nLinesPlot <- max(nLinesPlot, nLinesLegend)
+			
+			# in title and axes
+			nLinesTitleAndXAxis <- sum(c(
+				getNLinesLabel(value = title, elName = "title"), 
+				getNLinesLabel(value = xLab, elName = "x"),
+				getNLinesLabel(value = caption, elName = "caption")
+			))
+			nLines <- nLinesPlot + nLinesTitleAndXAxis
+			
+			## set attributes
+			attr(gg, 'metaData') <- list(subjectID = subject, nLines = nLines)
 			class(gg) <- c("subjectProfileEventPlot", class(gg))
 			
 			gg

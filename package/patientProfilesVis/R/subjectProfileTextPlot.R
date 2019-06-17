@@ -175,8 +175,21 @@ subjectProfileTextPlot <- function(
 				gg <- gg + theme(plot.margin = marNew)
 			}
 			
-			attr(gg, 'metaData') <- list(subjectID = subject)
+			## extract number of lines
 			
+			# plot content: labels y-axis and text
+			nLinesMax <- apply(dataSubjectPage[, c("variable", "value")], 1, function(text) max(countNLines(text)))
+			nLinesPlot <- sum(nLinesMax) + 0.8 * (length(nLinesMax) - 1)
+			
+			# in title and axes
+			nLinesTitleAndXAxis <- sum(c(
+				getNLinesLabel(value = title, elName = "title"), 
+				getNLinesLabel(value = xLab, elName = "x")
+			))
+			nLines <- nLinesPlot + nLinesTitleAndXAxis
+			
+			## set plot attributes
+			attr(gg, 'metaData') <- list(subjectID = subject, nLines = nLines)
 			class(gg) <- c("subjectProfileTextPlot", class(gg))
 			
 			gg

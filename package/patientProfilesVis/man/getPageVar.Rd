@@ -14,7 +14,10 @@ getPageVar(data, var, typeVar = c("y", "panel"),
 
 \item{var}{string, variable of \code{data} with variable for the y-axis}
 
-\item{typeVar}{string, type of the variable, either 'y' or 'panel'}
+\item{typeVar}{string, type of the variable, either:
+'y': the variable is displayed in the x-axis or 
+'panel': the variable is displayed as separated facets.
+This is used to compute height for each line of the plot.}
 
 \item{formatReport}{list with parameters used to specify the format of the report,
 e.g. output of the \code{\link{subjectProfileReportFormat}} function}

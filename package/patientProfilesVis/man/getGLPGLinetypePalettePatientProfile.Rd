@@ -14,8 +14,7 @@ getGLPGLinetypePalettePatientProfile(..., includeNA = TRUE)
 \item{...}{Additional parameters for the 
 \code{\link[glpgUtilityFct]{getGLPGLinetypePalette}} function.}
 
-\item{includeNA}{Logical (TRUE by default), should NA elements be retained in the
-color palette.}
+\item{includeNA}{Logical (TRUE by default), should NA elements be retained in the palette.}
 }
 \value{
 character vector values with linetype
