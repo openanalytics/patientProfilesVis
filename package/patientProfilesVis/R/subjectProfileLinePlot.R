@@ -128,6 +128,7 @@ subjectProfileLinePlot <- function(
 				theme(axis.text.y = element_text(size = 7))
 			
 			if(!is.null(paramNameVar)){
+				
 				gg <- gg + facet_grid(
 					paste0(paramNameVar, "~."), 
 					scales = "free_y", switch = "y"#,
@@ -171,10 +172,10 @@ subjectProfileLinePlot <- function(
 			nLinesLegend <- 0
 			# for the color variable
 			if(!is.null(colorVar))
-				nLinesLegend <- getNLinesLegend(unique(dataSubjectPage[, colorVar]), colorLab)
+				nLinesLegend <- getNLinesLegend(values = unique(dataSubjectPage[, colorVar]), title = colorLab)
 			# for the shape variable
 			if(!is.null(shapeVar))
-				nLinesLegend <- nLinesLegend + getNLinesLegend(unique(dataSubjectPage[, shapeVar]), shapeLab)
+				nLinesLegend <- nLinesLegend + getNLinesLegend(values = unique(dataSubjectPage[, shapeVar]), title = shapeLab)
 			nLinesLegend <- nLinesLegend + 
 				# 1 line to separate the two legends if color and shape are specified and different
 				# (ggplot will create separate legend if the title differ)
@@ -188,8 +189,9 @@ subjectProfileLinePlot <- function(
 			))
 			nLines <- nLinesPlot + nLinesTitleAndXAxis
 
-			attr(gg, 'metaData') <- list(subjectID = subject, nLines = nLines)
+			## set attributes
 			
+			attr(gg, 'metaData') <- list(subjectID = subject, nLines = nLines)
 			class(gg) <- c("subjectProfileLinePlot", class(gg))
 		
 			gg
