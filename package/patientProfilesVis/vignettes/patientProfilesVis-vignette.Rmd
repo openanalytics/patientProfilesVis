@@ -304,7 +304,7 @@ this time interval visualization
 	# AEPTCD: preferred term codes
 	cmPlots <- subjectProfileIntervalPlot(
 		data = SDTMDataPelican$CM,
-		paramVar = c("CMINDC", "CMDECOD", "CMDOSTXT", "CMDOSU", "CMROUTE", "CMDOSFRQ"),
+		paramVar = c("CMINDC", "CMTRT", "CMDOSTXT", "CMDOSU", "CMROUTE", "CMDOSFRQ"),
 		timeStartVar = "CMSTDY",
 		timeEndVar = "CMENDY",
 		paramGroupVar = "CMINDC",
@@ -315,7 +315,7 @@ this time interval visualization
 
 ```
 
-```{r exampleIntervalModule-cm-include, echo = FALSE, fig.height = attributes(cmPlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlots)[1])}
+```{r exampleIntervalModule-cm-include, echo = FALSE, fig.height = attributes(cmPlots[["study-4905-02"]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlots)[1])}
 
 	print(cmPlots[[1]][[1]])
 
@@ -337,7 +337,7 @@ time range of the subject visits.
 
 	cmPlotsTimeSV <- subjectProfileIntervalPlot(
 		data = SDTMDataPelican$CM,
-		paramVar = c("CMINDC", "CMDECOD", "CMDOSTXT", "CMDOSU", "CMROUTE", "CMDOSFRQ"),
+		paramVar = c("CMINDC", "CMTRT", "CMDOSTXT", "CMDOSU", "CMROUTE", "CMDOSFRQ"),
 		timeStartVar = "CMSTDY",
 		timeEndVar = "CMENDY",
 		paramGroupVar = "CMINDC",
@@ -351,7 +351,7 @@ time range of the subject visits.
 
 ```
 
-```{r exampleIntervalModule-cm-restrictedTimeLimits-include, echo = FALSE, fig.height = attributes(cmPlotsTimeSV[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlots)[1], "with time limits restricted to subject visits")}
+```{r exampleIntervalModule-cm-restrictedTimeLimits-include, echo = FALSE, fig.height = attributes(cmPlotsTimeSV[["study-4905-02"]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlots)[1], "with time limits restricted to subject visits")}
 
 	print(cmPlotsTimeSV[[1]][[1]])
 
@@ -365,7 +365,7 @@ time limits via the `timeLim` parameter:
 	timeLim <- c(-28, 53)
 	cmPlotsTimeSpec <- subjectProfileIntervalPlot(
 		data = SDTMDataPelican$CM,
-		paramVar = c("CMINDC", "CMDECOD", "CMDOSTXT", "CMDOSU", "CMROUTE", "CMDOSFRQ"),
+		paramVar = c("CMINDC", "CMTRT", "CMDOSTXT", "CMDOSU", "CMROUTE", "CMDOSFRQ"),
 		timeStartVar = "CMSTDY",
 		timeEndVar = "CMENDY",
 		paramGroupVar = "CMINDC",
@@ -377,7 +377,7 @@ time limits via the `timeLim` parameter:
 
 ```
 
-```{r exampleIntervalModule-cm-restrictedTimeLimits2-include, echo = FALSE, fig.height = attributes(cmPlotsTimeSpec[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlotsTimeSpec)[1], "with time limits restricted to: (", toString(timeLim), ")")}
+```{r exampleIntervalModule-cm-restrictedTimeLimits2-include, echo = FALSE, fig.height = attributes(cmPlotsTimeSpec[["study-4905-02"]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlotsTimeSpec)[1], "with time limits restricted to: (", toString(timeLim), ")")}
 
 	print(cmPlotsTimeSpec[[1]][[1]])
 
@@ -413,7 +413,7 @@ laboratory measurement (and corresponding time).
 
 ```
 
-```{r exampleEventModule-include, echo = FALSE, fig.height = getNLinesYGgplot(lbPlots[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with the 'subjectProfileEventPlot' function for patient:", names(lbPlots)[1])}
+```{r exampleEventModule-include, echo = FALSE, fig.height = attributes(lbPlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with the 'subjectProfileEventPlot' function for patient:", names(lbPlots)[1])}
 
 	print(lbPlots[[1]][[1]])
 
@@ -445,7 +445,7 @@ in normal range.
 	
 ```
 
-```{r exampleEventModuleWithColor-include, echo = FALSE, fig.height = getNLinesYGgplot(lbPlotsColor[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with reference range with the 'subjectProfileEventPlot' function for patient:", names(lbPlotsColor)[1])}
+```{r exampleEventModuleWithColor-include, echo = FALSE, fig.height = attributes(lbPlotsColor[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with reference range with the 'subjectProfileEventPlot' function for patient:", names(lbPlotsColor)[1])}
 
 	print(lbPlotsColor[[1]][[1]])
 
@@ -476,7 +476,7 @@ hematology parameters.
 	
 ```
 
-```{r exampleEventModuleWithSubset-include, echo = FALSE, fig.height = getNLinesYGgplot(lbPlotsSubset[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Hematology data with the 'subjectProfileEventPlot' function for patient:", names(lbPlotsSubset)[1])}
+```{r exampleEventModuleWithSubset-include, echo = FALSE, fig.height = attributes(lbPlotsSubset[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Hematology data with the 'subjectProfileEventPlot' function for patient:", names(lbPlotsSubset)[1])}
 
 	print(lbPlotsSubset[[1]][[1]])
 
@@ -496,7 +496,7 @@ highlighted in the plot.
 ```{r exampleLineModule}
 
 	# create plot
-	system.time(lbLinePlots <- subjectProfileLinePlot(
+	lbLinePlots <- subjectProfileLinePlot(
 		data = dataLB,
 		paramNameVar = "LBTEST", 
 		paramValueVar = "LBSTRESN",
@@ -505,7 +505,7 @@ highlighted in the plot.
 		timeVar = "LBDY",
 		title = "Laboratory test measurements: actual value",
 		labelVars = labelVarsSDTMPelican
-	))
+	)
 	
 ```
 
