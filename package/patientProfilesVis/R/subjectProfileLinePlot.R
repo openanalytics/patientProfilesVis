@@ -169,17 +169,16 @@ subjectProfileLinePlot <- function(
 			## extract number of lines
 			
 			# in legend
-			nLinesLegend <- 0
-			# for the color variable
-			if(!is.null(colorVar))
-				nLinesLegend <- getNLinesLegend(values = unique(dataSubjectPage[, colorVar]), title = colorLab)
-			# for the shape variable
-			if(!is.null(shapeVar))
-				nLinesLegend <- nLinesLegend + getNLinesLegend(values = unique(dataSubjectPage[, shapeVar]), title = shapeLab)
-			nLinesLegend <- nLinesLegend + 
+			nLinesLegend <- 0 +
+				# for the color variable
+				if(!is.null(colorVar))	getNLinesLegend(values = unique(dataSubjectPage[, colorVar]), title = colorLab) + 
+				# for the shape variable
+				if(!is.null(shapeVar))
+					getNLinesLegend(values = unique(dataSubjectPage[, shapeVar]), title = shapeLab) + 
 				# 1 line to separate the two legends if color and shape are specified and different
 				# (ggplot will create separate legend if the title differ)
 				if(!is.null(colorVar) & !is.null(shapeVar) && (colorVar != shapeVar || colorLab != shapeLab))	1
+
 			nLinesPlot <- max(sum(nLinesPlot), nLinesLegend)
 			
 			# in title and axes
