@@ -109,7 +109,16 @@ subjectProfileLinePlot <- function(
 			}
 			
 			# line
-			gg <- gg + geom_line()
+			dataLine <- if(!is.null(paramNameVar)){
+				# remove rows with only one point (no need to connect points with the line)
+				# to avoid warning: geom_path: Each group consists of only one observation. Do you need to adjust the group aesthetic?
+				# when 'facet_grid' is called
+				nPointsPerParamName <- ddply(dataSubjectPage, paramNameVar, nrow)
+				paramNameRetained <- subset(nPointsPerParamName, V1 > 1)[, paramNameVar]
+				dataSubjectPage[which(dataSubjectPage[, paramNameVar] %in% paramNameRetained), ]
+			}else	dataLine <- dataSubjectPage
+			if(nrow(dataLine) > 0)
+				gg <- gg + geom_line(data = dataLine)
 			
 			# point
 			aesArgsPoint <- c(
