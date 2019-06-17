@@ -4,6 +4,7 @@
     o getGLPGShapePalettePatientProfile
     o getPageVar: fix for plot with multiple lines
     o fix to remove warning: 'Coordinate system already present.'
+    o additional messages for verbose
 0.1.0
     o example datasets moved to the glpgUtilityFct package
     o getGLPGColorPalettePatientProfile/getGLPGLinetypePalettePatientProfile

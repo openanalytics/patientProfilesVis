@@ -72,12 +72,15 @@ createSubjectProfileReport <- function(
 
 	# margin of document in inches
 	if(is.null(maxNLines)){
+		if(verbose)	message("Get maximum number of lines for each page.")
 		inputGetMNL <- formatReport[names(formatReport) != "yLabelWidth"]
 		maxNLines <- do.call(getMaxNLinesCombinePlot, inputGetMNL)
 	}
 
 	# filter subjects if subset[Data/Var/Value] is specified
 	if(!is.null(subjectSubsetData)){
+		
+		if(verbose)	message("Filter subjects of interests.")
 		
 		if(is.null(subjectsSubset)){
 		
@@ -102,8 +105,10 @@ createSubjectProfileReport <- function(
 		
 	}
 	
-	if(is.null(timeLim))
+	if(is.null(timeLim)){
+		if(verbose)	message("Get limits x-axis.")
 		timeLim <- getXLimSubjectProfilePlots(listPlots)
+	}
 	
 	# combine plots
 	listPlotsPerSubjectList <- subjectProfileCombine(
@@ -118,6 +123,7 @@ createSubjectProfileReport <- function(
 	)
 	
 	if(!is.null(subjectSortData) & !is.null(subjectSortVar)){
+		if(verbose)	message("Order subjects based on subjectSortData/subjectSortVar.")
 		subjectsOrdered <- ddply(unique(subjectSortData[, c(subjectVar, subjectSortVar)]), subjectSortVar)[[subjectVar]]
 		if(all(names(listPlotsPerSubjectList) %in% subjectsOrdered)){
 			# in case more subjects are available in sortData than in the plot(s)
@@ -130,7 +136,8 @@ createSubjectProfileReport <- function(
 	}
 	
 	# extract bookmark(s) (if any)
-	index <- if(!is.null(bookmarkData) & !is.null(bookmarkVar))
+	index <- if(!is.null(bookmarkData) & !is.null(bookmarkVar)){
+		if(verbose)	message("Extract bookmarks.")
 		defineIndex(
 			subjects = names(listPlotsPerSubjectList), 
 			data = bookmarkData,
@@ -138,6 +145,7 @@ createSubjectProfileReport <- function(
 			subjectVar = subjectVar,
 			labelVars = labelVars
 		)
+	}
 	
 	msgProgress <- "Create subject profile report."
 	if(verbose)	message(msgProgress)
@@ -155,13 +163,14 @@ createSubjectProfileReport <- function(
 		outputDir = outputDir,
 		index = index,
 		formatReport = formatReport,
-		shiny = shiny
+		shiny = shiny,
+		verbose = verbose
 	)
 	assign("inputParameters", inputParameters, envir = inputParametersEnv)
 	
 	## convert Rnw -> tex
 	outputFileKnitr <- knitr::knit(
-		input = pathTemplate, quiet = FALSE,
+		input = pathTemplate, quiet = !verbose,
 		envir = inputParametersEnv
 	)
 	

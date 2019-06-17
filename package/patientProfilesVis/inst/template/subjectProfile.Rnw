@@ -61,11 +61,13 @@
 <<includePlots>>=
 
 	listPlotsPerSubjectList <- inputParameters$listPlotsPerSubject
-	
+
+	if(verbose)	message("Convert to list with 1 level.")
 	# convert list of list to list with only one level
 	listPlotsPerSubject <- unlist(listPlotsPerSubjectList, recursive = FALSE)
 	
 	# extract height for each plot
+	if(verbose)	message("Extract height for each plot.")
 	figHeightInches <- sapply(listPlotsPerSubject, function(plotSubject)
 		# number of lines in plot panel
 		attr(plotSubject, "nLinesPlot") * inputParameters$formatReport$heightLineIn
@@ -73,18 +75,22 @@
 	
 	# extract labels 
 	# remove space and file separator character(s) if present
+	if(verbose)	message("Extract labels.")
 	labelPlots <- gsub(paste0(.Platform$file.sep, "| "), "-", names(listPlotsPerSubject))
 	
 	# extract titles
+	if(verbose)	message("Extract title.")
 	sectionTitles <- unlist(lapply(names(listPlotsPerSubjectList), function(subject) 
 		c(subject, rep("", length(listPlotsPerSubjectList[[subject]])-1))))
 
 	# extract titles
+	if(verbose)	message("Extract bookmarks (if any).")
 	bookmarkInfos <- if(!is.null(inputParameters$index))
 		unlist(lapply(names(listPlotsPerSubjectList), function(subject) 
 			c(inputParameters$index$indexEntry[subject], rep("", length(listPlotsPerSubjectList[[subject]])-1))))
 		
 #	textHeightPt <- ifelse(landscape, 345, 598)
+	if(verbose)	message("Get width plot.")
 	textWidthInches <- getWidthPlot(
 		margin = inputParameters$formatReport$margin,
 		landscape = inputParameters$formatReport$landscape,
@@ -102,13 +108,16 @@
 #	))
 	
 	# option 2:
+	if(verbose)	message("Export plots.")
 	fileNames <- file.path(outputDirFig, paste0(labelPlots, ".pdf"))
 	
 	if(inputParameters$shiny)	requireNamespace("shiny")
 	
 	# create the plots
 	tmp <- sapply(seq_along(listPlotsPerSubject), function(i){
-		if(inputParameters$shiny)	incProgress(detail = paste("Export profile:", names(listPlotsPerSubject)[i]))
+		msg <- paste("Export profile:", names(listPlotsPerSubject)[i])
+		if(verbose)	message(msg)
+		if(inputParameters$shiny)	incProgress(detail = msg)
 		pdf(fileNames[i], width = textWidthInches, height = figHeightInches[i])
 #		png(
 #			fileNames[i], 
@@ -121,6 +130,7 @@
 	})
 	
 	# include the graphics in the report
+	if(verbose)	message("Include graphics in the report.")
 	tmp <- sapply(seq_along(listPlotsPerSubject), function(i){
 				
 		# section title

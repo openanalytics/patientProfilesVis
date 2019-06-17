@@ -69,11 +69,11 @@ A few `sdtm` datasets from the _Pelican_ study are included in the
 
 	# example dataset(s) formatted as a list of data.frame
 	data(SDTMDataPelican)
-	pander(lapply(SDTMDataPelican, head, 1))
+#	pander(lapply(SDTMDataPelican, head, 1))
 	
 	# and corresponding labels
 	data(labelVarsSDTMPelican)
-	pander(head(labelVarsSDTMPelican))
+#	pander(head(labelVarsSDTMPelican))
 	
 	# load example ADaM dataset
 	data(ADaMDataPelican)
