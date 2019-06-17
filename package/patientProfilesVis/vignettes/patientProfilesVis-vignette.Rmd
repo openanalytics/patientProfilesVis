@@ -786,7 +786,8 @@ ADaM dataset can also be used in the same framework.
 	system.time(createSubjectProfileReport(
 		listPlotsADaM,
 		refLines = refLinesParam,
-		outputFile = "subjectProfile_ADAM.pdf"
+		outputFile = "subjectProfile_ADAM.pdf",
+		subjectsSubset = "study-4902-02"
 	))
 
 ```

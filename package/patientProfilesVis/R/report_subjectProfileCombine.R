@@ -135,13 +135,13 @@ prepareSubjectProfile <- function(
 		
 		# extract number of lines in the y-axis
 		# from metadata or directly from the object if not present (slower)
-		nLinesPlot <- sapply(listGgPlotsToCombineInit, function(x) 
+		nLinesPlot <- unlist(lapply(listGgPlotsToCombineInit, function(x) 
 			sapply(x, function(y){
 				nLines <- attributes(y)$metaData$nLines
 				if(is.null(nLines))	nLines <- getNLinesYGgplot(y)
 				nLines 
 			})
-		)
+		))
 		if(length(nLinesPlot) != length(listGgPlotsToCombine))
 			stop("Issue extracting number of lines for each plot.")
 		
@@ -156,7 +156,7 @@ prepareSubjectProfile <- function(
 						
 				gg <- listGgPlotsToCombine[[i]]
 				if(!is.null(timeLim))	
-					gg <- gg + coord_cartesian(xlim = timeLim, default = FALSE)
+					gg <- gg + coord_cartesian(xlim = timeLim, default = TRUE)
 				
 				plot <- addReferenceLinesProfilePlot(
 					gg = gg, 
