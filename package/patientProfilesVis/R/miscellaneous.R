@@ -105,7 +105,7 @@ getNLinesLegend <- function(gg, values, title){
 
 	}else	if(!missing(values)){
 		
-		sum(countNLines(values)) + if(!is.missing(title))	countNLines(title)
+		nLinesLegendTotal <- sum(countNLines(values)) + if(!missing(title))	countNLines(title)
 		
 	}else	stop("Legend values via 'values' or a ggplot2 object via 'gg' should be specified.")
 	
