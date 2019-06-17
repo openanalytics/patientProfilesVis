@@ -26,6 +26,8 @@ subjectProfileCombine <- function(
 	if(shiny && !requireNamespace("shiny", quietly = TRUE))
 		stop("The package 'shiny' is required to report progress.")
 	
+	if(verbose)	message("Extract available subjects.")
+	
 	# extract all subjects for which at least one plot is available
 	subjects <- sort(unique(unlist(lapply(listPlots, names))))
 	
@@ -42,12 +44,14 @@ subjectProfileCombine <- function(
 	if(shiny)	incProgress(0.1, detail = msgProgress)
 	
 	# extract label
+	if(verbose)	message("Extract plot labels.")
 	plotLabels <- sapply(listPlotsAll, function(x){
 		label <- attributes(x)$metaData$label
 		ifelse(is.null(label), "", label)
 	})
 	
 	# re-format plots: same timeLim, ...
+	if(verbose)	message("Prepare subject profiles to be combined.")
 	listPlotsPerSubject <- do.call(mapply, 
 		c(
 			list(
@@ -84,6 +88,7 @@ subjectProfileCombine <- function(
 	msgProgress <- "Combine profiles across subjects/modules."
 	if(verbose)	message(msgProgress)
 	if(shiny)	incProgress(0.5, detail = msgProgress)
+	if(verbose)	message("Combine subject profiles.")
 	listPlotsPerSubject <- combineVerticallyGGplot(
 		listPlots = listPlotsPerSubject, 
 		maxNLines = maxNLines
