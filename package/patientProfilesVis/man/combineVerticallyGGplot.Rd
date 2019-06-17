@@ -4,13 +4,20 @@
 \alias{combineVerticallyGGplot}
 \title{Combine vertically multiple \code{\link[ggplot2]{ggplot}}.}
 \usage{
-combineVerticallyGGplot(listPlots, maxNLines, verbose = FALSE)
+combineVerticallyGGplot(listPlots, maxNLines, nCores = 1,
+  shiny = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{listPlots}{a list of subject profile (subject/modules)}
 
 \item{maxNLines}{maximum number of lines for a combined plot,
 to fit in the page height}
+
+\item{nCores}{Integer containing the number of cores used for the computation
+(1 by default). If more than 1, computation is parallelized, in this case
+the package \code{parallel} is required.}
+
+\item{shiny}{logical, set to TRUE (FALSE by default) if the report is generated from a Shiny application.}
 
 \item{verbose}{logical, if TRUE print messages during execution}
 }

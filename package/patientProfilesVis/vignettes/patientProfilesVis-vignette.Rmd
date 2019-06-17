@@ -695,7 +695,8 @@ The function `createSubjectProfileReport` has mainly two purposes:
 		timeLim = c(-20, 52),
 		outputFile = "subjectProfile_SDTM_referenceLinesFromSAP.pdf",
 		exportFigures = TRUE,
-		verbose = TRUE
+		verbose = TRUE,
+		nCores = parallel::detectCores()
 	)) # 14 mins
 
 ```
@@ -791,6 +792,14 @@ ADaM dataset can also be used in the same framework.
 	))
 
 ```
+
+# Parallelization
+
+For big clinical trial, the creation of the subject profile report can be
+parallelized by specifying a number of cores > 1 to the parameter **`nCores`**
+of the `createSubjectProfileReport` function. In this case,
+the **package `parallel` is required**. To check the number of cores available
+in your system, you may use: `parallel::detectCores()`.
 
 # Appendix
 

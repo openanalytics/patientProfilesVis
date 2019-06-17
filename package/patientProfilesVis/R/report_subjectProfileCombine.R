@@ -1,6 +1,5 @@
 #' Combine subject profile plots.
 #' @param listPlots list of subject profiles (modules/subjects)
-#' @param shiny logical, set to TRUE (FALSE by default) if the report is generated from a Shiny application.
 #' Messages during report creation will be included in the Shiny interface,
 #' and it will be mentioned at the end of the report.
 #' In this case, the \code{shiny} package should be available.
@@ -20,7 +19,8 @@ subjectProfileCombine <- function(
 	refLinesData = NULL,
 	refLinesTimeVar = NULL,
 	refLinesLabelVar = NULL,
-	shiny = FALSE, verbose = FALSE){
+	shiny = FALSE, verbose = FALSE,
+	nCores = 1){
 	
 	if(shiny && !requireNamespace("shiny", quietly = TRUE))
 		stop("The package 'shiny' is required to report progress.")
@@ -84,13 +84,12 @@ subjectProfileCombine <- function(
 #	})
 	
 	# add title
-	msgProgress <- "Combine profiles across subjects/modules."
-	if(verbose)	message(msgProgress)
-	if(shiny)	incProgress(0.5, detail = msgProgress)
 	listPlotsPerSubject <- combineVerticallyGGplot(
 		listPlots = listPlotsPerSubject, 
 		maxNLines = maxNLines,
-		verbose = verbose
+		verbose = verbose,
+		shiny = shiny,
+		nCores = nCores
 	)
 	
 	return(listPlotsPerSubject)

@@ -113,21 +113,44 @@
 	
 	if(inputParameters$shiny)	requireNamespace("shiny")
 	
-	# create the plots
-	tmp <- sapply(seq_along(listPlotsPerSubject), function(i){
-		msg <- paste("Export profile:", names(listPlotsPerSubject)[i])
+#	if(inputParameters$nCores > 1){
+#		
+#		require("parallel")
+#		
+#		msg <- paste("Export profiles in parallel.")
+#		if(verbose)	message(msg)
+#		if(inputParameters$shiny)	incProgress(detail = msg)
+#		
+#		cl <- makeCluster(inputParameters$nCores)
+#		tmp <- parSapply(
+#			cl = cl,
+#			X = seq_along(listPlotsPerSubject),
+#			FUN = function(i){	
+#				pdf(fileNames[i], width = textWidthInches, height = figHeightInches[i])
+#				print(listPlotsPerSubject[[i]])
+#				tmp <- dev.off()
+#			}, 
+#			simplify = FALSE
+#		)
+#		stopCluster(cl = cl)
+#		
+#	}else{
+		
+		msg <- paste("Export profiles.")
 		if(verbose)	message(msg)
 		if(inputParameters$shiny)	incProgress(detail = msg)
-		pdf(fileNames[i], width = textWidthInches, height = figHeightInches[i])
-#		png(
-#			fileNames[i], 
-#			width = textWidthInches, height = figHeightInches[i],
-#			units = "in",
-#			res = 300
-#		)
-		print(listPlotsPerSubject[[i]])
-		tmp <- dev.off()
-	})
+	
+		# create the plots
+		tmp <- sapply(seq_along(listPlotsPerSubject), function(i){
+			msg <- paste("Export profile:", names(listPlotsPerSubject)[i])
+			if(verbose)	message(msg)
+			if(inputParameters$shiny)	incProgress(detail = msg)
+			pdf(fileNames[i], width = textWidthInches, height = figHeightInches[i])
+			print(listPlotsPerSubject[[i]])
+			tmp <- dev.off()
+		})
+
+#	}
 	
 	# include the graphics in the report
 	if(verbose)	message("Include graphics in the report.")
