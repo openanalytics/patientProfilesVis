@@ -117,7 +117,7 @@ containing the parameter value (`paramValueVar`).
 	
 ```
 
-```{r exampleTextModule-wideFormat-include, echo = FALSE, fig.height = getNLinesYGgplot(dmPlots[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Demographic information with the 'subjectProfileTextPlot' function for patient:", names(dmPlots)[1])}
+```{r exampleTextModule-wideFormat-include, echo = FALSE, fig.height = attributes(dmPlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Demographic information with the 'subjectProfileTextPlot' function for patient:", names(dmPlots)[1])}
 
 	print(dmPlots[[1]][[1]])
 
@@ -144,7 +144,7 @@ for a certain variable name.
 		
 ```
 
-```{r exampleTextModule-longFormat-noGrouping-include, echo = FALSE, fig.height = getNLinesYGgplot(mhPlots[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlots)[1])}
+```{r exampleTextModule-longFormat-noGrouping-include, echo = FALSE, fig.height = attributes(mhPlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlots)[1])}
 
 	print(mhPlots[[1]][[1]])
 
@@ -175,7 +175,7 @@ they should be concatenated with a specific format, a function
 		
 ```
 
-```{r exampleTextModule-longFormat-multipleVariables-include, echo = FALSE, fig.height = getNLinesYGgplot(mhPlotsMultipleVars[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlotsMultipleVars)[1])}
+```{r exampleTextModule-longFormat-multipleVariables-include, echo = FALSE, fig.height = attributes(mhPlotsMultipleVars[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlotsMultipleVars)[1])}
 
 	print(mhPlotsMultipleVars[[1]][[1]])
 
@@ -198,7 +198,7 @@ they should be concatenated with a specific format, a function
 	
 ```
 
-```{r exampleTextModule-longFormat-grouping-include, echo = FALSE, fig.height = getNLinesYGgplot(mhPlotsGroup[[1]][[1]])*heightLineIn, fig.width = 14, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlotsGroup)[1])}
+```{r exampleTextModule-longFormat-grouping-include, echo = FALSE, fig.height = attributes(mhPlotsGroup[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlotsGroup)[1])}
 
 	print(mhPlotsGroup[[1]][[1]])
 
