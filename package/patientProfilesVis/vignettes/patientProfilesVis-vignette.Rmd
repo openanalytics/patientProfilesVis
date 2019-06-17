@@ -680,9 +680,11 @@ ADaM dataset can also be used in the same framework.
 		labelVars = labelVarsADaMPelican,
 		title = "Adverse events"
 	)
-	# laboratory	
+	# laboratory
+	adlb <- ADaMDataPelican$ADLB
+	adlb$ANRIND <- factor(with(adlb, reorder(ifelse(ANRIND == "", NA, ANRIND), ANRINDN)), exclude = NULL)
 	lbPlotsADaM <- subjectProfileEventPlot(
-		data = ADaMDataPelican$ADLB,
+		data = adlb,
 		paramVar = "PARAM",
 		paramGroupVar = c("PARCAT1", "PARCAT2"),
 		timeVar = "ADY",
@@ -694,13 +696,13 @@ ADaM dataset can also be used in the same framework.
 	)
 
 	# create report
-	createSubjectProfileReport(
+	system.time(createSubjectProfileReport(
 		listPlots = list(slPlotsADaM, mhPlotsADaM, 
 			exPlotsADaM, aePlotsADaM, lbPlotsADaM
 		),
 		refLines = refLinesParam,
 		outputFile = "subjectProfile_ADAM.pdf"
-	)
+	))
 
 ```
 

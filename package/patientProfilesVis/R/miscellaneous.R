@@ -369,9 +369,17 @@ formatParamVar <- function(data,
 	
 		# if paramGroupVar is specified: change order levels of 'variable'
 		if(!is.null(paramGroupVar)){
-			if(!paramGroupVar %in% names(data)){
-				warning("The variable used for grouping is not used because not in the data.")
-			}else{
+			
+			paramGroupVarInData <- paramGroupVar %in% names(data)
+			
+			if(any(!paramGroupVarInData))
+				warning("The variable(s): ", toString(shQuote(paramGroupVar[!paramGroupVarInData])),
+					" used for grouping is(are) not used because not in the data.")
+		
+			if(any(paramGroupVarInData)){
+				
+				paramGroupVar <- paramGroupVar[paramGroupVarInData]
+				
 				if(is.null(paramVar)){
 					warning("The variable used for grouping ('paramGroupVar') is not used",
 						"because no variable for parameter ('paramVar') is not specified.")
