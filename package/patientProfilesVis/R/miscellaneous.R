@@ -209,15 +209,18 @@ getPageVar <- function(data, var,
 	maxNLines <- do.call(getMaxNLinesCombinePlot, inputGetMNL) - 
 		sum(c(title, xLab, caption)) # let some space for title/x/caption
 	
-	# compute number of elements per page
-	nElPerPage <- floor(maxNLines / switch(typeVar, 'y' = 1, 'panel' = 4))
-	
 	# in case some levels are not present for some subjects
 	# and convert to a factor
 	data[, var] <- droplevels(data[, var], exclude = NULL)
 	
 	# get vector with cumulative number of lines across plots
 	levelsRows <- seq_len(nlevels(data[, var]))
+	
+	# compute number of elements per page
+	nLines <- countNLines(levels(data[, var]))
+	nElPerPage <- floor(maxNLines / 
+		max(max(nLines), switch(typeVar, 'y' = 1, 'panel' = 4))
+	)
 
 	# cut the variable by the maximum number of lines
 	numVect <- .bincode(

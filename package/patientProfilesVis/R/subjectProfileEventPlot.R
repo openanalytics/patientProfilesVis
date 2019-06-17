@@ -111,8 +111,10 @@ subjectProfileEventPlot <- function(
 			if(!is.null(shapeVar))
 				gg <- gg + getAesScaleManual(lab = shapeLab, palette = shapePalette, type = "shape")
 			
+			# set time limits for the x-axis
+			# default: TRUE in case time limits are changed afterwards
 			if(!is.null(timeLim))
-				gg <- gg + coord_cartesian(xlim = timeLim)
+				gg <- gg + coord_cartesian(xlim = timeLim, default = TRUE)
 			
 			## extract number of lines
 			

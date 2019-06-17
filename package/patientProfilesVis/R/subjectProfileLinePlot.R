@@ -163,8 +163,10 @@ subjectProfileLinePlot <- function(
 				gg <- gg + 
 					getAesScaleManual(lab = shapeLab, palette = shapePalette, type = "shape")	
 		
+			# set time limits for the x-axis
+			# default: FALSE in case time limits are changed afterwards
 			if(!is.null(timeLim))
-				gg <- gg + coord_cartesian(xlim = timeLim)
+				gg <- gg + coord_cartesian(xlim = timeLim, default = TRUE)
 		
 			## extract number of lines
 			

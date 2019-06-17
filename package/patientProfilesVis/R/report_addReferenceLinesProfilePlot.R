@@ -99,7 +99,7 @@ addReferenceLinesProfilePlot <- function(
 					angle = 90, hjust = 0.5, show.legend = FALSE
 				) + theme_void() +
 				scale_color_manual(values = colors, limits = names(colors))
-			if(!is.null(timeLim))	ggRefLines <- ggRefLines + coord_cartesian(xlim = timeLim)
+			if(!is.null(timeLim))	ggRefLines <- ggRefLines + coord_cartesian(xlim = timeLim, default = TRUE)
 			
 			attributes(ggRefLines)$metaData$nLinesLabelRefLines  <- nLinesRefLines
 

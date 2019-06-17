@@ -223,8 +223,9 @@ subjectProfileIntervalPlot <- function(
 			}else	gg <- gg + scale_color_manual(values = colorPalette)
 					
 			# set time limits for the x-axis
+			# default: FALSE in case time limits are changed afterwards
 			if(!is.null(timeLim))
-				gg <- gg + coord_cartesian(xlim = timeLim)
+				gg <- gg + coord_cartesian(xlim = timeLim, default = TRUE)
 			
 			
 			## extract number of lines
