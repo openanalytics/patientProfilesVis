@@ -782,10 +782,9 @@ ADaM dataset can also be used in the same framework.
 	)
 
 	# create report
+	listPlotsADaM <- list(slPlotsADaM, mhPlotsADaM, exPlotsADaM, aePlotsADaM, lbPlotsADaM)
 	system.time(createSubjectProfileReport(
-		listPlots = list(slPlotsADaM, mhPlotsADaM, 
-			exPlotsADaM, aePlotsADaM, lbPlotsADaM
-		),
+		listPlotsADaM,
 		refLines = refLinesParam,
 		outputFile = "subjectProfile_ADAM.pdf"
 	))
@@ -795,7 +794,6 @@ ADaM dataset can also be used in the same framework.
 # Appendix
 
 ## Session information
-
 
 ```{r includeSessionInfo, echo = FALSE}
 
