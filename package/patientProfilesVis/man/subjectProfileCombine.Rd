@@ -8,10 +8,14 @@ subjectProfileCombine(listPlots,
   timeLim = getXLimSubjectProfilePlots(listPlots),
   subjectVar = "USUBJID", maxNLines = NULL, refLines = NULL,
   refLinesData = NULL, refLinesTimeVar = NULL,
-  refLinesLabelVar = NULL, shiny = FALSE, verbose = FALSE)
+  refLinesLabelVar = NULL, shiny = FALSE, verbose = FALSE,
+  nCores = 1)
 }
 \arguments{
-\item{listPlots}{list of subject profiles (modules/subjects)}
+\item{listPlots}{list of subject profiles (modules/subjects)
+Messages during report creation will be included in the Shiny interface,
+and it will be mentioned at the end of the report.
+In this case, the \code{shiny} package should be available.}
 
 \item{timeLim}{(optional) vector of length 2 with time limits (x-axis)
 If not specified, extracted from the minimum \code{timeStartVar} 
@@ -39,12 +43,13 @@ Each sublist contains:
 
 \item{refLinesLabelVar}{string, variable of \code{refLinesData} with label for reference line(s)}
 
-\item{shiny}{logical, set to TRUE (FALSE by default) if the report is generated from a Shiny application.
-Messages during report creation will be included in the Shiny interface,
-and it will be mentioned at the end of the report.
-In this case, the \code{shiny} package should be available.}
+\item{shiny}{logical, set to TRUE (FALSE by default) if the report is generated from a Shiny application.}
 
 \item{verbose}{logical, if TRUE print messages during execution}
+
+\item{nCores}{Integer containing the number of cores used for the computation
+(1 by default). If more than 1, computation is parallelized, in this case
+the package \code{parallel} is required.}
 }
 \value{
 a list of \code{subjectProfilePlot} object, containing the combined

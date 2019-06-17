@@ -6,23 +6,56 @@
 #' @param maxNLines maximum number of lines for a combined plot,
 #' to fit in the page height
 #' @param verbose logical, if TRUE print messages during execution
+#' @param nCores Integer containing the number of cores used for the computation
+#' (1 by default). If more than 1, computation is parallelized, in this case
+#' the package \code{parallel} is required.
+#' @param shiny logical, set to TRUE (FALSE by default) if the report is generated from a Shiny application.
 #' @return a list of list of \code{\link[ggplot2]{ggplot}} object (subject/page)
 #' @author Laure Cougnaud
+#' @importFrom parallel makeCluster parSapply stopCluster
 #' @importFrom ggplot2 ggplotGrob
 #' @importFrom cowplot ggdraw draw_grob
-#' @importFrom grDevices dev.off
-combineVerticallyGGplot <- function(listPlots, maxNLines, verbose = FALSE){
+#' @importFrom grDevices graphics.off
+combineVerticallyGGplot <- function(listPlots, maxNLines, 
+	nCores = 1, 
+	shiny = FALSE, verbose = FALSE){
 
+	if(shiny && !requireNamespace("shiny", quietly = TRUE))
+		stop("The package 'shiny' is required to report progress.")
+	msgProgress <- "Combine profiles across subjects/modules."
+	if(verbose)	message(msgProgress)
+	if(shiny)	incProgress(0.5, detail = msgProgress)
+	
 	# transform all plots to gtable
-	grobsAllSubjects <- sapply(names(listPlots), function(subjID){	
-		if(verbose)	message(paste0("Combine plots across modules for subject: ", subjID, "."))
-		lapply(listPlots[[subjID]], ggplotGrob)
-	}, simplify = FALSE)
-	# because each call to the function ggplot2::ggplotGrob open a new window:
-	# shuts down all open graphics devices
-	graphics.off()
+	isParallel <- (nCores > 1)
+	if(isParallel){
+		
+		cl <- makeCluster(nCores)
+		grobsAllSubjects <- parSapply(
+			cl = cl,
+			X = names(listPlots),
+			FUN = function(subjID){	
+				if(verbose)	message(paste0("Combine profile: ", subjID, " across modules."))
+				lapply(listPlots[[subjID]], ggplotGrob)
+			}, 
+			simplify = FALSE
+		)
+		stopCluster(cl = cl)
+		
+	}else{
+	
+		grobsAllSubjects <- sapply(names(listPlots), function(subjID){	
+			if(verbose)	message(paste0("Combine profile: ", subjID, " across modules."))
+			lapply(listPlots[[subjID]], ggplotGrob)
+		}, simplify = FALSE)
+		# because each call to the function ggplot2::ggplotGrob open a new window:
+		# shuts down all open graphics devices
+		graphics.off()
+		
+	}
 
 	# extract maximum margin(s)
+	if(verbose)	message("Adjust margins.")
 	grobsMarginsInfo <- sapply(grobsAllSubjects, function(x){
 				
 		lapply(x, function(y){
@@ -77,6 +110,7 @@ combineVerticallyGGplot <- function(listPlots, maxNLines, verbose = FALSE){
 	}, simplify = FALSE)
 
 	# split in separated page if doesn't fit in the page:
+	if(verbose)	message("Include plots in multiple pages if required.")
 	listCombinePlotsPage <- sapply(names(listPlots), function(patient){
 				
 		nLinesPlot <- attributes(listPlots[[patient]])$metaData$nLines

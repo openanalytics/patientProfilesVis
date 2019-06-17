@@ -7,6 +7,7 @@
     o fix to remove warning: 'Coordinate system already present.'
     o subjectProfileLinePlot: fix to remove warning: 'geom_path: Each group consists of only one observation'
     o additional messages for verbose
+    o enable parallelized computations with 'nCores'
 0.1.0
     o example datasets moved to the glpgUtilityFct package
     o getGLPGColorPalettePatientProfile/getGLPGLinetypePalettePatientProfile

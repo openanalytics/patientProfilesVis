@@ -13,7 +13,7 @@ createSubjectProfileReport(listPlots, timeLim = NULL, refLines = NULL,
   subjectSubsetValue = NULL, outputFile = "subjectProfile.pdf",
   exportFigures = FALSE, labelVars = NULL, maxNLines = NULL,
   shiny = FALSE, formatReport = subjectProfileReportFormat(),
-  verbose = FALSE)
+  verbose = FALSE, nCores = 1)
 }
 \arguments{
 \item{listPlots}{nested list of plots, as returned by the \code{\link{subjectProfileTextPlot}},
@@ -79,15 +79,16 @@ in png format in a 'figures' folder}
 \item{maxNLines}{maximum number of lines for a combined plot,
 to fit in the page height}
 
-\item{shiny}{logical, set to TRUE (FALSE by default) if the report is generated from a Shiny application.
-Messages during report creation will be included in the Shiny interface,
-and it will be mentioned at the end of the report.
-In this case, the \code{shiny} package should be available.}
+\item{shiny}{logical, set to TRUE (FALSE by default) if the report is generated from a Shiny application.}
 
 \item{formatReport}{list with parameters used to specify the format of the report,
 e.g. output of the \code{\link{subjectProfileReportFormat}} function}
 
 \item{verbose}{logical, if TRUE print messages during execution}
+
+\item{nCores}{Integer containing the number of cores used for the computation
+(1 by default). If more than 1, computation is parallelized, in this case
+the package \code{parallel} is required.}
 }
 \value{
 no returned value, the report is created at the location

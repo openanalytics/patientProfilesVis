@@ -65,7 +65,8 @@ createSubjectProfileReport <- function(
 	maxNLines = NULL,
 	shiny = FALSE,
 	formatReport = subjectProfileReportFormat(),
-	verbose = FALSE){
+	verbose = FALSE,
+	nCores = 1){
 
 	if(shiny && !requireNamespace("shiny", quietly = TRUE))
 		stop("The package 'shiny' is required to report progress.")
@@ -119,7 +120,8 @@ createSubjectProfileReport <- function(
 		subjectVar = subjectVar,
 		maxNLines = maxNLines,
 		shiny = shiny,
-		verbose = verbose
+		verbose = verbose,
+		nCores = nCores
 	)
 	
 	if(!is.null(subjectSortData) & !is.null(subjectSortVar)){
@@ -164,7 +166,8 @@ createSubjectProfileReport <- function(
 		index = index,
 		formatReport = formatReport,
 		shiny = shiny,
-		verbose = verbose
+		verbose = verbose,
+		nCores = nCores
 	)
 	assign("inputParameters", inputParameters, envir = inputParametersEnv)
 	
