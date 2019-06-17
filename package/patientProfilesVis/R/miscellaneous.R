@@ -61,72 +61,112 @@ getNLinesYGgplot <- function(gg){
 	return(nLines)
 }
 
-#' Get number of lines in the legend of a \code{\link[ggplot2]{ggplot2}} object
+#' Get number of lines in the legend,
+#' either from directly the \code{\link[ggplot2]{ggplot2}} object,
+#' or from the values of the legend (\code{legendValues})
+#' and title (\code{legendTitle})
 #' @param gg \code{\link[ggplot2]{ggplot2}} object
+#' @param values Vector with unique legend values
+#' @param title Vector with legend title
 #' @return integer with (approximated) number of lines
 #' @author Laure Cougnaud
 #' @importFrom ggplot2 ggplot_gtable ggplot_build
-getNLinesLegend <- function(gg){
+getNLinesLegend <- function(gg, values, title){
 	
-	ggTable <- ggplot_gtable(ggplot_build(gg))
+	if(!missing(gg)){
 	
-	# extract legend grobs
-	idxLegend <- which(sapply(ggTable$grobs, function(x) x$name) == "guide-box")
-	
-	nLinesLegendTotal <- if(length(idxLegend) > 0){
+		ggTable <- ggplot_gtable(ggplot_build(gg))
 		
-		grobLegend <- ggTable$grobs[[idxLegend]]
-		idxLegendGuides <- which(grobLegend$layout$name == "guides")
+		# extract legend grobs
+		idxLegend <- which(sapply(ggTable$grobs, function(x) x$name) == "guide-box")
 		
-		if(length(idxLegendGuides) > 0){
+		nLinesLegendTotal <- if(length(idxLegend) > 0){
+			
+			grobLegend <- ggTable$grobs[[idxLegend]]
+			idxLegendGuides <- which(grobLegend$layout$name == "guides")
+			
+			if(length(idxLegendGuides) > 0){
+			
+				# extract number of lines in each legend
+				nLinesLegend <- vapply(seq_along(idxLegendGuides), function(i){
+					grobLegendI <- grobLegend$grobs[[i]]
+					idxLegendILabels <- grep("^label", grobLegendI$layout$name)
+					nLinesLegendILabels <- n_distinct(grobLegendI$layout[idxLegendILabels, "t"])
+					nLinesLegendITitle <- sum(grobLegendI$layout$name == "title")
+					nLinesLegendILabels + nLinesLegendITitle
+				}, FUN.VALUE = numeric(1))
+			
+				# add extra line which separate legend guides
+				sum(nLinesLegend) + length(idxLegendGuides) - 1
 		
-			# extract number of lines in each legend
-			nLinesLegend <- vapply(seq_along(idxLegendGuides), function(i){
-				grobLegendI <- grobLegend$grobs[[i]]
-				idxLegendILabels <- grep("^label", grobLegendI$layout$name)
-				nLinesLegendILabels <- n_distinct(grobLegendI$layout[idxLegendILabels, "t"])
-				nLinesLegendITitle <- sum(grobLegendI$layout$name == "title")
-				nLinesLegendILabels + nLinesLegendITitle
-			}, FUN.VALUE = numeric(1))
-		
-			# add extra line which separate legend guides
-			sum(nLinesLegend) + length(idxLegendGuides) - 1
+			}else 0
 	
 		}else 0
 
-	}else 0
+	}else	if(!missing(values)){
+		
+		nLinesLegendTotal <- sum(countNLines(values)) + if(!missing(title))	countNLines(title)
+		
+	}else	stop("Legend values via 'values' or a ggplot2 object via 'gg' should be specified.")
 	
 	return(nLinesLegendTotal)
 	
 }
 
-#' Get number of lines for specific label in a \code{\link[ggplot2]{ggplot2}} object
+#' Get number of lines for specific label either
+#' from a \code{\link[ggplot2]{ggplot2}} object via \code{gg}
+#' or from the label  via \code{value}
 #' @param gg \code{\link[ggplot2]{ggplot2}} object
+#' @param value String with label value.
 #' @param elName string with name of label to extract,
 #' among 'x', 'y' and 'title'
-#' @param elNLines (optional) integer with number of lines,
-#' by default 2 for 'x'/'y' and 3 for 'title'
+#' @param elNLines (optional) Named integer with number of lines,
+#' by default 2 for 'x'/'y', 3 for 'title' and 1 for caption.
 #' @return integer with (approximated) number of lines
 #' @author Laure Cougnaud
 #' @importFrom ggplot2 ggplot_build
-getNLinesLabel <- function(gg, 
+getNLinesLabel <- function(
+	gg,
+	value,
 	elName = c("x", "y", "title", "caption"),  elNLines = NULL){
 	
-	elName <- match.arg(elName, several.ok = TRUE)
+	# element should be of length 1 if 'value' is specified
+	elName <- match.arg(
+		elName, 
+		choices = c("x", "y", "title", "caption"), 
+		several.ok = !missing(gg)
+	)
 	
 	if(is.null(elNLines))
 		elNLines <- c("x" = 2, "y" = 2, "title" = 3, "caption" = 1)[elName]
 	
-	elValue <- ggplot_build(gg)$plot$labels[elName]
-	sum(unlist(
-		lapply(names(elValue), function(elNameI){
-			x <- elValue[[elNameI]]
-			if(!is.null(x) && !(is.character(x) && x == "")){
-				if(is.expression(x))	x <- as.character(x)
-				countNLines(x) * elNLines[elNameI]
-				}
+	if(!missing(gg)){
+		elValue <- ggplot_build(gg)$plot$labels[elName]
+		elValue <- elValue[!sapply(elValue, is.null)]
+		nLinesList <- lapply(names(elValue), function(elNameI){
+			getNLinesLabel(
+				value = elValue[[elNameI]], 
+				elName = elNameI,
+				elNLines = elNLines
+			)
+#				if(!is.null(x) && !(is.character(x) && x == "")){
+#					if(is.expression(x))	x <- as.character(x)
+#					countNLines(x) * elNLines[elNameI]
+#				}
 		})
-	))
+		sum(unlist(nLinesList))
+		
+	}else	if(!missing(value)){
+		
+		if(!is.null(value) && !(is.character(value) && value == "")){
+			
+			if(is.expression(value))	value <- as.character(value)
+			countNLines(value) * elNLines[elName]
+			
+		}
+		
+	}else stop("Element value 'value' or a ggplot2 object via 'gg' should be specified.")
+	
 }
 
 #' Count number of lines ('\\n' character) per character in a vector
@@ -145,7 +185,10 @@ countNLines <- function(x){
 #' used for automatic paging of a plot
 #' @param data data.frame with data
 #' @param var string, variable of \code{data} with variable for the y-axis
-#' @param typeVar string, type of the variable, either 'y' or 'panel'
+#' @param typeVar string, type of the variable, either:
+#' 'y': the variable is displayed in the x-axis or 
+#' 'panel': the variable is displayed as separated facets.
+#' This is used to compute height for each line of the plot.
 #' @param formatReport list with parameters used to specify the format of the report,
 #' e.g. output of the \code{\link{subjectProfileReportFormat}} function
 #' @param title logical, has the plot a title?
@@ -326,9 +369,17 @@ formatParamVar <- function(data,
 	
 		# if paramGroupVar is specified: change order levels of 'variable'
 		if(!is.null(paramGroupVar)){
-			if(!paramGroupVar %in% names(data)){
-				warning("The variable used for grouping is not used because not in the data.")
-			}else{
+			
+			paramGroupVarInData <- paramGroupVar %in% names(data)
+			
+			if(any(!paramGroupVarInData))
+				warning("The variable(s): ", toString(shQuote(paramGroupVar[!paramGroupVarInData])),
+					" used for grouping is(are) not used because not in the data.")
+		
+			if(any(paramGroupVarInData)){
+				
+				paramGroupVar <- paramGroupVar[paramGroupVarInData]
+				
 				if(is.null(paramVar)){
 					warning("The variable used for grouping ('paramGroupVar') is not used",
 						"because no variable for parameter ('paramVar') is not specified.")

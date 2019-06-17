@@ -12,14 +12,17 @@
 #' @param shapeLab string, label for \code{shapeVar}
 #' @param shapePalette named vector with shape for \code{shapeVar}
 #' @inheritParams subjectProfileIntervalPlot
-#' @return list of (across subjects) of list (across modules) of \code{\link[ggplot2]{ggplot2} objects}, 
-#' also of class \code{subjectProfileLinePlot}, with additional metaData attributes containing
-#' 'label' and 'timeLim'.
+#' @return List of (across subjects) of list (across modules) 
+#' of \code{\link[ggplot2]{ggplot2} objects}, 
+#' also of class \code{subjectProfileLinePlot}.
+#' Each subject profile contains attributes: 'subjectID' and 'nLines' 
+#' (estimated number of lines of space the plot will take).
+#' The entire list also contains attributes: '\code{label}' and 'timeLim'.
 #' @author Laure Cougnaud
 #' @import ggplot2
 #' @importFrom glpgStyle glpgColor
 #' @importFrom plyr dlply
-#' @importFrom glpgUtilityFct getLabelVar getGLPGShapePalette
+#' @importFrom glpgUtilityFct getLabelVar
 #' @export
 subjectProfileLinePlot <- function(
 	data,
@@ -67,7 +70,7 @@ subjectProfileLinePlot <- function(
 	}else	colorPalette <- getGLPGColorPalettePatientProfile(n = 1)
 	if(!is.null(shapeVar)){
 		data[, shapeVar] <- convertAesVar(data, var = shapeVar)
-		if(is.null(shapePalette))	shapePalette <- getGLPGShapePalette(x = data[, shapeVar])
+		if(is.null(shapePalette))	shapePalette <- getGLPGShapePalettePatientProfile(x = data[, shapeVar])
 	}
 	
 	listPlots <- dlply(data, subjectVar, function(dataSubject){	
@@ -124,7 +127,8 @@ subjectProfileLinePlot <- function(
 				labs(title = title, x = xLab, y = yLab) +
 				theme(axis.text.y = element_text(size = 7))
 			
-			if(!is.null(paramNameVar))
+			if(!is.null(paramNameVar)){
+				
 				gg <- gg + facet_grid(
 					paste0(paramNameVar, "~."), 
 					scales = "free_y", switch = "y"#,
@@ -137,6 +141,12 @@ subjectProfileLinePlot <- function(
 						),
 						strip.background = element_rect(color = NA, fill = NA)
 					)
+			
+				# count number of lines each facet will take
+				nLinesPlot <- countNLines(unique(dataSubjectPage[, paramNameVar]))
+				nLinesPlot <- Vectorize(FUN = function(x){max(c(x, 4))})(nLinesPlot)
+				
+			}else	nLinesPlot <- 4
 		
 			# color palette and name for color legend
 			if(!is.null(colorVar)){
@@ -151,14 +161,36 @@ subjectProfileLinePlot <- function(
 		
 			if(!is.null(shapeVar))
 				gg <- gg + 
-					getAesScaleManual(lab = shapeLab, palette = shapePalette, type = "shape")		
-		
+					getAesScaleManual(lab = shapeLab, palette = shapePalette, type = "shape")	
 		
 			if(!is.null(timeLim))
 				gg <- gg + coord_cartesian(xlim = timeLim)
+		
+			## extract number of lines
 			
-			attr(gg, 'metaData') <- list(subjectID = subject)
+			# in legend
+			nLinesLegend <- 0 +
+				# for the color variable
+				if(!is.null(colorVar))	getNLinesLegend(values = unique(dataSubjectPage[, colorVar]), title = colorLab) + 
+				# for the shape variable
+				if(!is.null(shapeVar))
+					getNLinesLegend(values = unique(dataSubjectPage[, shapeVar]), title = shapeLab) + 
+				# 1 line to separate the two legends if color and shape are specified and different
+				# (ggplot will create separate legend if the title differ)
+				if(!is.null(colorVar) & !is.null(shapeVar) && (colorVar != shapeVar || colorLab != shapeLab))	1
+
+			nLinesPlot <- max(sum(nLinesPlot), nLinesLegend)
 			
+			# in title and axes
+			nLinesTitleAndXAxis <- sum(c(
+				getNLinesLabel(value = title, elName = "title"), 
+				getNLinesLabel(value = xLab, elName = "x")
+			))
+			nLines <- nLinesPlot + nLinesTitleAndXAxis
+
+			## set attributes
+			
+			attr(gg, 'metaData') <- list(subjectID = subject, nLines = nLines)
 			class(gg) <- c("subjectProfileLinePlot", class(gg))
 		
 			gg

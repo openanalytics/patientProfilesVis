@@ -14,8 +14,7 @@ getGLPGColorPalettePatientProfile(..., includeNA = TRUE)
 \item{...}{Additional parameters for the 
 \code{\link[glpgUtilityFct]{getGLPGColorPalette}} function.}
 
-\item{includeNA}{Logical (TRUE by default), should NA elements be retained in the
-color palette.}
+\item{includeNA}{Logical (TRUE by default), should NA elements be retained in the palette.}
 }
 \value{
 vector of Galapagos colors,

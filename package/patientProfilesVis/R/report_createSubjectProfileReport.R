@@ -1,4 +1,12 @@
-#' Create subject profile report
+#' Create subject profile report.
+#' 
+#' By default all subjects available in at least one module of \code{listPlots} are considered.
+#' If only a set of subjects are of interest, these are specified either:
+#' \itemize{
+#' \item{directly with the subject IDs of interest via \code{subjectsSubset}}
+#' \item{by extracting subjects with a specific value (\code{subjectSubsetValue})
+#' in a variable (\code{subjectSubsetVar}) in a specific dataset \code{subjectSubsetData}}
+#' }
 #' @param listPlots nested list of plots, as returned by the \code{\link{subjectProfileTextPlot}},
 #' \code{\link{subjectProfileEventPlot}}, \code{\link{subjectProfileIntervalPlot}} or
 #' \code{\link{subjectProfileLinePlot}} functions.
@@ -16,6 +24,8 @@
 #' @param subjectSubsetVar string with variable of \code{subjectSubsetData} used for subsetting.
 #' @param subjectSubsetValue Character vector with value(s) of \code{subjectSubsetVar}
 #' of interest to select subjects on.
+#' @param subjectsSubset Character vector with subjects of interest 
+#' (among names of each list in \code{listPlots}).
 #' @param timeLim vector of length 2 with time limits.
 #' If not specified, these are set to the time limits specified
 #' when creating each module (stored in \code{attributes(x)$metaData$timeLim})
@@ -45,6 +55,7 @@ createSubjectProfileReport <- function(
 	subjectSortData = bookmarkData,
 	subjectSortVar = bookmarkVar,
 	subjectVar = "USUBJID",
+	subjectsSubset = NULL,
 	subjectSubsetData = NULL,
 	subjectSubsetVar = NULL,
 	subjectSubsetValue = NULL,
@@ -68,13 +79,17 @@ createSubjectProfileReport <- function(
 	# filter subjects if subset[Data/Var/Value] is specified
 	if(!is.null(subjectSubsetData)){
 		
-		# extract subjects for specified subset
-		dataSubjectSubset <- filterData(
-			data = subjectSubsetData, 
-			subsetVar = subjectSubsetVar, 
-			subsetValue = subjectSubsetValue
-		)
-		subjectsSubset <- unique(as.character(dataSubjectSubset[, subjectVar]))
+		if(is.null(subjectsSubset)){
+		
+			# extract subjects for specified subset
+			dataSubjectSubset <- filterData(
+				data = subjectSubsetData, 
+				subsetVar = subjectSubsetVar, 
+				subsetValue = subjectSubsetValue
+			)
+			subjectsSubset <- unique(as.character(dataSubjectSubset[, subjectVar]))
+			
+		}
 		
 		# filter 'listPlots' to only retain selected subjects
 		listPlots <- sapply(listPlots, function(x){

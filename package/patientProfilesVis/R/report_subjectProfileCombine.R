@@ -64,6 +64,22 @@ subjectProfileCombine <- function(
 		)
 	)	
 	
+	# for debugging:
+#	sapply(names(listPlotsAll[[1]]), function(id){
+#		print(id)
+#		argsPSP <- c(
+#			list(
+#				labels = plotLabels, 
+#				timeLim = timeLim,
+#				refLines = refLines, refLinesData = refLinesData, 
+#				refLinesTimeVar = refLinesTimeVar, refLinesLabelVar = refLinesLabelVar,
+#				subjectVar = subjectVar
+#			),
+#			sapply(listPlotsAll, function(x)	x[[id]], simplify = FALSE)
+#		)
+#		do.call(prepareSubjectProfile, argsPSP)
+#	})
+	
 	# add title
 	msgProgress <- "Combine profiles across subjects/modules."
 	if(verbose)	message(msgProgress)
@@ -103,8 +119,9 @@ prepareSubjectProfile <- function(
 	if(length(isEmpty) > 0){
 		listGgPlotsToCombineInit[isEmpty] <- lapply(isEmpty, function(i)
 			if(labels[i] != ""){
-				gg <- ggplot() + theme_bw() + 
-					ggtitle(paste("No", labels[i], "available."))
+				title <- paste("No", labels[i], "available.")
+				gg <- ggplot() + theme_bw() + ggtitle(title)
+				attr(gg, 'metaData') <- list(nLines = getNLinesLabel(value = title, elName = "title"))
 				class(gg) <- c("subjectProfileEmptyPlot", class(gg))
 				list(gg)
 			}
@@ -117,7 +134,16 @@ prepareSubjectProfile <- function(
 		listGgPlotsToCombine <- unlist(listGgPlotsToCombineInit, recursive = FALSE)
 		
 		# extract number of lines in the y-axis
-		nLinesPlot <- sapply(listGgPlotsToCombine, getNLinesYGgplot)
+		# from metadata or directly from the object if not present (slower)
+		nLinesPlot <- sapply(listGgPlotsToCombineInit, function(x) 
+			sapply(x, function(y){
+				nLines <- attributes(y)$metaData$nLines
+				if(is.null(nLines))	nLines <- getNLinesYGgplot(y)
+				nLines 
+			})
+		)
+		if(length(nLinesPlot) != length(listGgPlotsToCombine))
+			stop("Issue extracting number of lines for each plot.")
 		
 		# set same limits for the time/x-axis and reference lines
 		plotsToModify <-  which(sapply(listGgPlotsToCombine, function(gg)
