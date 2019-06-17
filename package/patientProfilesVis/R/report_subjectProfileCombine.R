@@ -4,7 +4,6 @@
 #' Messages during report creation will be included in the Shiny interface,
 #' and it will be mentioned at the end of the report.
 #' In this case, the \code{shiny} package should be available.
-#' @param verbose logical, if TRUE print messages during execution
 #' @return a list of \code{subjectProfilePlot} object, containing the combined
 #' profile plots for each subject.
 #' @importFrom cowplot ggdraw draw_label
@@ -88,10 +87,10 @@ subjectProfileCombine <- function(
 	msgProgress <- "Combine profiles across subjects/modules."
 	if(verbose)	message(msgProgress)
 	if(shiny)	incProgress(0.5, detail = msgProgress)
-	if(verbose)	message("Combine subject profiles.")
 	listPlotsPerSubject <- combineVerticallyGGplot(
 		listPlots = listPlotsPerSubject, 
-		maxNLines = maxNLines
+		maxNLines = maxNLines,
+		verbose = verbose
 	)
 	
 	return(listPlotsPerSubject)

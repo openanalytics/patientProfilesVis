@@ -5,24 +5,22 @@
 #' @param listPlots a list of subject profile (subject/modules)
 #' @param maxNLines maximum number of lines for a combined plot,
 #' to fit in the page height
+#' @param verbose logical, if TRUE print messages during execution
 #' @return a list of list of \code{\link[ggplot2]{ggplot}} object (subject/page)
 #' @author Laure Cougnaud
 #' @importFrom ggplot2 ggplotGrob
 #' @importFrom cowplot ggdraw draw_grob
 #' @importFrom grDevices dev.off
-combineVerticallyGGplot <- function(listPlots, maxNLines){
-	
+combineVerticallyGGplot <- function(listPlots, maxNLines, verbose = FALSE){
+
 	# transform all plots to gtable
-	ggplotGrobCloseWindow <- function(gg){
-		grob <- ggplotGrob(gg)
-		# because the function ggplot2::ggplotGrob open a new window
-		devOffError <- try(tmp <- dev.off(), silent = TRUE)
-		return(grob)
-	}
-		
-	grobsAllSubjects <- sapply(listPlots, function(x){		
-		lapply(x, ggplotGrobCloseWindow)
+	grobsAllSubjects <- sapply(names(listPlots), function(subjID){	
+		if(verbose)	message(paste0("Combine plots across modules for subject: ", subjID, "."))
+		lapply(listPlots[[subjID]], ggplotGrob)
 	}, simplify = FALSE)
+	# because each call to the function ggplot2::ggplotGrob open a new window:
+	# shuts down all open graphics devices
+	graphics.off()
 
 	# extract maximum margin(s)
 	grobsMarginsInfo <- sapply(grobsAllSubjects, function(x){

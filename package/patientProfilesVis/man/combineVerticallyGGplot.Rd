@@ -4,13 +4,15 @@
 \alias{combineVerticallyGGplot}
 \title{Combine vertically multiple \code{\link[ggplot2]{ggplot}}.}
 \usage{
-combineVerticallyGGplot(listPlots, maxNLines)
+combineVerticallyGGplot(listPlots, maxNLines, verbose = FALSE)
 }
 \arguments{
 \item{listPlots}{a list of subject profile (subject/modules)}
 
 \item{maxNLines}{maximum number of lines for a combined plot,
 to fit in the page height}
+
+\item{verbose}{logical, if TRUE print messages during execution}
 }
 \value{
 a list of list of \code{\link[ggplot2]{ggplot}} object (subject/page)

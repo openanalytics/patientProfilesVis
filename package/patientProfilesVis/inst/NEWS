@@ -1,5 +1,6 @@
 0.2.0
     o save nLines at module plot creation instead of extracting them  when combining plots
+    o when combining plots across modules, close graphic device only at the end
     o formatParamVar: fix warning when multiple 'paramGroupVar'
     o getGLPGShapePalettePatientProfile
     o getPageVar: fix for plot with multiple lines
