@@ -79,7 +79,7 @@ createSubjectProfileReport <- function(
 	}
 
 	# filter subjects if subset[Data/Var/Value] is specified
-	if(!is.null(subjectSubsetData)){
+	if(!is.null(subjectsSubset) | !is.null(subjectSubsetData)){
 		
 		if(verbose)	message("Filter subjects of interests.")
 		
