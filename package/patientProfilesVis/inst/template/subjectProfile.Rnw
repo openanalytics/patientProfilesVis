@@ -70,9 +70,9 @@
 	names(listPlotsPerSubject) <- paste0(
 		paste(
 			rep(names(listPlotsPerSubjectList), times = sapply(listPlotsPerSubjectList, length)),
-			sapply(listPlotsPerSubjectList, seq_along),
+			unlist(lapply(listPlotsPerSubjectList, seq_along)),
 			sep = " (part: "
-			), ")"
+		), ")"
 	)	
 	
 	# extract height for each plot
@@ -85,12 +85,15 @@
 	# extract labels 
 	# remove space and file separator character(s) if present
 	if(verbose)	message("Extract labels.")
-	labelPlots <- gsub(paste0(.Platform$file.sep, "| "), "-", names(listPlotsPerSubject))
+	labelPlots <-  gsub(paste0(.Platform$file.sep, "| "), "-",
+		gsub("(.+) \\(part: (.+)\\)", "\\1-\\2", names(listPlotsPerSubject))
+	)
 	
 	# extract titles
 	if(verbose)	message("Extract title.")
 	sectionTitles <- unlist(lapply(names(listPlotsPerSubjectList), function(subject) 
-		c(subject, rep("", length(listPlotsPerSubjectList[[subject]])-1))))
+		c(subject, rep("", length(listPlotsPerSubjectList[[subject]])-1)))
+	)
 
 	# extract titles
 	if(verbose)	message("Extract bookmarks (if any).")
