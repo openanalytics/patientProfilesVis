@@ -66,7 +66,7 @@ subjectProfileTextPlot <- function(
 	# only keep records of interest
 	data <- filterData(
 		data = data, 
-		subsetData = data,
+		subsetData = subsetData,
 		subsetVar = subsetVar, 
 		subsetValue = subsetValue,
 		subjectVar = subjectVar, 
