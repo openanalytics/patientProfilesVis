@@ -65,6 +65,15 @@
 	if(verbose)	message("Convert to list with 1 level.")
 	# convert list of list to list with only one level
 	listPlotsPerSubject <- unlist(listPlotsPerSubjectList, recursive = FALSE)
+#	names(listPlotsPerSubject) <- sapply(listPlotsPerSubject, names)
+	
+	names(listPlotsPerSubject) <- paste0(
+		paste(
+			rep(names(listPlotsPerSubjectList), times = sapply(listPlotsPerSubjectList, length)),
+			sapply(listPlotsPerSubjectList, seq_along),
+			sep = " (part: "
+			), ")"
+	)	
 	
 	# extract height for each plot
 	if(verbose)	message("Extract height for each plot.")
@@ -138,7 +147,7 @@
 		
 		msg <- paste("Export profiles.")
 		if(verbose)	message(msg)
-		if(inputParameters$shiny)	incProgress(detail = msg)
+		if(inputParameters$shiny)	incProgress(0.1, detail = msg)
 	
 		# create the plots
 		tmp <- sapply(seq_along(listPlotsPerSubject), function(i){

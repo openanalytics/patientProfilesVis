@@ -83,7 +83,7 @@ createSubjectProfileReport <- function(
 		
 		if(verbose)	message("Filter subjects of interests.")
 		
-		if(is.null(subjectsSubset)){
+		if(!is.null(subjectSubsetData)){
 		
 			# extract subjects for specified subset
 			dataSubjectSubset <- filterData(
@@ -91,7 +91,9 @@ createSubjectProfileReport <- function(
 				subsetVar = subjectSubsetVar, 
 				subsetValue = subjectSubsetValue
 			)
-			subjectsSubset <- unique(as.character(dataSubjectSubset[, subjectVar]))
+			subjectsSubset <- union(subjectsSubset,
+				unique(as.character(dataSubjectSubset[, subjectVar]))
+			)
 			
 		}
 		
@@ -151,7 +153,7 @@ createSubjectProfileReport <- function(
 	
 	msgProgress <- "Create subject profile report."
 	if(verbose)	message(msgProgress)
-	if(shiny)	incProgress(0.1, detail = msgProgress)
+	if(shiny)	incProgress(0.3, detail = msgProgress)
 	
 	pathTemplate <- getPathTemplate("subjectProfile.Rnw")
 	
