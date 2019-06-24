@@ -458,9 +458,20 @@ in normal range.
 
 ### Subset of interest
 
-If only a subset of parameters are of interest, the `subsetVar` and
-`subsetValue` can be used. 
+A subset of interest can be specified via:
+
+* a dataset of interest
+* a variable/values of interest (possibly from a different dataset in hand)
+* a set of subjects of interest
+
 These parameters are also available for all other module types.
+
+#### Subset based on extra variable
+
+If only a subset of parameters are of interest `subsetVar` and
+`subsetValue` can be used. 
+By default, the subset is extracted from the current `data`, but can also be extracted from a
+different dataset specified via `subsetData`.
 These parameters are here used to represent only the measurements for the
 hematology parameters.
 
@@ -478,6 +489,7 @@ hematology parameters.
 		shapePalette = c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24, 'NA' = 3),
 		title = "Hematology test measurements: reference range indicator"
 	)
+	cat("The", length(lbPlotsSubset), "patients with hematology measurements:", toString(names(lbPlotsSubset)), "are considered.\n")
 	
 ```
 
@@ -485,6 +497,68 @@ hematology parameters.
 
 	print(lbPlotsSubset[[1]][[1]])
 
+```
+
+#### Set of subjects of interest
+
+A set of subjects of interest from the input `data` can be specified via the `subjectSubset` parameter (by default
+extracted from the `subjectVar` parameter):
+
+```{r exampleEventModuleWithSubset-2}
+
+	# create plot
+	lbPlotsSubjectSubset <- subjectProfileEventPlot(
+		data = dataLB,
+		paramVar = "LBTEST",
+		subsetVar = "LBCAT", subsetValue = "HEMATOLOGY",
+		subjectSubset = names(lbPlotsSubset)[1],
+		timeVar = "LBDY",
+		colorVar = "LBNRIND",
+		labelVars = labelVarsSDTMPelican,
+		shapeVar = "LBNRIND",
+		shapePalette = c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24, 'NA' = 3),
+		title = "Hematology test measurements: reference range indicator"
+	)
+	cat("Only the patient:", toString(names(lbPlotsSubjectSubset)), "is considered.\n")
+	
+```
+
+```{r exampleEventModuleWithSubset-2-include, echo = FALSE, fig.height = attributes(lbPlotsSubjectSubset[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Hematology data with the 'subjectProfileEventPlot' function for patient:", names(lbPlotsSubset)[1])}
+
+	print(lbPlotsSubjectSubset[[1]][[1]])
+	
+```
+
+#### Subset based on a different dataset
+
+The `subsetData` parameter is used to specify only a subset of the subjects 
+available in a different dataset.
+For example, to create the laboratory plots only for the patients with adverse events:
+
+```{r exampleEventModuleWithSubset-3}
+
+	# create plot
+	lbPlotsDataSubset <- subjectProfileEventPlot(
+		data = dataLB,
+		paramVar = "LBTEST",
+		subsetVar = "LBCAT", subsetValue = "HEMATOLOGY",
+		subsetData = SDTMDataPelican$AE,
+		timeVar = "LBDY",
+		colorVar = "LBNRIND",
+		labelVars = labelVarsSDTMPelican,
+		shapeVar = "LBNRIND",
+		shapePalette = c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24, 'NA' = 3),
+		title = "Hematology test measurements: reference range indicator"
+	)
+	cat("Only the", length(lbPlotsDataSubset), "subjects in the AE dataset with hematology measurements: ", 
+		toString(names(lbPlotsDataSubset)), " are considered.")
+	
+```
+
+```{r exampleEventModuleWithSubset-3-include, echo = FALSE, fig.height = attributes(lbPlotsDataSubset[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Hematology data with the 'subjectProfileEventPlot' function for patient:", names(lbPlotsSubset)[1])}
+
+	print(lbPlotsDataSubset[[1]][[1]])
+	
 ```
 
 ## Line module
@@ -788,7 +862,7 @@ ADaM dataset can also be used in the same framework.
 		listPlotsADaM,
 		refLines = refLinesParam,
 		outputFile = "subjectProfile_ADAM.pdf",
-		subjectsSubset = "study-4902-02"
+		subjectSubset = "study-4902-02"
 	))
 
 ```

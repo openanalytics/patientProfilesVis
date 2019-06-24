@@ -4,15 +4,25 @@
 \alias{filterData}
 \title{Filter a dataset for records of interest}
 \usage{
-filterData(data, subsetVar = NULL, subsetValue = NULL)
+filterData(data, subsetData = NULL, subsetVar = NULL,
+  subsetValue = NULL, subjectVar = "USUBJID", subjectSubset = NULL)
 }
 \arguments{
 \item{data}{data data.frame with data}
+
+\item{subsetData}{Data.frame from which subset based on \code{subjectVar}/\code{subsetValue}
+should be extracted. If not specified, \code{data} is used.
+Records from \code{data} are then mapped by the \code{subjectVar} variable.}
 
 \item{subsetVar}{variable of \code{data} used for subsetting}
 
 \item{subsetValue}{character vector with value(s) of interest to consider for 
 \code{subsetVar}}
+
+\item{subjectVar}{string, variable of \code{data} with subject ID}
+
+\item{subjectSubset}{(optional) Character vector with subjects of interest 
+(available in \code{subjectVar} of \code{data}), NULL by default.}
 }
 \value{
 possibly filtered dataset

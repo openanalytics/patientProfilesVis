@@ -8,13 +8,13 @@ If no start and/or end date is available, specific arrows are created.}
 subjectProfileIntervalPlot(data, paramVar, paramVarSep = " - ",
   paramLab = toString(getLabelVar(paramVar, labelVars = labelVars)),
   paramGroupVar = NULL, timeStartVar, timeEndVar, timeLabel = "time",
-  subjectVar = "USUBJID", subsetVar = NULL, subsetValue = NULL,
-  timeLim = NULL, timeLimData = NULL, timeLimStartVar = NULL,
-  timeLimEndVar = NULL, rangeSimilarStartEnd = NULL,
-  xLab = paste(getLabelVar(c(timeStartVar, timeEndVar), labelVars =
-  labelVars), collapse = "/"), yLab = "", colorVar = NULL,
-  colorLab = getLabelVar(colorVar, labelVars = labelVars),
-  colorPalette = NULL, title = paramLab, label = title,
+  subjectVar = "USUBJID", subjectSubset = NULL, subsetData = NULL,
+  subsetVar = NULL, subsetValue = NULL, timeLim = NULL,
+  timeLimData = NULL, timeLimStartVar = NULL, timeLimEndVar = NULL,
+  rangeSimilarStartEnd = NULL, xLab = paste(getLabelVar(c(timeStartVar,
+  timeEndVar), labelVars = labelVars), collapse = "/"), yLab = "",
+  colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars =
+  labelVars), colorPalette = NULL, title = paramLab, label = title,
   labelVars = NULL, formatReport = subjectProfileReportFormat(),
   paging = TRUE)
 }
@@ -39,6 +39,13 @@ If specified, the parameters will be grouped by this(these) variable(s) in the y
 in the footnote for the explanation of the arrow, 'time' by default.}
 
 \item{subjectVar}{string, variable of \code{data} with subject ID}
+
+\item{subjectSubset}{(optional) Character vector with subjects of interest 
+(available in \code{subjectVar} of \code{data}), NULL by default.}
+
+\item{subsetData}{Data.frame from which subset based on \code{subjectVar}/\code{subsetValue}
+should be extracted. If not specified, \code{data} is used.
+Records from \code{data} are then mapped by the \code{subjectVar} variable.}
 
 \item{subsetVar}{variable of \code{data} used for subsetting}
 

@@ -8,12 +8,13 @@ createSubjectProfileReport(listPlots, timeLim = NULL, refLines = NULL,
   refLinesData = NULL, refLinesTimeVar = NULL,
   refLinesLabelVar = NULL, bookmarkData = NULL, bookmarkVar = NULL,
   subjectSortData = bookmarkData, subjectSortVar = bookmarkVar,
-  subjectVar = "USUBJID", subjectsSubset = NULL,
+  subjectVar = "USUBJID", subjectSubset = NULL,
   subjectSubsetData = NULL, subjectSubsetVar = NULL,
-  subjectSubsetValue = NULL, outputFile = "subjectProfile.pdf",
-  exportFigures = FALSE, labelVars = NULL, maxNLines = NULL,
-  shiny = FALSE, formatReport = subjectProfileReportFormat(),
-  verbose = FALSE, nCores = 1)
+  subjectSubsetValue = NULL, subset = NULL,
+  outputFile = "subjectProfile.pdf", exportFigures = FALSE,
+  labelVars = NULL, maxNLines = NULL, shiny = FALSE,
+  formatReport = subjectProfileReportFormat(), verbose = FALSE,
+  nCores = 1)
 }
 \arguments{
 \item{listPlots}{nested list of plots, as returned by the \code{\link{subjectProfileTextPlot}},
@@ -58,8 +59,8 @@ by default same as \code{bookmarkVar}}
 
 \item{subjectVar}{string, variable of \code{data} with subject ID}
 
-\item{subjectsSubset}{Character vector with subjects of interest 
-(among names of each list in \code{listPlots}).}
+\item{subjectSubset}{subjectSubset (optional) Character vector with subjects of interest 
+(available in \code{subjectVar}), NULL by default.}
 
 \item{subjectSubsetData}{data.frame with data used to select subset of subjects of interest.
 It should contain the \code{subjectVar} variable.}
@@ -68,6 +69,9 @@ It should contain the \code{subjectVar} variable.}
 
 \item{subjectSubsetValue}{Character vector with value(s) of \code{subjectSubsetVar}
 of interest to select subjects on.}
+
+\item{subset}{Character vector with subjects of interest 
+(among names of each list in \code{listPlots}).}
 
 \item{outputFile}{string, path to the output report}
 
@@ -98,7 +102,7 @@ specified by \code{outputFile}
 By default all subjects available in at least one module of \code{listPlots} are considered.
 If only a set of subjects are of interest, these are specified either:
 \itemize{
-\item{directly with the subject IDs of interest via \code{subjectsSubset}}
+\item{directly with the subject IDs of interest via \code{subjectSubset}}
 \item{by extracting subjects with a specific value (\code{subjectSubsetValue})
 in a variable (\code{subjectSubsetVar}) in a specific dataset \code{subjectSubsetData}}
 }
