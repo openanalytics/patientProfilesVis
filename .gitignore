@@ -18,3 +18,4 @@ package/*/tests/figs
 *.Rhistory
 PatientProfile_3067_101.Rmd
 *.out
+.RDuetConsole
