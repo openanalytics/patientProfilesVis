@@ -4,7 +4,7 @@
 \alias{combineVerticallyGGplot}
 \title{Combine vertically multiple \code{\link[ggplot2]{ggplot}}.}
 \usage{
-combineVerticallyGGplot(listPlots, maxNLines, nCores = 1,
+combineVerticallyGGplot(listPlots, maxNLines = NULL, nCores = 1,
   shiny = FALSE, verbose = FALSE)
 }
 \arguments{

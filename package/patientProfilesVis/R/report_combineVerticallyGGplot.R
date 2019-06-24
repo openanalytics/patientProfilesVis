@@ -16,7 +16,8 @@
 #' @importFrom ggplot2 ggplotGrob
 #' @importFrom cowplot ggdraw draw_grob
 #' @importFrom grDevices graphics.off
-combineVerticallyGGplot <- function(listPlots, maxNLines, 
+combineVerticallyGGplot <- function(listPlots, 
+	maxNLines = NULL, 
 	nCores = 1, 
 	shiny = FALSE, verbose = FALSE){
 
@@ -151,11 +152,12 @@ combineVerticallyGGplot <- function(listPlots, maxNLines,
 
 #' Split/combine a vector of size(s) to have a fixed combined size
 #' @param sizes vector with size
-#' @param max integer with maximum combined size in output
+#' @param max integer with maximum combined size in output,
+#' Inf by default.
 #' @return vector of same length as \code{sizeVect},
 #' containing corresponding class
 #' @author Laure Cougnaud
-getSplitVectorByInt <- function(sizes, max){
+getSplitVectorByInt <- function(sizes, max = NULL){
 	
 	i <- 1
 	class <- vector(length = length(sizes))
@@ -163,7 +165,7 @@ getSplitVectorByInt <- function(sizes, max){
 	curNLines <- 0
 	while(i <= length(sizes)){
 		curNLines <- curNLines + sizes[i]
-		if(curNLines > max){
+		if(!is.null(max) && curNLines > max){
 			curClass <- curClass + 1
 			curNLines <- sizes[i]
 		}

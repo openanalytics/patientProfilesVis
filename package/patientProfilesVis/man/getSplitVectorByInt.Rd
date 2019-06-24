@@ -4,12 +4,13 @@
 \alias{getSplitVectorByInt}
 \title{Split/combine a vector of size(s) to have a fixed combined size}
 \usage{
-getSplitVectorByInt(sizes, max)
+getSplitVectorByInt(sizes, max = NULL)
 }
 \arguments{
 \item{sizes}{vector with size}
 
-\item{max}{integer with maximum combined size in output}
+\item{max}{integer with maximum combined size in output,
+Inf by default.}
 }
 \value{
 vector of same length as \code{sizeVect},

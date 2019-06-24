@@ -53,7 +53,8 @@ subjectProfileIntervalPlot <- function(
 	title = paramLab,
 	label = title,
 	labelVars = NULL,
-	formatReport = subjectProfileReportFormat()
+	formatReport = subjectProfileReportFormat(),
+	paging = TRUE
 ){
 		
 	# fill missing start/end time and extract time limits
@@ -125,7 +126,8 @@ subjectProfileIntervalPlot <- function(
 			formatReport = formatReport,
 			title = !is.null(title),
 			xLab = !is.null(xLab),
-			caption = TRUE
+			caption = TRUE,
+			paging = paging
 		)
 		
 		listPlots <- dlply(dataSubject, "pagePlot", function(dataSubjectPage){

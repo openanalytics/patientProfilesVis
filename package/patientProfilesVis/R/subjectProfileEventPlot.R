@@ -31,7 +31,8 @@ subjectProfileEventPlot <- function(
 	title = paramLab,
 	label = title,
 	labelVars = NULL,
-	formatReport = subjectProfileReportFormat()
+	formatReport = subjectProfileReportFormat(),
+	paging = TRUE
 ){
 	
 	# concatenate variable(s) if multiple are specified
@@ -77,7 +78,8 @@ subjectProfileEventPlot <- function(
 			formatReport = formatReport,
 			title = !is.null(title),
 			xLab = !is.null(xLab),
-			caption = FALSE
+			caption = FALSE,
+			paging = paging
 		)	
 		
 		listPlots <- dlply(dataSubject, "pagePlot", function(dataSubjectPage){
