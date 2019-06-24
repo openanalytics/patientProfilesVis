@@ -42,8 +42,8 @@ subjectProfileIntervalPlot <- function(
 	timeStartVar,
 	timeEndVar,
 	timeLabel = "time",
-	subjectVar = "USUBJID",
-	subsetVar = NULL, subsetValue = NULL,
+	subjectVar = "USUBJID", subjectSubset = NULL,
+	subsetData = NULL, subsetVar = NULL, subsetValue = NULL, 
 	timeLim = NULL, timeLimData = NULL, timeLimStartVar = NULL, timeLimEndVar = NULL,
 	rangeSimilarStartEnd = NULL,
 	xLab = paste(getLabelVar(c(timeStartVar, timeEndVar), labelVars = labelVars), collapse = "/"),
@@ -96,9 +96,13 @@ subjectProfileIntervalPlot <- function(
 	data <- data[with(data, !is.na(yVar) & yVar != ""), ]
 	
 	# only keep records of interest
-	data <- filterData(data, 
+	data <- filterData(
+		data = data, 
 		subsetVar = subsetVar, 
-		subsetValue = subsetValue
+		subsetValue = subsetValue,
+		subsetData = subsetData,
+		subjectVar = subjectVar, 
+		subjectSubset = subjectSubset
 	)
 
 	# if paramGroupVar is specified: change order levels of 'variable'
@@ -298,13 +302,13 @@ subjectProfileIntervalPlot <- function(
 #' @param data data.frame with data
 #' @param timeStartVar string, variable of \code{data} with start of range
 #' @param timeEndVar string, variable of \code{data} with end of range
-#' @param subjectVar string, variable of \code{data} with subject ID
 #' @param timeLim (optional) vector of length 2 with time limits (x-axis)
 #' If not specified, extracted from the minimum \code{timeStartVar} 
 #' and maximum \code{timeEndVar} per subject.
 #' @param timeLimData data.frame with data used to extract time limits per subject
 #' @param timeLimStartVar string, variable of \code{timeLimData} with time start
 #' @param timeLimEndVar string, variable of \code{timeLimData} with time end
+#' @inheritParams filterData
 #' @return list with:
 #' \itemize{
 #' \item{'data': }{data with filled missing start/end time variables.

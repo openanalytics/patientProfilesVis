@@ -10,6 +10,7 @@
     o enable parallelized computations with 'nCores'
     o createSubjectProfileReport: subjectSubset fix
     o 'paging' parameter: enable export into one page
+    o subsetData parameter available in each plot function
 0.1.0
     o example datasets moved to the glpgUtilityFct package
     o getGLPGColorPalettePatientProfile/getGLPGLinetypePalettePatientProfile

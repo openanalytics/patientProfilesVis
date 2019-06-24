@@ -51,8 +51,8 @@ subjectProfileTextPlot <- function(
 	paramValueVar,
 	paramNameVar = NULL, 
 	paramGroupVar = NULL,
-	subsetVar = NULL, subsetValue = NULL,
-	subjectVar = "USUBJID",
+	subsetData = NULL, subsetVar = NULL, subsetValue = NULL, 
+	subjectVar = "USUBJID", subjectSubset = NULL,
 	xLab = "",
 	yLab = "",
 	title = "Subject information",
@@ -64,9 +64,13 @@ subjectProfileTextPlot <- function(
 ){
 	
 	# only keep records of interest
-	data <- filterData(data, 
+	data <- filterData(
+		data = data, 
+		subsetData = data,
 		subsetVar = subsetVar, 
-		subsetValue = subsetValue
+		subsetValue = subsetValue,
+		subjectVar = subjectVar, 
+		subjectSubset = subjectSubset
 	)
 	
 	combineMultipleVars <- function(vars)

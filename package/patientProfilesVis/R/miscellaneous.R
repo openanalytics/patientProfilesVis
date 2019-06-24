@@ -465,29 +465,51 @@ formatParamVarTextPlot <- function(data,
 
 #' Filter a dataset for records of interest
 #' @param data data data.frame with data
+#' @param subsetData Data.frame from which subset based on \code{subjectVar}/\code{subsetValue}
+#' should be extracted. If not specified, \code{data} is used.
+#' Records from \code{data} are then mapped by the \code{subjectVar} variable.
 #' @param subsetVar variable of \code{data} used for subsetting
 #' @param subsetValue character vector with value(s) of interest to consider for 
 #' \code{subsetVar}
+#' @param subjectVar string, variable of \code{data} with subject ID
+#' @param subjectSubset (optional) Character vector with subjects of interest 
+#' (available in \code{subjectVar} of \code{data}), NULL by default.
 #' @return possibly filtered dataset
 #' @author Laure Cougnaud
 #' @export
-filterData <- function(data, 
+filterData <- function(data,
+	subsetData = NULL,
 	subsetVar = NULL, 
-	subsetValue = NULL
-){
+	subsetValue = NULL,
+	subjectVar = "USUBJID",
+	subjectSubset = NULL
+){	
 	
-	if(!is.null(subsetVar)){
-		if(!subsetVar %in% names(data)){
-			warning("Subset variable not used because not in the data.")
-		}else{
-			if(is.null(subsetValue)){
-				warning("Subset variable: ", subsetVar, 
-					"not used, because no value of interest is specified.")
+	# wrapper function to extract subset of interest
+	getDataSubset <- function(subsetData){
+		if(!is.null(subsetVar)){
+			if(!subsetVar %in% names(subsetData)){
+				warning("Subset variable not used because not in the data.")
 			}else{
-				data <- data[which(data[, subsetVar] %in% subsetValue), ]
+				if(is.null(subsetValue)){
+					warning("Subset variable: ", subsetVar, 
+						"not used, because no value of interest is specified.")
+				}else{
+					subsetData <- subsetData[which(subsetData[, subsetVar] %in% subsetValue), ]
+				}
 			}
 		}
+		return(subsetData)
 	}
+	
+	
+	if(!is.null(subsetData)){
+		subsetDataUsed <- getDataSubset(subsetData = subsetData)
+		subjectSubset <- subsetDataUsed[, subjectVar]
+	}else	data <- getDataSubset(subsetData = data)
+	
+	if(!is.null(subjectSubset))
+		data <- data[which(data[, subjectVar] %in% subjectSubset), ]
 	
 	return(data)
 	

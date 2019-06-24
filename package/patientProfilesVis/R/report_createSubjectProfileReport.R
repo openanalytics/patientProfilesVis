@@ -3,7 +3,7 @@
 #' By default all subjects available in at least one module of \code{listPlots} are considered.
 #' If only a set of subjects are of interest, these are specified either:
 #' \itemize{
-#' \item{directly with the subject IDs of interest via \code{subjectsSubset}}
+#' \item{directly with the subject IDs of interest via \code{subjectSubset}}
 #' \item{by extracting subjects with a specific value (\code{subjectSubsetValue})
 #' in a variable (\code{subjectSubsetVar}) in a specific dataset \code{subjectSubsetData}}
 #' }
@@ -24,7 +24,9 @@
 #' @param subjectSubsetVar string with variable of \code{subjectSubsetData} used for subsetting.
 #' @param subjectSubsetValue Character vector with value(s) of \code{subjectSubsetVar}
 #' of interest to select subjects on.
-#' @param subjectsSubset Character vector with subjects of interest 
+#' @param subjectSubset subjectSubset (optional) Character vector with subjects of interest 
+#' (available in \code{subjectVar}), NULL by default.
+#' @param subset Character vector with subjects of interest 
 #' (among names of each list in \code{listPlots}).
 #' @param timeLim vector of length 2 with time limits.
 #' If not specified, these are set to the time limits specified
@@ -55,10 +57,11 @@ createSubjectProfileReport <- function(
 	subjectSortData = bookmarkData,
 	subjectSortVar = bookmarkVar,
 	subjectVar = "USUBJID",
-	subjectsSubset = NULL,
+	subjectSubset = NULL,
 	subjectSubsetData = NULL,
 	subjectSubsetVar = NULL,
 	subjectSubsetValue = NULL,
+	subset = NULL,
 	outputFile = "subjectProfile.pdf",
 	exportFigures = FALSE,
 	labelVars = NULL,
@@ -79,7 +82,7 @@ createSubjectProfileReport <- function(
 	}
 
 	# filter subjects if subset[Data/Var/Value] is specified
-	if(!is.null(subjectsSubset) | !is.null(subjectSubsetData)){
+	if(!is.null(subset) | !is.null(subjectSubsetData)){
 		
 		if(verbose)	message("Filter subjects of interests.")
 		
@@ -89,9 +92,11 @@ createSubjectProfileReport <- function(
 			dataSubjectSubset <- filterData(
 				data = subjectSubsetData, 
 				subsetVar = subjectSubsetVar, 
-				subsetValue = subjectSubsetValue
+				subsetValue = subjectSubsetValue,
+				subjectSubset = subjectSubset,
+				subjectVar = subjectVar
 			)
-			subjectsSubset <- union(subjectsSubset,
+			subset <- union(subset,
 				unique(as.character(dataSubjectSubset[, subjectVar]))
 			)
 			
@@ -100,7 +105,7 @@ createSubjectProfileReport <- function(
 		# filter 'listPlots' to only retain selected subjects
 		listPlots <- sapply(listPlots, function(x){
 			metaDataX <- attributes(x)$metaData
-			newX <- x[which(names(x) %in% subjectsSubset)]
+			newX <- x[which(names(x) %in% subset)]
 			attributes(newX)$metaData <- metaDataX
 			newX
 		}, simplify = FALSE)		

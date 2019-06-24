@@ -11,11 +11,11 @@ subjectProfileLinePlot(data, paramValueVar,
   colorPalette = NULL, shapeVar = colorVar,
   shapeLab = getLabelVar(shapeVar, labelVars = labelVars),
   shapePalette = NULL, paramGroupVar = NULL, timeVar,
-  subjectVar = "USUBJID", subsetVar = NULL, subsetValue = NULL,
-  xLab = getLabelVar(timeVar, labelVars = labelVars), yLab = "",
-  timeLim = NULL, title = paramLab, label = title,
-  labelVars = NULL, formatReport = subjectProfileReportFormat(),
-  paging = TRUE)
+  subjectVar = "USUBJID", subjectSubset = NULL, subsetData = NULL,
+  subsetVar = NULL, subsetValue = NULL, xLab = getLabelVar(timeVar,
+  labelVars = labelVars), yLab = "", timeLim = NULL,
+  title = paramLab, label = title, labelVars = NULL,
+  formatReport = subjectProfileReportFormat(), paging = TRUE)
 }
 \arguments{
 \item{data}{data.frame with data}
@@ -48,6 +48,13 @@ If specified, the parameters will be grouped by this(these) variable(s) in the y
 \item{timeVar}{string, variable of \code{data} with time}
 
 \item{subjectVar}{string, variable of \code{data} with subject ID}
+
+\item{subjectSubset}{(optional) Character vector with subjects of interest 
+(available in \code{subjectVar} of \code{data}), NULL by default.}
+
+\item{subsetData}{Data.frame from which subset based on \code{subjectVar}/\code{subsetValue}
+should be extracted. If not specified, \code{data} is used.
+Records from \code{data} are then mapped by the \code{subjectVar} variable.}
 
 \item{subsetVar}{variable of \code{data} used for subsetting}
 

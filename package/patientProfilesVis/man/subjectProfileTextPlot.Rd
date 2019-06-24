@@ -5,11 +5,11 @@
 \title{Create plot of subject profiles for events.}
 \usage{
 subjectProfileTextPlot(data, paramValueVar, paramNameVar = NULL,
-  paramGroupVar = NULL, subsetVar = NULL, subsetValue = NULL,
-  subjectVar = "USUBJID", xLab = "", yLab = "",
-  title = "Subject information", label = title, labelVars = NULL,
-  paramVarSep = " - ", formatReport = subjectProfileReportFormat(),
-  paging = TRUE)
+  paramGroupVar = NULL, subsetData = NULL, subsetVar = NULL,
+  subsetValue = NULL, subjectVar = "USUBJID", subjectSubset = NULL,
+  xLab = "", yLab = "", title = "Subject information",
+  label = title, labelVars = NULL, paramVarSep = " - ",
+  formatReport = subjectProfileReportFormat(), paging = TRUE)
 }
 \arguments{
 \item{data}{data.frame with data}
@@ -41,12 +41,19 @@ If specified, \code{paramValueVar} should be an unique variable.}
 If specified, the parameters will be grouped by this variable in the y-axis, and
 \code{paramValueVar} should be an unique variable.}
 
+\item{subsetData}{Data.frame from which subset based on \code{subjectVar}/\code{subsetValue}
+should be extracted. If not specified, \code{data} is used.
+Records from \code{data} are then mapped by the \code{subjectVar} variable.}
+
 \item{subsetVar}{variable of \code{data} used for subsetting}
 
 \item{subsetValue}{character vector with value(s) of interest to consider for 
 \code{subsetVar}}
 
 \item{subjectVar}{string, variable of \code{data} with subject ID}
+
+\item{subjectSubset}{(optional) Character vector with subjects of interest 
+(available in \code{subjectVar} of \code{data}), NULL by default.}
 
 \item{xLab}{string, label for the x-axis}
 
