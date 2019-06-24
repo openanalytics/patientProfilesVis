@@ -194,44 +194,51 @@ countNLines <- function(x){
 #' @param title logical, has the plot a title?
 #' @param xLab logical, has the plot a label for the x-axis?
 #' @param caption logical, has the plot a caption?
+#' @param paging Logical, if TRUE (by default), the automatic 
+#' paging is enabled, otherwise only one page is used.
 #' @return input \code{data} with additional column 'pagePlot'
 #' containing the page for the plot
 #' @author Laure Cougnaud
 getPageVar <- function(data, var, 
 	typeVar = c("y", "panel"),
 	formatReport = subjectProfileReportFormat(),
-	title = TRUE, xLab = TRUE, caption = TRUE){
-	
-	typeVar <- match.arg(typeVar)
-	
-	# maximum number of lines for the plot
-	inputGetMNL <- formatReport[names(formatReport) != "yLabelWidth"]
-	maxNLines <- do.call(getMaxNLinesCombinePlot, inputGetMNL) - 
-		sum(c(title, xLab, caption)) # let some space for title/x/caption
-	
-	# in case some levels are not present for some subjects
-	# and convert to a factor
-	data[, var] <- droplevels(data[, var], exclude = NULL)
-	
-	# get vector with cumulative number of lines across plots
-	levelsRows <- seq_len(nlevels(data[, var]))
-	
-	# compute number of elements per page
-	nLines <- countNLines(levels(data[, var]))
-	nElPerPage <- floor(maxNLines / 
-		max(max(nLines), switch(typeVar, 'y' = 1, 'panel' = 4))
-	)
+	title = TRUE, xLab = TRUE, caption = TRUE,
+	paging = TRUE){
 
-	# cut the variable by the maximum number of lines
-	numVect <- .bincode(
-		x  = levelsRows, 
-		breaks = c(seq(from = 1, to = max(levelsRows), by = nElPerPage), Inf),
-		right = FALSE
-	)
-	names(numVect) <- levels(data[, var])
+	if(paging){
 	
-	# create a variable with grouping
-	data$pagePlot <- numVect[data[, var]]
+		typeVar <- match.arg(typeVar)
+		
+		# maximum number of lines for the plot
+		inputGetMNL <- formatReport[names(formatReport) != "yLabelWidth"]
+		maxNLines <- do.call(getMaxNLinesCombinePlot, inputGetMNL) - 
+			sum(c(title, xLab, caption)) # let some space for title/x/caption
+		
+		# in case some levels are not present for some subjects
+		# and convert to a factor
+		data[, var] <- droplevels(data[, var], exclude = NULL)
+		
+		# get vector with cumulative number of lines across plots
+		levelsRows <- seq_len(nlevels(data[, var]))
+		
+		# compute number of elements per page
+		nLines <- countNLines(levels(data[, var]))
+		nElPerPage <- floor(maxNLines / 
+			max(max(nLines), switch(typeVar, 'y' = 1, 'panel' = 4))
+		)
+	
+		# cut the variable by the maximum number of lines
+		numVect <- .bincode(
+			x  = levelsRows, 
+			breaks = c(seq(from = 1, to = max(levelsRows), by = nElPerPage), Inf),
+			right = FALSE
+		)
+		names(numVect) <- levels(data[, var])
+		
+		# create a variable with grouping
+		data$pagePlot <- numVect[data[, var]]
+		
+	}else	data$pagePlot <- 1
 	
 	return(data)
 	

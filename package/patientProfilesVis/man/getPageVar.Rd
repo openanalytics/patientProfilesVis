@@ -7,7 +7,7 @@ used for automatic paging of a plot}
 \usage{
 getPageVar(data, var, typeVar = c("y", "panel"),
   formatReport = subjectProfileReportFormat(), title = TRUE,
-  xLab = TRUE, caption = TRUE)
+  xLab = TRUE, caption = TRUE, paging = TRUE)
 }
 \arguments{
 \item{data}{data.frame with data}
@@ -27,6 +27,9 @@ e.g. output of the \code{\link{subjectProfileReportFormat}} function}
 \item{xLab}{logical, has the plot a label for the x-axis?}
 
 \item{caption}{logical, has the plot a caption?}
+
+\item{paging}{Logical, if TRUE (by default), the automatic 
+paging is enabled, otherwise only one page is used.}
 }
 \value{
 input \code{data} with additional column 'pagePlot'

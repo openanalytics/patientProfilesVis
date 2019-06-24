@@ -8,7 +8,8 @@ subjectProfileTextPlot(data, paramValueVar, paramNameVar = NULL,
   paramGroupVar = NULL, subsetVar = NULL, subsetValue = NULL,
   subjectVar = "USUBJID", xLab = "", yLab = "",
   title = "Subject information", label = title, labelVars = NULL,
-  paramVarSep = " - ", formatReport = subjectProfileReportFormat())
+  paramVarSep = " - ", formatReport = subjectProfileReportFormat(),
+  paging = TRUE)
 }
 \arguments{
 \item{data}{data.frame with data}
@@ -64,6 +65,9 @@ in the text when the plots are combined (e.g. if the plot is empty).}
 
 \item{formatReport}{list with parameters used to specify the format of the report,
 e.g. output of the \code{\link{subjectProfileReportFormat}} function}
+
+\item{paging}{Logical, if TRUE (by default), the automatic 
+paging is enabled, otherwise only one page is used.}
 }
 \value{
 list of (across subjects) of list (across modules) of \code{\link[ggplot2]{ggplot2} objects}, 

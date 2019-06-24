@@ -43,7 +43,8 @@ subjectProfileLinePlot <- function(
 	title = paramLab,
 	label = title,
 	labelVars = NULL,
-	formatReport = subjectProfileReportFormat()
+	formatReport = subjectProfileReportFormat(),
+	paging = TRUE
 ){
 	
 	data[, "yVar"] <- data[, paramValueVar]
@@ -82,7 +83,8 @@ subjectProfileLinePlot <- function(
 			formatReport = formatReport,
 			title = !is.null(title),
 			xLab = !is.null(xLab),
-			caption = FALSE
+			caption = FALSE,
+			paging = paging
 		)
 		
 		subject <- unique(dataSubject[, subjectVar])

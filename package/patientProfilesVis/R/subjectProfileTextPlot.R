@@ -59,7 +59,8 @@ subjectProfileTextPlot <- function(
 	label = title,
 	labelVars = NULL,
 	paramVarSep = " - ",
-	formatReport = subjectProfileReportFormat()
+	formatReport = subjectProfileReportFormat(),
+	paging = TRUE
 ){
 	
 	# only keep records of interest
@@ -147,7 +148,8 @@ subjectProfileTextPlot <- function(
 			formatReport = formatReport,
 			title = !is.null(title),
 			xLab = !is.null(xLab) && xLab != "",
-			caption = FALSE
+			caption = FALSE,
+			paging = paging
 		)
 		
 		listPlots <- dlply(dataSubject, "pagePlot", function(dataSubjectPage){
