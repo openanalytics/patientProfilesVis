@@ -6,7 +6,6 @@ documentation/
 /tests/
 *.pdf
 *.tex
-*.png
 *.tar.gz
 *.log
 *.Rcheck
@@ -19,3 +18,4 @@ package/*/tests/figs
 PatientProfile_3067_101.Rmd
 *.out
 .RDuetConsole
+figures_vignette
