@@ -21,6 +21,12 @@
 #' \code{paramVar}, ' - ' by default.
 #' @param timeLabel string with general time label, used
 #' in the footnote for the explanation of the arrow, 'time' by default.
+#' @param timeStartShapeVar,timeEndShapeVar (optional) string with
+#' names of the variables in \code{data} used for symbol shape
+#' for \code{timeStartVar}/\code{timeEndVar}.
+#' @param shapePalette Named vector with shape for \code{timeStartShapeVar}\code{timeEndShapeVar}.
+#' @param shapeLab String with label for \code{timeStartShapeVar}\code{timeEndShapeVar}
+#' @param shapeSize Size for symbols (only used if \code{timeStartShapeVar}/\code{timeEndShapeVar} is specified).
 #' @inheritParams filterData
 #' @inheritParams formatParamVar
 #' @inheritParams formatTimeInterval
@@ -50,12 +56,19 @@ subjectProfileIntervalPlot <- function(
 	yLab = "",
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
 	colorPalette = NULL,
+	timeStartShapeVar = NULL, timeEndShapeVar = NULL,
+	shapePalette = NULL, 
+	shapeLab = toString(unique(getLabelVar(c(timeStartShapeVar, timeEndShapeVar), labelVars = labelVars))),
+	shapeSize = rel(1),
 	title = paramLab,
 	label = title,
 	labelVars = NULL,
 	formatReport = subjectProfileReportFormat(),
 	paging = TRUE
 ){
+	
+	# in case data is a tibble:
+	data <- as.data.frame(data)
 		
 	# fill missing start/end time and extract time limits
 	resMSED <- formatTimeInterval(
@@ -119,6 +132,18 @@ subjectProfileIntervalPlot <- function(
 		if(is.null(colorPalette))	colorPalette <- getGLPGColorPalettePatientProfile(n = 1)
 	}
 	
+	hasShapeVar <- !is.null(timeStartShapeVar) | !is.null(timeEndShapeVar)
+	if(hasShapeVar){
+		if(!is.null(timeStartShapeVar))
+			data[, timeStartShapeVar] <- convertAesVar(data, timeStartShapeVar)
+		if(!is.null(timeEndShapeVar))
+			data[, timeEndShapeVar] <- convertAesVar(data, timeEndShapeVar)
+		if(is.null(shapePalette)){
+			shapes <- unlist(lapply(data[, c(timeStartShapeVar, timeEndShapeVar)], levels))
+			shapePalette <- getGLPGShapePalettePatientProfile(x = shapes)
+		}
+	}
+	
 	listPlots <- dlply(data, subjectVar, function(dataSubject){	
 						
 		subject <- unique(dataSubject[, subjectVar])
@@ -163,37 +188,93 @@ subjectProfileIntervalPlot <- function(
 			# and for records with missing start and/or date: plot segment to have color legend without segment
 			gg <- gg + geomSegmentCustom(data = dataSubjectPage, show.legend = TRUE)	
 			
-			# separate data versus different arrows
-			# Note: in case of missing end date
-			# right-directed triangle not available in shape palette
-			# option 1: use Unicode, but symbol not centered
-			# option 2: draw segment
-			dataPlotByME <- dlply(dataSubjectPage, c("missingStartPlot", "missingEndPlot"))
-		
-			# records with start date and missing end date
-			if("FALSE.TRUE" %in% names(dataPlotByME))
-				gg <- gg + geomSegmentCustom(
-					data = dataPlotByME[["FALSE.TRUE"]],
-					arrow = arrow(length = unit(1, "char"), ends = "last")
-				)
+			if(hasShapeVar){
+				
+				geomPointCustom <- function(gg, xVar, shapeVar){			
+					aesPC <- c(
+						list(x = xVar, y = "yVar", shape = shapeVar), 
+						if(!is.null(colorVar))	list(color = colorVar)
+					)
+					gg + geom_point(
+						data = dataSubjectPage, 
+						mapping = do.call(aes_string, aesPC), 
+						fill = "white",
+						size = shapeSize,
+						position = position_nudge(y = -0.01)
+					)
+				}
+				
+				if(!is.null(timeStartShapeVar))
+					gg <- geomPointCustom(gg, xVar = timeStartVar, shapeVar = timeStartShapeVar)
+				if(!is.null(timeEndShapeVar))
+					gg <- geomPointCustom(gg, xVar = timeEndVar, shapeVar = timeEndShapeVar)
+				
+				if(!is.null(shapePalette))
+					gg <- gg + getAesScaleManual(lab = shapeLab, palette = shapePalette, type = "shape")
+				
+				# lines are included in shape legend
+				gg <- gg + guides(shape = guide_legend(override.aes = list(linetype = NA)))
+				
+				caption <- NULL
+				
+			}else{
+				
+				# separate data versus different arrows
+				# Note: in case of missing end date
+				# right-directed triangle not available in shape palette
+				# option 1: use Unicode, but symbol not centered
+				# option 2: draw segment
+				dataPlotByME <- dlply(dataSubjectPage, c("missingStartPlot", "missingEndPlot"))
 			
-			# records with missing start date but with end date
-			if("TRUE.FALSE" %in% names(dataPlotByME)){
-				gg <- gg + geomSegmentCustom(
-					data = dataPlotByME[["TRUE.FALSE"]],
-					arrow = arrow(length = unit(1, "char"), ends = "first")
-				)
+				# records with start date and missing end date
+				if("FALSE.TRUE" %in% names(dataPlotByME))
+					gg <- gg + geomSegmentCustom(
+						data = dataPlotByME[["FALSE.TRUE"]],
+						arrow = arrow(length = unit(1, "char"), ends = "last")
+					)
+				
+				# records with missing start date but with end date
+				if("TRUE.FALSE" %in% names(dataPlotByME)){
+					gg <- gg + geomSegmentCustom(
+						data = dataPlotByME[["TRUE.FALSE"]],
+						arrow = arrow(length = unit(1, "char"), ends = "first")
+					)
+				}
+				
+				# records with missing start and end dates
+				if("TRUE.TRUE" %in% names(dataPlotByME))
+					gg <- gg + geomSegmentCustom(
+						data = dataPlotByME[["TRUE.TRUE"]],
+						arrow = arrow(length = unit(1, "char"), ends = "both")
+					)
+				
+				
+				# set labels for linetype in legend
+				#		linetypeVals <- c(
+				#			'TRUE.TRUE' = "dotted", 'FALSE.TRUE' = "dashed", 
+				#			'TRUE.FALSE' = "longdash", 'FALSE.FALSE' = "solid"
+				#		)
+				#		linetypeLabels <- c(
+				#			'TRUE.TRUE' = "Missing start/end", 
+				#			'FALSE.TRUE' = "Missing end", 
+				#			'TRUE.FALSE' = "Missing start", 
+				#			'FALSE.FALSE' = "No missing start/end"
+				#		)
+				#		linetypeLims <- c('TRUE.TRUE', 'FALSE.TRUE', 'TRUE.FALSE', 'FALSE.FALSE')
+				#		linetypeLims <- linetypeLims[linetypeLims %in% unique(dataSubject$missingStartEnd)]
+				#		gg <- gg + 
+				#			scale_linetype_manual(
+				#				name = "Missing time", 
+				#				values = linetypeVals[linetypeLims], 
+				#				limits = linetypeLims,
+				#				labels = linetypeLabels[linetypeLims]
+				#			)
+				
+				# remove paramneters without data, set theme and labels
+				caption <- paste0("Arrow represents missing start/end ", timeLabel, ".")
+			
 			}
 			
-			# records with missing start and end dates
-			if("TRUE.TRUE" %in% names(dataPlotByME))
-				gg <- gg + geomSegmentCustom(
-					data = dataPlotByME[["TRUE.TRUE"]],
-					arrow = arrow(length = unit(1, "char"), ends = "both")
-				)
-			
-			# remove paramneters without data, set theme and labels
-			caption <- paste0("Arrow represents missing start/end ", timeLabel, ".")
 			gg <- gg +
 				scale_y_discrete(drop = TRUE) +
 				subjectProfileTheme() +
@@ -202,37 +283,19 @@ subjectProfileIntervalPlot <- function(
 					caption = caption
 				) + theme(plot.caption = element_text(hjust = 0.5))
 		
-			# set labels for linetype in legend
-	#		linetypeVals <- c(
-	#			'TRUE.TRUE' = "dotted", 'FALSE.TRUE' = "dashed", 
-	#			'TRUE.FALSE' = "longdash", 'FALSE.FALSE' = "solid"
-	#		)
-	#		linetypeLabels <- c(
-	#			'TRUE.TRUE' = "Missing start/end", 
-	#			'FALSE.TRUE' = "Missing end", 
-	#			'TRUE.FALSE' = "Missing start", 
-	#			'FALSE.FALSE' = "No missing start/end"
-	#		)
-	#		linetypeLims <- c('TRUE.TRUE', 'FALSE.TRUE', 'TRUE.FALSE', 'FALSE.FALSE')
-	#		linetypeLims <- linetypeLims[linetypeLims %in% unique(dataSubject$missingStartEnd)]
-	#		gg <- gg + 
-	#			scale_linetype_manual(
-	#				name = "Missing time", 
-	#				values = linetypeVals[linetypeLims], 
-	#				limits = linetypeLims,
-	#				labels = linetypeLabels[linetypeLims]
-	#			)
-		
 			# color palette and name for color legend
 			if(!is.null(colorVar)){
-				gg <- gg + getAesScaleManual(lab = colorLab, palette = colorPalette, type = "color")
+				gg <- gg + getAesScaleManual(lab = colorLab, palette = colorPalette, type = "color") +
+					guides(color = guide_legend(override.aes = list(shape = NA)))
 			}else	gg <- gg + scale_color_manual(values = colorPalette)
 					
 			# set time limits for the x-axis
 			# default: FALSE in case time limits are changed afterwards
 			if(!is.null(timeLim))
 				gg <- gg + coord_cartesian(xlim = timeLim, default = TRUE)
-			
+
+			# to deal with custom shape (e.g. partial dates)
+			# use geom_point
 			
 			## extract number of lines
 			
@@ -249,6 +312,14 @@ subjectProfileIntervalPlot <- function(
 					values = unique(dataSubjectPage[, colorVar]), 
 					title = colorLab
 				)
+			if(hasShapeVar){
+				shapes <- unique(unlist(dataSubjectPage[, c(timeStartShapeVar, timeEndShapeVar)]))
+				nLinesLegend <- nLinesLegend +
+					getNLinesLegend(
+						values = shapes, 
+						title = shapeLab
+				)
+			}
 			nLinesPlot <- max(nLinesPlot, nLinesLegend)
 			
 			# in title and axes
@@ -336,6 +407,10 @@ formatTimeInterval <- function(data,
 		!is.null(timeLimStartVar) & !is.null(timeLimEndVar) && 
 		all(c(timeLimStartVar, timeLimEndVar) %in% colnames(timeLimData))
 	
+	# in case data is a tibble:
+	if(!is.null(timeLimData))
+		timeLimData <- as.data.frame(timeLimData)
+
 	data <- ddply(data, subjectVar, function(x){
 				
 		subject <- unique(x[, subjectVar])

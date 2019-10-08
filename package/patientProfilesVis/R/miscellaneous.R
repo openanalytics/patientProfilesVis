@@ -364,7 +364,7 @@ formatParamVar <- function(data,
 	res <- if(!is.null(paramVar)){
 		
 		paramVarVect <- if(!is.factor(data[, paramVar])){	
-			factor(data[, paramVar])
+			as.factor(data[, paramVar])
 		}else{
 			data[, paramVar]
 		}
@@ -484,6 +484,10 @@ filterData <- function(data,
 	subjectVar = "USUBJID",
 	subjectSubset = NULL
 ){	
+	
+	# in case data is a tibble:
+	if(!is.null(subsetData))
+		subsetData <- as.data.frame(subsetData)
 	
 	# wrapper function to extract subset of interest
 	getDataSubset <- function(subsetData){

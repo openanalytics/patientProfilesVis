@@ -47,6 +47,10 @@ subjectProfileLinePlot <- function(
 	paging = TRUE
 ){
 	
+	
+	# in case data is a tibble:
+	data <- as.data.frame(data)
+	
 	data[, "yVar"] <- data[, paramValueVar]
 	
 	# remove records without parameter or time variables
