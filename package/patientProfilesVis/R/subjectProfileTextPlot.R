@@ -63,6 +63,9 @@ subjectProfileTextPlot <- function(
 	paging = TRUE
 ){
 	
+	# in case data is a tibble:
+	data <- as.data.frame(data)
+	
 	# only keep records of interest
 	data <- filterData(
 		data = data, 

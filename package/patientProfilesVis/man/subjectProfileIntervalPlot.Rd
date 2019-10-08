@@ -14,9 +14,12 @@ subjectProfileIntervalPlot(data, paramVar, paramVarSep = " - ",
   rangeSimilarStartEnd = NULL, xLab = paste(getLabelVar(c(timeStartVar,
   timeEndVar), labelVars = labelVars), collapse = "/"), yLab = "",
   colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars =
-  labelVars), colorPalette = NULL, title = paramLab, label = title,
-  labelVars = NULL, formatReport = subjectProfileReportFormat(),
-  paging = TRUE)
+  labelVars), colorPalette = NULL, timeStartShapeVar = NULL,
+  timeEndShapeVar = NULL, shapePalette = NULL,
+  shapeLab = toString(unique(getLabelVar(c(timeStartShapeVar,
+  timeEndShapeVar), labelVars = labelVars))), shapeSize = rel(1),
+  title = paramLab, label = title, labelVars = NULL,
+  formatReport = subjectProfileReportFormat(), paging = TRUE)
 }
 \arguments{
 \item{data}{data.frame with data}
@@ -76,6 +79,16 @@ By default, a thousandth of the range of \code{timeLim}
 \item{colorLab}{string, label for \code{colorVar}}
 
 \item{colorPalette}{named vector with color for \code{colorVar}}
+
+\item{timeStartShapeVar, timeEndShapeVar}{(optional) string with
+names of the variables in \code{data} used for symbol shape
+for \code{timeStartVar}/\code{timeEndVar}.}
+
+\item{shapePalette}{Named vector with shape for \code{timeStartShapeVar}\code{timeEndShapeVar}.}
+
+\item{shapeLab}{String with label for \code{timeStartShapeVar}\code{timeEndShapeVar}}
+
+\item{shapeSize}{Size for symbols (only used if \code{timeStartShapeVar}/\code{timeEndShapeVar} is specified).}
 
 \item{title}{string, title for the plot}
 
