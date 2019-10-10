@@ -5,6 +5,7 @@
 <<optionsChunks, echo = FALSE, cache = FALSE, message = FALSE, warning = FALSE>>=
 
 	library(knitr)
+	library(grDevices) # for cairo_pdf
 	
 	outputDirFig <- file.path(inputParameters$outputDir, "figures")
 	if(!dir.exists(outputDirFig))	dir.create(outputDirFig, recursive = TRUE)
@@ -157,7 +158,8 @@
 			msg <- paste("Export profile:", names(listPlotsPerSubject)[i])
 			if(verbose)	message(msg)
 			if(inputParameters$shiny)	incProgress(detail = msg)
-			pdf(fileNames[i], width = textWidthInches, height = figHeightInches[i])
+			# use cairo_pdf instead of pdf to support unicode symbols
+			cairo_pdf(fileNames[i], width = textWidthInches, height = figHeightInches[i])
 			print(listPlotsPerSubject[[i]])
 			tmp <- dev.off()
 		})
