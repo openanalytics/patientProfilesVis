@@ -4,10 +4,13 @@
 \alias{getXLimSubjectProfilePlots}
 \title{Get limits for a list of plots.}
 \usage{
-getXLimSubjectProfilePlots(listPlots)
+getXLimSubjectProfilePlots(listPlots, align = TRUE)
 }
 \arguments{
 \item{listPlots}{list of list of \code{subjectProfile[X]Plot} plots}
+
+\item{align}{Logical, if TRUE (by default) the plots are aligned,
+the limits of all plots are combined to extract the limits.}
 }
 \value{
 vector of length 2 with limits for the x-axis

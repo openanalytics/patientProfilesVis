@@ -4,8 +4,8 @@
 \alias{createSubjectProfileReport}
 \title{Create subject profile report.}
 \usage{
-createSubjectProfileReport(listPlots, timeLim = NULL, refLines = NULL,
-  refLinesData = NULL, refLinesTimeVar = NULL,
+createSubjectProfileReport(listPlots, timeLim = NULL, timeAlign = TRUE,
+  refLines = NULL, refLinesData = NULL, refLinesTimeVar = NULL,
   refLinesLabelVar = NULL, bookmarkData = NULL, bookmarkVar = NULL,
   subjectSortData = bookmarkData, subjectSortVar = bookmarkVar,
   subjectVar = "USUBJID", subjectSubset = NULL,
@@ -29,6 +29,10 @@ Note that this doesn't modify the geoms of the plots, it only extends the
 axis range. So for interval module(s) if the specified \code{timeLim}
 is smaller than the time limits in the input plot, no arrows are created in case than
 the time goes above/below specified \code{timeLim} (the segment is cut).}
+
+\item{timeAlign}{Logical, if TRUE (by default)
+the different plots are horizontally aligned.
+If set to FALSE, each plot has its own time-limits.}
 
 \item{refLines}{(optional) nested list with details for reference line(s).
 Each sublist contains:
