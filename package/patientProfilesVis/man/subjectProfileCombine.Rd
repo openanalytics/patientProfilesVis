@@ -5,9 +5,9 @@
 \title{Combine subject profile plots.}
 \usage{
 subjectProfileCombine(listPlots,
-  timeLim = getXLimSubjectProfilePlots(listPlots),
-  subjectVar = "USUBJID", maxNLines = NULL, refLines = NULL,
-  refLinesData = NULL, refLinesTimeVar = NULL,
+  timeLim = getXLimSubjectProfilePlots(listPlots, align = timeAlign),
+  timeAlign = TRUE, subjectVar = "USUBJID", maxNLines = NULL,
+  refLines = NULL, refLinesData = NULL, refLinesTimeVar = NULL,
   refLinesLabelVar = NULL, shiny = FALSE, verbose = FALSE,
   nCores = 1)
 }
@@ -20,6 +20,10 @@ In this case, the \code{shiny} package should be available.}
 \item{timeLim}{(optional) vector of length 2 with time limits (x-axis)
 If not specified, extracted from the minimum \code{timeStartVar} 
 and maximum \code{timeEndVar} per subject.}
+
+\item{timeAlign}{Logical, if TRUE (by default)
+the different plots are horizontally aligned.
+If set to FALSE, each plot has its own time-limits.}
 
 \item{subjectVar}{string, variable of \code{data} with subject ID}
 

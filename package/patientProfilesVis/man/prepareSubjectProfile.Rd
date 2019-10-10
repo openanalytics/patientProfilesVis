@@ -4,8 +4,8 @@
 \alias{prepareSubjectProfile}
 \title{prepare list of subject profile (s) to be combined with the \code{\link{combineVerticallyGGplot}}}
 \usage{
-prepareSubjectProfile(..., labels, timeLim = NULL, refLines = NULL,
-  refLinesData = NULL, refLinesTimeVar = NULL,
+prepareSubjectProfile(..., labels, timeLim = NULL, timeAlign = TRUE,
+  refLines = NULL, refLinesData = NULL, refLinesTimeVar = NULL,
   refLinesLabelVar = NULL, subjectVar = "USUBJID")
 }
 \arguments{
@@ -16,6 +16,10 @@ prepareSubjectProfile(..., labels, timeLim = NULL, refLines = NULL,
 \item{timeLim}{(optional) vector of length 2 with time limits (x-axis)
 If not specified, extracted from the minimum \code{timeStartVar} 
 and maximum \code{timeEndVar} per subject.}
+
+\item{timeAlign}{Logical, if TRUE (by default)
+the different plots are horizontally aligned.
+If set to FALSE, each plot has its own time-limits.}
 
 \item{refLines}{(optional) nested list with details for reference line(s).
 Each sublist contains:

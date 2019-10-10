@@ -11,10 +11,11 @@ subjectProfileIntervalPlot(data, paramVar, paramVarSep = " - ",
   subjectVar = "USUBJID", subjectSubset = NULL, subsetData = NULL,
   subsetVar = NULL, subsetValue = NULL, timeLim = NULL,
   timeLimData = NULL, timeLimStartVar = NULL, timeLimEndVar = NULL,
-  rangeSimilarStartEnd = NULL, xLab = paste(getLabelVar(c(timeStartVar,
-  timeEndVar), labelVars = labelVars), collapse = "/"), yLab = "",
-  colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars =
-  labelVars), colorPalette = NULL, timeStartShapeVar = NULL,
+  timeAlign = TRUE, rangeSimilarStartEnd = NULL,
+  xLab = paste(getLabelVar(c(timeStartVar, timeEndVar), labelVars =
+  labelVars), collapse = "/"), yLab = "", colorVar = NULL,
+  colorLab = getLabelVar(colorVar, labelVars = labelVars),
+  colorPalette = NULL, timeStartShapeVar = NULL,
   timeEndShapeVar = NULL, shapePalette = NULL,
   shapeLab = toString(unique(getLabelVar(c(timeStartShapeVar,
   timeEndShapeVar), labelVars = labelVars))), shapeSize = rel(1),
@@ -64,6 +65,10 @@ and maximum \code{timeEndVar} per subject.}
 \item{timeLimStartVar}{string, variable of \code{timeLimData} with time start}
 
 \item{timeLimEndVar}{string, variable of \code{timeLimData} with time end}
+
+\item{timeAlign}{Logical, if TRUE (by default)
+the different plots are horizontally aligned.
+If set to FALSE, each plot has its own time-limits.}
 
 \item{rangeSimilarStartEnd}{numeric, if a record has the same
 \code{timeStartVar} and \code{timeEndVar}, what should be the range of the segment?
