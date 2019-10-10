@@ -12,7 +12,8 @@
 #' @export
 subjectProfileCombine <- function(
 	listPlots, 
-	timeLim = getXLimSubjectProfilePlots(listPlots),
+	timeLim = getXLimSubjectProfilePlots(listPlots, align = timeAlign),
+	timeAlign = TRUE,
 	subjectVar = "USUBJID",
 	maxNLines = NULL,
 	refLines = NULL,
@@ -60,7 +61,8 @@ subjectProfileCombine <- function(
 					timeLim = timeLim,
 					refLines = refLines, refLinesData = refLinesData, 
 					refLinesTimeVar = refLinesTimeVar, refLinesLabelVar = refLinesLabelVar,
-					subjectVar = subjectVar
+					subjectVar = subjectVar,
+					timeAlign = timeAlign
 				)
 			),
 			listPlotsAll
@@ -109,6 +111,7 @@ prepareSubjectProfile <- function(
 	..., 
 	labels, 
 	timeLim = NULL, 
+	timeAlign = TRUE,
 	refLines = NULL,
 	refLinesData = NULL,
 	refLinesTimeVar = NULL,

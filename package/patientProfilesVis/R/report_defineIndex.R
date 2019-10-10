@@ -47,7 +47,7 @@ defineIndex <- function(
 			stop("Multiple information available for subject: ", unique(x[, subjectVar]), 
 				" for index construction.")
 		paste(
-			paste0("\\\\index[", names(indexX), "]{", indexX, "}"),
+			paste0("\\index[", names(indexX), "]{", indexX, "}"),
 			collapse = " "
 		)
 	})

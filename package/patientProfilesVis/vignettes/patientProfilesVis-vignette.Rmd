@@ -326,8 +326,10 @@ this time interval visualization
 
 ```
 
-By default, in case of missing values the minimum/maximum time range for the
-specific subject is used, and across subjects if all missing. This results
+### Missing starting/end time {#intervalMissingStartEnd}
+
+By default, in case of missing values, the minimum/maximum time range for the
+specific subject is used, and across subjects if all missing. This might result
 in big time range for this plot.
 
 The time limits of the concomitant medications is quite large compared to the
@@ -433,6 +435,50 @@ in Unicode format in hexadecimal (see [List of unicode symbols](https://en.wikip
 	print(aePlotsShape[[1]][[1]])
 
 ```
+
+### Non-alignment across subjects {#subjectIntervalTimeAlign}
+
+By default, the visualizations created with the `subjectProfileIntervalPlot`
+are aligned in the time-axis.
+
+To obtain visualization which don't align, the parameter: `timeAlign` is set to FALSE.
+
+```{r exampleIntervalModule-cm-timeAlign-FALSE}
+
+	cmPlotsNotAligned <- subjectProfileIntervalPlot(
+		data = SDTMDataPelican$CM,
+		paramVar = c("CMINDC", "CMTRT", "CMDOSTXT", "CMDOSU", "CMROUTE", "CMDOSFRQ"),
+		timeStartVar = "CMSTDY",
+		timeEndVar = "CMENDY",
+		paramGroupVar = "CMINDC",
+		colorVar = "CMINDC",
+		labelVars = labelVarsSDTMPelican,
+		title = "Concomitant medications",
+		timeAlign = FALSE
+	)
+
+```
+
+In this case, each visualization contains specific time-limits.
+
+```{r exampleIntervalModule-cm-timeAlign-FALSE-include-1, echo = FALSE, fig.height = attributes(cmPlotsNotAligned[[2]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlotsNotAligned)[2], "with custom shape specification")}
+
+	print(cmPlotsNotAligned[[2]][[1]])
+
+```
+
+Please note that if all start/end times are missing for one subject,
+the minimum/maximum is taken across subjects (see section [#intervalMissingStartEnd]
+on how to customize the specification of time limits).
+
+```{r exampleIntervalModule-cm-timeAlign-FALSE-include-2, echo = FALSE, fig.height = attributes(cmPlotsNotAligned[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlotsNotAligned)[1], "with custom shape specification")}
+
+	print(cmPlotsNotAligned[[1]][[1]])
+
+```
+
+When building the report, the same parameter should be used 
+(see section [Report creation](#createSubjectProfileReportTimeAlign)).
 
 ## Event module
 
@@ -833,6 +879,47 @@ subject.
 		# general
 		listPlots = list(dmPlots, mhPlots, exPlots, aePlots, lbPlotsColor),
 		outputFile = "subjectProfile_SDTM_referenceLinesFromSV.pdf",
+		# reference line(s)
+		refLinesData = SDTMDataPelican$SV,
+		refLinesTimeVar = "SVSTDY",
+		refLinesLabelVar = "VISIT",
+		# bookmark(s)
+		bookmarkData = SDTMDataPelican$DM,
+		bookmarkVar = c("SEX", "ARM"),
+		labelVars = attr(SDTMDataPelican, "labelVars"),
+		exportFigures = TRUE
+	)
+
+```
+
+## Time non-alignment across domains {#createSubjectProfileReportTimeAlign}
+
+To not align the different visualizations in the x-axis, e.g.
+when combining a visualization displaying concomitant medications
+with historical data with a high time range and 
+visualization of events occuring only during the study 
+timeframe; or for modules with different time units:
+the `createSubjectProfileReport` should be called
+with the parameter `timeAlign` set to `FALSE`.
+
+Please note that the corresponding interval module(s)
+should also be created with the parameter: `timeAlign = FALSE`
+in the function `subjectProfileIntervalPlot` call 
+(see section [Interval module](#subjectIntervalTimeAlign)).
+
+```{r createReportWithAllModules, eval = FALSE}
+
+	# extract patients with CM starting early/late
+	CMWithStartEnd <- subset(SDTMDataPelican$CM, !is.na(CMSTDY))
+	subjectSubset <- CMWithStartEnd[c(which.max(CMWithStartEnd$CMSTDY), which.min(CMWithStartEnd$CMSTDY)), "USUBJID"]
+	
+	# create report
+	createSubjectProfileReport(
+		# general
+		listPlots = list(dmPlots, cmPlotsNotAligned, exPlots, aePlots, lbPlotsColor),
+		subset = subjectSubset,
+		timeAlign = FALSE,
+		outputFile = "subjectProfile_SDTM_referenceLinesFromSV_nonAlign.pdf",
 		# reference line(s)
 		refLinesData = SDTMDataPelican$SV,
 		refLinesTimeVar = "SVSTDY",
