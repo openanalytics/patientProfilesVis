@@ -27,6 +27,9 @@
 #' @param shapePalette Named vector with shape for \code{timeStartShapeVar}\code{timeEndShapeVar}.
 #' @param shapeLab String with label for \code{timeStartShapeVar}\code{timeEndShapeVar}
 #' @param shapeSize Size for symbols (only used if \code{timeStartShapeVar}/\code{timeEndShapeVar} is specified).
+#' @param timeAlign Logical, if TRUE (by default)
+#' the different plots are horizontally aligned.
+#' If set to FALSE, each plot has its own time-limits.
 #' @inheritParams filterData
 #' @inheritParams formatParamVar
 #' @inheritParams formatTimeInterval
@@ -51,6 +54,7 @@ subjectProfileIntervalPlot <- function(
 	subjectVar = "USUBJID", subjectSubset = NULL,
 	subsetData = NULL, subsetVar = NULL, subsetValue = NULL, 
 	timeLim = NULL, timeLimData = NULL, timeLimStartVar = NULL, timeLimEndVar = NULL,
+	timeAlign = TRUE,
 	rangeSimilarStartEnd = NULL,
 	xLab = paste(getLabelVar(c(timeStartVar, timeEndVar), labelVars = labelVars), collapse = "/"),
 	yLab = "",
@@ -291,7 +295,7 @@ subjectProfileIntervalPlot <- function(
 					
 			# set time limits for the x-axis
 			# default: FALSE in case time limits are changed afterwards
-			if(!is.null(timeLim))
+			if(!is.null(timeLim) & timeAlign)
 				gg <- gg + coord_cartesian(xlim = timeLim, default = TRUE)
 
 			# to deal with custom shape (e.g. partial dates)

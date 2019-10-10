@@ -48,6 +48,7 @@
 createSubjectProfileReport <- function(
 	listPlots, 
 	timeLim = NULL,
+	timeAlign = TRUE,
 	refLines = NULL,
 	refLinesData = NULL,
 	refLinesTimeVar = NULL,
@@ -115,13 +116,13 @@ createSubjectProfileReport <- function(
 	
 	if(is.null(timeLim)){
 		if(verbose)	message("Get limits x-axis.")
-		timeLim <- getXLimSubjectProfilePlots(listPlots)
+		timeLim <- getXLimSubjectProfilePlots(listPlots, align = timeAlign)
 	}
 	
 	# combine plots
 	listPlotsPerSubjectList <- subjectProfileCombine(
 		listPlots, 
-		timeLim = timeLim, 
+		timeLim = timeLim, timeAlign = timeAlign,
 		refLines = refLines, refLinesData = refLinesData, 
 		refLinesTimeVar = refLinesTimeVar, refLinesLabelVar = refLinesLabelVar,
 		subjectVar = subjectVar,
@@ -214,38 +215,46 @@ createSubjectProfileReport <- function(
 #' and if empty for all modules: from the maximal range
 #' of the x-coordinates across all plots.
 #' @param listPlots list of list of \code{subjectProfile[X]Plot} plots
+#' @param align Logical, if TRUE (by default) the plots are aligned,
+#' the limits of all plots are combined to extract the limits.
 #' @return vector of length 2 with limits for the x-axis
 #' @importFrom ggplot2 ggplot_build
 #' @author Laure Cougnaud
-getXLimSubjectProfilePlots <- function(listPlots){
+getXLimSubjectProfilePlots <- function(listPlots, align = TRUE){
 	
-	# in case the time limits were specified for a specific plot
-	timeLimPlots <- unlist(lapply(listPlots, function(x) attributes(x)$metaData$timeLim))
-	if(!is.null(timeLimPlots)){
-		timeLim <- range(timeLimPlots, na.rm = TRUE)
-	}else{
-		
-		listPlots1 <- unlist(unlist(listPlots, recursive = FALSE), recursive = FALSE)
-		
-		xlimList <- lapply(listPlots1, function(gg)
-			if(!inherits(gg, "subjectProfileTextPlot"))
-				range(
-					unlist(
-					 lapply(ggplot_build(gg)$data, function(dataPlot) 
-						c(dataPlot$x, if("xend" %in% colnames(dataPlot))	dataPlot$xend)
+	if(align){
+	
+		# in case the time limits were specified for a specific plot
+		timeLimPlots <- unlist(lapply(listPlots, function(x) attributes(x)$metaData$timeLim))
+		if(!is.null(timeLimPlots)){
+			
+			timeLim <- range(timeLimPlots, na.rm = TRUE)
+			
+		}else{
+			
+			listPlots1 <- unlist(unlist(listPlots, recursive = FALSE), recursive = FALSE)
+			
+			xlimList <- lapply(listPlots1, function(gg)
+				if(!inherits(gg, "subjectProfileTextPlot"))
+					range(
+						unlist(
+						 lapply(ggplot_build(gg)$data, function(dataPlot) 
+							c(dataPlot$x, if("xend" %in% colnames(dataPlot))	dataPlot$xend)
+						)
 					)
 				)
 			)
-		)
-		
-		xlimVect <- unlist(xlimList)
-		
-		timeLim <- if(!is.null(xlimVect)){
-			range(xlimVect, na.rm = TRUE)
-		}else{c(-Inf, Inf)}
-
-	}
+			
+			xlimVect <- unlist(xlimList)
+			
+			timeLim <- if(!is.null(xlimVect)){
+				range(xlimVect, na.rm = TRUE)
+			}else{c(-Inf, Inf)}
 	
+		}
+		
+	}else	timeLim <- NULL
+		
 	return(timeLim)
 	
 }
