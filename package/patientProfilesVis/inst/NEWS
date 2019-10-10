@@ -1,6 +1,7 @@
 0.4.0
     o createSubjectProfileReport/subjectProfileIntervalPlot: timeAlign
     o defineIndex: fix index specification
+    o report: support unicode font (use cairo_pdf instead of pdf)
 0.3.0
     o subjectProfileIntervalPlot: new parameters: timeStartShapeVar/timeEndShapeVar
     o fix issue tibble: convert input data as data.frame
