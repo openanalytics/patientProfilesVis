@@ -12,9 +12,9 @@ createSubjectProfileReport(listPlots, timeLim = NULL, timeAlign = TRUE,
   subjectSubsetData = NULL, subjectSubsetVar = NULL,
   subjectSubsetValue = NULL, subset = NULL,
   outputFile = "subjectProfile.pdf", exportFigures = FALSE,
-  labelVars = NULL, maxNLines = NULL, shiny = FALSE,
-  formatReport = subjectProfileReportFormat(), verbose = FALSE,
-  nCores = 1)
+  reportPerSubject = FALSE, labelVars = NULL, maxNLines = NULL,
+  shiny = FALSE, formatReport = subjectProfileReportFormat(),
+  verbose = FALSE, nCores = 1)
 }
 \arguments{
 \item{listPlots}{nested list of plots, as returned by the \code{\link{subjectProfileTextPlot}},
@@ -82,6 +82,9 @@ of interest to select subjects on.}
 \item{exportFigures}{logical, if TRUE (FALSE by default) the figures are also exported
 in png format in a 'figures' folder}
 
+\item{reportPerSubject}{Logical, if TRUE (FALSE by default)
+export a subject profile report by subject.}
+
 \item{labelVars}{named string with variable labels (names are the variable code)}
 
 \item{maxNLines}{maximum number of lines for a combined plot,
@@ -99,8 +102,9 @@ e.g. output of the \code{\link{subjectProfileReportFormat}} function}
 the package \code{parallel} is required.}
 }
 \value{
-no returned value, the report is created at the location
-specified by \code{outputFile}
+The path(s) of the report(s) is returned invisibly, and the
+the report is created at the location
+specified by \code{outputFile}.
 }
 \description{
 By default all subjects available in at least one module of \code{listPlots} are considered.
