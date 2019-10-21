@@ -1,3 +1,5 @@
+0.5.0
+    o createSubjectProfileReport: reportPerSubject and extend outputFile for different directory
 0.4.0
     o createSubjectProfileReport/subjectProfileIntervalPlot: timeAlign
     o defineIndex: fix index specification

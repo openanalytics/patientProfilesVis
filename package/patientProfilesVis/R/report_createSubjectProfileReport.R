@@ -10,9 +10,6 @@
 #' @param listPlots nested list of plots, as returned by the \code{\link{subjectProfileTextPlot}},
 #' \code{\link{subjectProfileEventPlot}}, \code{\link{subjectProfileIntervalPlot}} or
 #' \code{\link{subjectProfileLinePlot}} functions.
-#' @param outputFile string, path to the output report
-#' @param exportFigures logical, if TRUE (FALSE by default) the figures are also exported
-#' in png format in a 'figures' folder
 #' @param bookmarkData data.frame with data containing information on which the index should be based
 #' @param bookmarkVar variable(s) of \code{data} of interest for the index
 #' @param subjectSortData data.frame with data containing information on how the subjects 
@@ -36,14 +33,17 @@
 #' axis range. So for interval module(s) if the specified \code{timeLim}
 #' is smaller than the time limits in the input plot, no arrows are created in case than
 #' the time goes above/below specified \code{timeLim} (the segment is cut).
+#' @param reportPerSubject Logical, if TRUE (FALSE by default)
+#' export a subject profile report by subject.
 #' @inheritParams subjectProfileCombine
-#' @inheritParams defineIndex
 #' @inheritParams subjectProfileIntervalPlot
-#' @return no returned value, the report is created at the location
-#' specified by \code{outputFile}
+#' @inheritParams subjectProfileExport
+#' @return The path(s) of the report(s) is returned invisibly, and the
+#' the report is created at the location
+#' specified by \code{outputFile}.
 #' @author Laure Cougnaud
-#' @importFrom tools texi2pdf file_path_sans_ext
 #' @importFrom plyr ddply
+#' @importFrom tools file_ext file_path_sans_ext
 #' @export
 createSubjectProfileReport <- function(
 	listPlots, 
@@ -65,6 +65,7 @@ createSubjectProfileReport <- function(
 	subset = NULL,
 	outputFile = "subjectProfile.pdf",
 	exportFigures = FALSE,
+	reportPerSubject = FALSE,
 	labelVars = NULL,
 	maxNLines = NULL,
 	shiny = FALSE,
@@ -157,20 +158,91 @@ createSubjectProfileReport <- function(
 		)
 	}
 	
-	msgProgress <- "Create subject profile report."
-	if(verbose)	message(msgProgress)
-	if(shiny)	incProgress(0.3, detail = msgProgress)
+	names(listPlotsPerSubjectList) <- sub("/", "-", names(listPlotsPerSubjectList))
+		
+	if(!reportPerSubject){
+		
+		msgProgress <- "Create subject profile report."
+		if(verbose)	message(msgProgress)
+		if(shiny)	incProgress(0.3, detail = msgProgress)
+		
+		subjectProfileExport(
+			listPlotsSubject = listPlotsPerSubjectList, 
+			outputFile = outputFile, 
+			index = index, 
+			formatReport = formatReport, 
+			shiny = shiny, verbose = verbose, nCores = nCores,
+			exportFigures = exportFigures
+		)
+		
+		res <- outputFile
+		
+	}else{
+		
+		res <- outputFiles <- sapply(names(listPlotsPerSubjectList), function(subject){
+			paste0(
+				file_path_sans_ext(outputFile), 
+				"-", subject, ".", file_ext(outputFile)
+			)		
+		})
+		
+		for(subject in names(listPlotsPerSubjectList)){
+		
+			msgProgress <- paste("Create subject profile report for subject:", subject)
+			if(verbose)	message(msgProgress)
+			if(shiny)	incProgress(0.3, detail = msgProgress)
+			
+			subjectProfileExport(
+				listPlotsSubject = listPlotsPerSubjectList[subject], 
+				outputFile = outputFiles[subject], 
+				index = NULL, 
+				formatReport = formatReport, 
+				shiny = shiny, verbose = verbose, nCores = nCores,
+				exportFigures = exportFigures
+			)
+		
+		}
+		
+	}
 	
-	pathTemplate <- getPathTemplate("subjectProfile.Rnw")
+	invisible(res)
 	
+}
+
+#' Create report
+#' @param listPlotsSubject List of plots for each subject 
+#' @param outputFile string, path to the output report
+#' @param index Index, output from \code{\link{defineIndex}}
+#' @param exportFigures logical, if TRUE (FALSE by default) the figures are also exported
+#' in png format in a 'figures' folder
+#' @return No returned value, the plots are exported to \code{outputDir}
+#' @inheritParams defineIndex
+#' @inheritParams subjectProfileCombine 
+#' @inheritParams subjectProfileIntervalPlot
+#' @importFrom tools texi2pdf file_path_sans_ext
+#' @importFrom knitr knit
+#' @author Laure Cougnaud
+subjectProfileExport <- function(
+	listPlotsSubject, 
+	outputFile = "subjectProfile.pdf",
+	index = NULL, 
+	formatReport = subjectProfileReportFormat(), 
+	shiny = FALSE, verbose = FALSE, nCores = NULL,
+	exportFigures = FALSE){
+
 	outputDir <- normalizePath(dirname(outputFile), winslash = "/")
+	if(!dir.exists(outputDir))	dir.create(outputDir, recursive = TRUE)
+
+	pathTemplate <- getPathTemplate("subjectProfile.Rnw")
+	pathTemplateWd <- file.path(outputDir, basename(pathTemplate))
+	tmp <- file.copy(from = pathTemplate, to = pathTemplateWd, overwrite = TRUE)
+	pathTexFile <- paste0(file_path_sans_ext(pathTemplateWd), ".tex")
 	
 	## input parameters for the child document:
 	# save them in a new environment, passed to the 'knitr::knit' function
 	inputParametersEnv <- new.env()
 	inputParameters <- list(
-		listPlotsPerSubjectList = listPlotsPerSubjectList,
-		outputDir = outputDir,
+		listPlotsPerSubjectList = listPlotsSubject,
 		index = index,
 		formatReport = formatReport,
 		shiny = shiny,
@@ -181,7 +253,9 @@ createSubjectProfileReport <- function(
 	
 	## convert Rnw -> tex
 	outputFileKnitr <- knitr::knit(
-		input = pathTemplate, quiet = !verbose,
+		input = pathTemplateWd, 
+		output = pathTexFile,
+		quiet = !verbose,
 		envir = inputParametersEnv
 	)
 	
@@ -192,16 +266,17 @@ createSubjectProfileReport <- function(
 	setwd(outputDir)	
 	
 	# convert to pdf
-	texi2pdf(file = outputFileKnitr, clean = TRUE)
+	texFile <- basename(pathTexFile)
+	texi2pdf(file = texFile, clean = TRUE)
 	
 	# rename output file
-	outputTexi2pdf <- paste0(file_path_sans_ext(outputFileKnitr), ".pdf")
-	file.rename(from = outputTexi2pdf, to = outputFile)
+	outputTexi2pdf <- paste0(file_path_sans_ext(texFile), ".pdf")
+	file.rename(from = outputTexi2pdf, to = basename(outputFile))
 	
 	# clean output directory
-	tmp <- file.remove(outputFileKnitr) # remove tex file
-	if(!exportFigures)
-		unlink(file.path(dirname(outputFile), "figures/"), recursive = TRUE)
+	tmp <- file.remove(c(basename(pathTemplateWd), texFile)) # remove tex file
+	
+	if(!exportFigures)	unlink("figures/", recursive = TRUE)
 	
 	setwd(oldwd)
 	
