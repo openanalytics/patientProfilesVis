@@ -11,7 +11,7 @@ subjectProfileIntervalPlot(data, paramVar, paramVarSep = " - ",
   subjectVar = "USUBJID", subjectSubset = NULL, subsetData = NULL,
   subsetVar = NULL, subsetValue = NULL, timeLim = NULL,
   timeLimData = NULL, timeLimStartVar = NULL, timeLimEndVar = NULL,
-  timeAlign = TRUE, rangeSimilarStartEnd = NULL,
+  timeTrans = NULL, timeAlign = TRUE, rangeSimilarStartEnd = NULL,
   xLab = paste(getLabelVar(c(timeStartVar, timeEndVar), labelVars =
   labelVars), collapse = "/"), yLab = "", colorVar = NULL,
   colorLab = getLabelVar(colorVar, labelVars = labelVars),
@@ -65,6 +65,9 @@ and maximum \code{timeEndVar} per subject.}
 \item{timeLimStartVar}{string, variable of \code{timeLimData} with time start}
 
 \item{timeLimEndVar}{string, variable of \code{timeLimData} with time end}
+
+\item{timeTrans}{ggplot2 transformation (see \code{\link[scales]{trans_new}}),
+e.g. produced by the \code{\link{getTimeTrans}} function.}
 
 \item{timeAlign}{Logical, if TRUE (by default)
 the different plots are horizontally aligned.

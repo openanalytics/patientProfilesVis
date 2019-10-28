@@ -1,5 +1,6 @@
 0.6.0
     o subjectProfileTextPlot: table format
+    o custom 'trans', getTimeTrans
 0.5.0
     o createSubjectProfileReport: reportPerSubject and extend outputFile for different directory
 0.4.0

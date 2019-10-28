@@ -172,15 +172,14 @@ Information are displayed as a table format by setting the `table` parameter to 
 	
 ```
 
-By default, the widths of the columns of the table are optimized based on the column content,
-but custom widths can be specified via the `colWidth` parameter.
-
-```{r exampleTextModule-tableFormat-include, echo = FALSE, fig.height = attributes(aeListingPlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Adverse event listing with the 'subjectProfileTextPlot' function for patient:", names(aeListingPlots)[1])}
+```{r exampleTextModule-tableFormat-include, echo = FALSE, fig.height = attributes(aeListingPlots[[subjID]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Adverse event listing with the 'subjectProfileTextPlot' function for patient:", subjID)}
 
 	print(aeListingPlots[[subjID]][[1]])
 
 ```
 
+By default, the widths of the columns of the table are optimized based on the column content, 
+but custom widths can be specified via the `colWidth` parameter.
 
 ```{r exampleTextModule-tableFormat-customWidth}
 
@@ -190,12 +189,12 @@ but custom widths can be specified via the `colWidth` parameter.
 		paramGroupVar = "AESTDTC",
 		labelVars = labelVarsSDTMPelican,
 		table = TRUE,
-		colWidth = c(0.1, 0.1, 0.1, 0.1, 0.4, 0.05, 0.05, 0.05, 0.05)
+		colWidth = c(0.1, 0.1, 0.1, 0.1, 0.3, 0.05, 0.05, 0.1, 0.1)
 	)
 	
 ```
 
-```{r exampleTextModule-tableFormat-customWidth-include, echo = FALSE, fig.height = attributes(aeListingPlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Adverse event listing with the 'subjectProfileTextPlot' function for patient:", names(aeListingPlots)[1])}
+```{r exampleTextModule-tableFormat-customWidth-include, echo = FALSE, fig.height = attributes(aeListingPlots[[subjID]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Adverse event listing with the 'subjectProfileTextPlot' function for patient:", subjID)}
 
 	print(aeListingPlots[[subjID]][[1]])
 
@@ -850,6 +849,42 @@ corresponding numeric variable can be used for sorting:
 
 ```
 
+# Time transformation
+
+For certain module, it might be of interest to transform the time axis to e.g.
+'zoom' in the study timeframe.
+The `timeTrans` parameter is used to specify a custom transformation of the time-axis.
+
+The `getTimeTrans` provides convenient transformations: 'asinh' and 'asinh' only for
+negative relative time.
+The latest is typically of interest for specific domain
+including a long time frame before baseline, 
+e.g. for concomitant medications which might be recorded long before the start of the study.
+
+```{r exampleIntervalModule-cm-timeTransformation}
+
+	timeTrans <- getTimeTrans("asinh-neg")
+
+	# AEPTCD: preferred term codes
+	cmPlots <- subjectProfileIntervalPlot(
+		data = SDTMDataPelican$CM,
+		paramVar = c("CMINDC", "CMTRT", "CMDOSTXT", "CMDOSU", "CMROUTE", "CMDOSFRQ"),
+		timeStartVar = "CMSTDY",
+		timeEndVar = "CMENDY",
+		paramGroupVar = "CMINDC",
+		colorVar = "CMINDC",
+		labelVars = labelVarsSDTMPelican,
+		title = "Concomitant medications",
+		timeTrans = timeTrans
+	)
+
+```
+
+```{r exampleIntervalModule-cm-timeTransformation-include, echo = FALSE, fig.height = attributes(cmPlots[["study-4905-02"]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlots)[1])}
+
+	print(cmPlots[[1]][[1]])
+
+```
 
 # Creation of subject report
 

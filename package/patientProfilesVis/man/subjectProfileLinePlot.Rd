@@ -11,11 +11,12 @@ subjectProfileLinePlot(data, paramValueVar,
   colorPalette = NULL, shapeVar = colorVar,
   shapeLab = getLabelVar(shapeVar, labelVars = labelVars),
   shapePalette = NULL, paramGroupVar = NULL, timeVar,
-  subjectVar = "USUBJID", subjectSubset = NULL, subsetData = NULL,
-  subsetVar = NULL, subsetValue = NULL, xLab = getLabelVar(timeVar,
-  labelVars = labelVars), yLab = "", timeLim = NULL,
-  title = paramLab, label = title, labelVars = NULL,
-  formatReport = subjectProfileReportFormat(), paging = TRUE)
+  timeTrans = NULL, subjectVar = "USUBJID", subjectSubset = NULL,
+  subsetData = NULL, subsetVar = NULL, subsetValue = NULL,
+  xLab = getLabelVar(timeVar, labelVars = labelVars), yLab = "",
+  timeLim = NULL, title = paramLab, label = title,
+  labelVars = NULL, formatReport = subjectProfileReportFormat(),
+  paging = TRUE)
 }
 \arguments{
 \item{data}{data.frame with data}
@@ -46,6 +47,9 @@ e.g. to represent the reference range of the variable.}
 If specified, the parameters will be grouped by this(these) variable(s) in the y-axis.}
 
 \item{timeVar}{string, variable of \code{data} with time}
+
+\item{timeTrans}{ggplot2 transformation (see \code{\link[scales]{trans_new}}),
+e.g. produced by the \code{\link{getTimeTrans}} function.}
 
 \item{subjectVar}{string, variable of \code{data} with subject ID}
 

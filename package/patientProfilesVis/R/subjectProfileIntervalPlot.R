@@ -30,6 +30,8 @@
 #' @param timeAlign Logical, if TRUE (by default)
 #' the different plots are horizontally aligned.
 #' If set to FALSE, each plot has its own time-limits.
+#' @param timeTrans ggplot2 transformation (see \code{\link[scales]{trans_new}}),
+#' e.g. produced by the \code{\link{getTimeTrans}} function.
 #' @inheritParams filterData
 #' @inheritParams formatParamVar
 #' @inheritParams formatTimeInterval
@@ -54,6 +56,7 @@ subjectProfileIntervalPlot <- function(
 	subjectVar = "USUBJID", subjectSubset = NULL,
 	subsetData = NULL, subsetVar = NULL, subsetValue = NULL, 
 	timeLim = NULL, timeLimData = NULL, timeLimStartVar = NULL, timeLimEndVar = NULL,
+	timeTrans = NULL,
 	timeAlign = TRUE,
 	rangeSimilarStartEnd = NULL,
 	xLab = paste(getLabelVar(c(timeStartVar, timeEndVar), labelVars = labelVars), collapse = "/"),
@@ -292,6 +295,9 @@ subjectProfileIntervalPlot <- function(
 				gg <- gg + getAesScaleManual(lab = colorLab, palette = colorPalette, type = "color") +
 					guides(color = guide_legend(override.aes = list(shape = NA)))
 			}else	gg <- gg + scale_color_manual(values = colorPalette)
+			
+			if(!is.null(timeTrans))
+				gg <- gg + scale_x_continuous(trans = timeTrans)
 					
 			# set time limits for the x-axis
 			# default: FALSE in case time limits are changed afterwards

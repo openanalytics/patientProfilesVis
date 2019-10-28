@@ -10,11 +10,11 @@ subjectProfileEventPlot(data, paramVar,
   colorLab = getLabelVar(colorVar, labelVars = labelVars),
   colorPalette = NULL, shapeVar = colorVar,
   shapeLab = getLabelVar(shapeVar, labelVars = labelVars),
-  shapePalette = NULL, timeVar, subjectVar = "USUBJID",
-  subjectSubset = NULL, subsetData = NULL, subsetVar = NULL,
-  subsetValue = NULL, xLab = getLabelVar(timeVar, labelVars =
-  labelVars), yLab = "", timeLim = NULL, title = paramLab,
-  label = title, labelVars = NULL,
+  shapePalette = NULL, timeVar, timeTrans = NULL,
+  subjectVar = "USUBJID", subjectSubset = NULL, subsetData = NULL,
+  subsetVar = NULL, subsetValue = NULL, xLab = getLabelVar(timeVar,
+  labelVars = labelVars), yLab = "", timeLim = NULL,
+  title = paramLab, label = title, labelVars = NULL,
   formatReport = subjectProfileReportFormat(), paging = TRUE)
 }
 \arguments{
@@ -43,6 +43,9 @@ If specified, the parameters will be grouped by this(these) variable(s) in the y
 \item{shapePalette}{named vector with shape for \code{shapeVar}}
 
 \item{timeVar}{string, variable of \code{data} with time}
+
+\item{timeTrans}{ggplot2 transformation (see \code{\link[scales]{trans_new}}),
+e.g. produced by the \code{\link{getTimeTrans}} function.}
 
 \item{subjectVar}{string, variable of \code{data} with subject ID}
 
