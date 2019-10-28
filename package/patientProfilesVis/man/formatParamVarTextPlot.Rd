@@ -8,10 +8,11 @@ and optionally sorted according to the levels
 of a grouping variable}
 \usage{
 formatParamVarTextPlot(data, paramVar = NULL, paramValueVar = NULL,
-  paramGroupVar = NULL, revert = FALSE,
+  paramValueLab = NULL, paramGroupVar = NULL, revert = FALSE,
   width = formatReport$yLabelWidth,
   widthValue = ifelse(formatReport$landscape, 240, 190),
-  formatReport = subjectProfileReportFormat())
+  formatReport = subjectProfileReportFormat(), table = FALSE,
+  colWidth = NULL)
 }
 \arguments{
 \item{data}{data.frame with data}
@@ -19,6 +20,8 @@ formatParamVarTextPlot(data, paramVar = NULL, paramValueVar = NULL,
 \item{paramVar}{string, variable of \code{data} with parameter}
 
 \item{paramValueVar}{string, variable of \code{data} containing the parameter value.}
+
+\item{paramValueLab}{Character vector with labels for \code{paramValueVar}.}
 
 \item{paramGroupVar}{(optional) character vector with variable(s) of \code{data} with grouping.
 If specified, the parameters will be grouped by this(these) variable(s) in the y-axis.}
@@ -31,9 +34,19 @@ If specified, the parameters will be grouped by this(these) variable(s) in the y
 
 \item{formatReport}{list with parameters used to specify the format of the report,
 e.g. output of the \code{\link{subjectProfileReportFormat}} function}
+
+\item{table}{Logical, if TRUE the \code{paramValueVar} variables
+are displayed as table (so are not concatenated).}
+
+\item{colWidth}{Numeric vector of \code{length(paramValueVar)}
+containing the approximate width of each parameter value column.
+Only used if parameter values are displayed as a table (\code{table} is TRUE).
+Note: columns can be slightly bigger if content larger than the specified width.
+If not specified, optimized widths are determined.}
 }
 \value{
-\code{data} with reformatted \code{paramVar} and \code{paramValueVar} variables.
+\code{data} with reformatted \code{paramVar} and \code{paramValueVar} variables,
+with additional attribute: \code{colWidth}.
 }
 \description{
 Format text variables for the \code{\link{subjectProfileTextPlot}} function, 

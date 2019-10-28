@@ -155,6 +155,54 @@ for a certain variable name.
 
 ```
 
+### Table format (listing)
+
+Information are displayed as a table format by setting the `table` parameter to TRUE.
+
+```{r exampleTextModule-tableFormat}
+
+	aeListingPlots <- subjectProfileTextPlot(
+		data = SDTMDataPelican$AE,
+		paramValueVar = c("AEBODSYS", "AESOC", "AEHLT", "AELLT", "AEDECOD", "AESTDTC", "AEENDTC", "AESER", "AEACN"),
+		paramGroupVar = "AESTDTC",
+		labelVars = labelVarsSDTMPelican,
+		table = TRUE
+	)
+	subjID <- SDTMDataPelican$AE[which.max(nchar(SDTMDataPelican$AE$AETERM)), "USUBJID"]
+	
+```
+
+By default, the widths of the columns of the table are optimized based on the column content,
+but custom widths can be specified via the `colWidth` parameter.
+
+```{r exampleTextModule-tableFormat-include, echo = FALSE, fig.height = attributes(aeListingPlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Adverse event listing with the 'subjectProfileTextPlot' function for patient:", names(aeListingPlots)[1])}
+
+	print(aeListingPlots[[subjID]][[1]])
+
+```
+
+
+```{r exampleTextModule-tableFormat-customWidth}
+
+	aeListingPlots <- subjectProfileTextPlot(
+		data = SDTMDataPelican$AE,
+		paramValueVar = c("AEBODSYS", "AESOC", "AEHLT", "AELLT", "AEDECOD", "AESTDTC", "AEENDTC", "AESER", "AEACN"),
+		paramGroupVar = "AESTDTC",
+		labelVars = labelVarsSDTMPelican,
+		table = TRUE,
+		colWidth = c(0.1, 0.1, 0.1, 0.1, 0.4, 0.05, 0.05, 0.05, 0.05)
+	)
+	
+```
+
+```{r exampleTextModule-tableFormat-customWidth-include, echo = FALSE, fig.height = attributes(aeListingPlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Adverse event listing with the 'subjectProfileTextPlot' function for patient:", names(aeListingPlots)[1])}
+
+	print(aeListingPlots[[subjID]][[1]])
+
+```
+
+
+
 #### Customization for multiple variables
 
 In case multiple variable are used as `paramValueVar` and
