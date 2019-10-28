@@ -44,3 +44,36 @@ test_that("createSubjectProfileReport - unicode symbols", {
 			
 })
 
+
+test_that("createSubjectProfileReport - unicode symbols", {
+			
+	dataPlot <- SDTMDataPelican$AE		
+	dataPlot[1, "AEDECOD"] <- paste(sample(LETTERS, size = 200, replace = TRUE), collapse = " ")
+			
+	aeListingPlotsTable <- subjectProfileTextPlot(
+		data = dataPlot, #subset(dataPlot, USUBJID == "study-4903-07"),
+		paramValueVar = c("AEDECOD", "AESTDTC", "AEENDTC", "AESEV", "AESER", "AEACN"),
+		paramGroupVar = "AESTDTC",
+		labelVars = labelVarsSDTMPelican,
+		table = TRUE
+	)
+	aeListingPlots <- subjectProfileTextPlot(
+		data = dataPlot, #subset(dataPlot, USUBJID == "study-4903-07"),
+		paramNameVar = "AEDECOD",
+		paramValueVar = c("AESTDTC", "AEENDTC", "AESEV", "AESER", "AEACN"),
+		labelVars = labelVarsSDTMPelican,
+		table = FALSE
+	)
+#	aeListingPlots[["study-4903-07"]]
+	
+	createSubjectProfileReport(
+		listPlots = list(aeListingPlotsTable, aeListingPlots),
+		outputFile = "subjectProfile_textTable.pdf",
+#		subjectSubset = "study-4909-01",
+		exportFigures = TRUE,
+		verbose = TRUE
+	)
+	
+})
+
+

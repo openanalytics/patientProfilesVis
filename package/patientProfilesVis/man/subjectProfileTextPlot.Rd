@@ -4,18 +4,19 @@
 \alias{subjectProfileTextPlot}
 \title{Create plot of subject profiles for events.}
 \usage{
-subjectProfileTextPlot(data, paramValueVar, paramNameVar = NULL,
-  paramGroupVar = NULL, subsetData = NULL, subsetVar = NULL,
-  subsetValue = NULL, subjectVar = "USUBJID", subjectSubset = NULL,
-  xLab = "", yLab = "", title = "Subject information",
-  label = title, labelVars = NULL, paramVarSep = " - ",
-  formatReport = subjectProfileReportFormat(), paging = TRUE)
+subjectProfileTextPlot(data, paramValueVar,
+  paramValueLab = getLabelVar(paramValueVar, labelVars = labelVars),
+  paramNameVar = NULL, paramGroupVar = NULL, subsetData = NULL,
+  subsetVar = NULL, subsetValue = NULL, subjectVar = "USUBJID",
+  subjectSubset = NULL, xLab = "", yLab = "",
+  title = "Subject information", label = title, labelVars = NULL,
+  paramVarSep = " - ", formatReport = subjectProfileReportFormat(),
+  paging = TRUE, table = FALSE, colWidth = NULL)
 }
 \arguments{
 \item{data}{data.frame with data}
 
-\item{paramValueVar}{string, variable of \code{data} containing the . 
-Either:
+\item{paramValueVar}{string, variable of \code{data}, iither:
 \itemize{
 \item{if used in combination with \code{paramNameVar}: }{
 \itemize{
@@ -29,10 +30,13 @@ returning a new variable (of length equal to number of rows in \code{data}
 }
 \item{otherwise: }{vector with names of variable(s) (multiple possible) 
 of \code{data} with parameter value to represent. 
-If variables should be concatenated in the same line, 
+If variables should be concatenated in the same line and not displayed as table: 
 they should be specified separated by '|', e.g 'SEX|AGE'.
 }
 }}
+
+\item{paramValueLab}{(optional) string with labels for \code{paramValueVar},
+only used if the variabless are displayed as table.}
 
 \item{paramNameVar}{(optional) string, variable of \code{data} with parameter name.
 If specified, \code{paramValueVar} should be an unique variable.}
@@ -75,6 +79,16 @@ e.g. output of the \code{\link{subjectProfileReportFormat}} function}
 
 \item{paging}{Logical, if TRUE (by default), the automatic 
 paging is enabled, otherwise only one page is used.}
+
+\item{table}{Logical, if TRUE (FALSE by default) the information
+contained in the variables: \code{paramValueVar} is displayed as a table. 
+Otherwise, the values of the different variables are concatenated in the same line.}
+
+\item{colWidth}{Numeric vector of \code{length(paramValueVar)}
+containing the approximate width of each parameter value column.
+Only used if parameter values are displayed as a table (\code{table} is TRUE).
+Note: columns can be slightly bigger if content larger than the specified width.
+If not specified, optimized widths are determined.}
 }
 \value{
 list of (across subjects) of list (across modules) of \code{\link[ggplot2]{ggplot2} objects}, 

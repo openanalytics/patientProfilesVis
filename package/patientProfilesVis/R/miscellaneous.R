@@ -196,6 +196,7 @@ countNLines <- function(x){
 #' @param caption logical, has the plot a caption?
 #' @param paging Logical, if TRUE (by default), the automatic 
 #' paging is enabled, otherwise only one page is used.
+#' @inheritParams formatParamVarTextPlot
 #' @return input \code{data} with additional column 'pagePlot'
 #' containing the page for the plot
 #' @author Laure Cougnaud
@@ -203,7 +204,8 @@ getPageVar <- function(data, var,
 	typeVar = c("y", "panel"),
 	formatReport = subjectProfileReportFormat(),
 	title = TRUE, xLab = TRUE, caption = TRUE,
-	paging = TRUE){
+	paging = TRUE,
+	table = FALSE){
 
 	if(paging){
 	
@@ -214,29 +216,41 @@ getPageVar <- function(data, var,
 		maxNLines <- do.call(getMaxNLinesCombinePlot, inputGetMNL) - 
 			sum(c(title, xLab, caption)) # let some space for title/x/caption
 		
-		# in case some levels are not present for some subjects
-		# and convert to a factor
-		data[, var] <- droplevels(data[, var], exclude = NULL)
-		
-		# get vector with cumulative number of lines across plots
-		levelsRows <- seq_len(nlevels(data[, var]))
-		
-		# compute number of elements per page
-		nLines <- countNLines(levels(data[, var]))
-		nElPerPage <- floor(maxNLines / 
-			max(max(nLines), switch(typeVar, 'y' = 1, 'panel' = 4))
-		)
+		if(table){
+			
+			nLines <- apply(data[, var], 1, function(x) max(countNLines(x)))
+			
+			# create a variable with grouping
+			data$pagePlot <- floor(cumsum(nLines)/maxNLines) + 1
+					
+		}else{
 	
-		# cut the variable by the maximum number of lines
-		numVect <- .bincode(
-			x  = levelsRows, 
-			breaks = c(seq(from = 1, to = max(levelsRows), by = nElPerPage), Inf),
-			right = FALSE
-		)
-		names(numVect) <- levels(data[, var])
-		
-		# create a variable with grouping
-		data$pagePlot <- numVect[data[, var]]
+			# in case some levels are not present for some subjects
+			# and convert to a factor
+			data[, var] <- droplevels(data[, var], exclude = NULL)
+			
+			# get vector with cumulative number of lines across plots
+			levelsRows <- seq_len(nlevels(data[, var]))
+			
+			# compute number of elements per page
+			nLines <- countNLines(levels(data[, var]))
+			
+			nElPerPage <- floor(maxNLines / 
+				max(max(nLines), switch(typeVar, 'y' = 1, 'panel' = 4))
+			)
+			
+			# cut the variable by the maximum number of lines
+			numVect <- .bincode(
+				x  = levelsRows, 
+				breaks = c(seq(from = 1, to = max(levelsRows), by = nElPerPage), Inf),
+				right = FALSE
+			)
+			names(numVect) <- levels(data[, var])
+
+			# create a variable with grouping
+			data$pagePlot <- numVect[data[, var]]
+			
+		}
 		
 	}else	data$pagePlot <- 1
 	
@@ -425,14 +439,23 @@ formatParamVar <- function(data,
 #' and optionally sorted according to the levels
 #' of a grouping variable
 #' @param paramValueVar  string, variable of \code{data} containing the parameter value. 
-#' @param widthValue max number of characters in the code{paramValueVar} parameter.
+#' @param paramValueLab Character vector with labels for \code{paramValueVar}.
+#' @param table Logical, if TRUE the \code{paramValueVar} variables
+#' are displayed as table (so are not concatenated).
+#' @param colWidth Numeric vector of \code{length(paramValueVar)}
+#' containing the approximate width of each parameter value column.
+#' Only used if parameter values are displayed as a table (\code{table} is TRUE).
+#' Note: columns can be slightly bigger if content larger than the specified width.
+#' If not specified, optimized widths are determined.
 #' @inheritParams formatParamVar
 #' @inheritParams getPageVar
-#' @return \code{data} with reformatted \code{paramVar} and \code{paramValueVar} variables.
+#' @inheritParams getOptimalColWidth
+#' @return \code{data} with reformatted \code{paramVar} and \code{paramValueVar} variables,
+#' with additional attribute: \code{colWidth}.
 #' @author Laure Cougnaud
 formatParamVarTextPlot <- function(data, 
 	paramVar = NULL, 
-	paramValueVar = NULL,
+	paramValueVar = NULL, paramValueLab = NULL,
 	paramGroupVar = NULL, 
 	revert = FALSE,
 	width = formatReport$yLabelWidth,
@@ -441,25 +464,111 @@ formatParamVarTextPlot <- function(data,
 		240,
 		190
 	),
-	formatReport = subjectProfileReportFormat()){
+	formatReport = subjectProfileReportFormat(),
+	table = FALSE, colWidth = NULL){
 
-	## parameter value variable
-	data[, paramValueVar] <- formatParamVar(
-		data = data, 
-		paramVar = paramValueVar,
-		revert = FALSE, paramGroupVar = NULL,
-		width = widthValue
-	)
+	if(table){
+		
+		if(is.null(colWidth)){
+
+			colWidth <- getOptimalColWidth(
+				data = data[, paramValueVar, drop = FALSE], 
+				labels = paramValueLab,
+				widthValue = widthValue, 
+				formatReport = formatReport
+			)
+			
+		}else{
+			widths <- rep(colWidth, length.out = length(paramValueVar))
+			colWidth <- widthValue * widths/sum(widths)
+		}
+		
+		data[, paramValueVar] <- lapply(seq_along(paramValueVar), function(i){
+			paramVar <- paramValueVar[i]
+			formatParamVar(
+				data = data, 
+				paramVar = paramVar,
+				revert = FALSE, 
+				width = colWidth[i]
+			)
+		})
+		if(!is.null(paramGroupVar)){
+			groupVariable <- if(length(paramGroupVar) > 1){
+				interaction(data[, paramGroupVar])
+			}else{
+				if(!is.factor(data[, paramGroupVar]))
+					factor(data[, paramGroupVar])	else	data[, paramGroupVar]
+			}
+			data <- data[order(groupVariable), ]
+		}
+		
+	}else{
+
+		## parameter value variable
+		data[, paramValueVar] <- formatParamVar(
+			data = data, 
+			paramVar = paramValueVar,
+			revert = FALSE, paramGroupVar = NULL,
+			width = widthValue
+		)
+		
+		## parameter name variable
+		data[, paramVar] <- formatParamVar(
+			data = data, 
+			paramVar = paramVar,
+			revert = revert, paramGroupVar = paramGroupVar,
+			width = width
+		)
+		
+	}
 	
-	## parameter name variable
-	data[, paramVar] <- formatParamVar(
-		data = data, 
-		paramVar = paramVar,
-		revert = revert, paramGroupVar = paramGroupVar,
-		width = width
-	)
+	attr(data, "colWidth") <- colWidth
 	
 	return(data)
+	
+}
+
+#' Get optimal column widths, based on the minimum word size
+#' and median number of characters in each column.
+#' @param data Data.frame with columns for which optimal width should be extracted.
+#' @param labels (optional) Character vector with column labels for \code{data}.
+#' @param widthValue max number of characters in the code{paramValueVar} parameter.
+#' @inheritParams getPageVar
+#' @return Numeric vector of \code{length(ncol(data))} with optimal widths.
+#' @author Laure Cougnaud
+getOptimalColWidth <- function(data,
+	widthValue = ifelse(
+		formatReport$landscape,
+		240,
+		190
+	),
+	labels = NULL,
+	formatReport = subjectProfileReportFormat()){
+	
+	if(!is.null(labels))	data <- rbind.data.frame(labels, data)
+
+	# determine minimum column size
+	nCharacWordMin <- apply(data, 2, function(x){
+		sapply(strsplit(x, split = " "), function(y)
+			if(length(y) > 0)	max(nchar(y))	else	2
+		)
+	})
+	nCharacMinCol <- apply(nCharacWordMin, 2, max)
+	
+	# determine median number of characters in a column
+	nCharac <-  apply(data, 2, nchar)
+	nCharacMedian <- apply(nCharac, 2, median)
+	 
+	idxTooSmall <- which(nCharacMedian < nCharacMinCol)
+	nCharacMedian[idxTooSmall] <- nCharacMinCol[idxTooSmall]
+	nCharacExtra <- sum(nCharacMedian)-widthValue
+	if(nCharacExtra > 0){
+		idxTooBig <- which(nCharacMedian > nCharacExtra)
+		nCharacMedian[idxTooBig] <- nCharacMedian[idxTooBig]-nCharacExtra/length(idxTooBig)
+	}
+	colWidth <- floor(nCharacMedian/sum(nCharacMedian)*widthValue)
+	
+	return(colWidth)
 	
 }
 
