@@ -34,7 +34,7 @@ subjectProfileLinePlot <- function(
 	shapeVar = colorVar, shapeLab = getLabelVar(shapeVar, labelVars = labelVars),
 	shapePalette = NULL,
 	paramGroupVar = NULL,
-	timeVar, 
+	timeVar, timeTrans = NULL,
 	subjectVar = "USUBJID", subjectSubset = NULL,
 	subsetData = NULL, subsetVar = NULL, subsetValue = NULL, 
 	xLab = getLabelVar(timeVar, labelVars = labelVars),
@@ -181,6 +181,9 @@ subjectProfileLinePlot <- function(
 			if(!is.null(shapeVar))
 				gg <- gg + 
 					getAesScaleManual(lab = shapeLab, palette = shapePalette, type = "shape")	
+		
+			if(!is.null(timeTrans))
+				gg <- gg + scale_x_continuous(trans = timeTrans)
 		
 			# set time limits for the x-axis
 			# default: FALSE in case time limits are changed afterwards
