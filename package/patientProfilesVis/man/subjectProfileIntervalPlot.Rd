@@ -115,7 +115,7 @@ paging is enabled, otherwise only one page is used.}
 \value{
 list of (across subjects) of list (across modules) of \code{\link[ggplot2]{ggplot2} objects}, 
 also of class \code{subjectProfileIntervalPlot}, with additional metaData attributes containing
-'label' and 'timeLim'.
+'\code{label}' and 'timeLim' and 'timeTrans' (if specified).
 }
 \description{
 Create plot of subject profiles with segments for range of parameters 

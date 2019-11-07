@@ -38,7 +38,7 @@
 #' @inheritParams getPageVar
 #' @return list of (across subjects) of list (across modules) of \code{\link[ggplot2]{ggplot2} objects}, 
 #' also of class \code{subjectProfileIntervalPlot}, with additional metaData attributes containing
-#' 'label' and 'timeLim'.
+#' '\code{label}' and 'timeLim' and 'timeTrans' (if specified).
 #' @author Laure Cougnaud
 #' @import ggplot2
 #' @importFrom plyr dlply
@@ -351,7 +351,10 @@ subjectProfileIntervalPlot <- function(
 	})
 
 	# metaData: stored plot label
-	attr(listPlots, 'metaData') <- list(label = label, timeLim = timeLimInit)
+	attr(listPlots, 'metaData') <- c(
+		list(label = label, timeLim = timeLimInit),
+		if(!is.null(timeTrans))	list(timeTrans = timeTrans)
+	)
 
 	return(listPlots)
 	

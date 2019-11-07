@@ -44,7 +44,7 @@
 #' @inheritParams formatParamVarTextPlot
 #' @return list of (across subjects) of list (across modules) of \code{\link[ggplot2]{ggplot2} objects}, 
 #' also of class \code{subjectProfileTextPlot}, with additional metaData attributes containing
-#' 'label' and 'timeLim'.
+#' '\code{label}' and 'timeLim'.
 #' @author Laure Cougnaud
 #' @import ggplot2
 #' @importFrom gridExtra tableGrob ttheme_minimal

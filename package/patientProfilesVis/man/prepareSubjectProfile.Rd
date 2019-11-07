@@ -13,9 +13,9 @@ prepareSubjectProfile(..., labels, timeLim = NULL, timeAlign = TRUE,
 
 \item{labels}{string with labels for the plots}
 
-\item{timeLim}{(optional) vector of length 2 with time limits (x-axis)
-If not specified, extracted from the minimum \code{timeStartVar} 
-and maximum \code{timeEndVar} per subject.}
+\item{timeLim}{time limits, as returned by the
+\code{\link{getXLimSubjectProfilePlots}} function.
+If NULL, the original time limits of the plot are used.}
 
 \item{timeAlign}{Logical, if TRUE (by default)
 the different plots are horizontally aligned.

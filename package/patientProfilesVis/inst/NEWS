@@ -1,3 +1,5 @@
+0.7.0
+    o timeAlign, timeAlignPerSubject: specification per or across modules
 0.6.0
     o subjectProfileTextPlot: table format
     o custom 'trans', getTimeTrans

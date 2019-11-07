@@ -4,12 +4,11 @@
 \alias{subjectProfileCombine}
 \title{Combine subject profile plots.}
 \usage{
-subjectProfileCombine(listPlots,
-  timeLim = getXLimSubjectProfilePlots(listPlots, align = timeAlign),
-  timeAlign = TRUE, subjectVar = "USUBJID", maxNLines = NULL,
-  refLines = NULL, refLinesData = NULL, refLinesTimeVar = NULL,
-  refLinesLabelVar = NULL, shiny = FALSE, verbose = FALSE,
-  nCores = 1)
+subjectProfileCombine(listPlots, timeLim = NULL, timeAlign = "all",
+  timeAlignPerSubject = "none", subjectVar = "USUBJID",
+  maxNLines = NULL, refLines = NULL, refLinesData = NULL,
+  refLinesTimeVar = NULL, refLinesLabelVar = NULL, shiny = FALSE,
+  verbose = FALSE, nCores = 1)
 }
 \arguments{
 \item{listPlots}{list of subject profiles (modules/subjects)
@@ -17,9 +16,9 @@ Messages during report creation will be included in the Shiny interface,
 and it will be mentioned at the end of the report.
 In this case, the \code{shiny} package should be available.}
 
-\item{timeLim}{(optional) vector of length 2 with time limits (x-axis)
-If not specified, extracted from the minimum \code{timeStartVar} 
-and maximum \code{timeEndVar} per subject.}
+\item{timeLim}{time limits, as returned by the
+\code{\link{getXLimSubjectProfilePlots}} function.
+If NULL, the original time limits of the plot are used.}
 
 \item{timeAlign}{Logical, if TRUE (by default)
 the different plots are horizontally aligned.

@@ -93,7 +93,8 @@ of \code{\link[ggplot2]{ggplot2} objects},
 also of class \code{subjectProfileLinePlot}.
 Each subject profile contains attributes: 'subjectID' and 'nLines' 
 (estimated number of lines of space the plot will take).
-The entire list also contains attributes: '\code{label}' and 'timeLim'.
+The entire list also contains attributes: '\code{label}',
+'timeLim' and 'timeTrans' (if specified).
 }
 \description{
 Create spaghetti plot for subject profiles
