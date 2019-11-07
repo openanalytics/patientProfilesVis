@@ -4,16 +4,36 @@
 \alias{getXLimSubjectProfilePlots}
 \title{Get limits for a list of plots.}
 \usage{
-getXLimSubjectProfilePlots(listPlots, align = TRUE)
+getXLimSubjectProfilePlots(listPlots, timeAlign = "all",
+  timeAlignPerSubject = "none")
 }
 \arguments{
 \item{listPlots}{list of list of \code{subjectProfile[X]Plot} plots}
 
-\item{align}{Logical, if TRUE (by default) the plots are aligned,
-the limits of all plots are combined to extract the limits.}
+\item{timeAlign}{Character vector with time alignment, either:
+\itemize{
+\item{'all' (by default): }{all plots have the same time limits}
+\item{'none': }{each of the plot has its own time limits}
+\item{character vector with names of the modules which
+should have the same time limits
+(should correspond to the names of \code{listPlots})}
+}}
+
+\item{timeAlignPerSubject}{Character vector specifying
+which modules of \code{timeAlign} should have subject-specific time limits
+\itemize{
+\item{'none' (by default): }{these modules have the same time limit across subjects}
+\item{'all': }{these modules have different time limits per subject}
+\item{character vector with subset of these modules which should have
+ different time limits per subject
+(should correspond to the names of \code{listPlots})}
+}
+This is only used for the modules with which \code{timeAlign} is specified.}
 }
 \value{
-vector of length 2 with limits for the x-axis
+Time limits, as a numeric vector of length 2,
+or a list with time limits for each module,
+or nested list with time limits for each module and subject.
 }
 \description{
 These limits are extracted from specified \code{timeLim} for each

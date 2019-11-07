@@ -4,8 +4,9 @@
 \alias{createSubjectProfileReport}
 \title{Create subject profile report.}
 \usage{
-createSubjectProfileReport(listPlots, timeLim = NULL, timeAlign = TRUE,
-  refLines = NULL, refLinesData = NULL, refLinesTimeVar = NULL,
+createSubjectProfileReport(listPlots, timeLim = NULL,
+  timeAlign = "all", timeAlignPerSubject = "none", refLines = NULL,
+  refLinesData = NULL, refLinesTimeVar = NULL,
   refLinesLabelVar = NULL, bookmarkData = NULL, bookmarkVar = NULL,
   subjectSortData = bookmarkData, subjectSortVar = bookmarkVar,
   subjectVar = "USUBJID", subjectSubset = NULL,
@@ -21,10 +22,12 @@ createSubjectProfileReport(listPlots, timeLim = NULL, timeAlign = TRUE,
 \code{\link{subjectProfileEventPlot}}, \code{\link{subjectProfileIntervalPlot}} or
 \code{\link{subjectProfileLinePlot}} functions.}
 
-\item{timeLim}{vector of length 2 with time limits.
+\item{timeLim}{Time limits, as a numeric vector of length 2,
+or a list with time limits for each module,
+or nested list with time limits for each module and subject.
 If not specified, these are set to the time limits specified
 when creating each module (stored in \code{attributes(x)$metaData$timeLim})
-otherwise to the maximum range contained in the data.
+otherwise to the range defined by \code{timeAlign} and \code{timeAlignPerSubject}.
 Note that this doesn't modify the geoms of the plots, it only extends the
 axis range. So for interval module(s) if the specified \code{timeLim}
 is smaller than the time limits in the input plot, no arrows are created in case than

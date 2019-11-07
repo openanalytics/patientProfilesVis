@@ -17,7 +17,8 @@
 #' also of class \code{subjectProfileLinePlot}.
 #' Each subject profile contains attributes: 'subjectID' and 'nLines' 
 #' (estimated number of lines of space the plot will take).
-#' The entire list also contains attributes: '\code{label}' and 'timeLim'.
+#' The entire list also contains attributes: '\code{label}',
+#' 'timeLim' and 'timeTrans' (if specified).
 #' @author Laure Cougnaud
 #' @import ggplot2
 #' @importFrom glpgStyle glpgColor
@@ -225,7 +226,10 @@ subjectProfileLinePlot <- function(
 
 	# metaData:
 	# stored plot label
-	attr(listPlots, 'metaData') <- list(label = label, timeLim = timeLim)
+	attr(listPlots, 'metaData') <- c(
+		list(label = label, timeLim = timeLim),
+		if(!is.null(timeTrans))	list(timeTrans = timeTrans)
+	)
 	
 	return(listPlots)
 	

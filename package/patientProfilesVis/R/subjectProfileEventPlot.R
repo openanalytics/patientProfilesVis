@@ -6,7 +6,7 @@
 #' @inheritParams subjectProfileIntervalPlot
 #' @return list of (across subjects) of list (across modules) of \code{\link[ggplot2]{ggplot2} objects}, 
 #' also of class \code{subjectProfileEventPlot}, with additional metaData attributes containing
-#' 'label' and 'timeLim'.
+#' '\code{label}', 'timeLim' and and 'timeTrans' (if specified).
 #' @author Laure Cougnaud
 #' @import ggplot2
 #' @importFrom plyr dlply
@@ -166,7 +166,10 @@ subjectProfileEventPlot <- function(
 
 	# metaData:
 	# stored plot label
-	attr(listPlots, 'metaData') <- list(label = label, timeLim = timeLim)
+	attr(listPlots, 'metaData') <- c(
+		list(label = label, timeLim = timeLim),
+		if(!is.null(timeTrans))	list(timeTrans = timeTrans)
+	)
 	
 	return(listPlots)
 	

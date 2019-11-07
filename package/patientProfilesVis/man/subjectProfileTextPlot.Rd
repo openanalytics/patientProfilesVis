@@ -93,7 +93,7 @@ If not specified, optimized widths are determined.}
 \value{
 list of (across subjects) of list (across modules) of \code{\link[ggplot2]{ggplot2} objects}, 
 also of class \code{subjectProfileTextPlot}, with additional metaData attributes containing
-'label' and 'timeLim'.
+'\code{label}' and 'timeLim'.
 }
 \description{
 There are two ways to specify the variables of interest to include:
