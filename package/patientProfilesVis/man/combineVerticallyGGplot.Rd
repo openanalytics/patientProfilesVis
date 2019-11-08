@@ -17,7 +17,11 @@ to fit in the page height}
 (1 by default). If more than 1, computation is parallelized, in this case
 the package \code{parallel} is required.}
 
-\item{shiny}{logical, set to TRUE (FALSE by default) if the report is generated from a Shiny application.}
+\item{shiny}{logical, set to TRUE (FALSE by default) 
+if the report is generated from a Shiny application.
+Messages during report creation will be included in the Shiny interface,
+and it will be mentioned at the end of the report.
+In this case, the \code{shiny} package should be available.}
 
 \item{verbose}{logical, if TRUE print messages during execution}
 }

@@ -11,18 +11,10 @@ subjectProfileCombine(listPlots, timeLim = NULL, timeAlign = "all",
   verbose = FALSE, nCores = 1)
 }
 \arguments{
-\item{listPlots}{list of subject profiles (modules/subjects)
-Messages during report creation will be included in the Shiny interface,
-and it will be mentioned at the end of the report.
-In this case, the \code{shiny} package should be available.}
+\item{listPlots}{list of subject profiles (modules/subjectsID)}
 
 \item{timeLim}{time limits, as returned by the
-\code{\link{getXLimSubjectProfilePlots}} function.
-If NULL, the original time limits of the plot are used.}
-
-\item{timeAlign}{Logical, if TRUE (by default)
-the different plots are horizontally aligned.
-If set to FALSE, each plot has its own time-limits.}
+\code{\link{getXLimSubjectProfilePlots}} function.}
 
 \item{subjectVar}{string, variable of \code{data} with subject ID}
 
@@ -46,7 +38,11 @@ Each sublist contains:
 
 \item{refLinesLabelVar}{string, variable of \code{refLinesData} with label for reference line(s)}
 
-\item{shiny}{logical, set to TRUE (FALSE by default) if the report is generated from a Shiny application.}
+\item{shiny}{logical, set to TRUE (FALSE by default) 
+if the report is generated from a Shiny application.
+Messages during report creation will be included in the Shiny interface,
+and it will be mentioned at the end of the report.
+In this case, the \code{shiny} package should be available.}
 
 \item{verbose}{logical, if TRUE print messages during execution}
 
