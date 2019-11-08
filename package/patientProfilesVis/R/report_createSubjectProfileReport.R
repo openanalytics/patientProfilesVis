@@ -84,6 +84,11 @@ createSubjectProfileReport <- function(
 		inputGetMNL <- formatReport[names(formatReport) != "yLabelWidth"]
 		maxNLines <- do.call(getMaxNLinesCombinePlot, inputGetMNL)
 	}
+	
+	
+	# plots should be named in case timeAlign/timeAlignPerSubject is specified
+	if(is.null(names(listPlots)))
+		names(listPlots) <- paste0("module", seq_along(listPlots))
 
 	# filter subjects if subset[Data/Var/Value] is specified
 	if(!is.null(subset) | !is.null(subjectSubsetData)){
@@ -117,23 +122,11 @@ createSubjectProfileReport <- function(
 		
 	}
 	
-	# plots should be named in case timeAlign/timeAlignPerSubject is specified
-	if(is.null(names(listPlots)))
-		names(listPlots) <- paste0("module", seq_along(listPlots))
-	
-	if(is.null(timeLim)){
-		if(verbose)	message("Get limits x-axis.")
-		timeLim <- getXLimSubjectProfilePlots(
-			listPlots, 
-			timeAlign = timeAlign, 
-			timeAlignPerSubject = timeAlignPerSubject
-		)
-	}
-	
 	# combine plots
 	listPlotsPerSubjectList <- subjectProfileCombine(
 		listPlots, 
-		timeLim = timeLim, timeAlign = timeAlign,
+		timeLim = timeLim, 
+		timeAlign = timeAlign, timeAlignPerSubject = timeAlignPerSubject,
 		refLines = refLines, refLinesData = refLinesData, 
 		refLinesTimeVar = refLinesTimeVar, refLinesLabelVar = refLinesLabelVar,
 		subjectVar = subjectVar,
@@ -265,7 +258,7 @@ subjectProfileExport <- function(
 	outputFileKnitr <- knitr::knit(
 		input = pathTemplateWd, 
 		output = pathTexFile,
-		quiet = !verbose,
+		quiet = TRUE,
 		envir = inputParametersEnv
 	)
 	
@@ -343,21 +336,29 @@ getXLimSubjectProfilePlots <- function(
 		
 	}else{
 		
+		modTimeVariant <- names(which(sapply(listPlots, isSubjectProfileTimeVariant, empty = FALSE)))
+		
 		if(is.null(names(listPlots)))
 			stop("'listPlots' should be named if time alignment is required.")
 	
 		if(length(timeAlign) == 1 && timeAlign == "all"){
 			
-			alignMod <- names(listPlots)
+			alignMod <- modTimeVariant
 			
 		}else{
 						
 			alignModulesNA <- setdiff(timeAlign, names(listPlots))
-			if(length(alignModulesNA > 0))
-				warning("Modules to timeAlign:", toString(alignModulesNA), "are not available",
-					"in the names of the list of plots.")
+			if(length(alignModulesNA > 0)){
+				warning(paste("Modules to align:", toString(alignModulesNA), "are not available",
+					"in the names of the list of plots."))
+			}
+			alignModuleNotTV <- setdiff(timeAlign, modTimeVariant)
+			if(length(alignModuleNotTV) > 0){
+				warning(paste("Modules to align:", toString(alignModuleNotTV), "are not",
+					"time variant, so these won't be aligned."))
+			}
 		
-			alignMod <- intersect(timeAlign, names(listPlots))
+			alignMod <- intersect(timeAlign, modTimeVariant)
 			
 		}
 		
@@ -376,15 +377,22 @@ getXLimSubjectProfilePlots <- function(
 			alignPerSubjectModNA <- setdiff(alignPerSubjectMod, alignMod)
 			if(length(alignPerSubjectModNA) > 0){
 				warning(paste("Modules:", toString(alignPerSubjectModNA),
-					"are specified to be aligned per subject, but are not specified among",
-					"the modules to timeAlign, so these are ignored."))
+					"are specified to be aligned per subject, but are not specified/available among",
+					"the modules to align, so these are ignored."))
 			}
 			alignPerSubjectMod <- intersect(alignPerSubjectMod, alignMod)
 			
 			# create empty element in case subject not present in one of the module
 			# for the 'mapply' below...
-			subjectsIDs <- unique(unlist(lapply(listPlots, names)))
-			listPlotsAll <- sapply(listPlots, function(x)	x[subjectsIDs], simplify = FALSE)
+			subjectsID <- unique(unlist(lapply(listPlots, names)))
+			listPlotsAll <- sapply(listPlots, function(x){
+				list <- setNames(x[subjectsID], subjectsID) # in case plot not available for one subject
+				list <- sapply(subjectsID, function(subj){
+					structure(list[[subj]], metaData = list(subject = subj))
+				}, simplify = FALSE)
+				attr(list, 'metaData') <- attr(x, 'metaData')
+				list
+			}, simplify = FALSE)
 			
 			# compute time limits for each module and subject
 			timeLimPlotsSubj <- sapply(alignMod, function(mod){
@@ -394,11 +402,14 @@ getXLimSubjectProfilePlots <- function(
 				# extract time limits were specified for a specific plot
 				timeLimPlots <- attributes(listPlotsMod)$metaData$timeLim
 				
-				# if not specified
+				# if time limits not specified
 				if(is.null(timeLimPlots)){
 					
+					timeTrans <- attr(listPlotsMod, "metaData")$timeTrans
+					
 					timeLimDataSubject <- sapply(listPlotsMod, function(listPlotsSubj){
-								
+							
+						# extract time limits for all elements
 						timeLimDataList <- lapply(listPlotsSubj, function(gg)
 							if(!inherits(gg, "subjectProfileTextPlot"))
 								lapply(ggplot_build(gg)$data, function(dataPlot) 
@@ -406,22 +417,23 @@ getXLimSubjectProfilePlots <- function(
 								)
 						)
 						timeLimData <- unlist(timeLimDataList)
+						
+						# apply transformation if specified
+						if(!is.null(timeTrans)){
+							if(is.function(timeTrans$inverse)){
+								timeLimData <- timeTrans$inverse(timeLimData)
+							}else{
+								warning(paste("Time transformation in module", mod,
+									"not available as a function,",
+									"so time limits for plots of this module are not considered."))
+								timeLimData <- NULL
+							}
+						}
+						
+						# extract time limits
 						if(!is.null(timeLimData))	range(timeLimData, na.rm = TRUE)
 						
 					}, simplify = FALSE)
-			
-					# if timeAlign not per subject
-					# take the extreme axes limits across subjects
-					if(mod %in% alignPerSubjectMod){
-						timeLimDataSubject
-					}else{
-						timeLimData <- unlist(timeLimDataSubject)
-						timeLim <- if(!is.null(timeLimData))	range(timeLimData, na.rm = TRUE)
-						setNames(
-							replicate(length(listPlotsMod), timeLim, simplify = FALSE),
-							names(listPlotsMod)
-						)
-					}
 					
 				}else{
 					
@@ -444,23 +456,24 @@ getXLimSubjectProfilePlots <- function(
 				}else	range(..., na.rm = TRUE)
 			}
 			
-			## alignment across subjects
-			alignModAcrossSubj <- setdiff(alignMod, alignPerSubjectMod)
-			timeLimModAcrossSubj <- sapply(timeLimPlotsSubj[alignModAcrossSubj], function(x){
-				getRange(unlist(x)) 
-			}, simplify = FALSE)
-			
-			## alignment per subject
+			# extract limits across modules for each subject
 			timeLimPerSubj <- do.call(mapply, 
-				c(timeLimPlotsSubj[alignPerSubjectMod],
+				c(timeLimPlotsSubj[alignMod],
 				list(FUN = range, na.rm = TRUE, SIMPLIFY = FALSE))
 			)
-			timeLimModPerSubj <- setNames(
-				replicate(length(alignPerSubjectMod), timeLimPerSubj, simplify = FALSE),
-				alignPerSubjectMod
+			timeLim <- setNames(
+				replicate(length(alignMod), timeLimPerSubj, simplify = FALSE),
+				alignMod
 			)
-			
-			timeLim <- c(timeLimModAcrossSubj, timeLimModPerSubj)
+
+			# if alignment across subjects
+			# should extract limits across subjects for each module
+			alignAcrossSubjectMod <- setdiff(alignMod, alignPerSubjectMod)
+			if(length(alignAcrossSubjectMod) > 0)
+				timeLim[alignAcrossSubjectMod] <- sapply(timeLim[alignAcrossSubjectMod], function(x){
+					getRange(unlist(x)
+				) 
+			}, simplify = FALSE)
 	
 		}else	timeLim <- NULL
 		

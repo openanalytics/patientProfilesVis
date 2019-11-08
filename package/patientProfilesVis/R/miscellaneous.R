@@ -677,3 +677,25 @@ formatLongLabel <- function(x, width = 20){
 	return(xRF)
 	
 }
+
+#' Check if the all profile(s) is/are 'time-variant',
+#' so not a subject profile 'text' module or empty plot
+#' @param plots object of class \code{subjectProfileX} 
+#' (and \code{\link[ggplot2]{ggplot}}) or potentially
+#' nested list of such objects.
+#' @param empty Logical, should empty subject profile be
+#' considered as time-variant?
+#' @return Logical, is plot time variant?
+#' @author Laure Cougnaud
+isSubjectProfileTimeVariant <- function(plot, empty = TRUE){
+	
+	if(inherits(plot, "ggplot")){
+		classesNonTV <- c(if(empty)	"subjectProfileEmptyPlot", "subjectProfileTextPlot")
+		test <- !inherits(plot, classesNonTV)
+	}else{
+		test <- all(sapply(plot, isSubjectProfileTimeVariant))
+		if(length(test) > 1)
+			stop("Time variant and non time variant plots are both available.")
+	}
+	return(test)
+}

@@ -9,7 +9,11 @@
 #' @param nCores Integer containing the number of cores used for the computation
 #' (1 by default). If more than 1, computation is parallelized, in this case
 #' the package \code{parallel} is required.
-#' @param shiny logical, set to TRUE (FALSE by default) if the report is generated from a Shiny application.
+#' @param shiny logical, set to TRUE (FALSE by default) 
+#' if the report is generated from a Shiny application.
+#' Messages during report creation will be included in the Shiny interface,
+#' and it will be mentioned at the end of the report.
+#' In this case, the \code{shiny} package should be available.
 #' @return a list of list of \code{\link[ggplot2]{ggplot}} object (subject/page)
 #' @author Laure Cougnaud
 #' @importFrom parallel makeCluster parSapply stopCluster

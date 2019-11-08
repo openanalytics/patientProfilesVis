@@ -93,7 +93,11 @@ export a subject profile report by subject.}
 \item{maxNLines}{maximum number of lines for a combined plot,
 to fit in the page height}
 
-\item{shiny}{logical, set to TRUE (FALSE by default) if the report is generated from a Shiny application.}
+\item{shiny}{logical, set to TRUE (FALSE by default) 
+if the report is generated from a Shiny application.
+Messages during report creation will be included in the Shiny interface,
+and it will be mentioned at the end of the report.
+In this case, the \code{shiny} package should be available.}
 
 \item{formatReport}{list with parameters used to specify the format of the report,
 e.g. output of the \code{\link{subjectProfileReportFormat}} function}

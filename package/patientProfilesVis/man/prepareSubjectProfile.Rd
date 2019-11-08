@@ -4,9 +4,9 @@
 \alias{prepareSubjectProfile}
 \title{prepare list of subject profile (s) to be combined with the \code{\link{combineVerticallyGGplot}}}
 \usage{
-prepareSubjectProfile(..., labels, timeLim = NULL, timeAlign = TRUE,
-  refLines = NULL, refLinesData = NULL, refLinesTimeVar = NULL,
-  refLinesLabelVar = NULL, subjectVar = "USUBJID")
+prepareSubjectProfile(..., labels, timeLim = NULL, refLines = NULL,
+  refLinesData = NULL, refLinesTimeVar = NULL,
+  refLinesLabelVar = NULL, subjectVar = "USUBJID", timeTrans = NULL)
 }
 \arguments{
 \item{...}{list of subject profiles (across modules)}
@@ -14,12 +14,7 @@ prepareSubjectProfile(..., labels, timeLim = NULL, timeAlign = TRUE,
 \item{labels}{string with labels for the plots}
 
 \item{timeLim}{time limits, as returned by the
-\code{\link{getXLimSubjectProfilePlots}} function.
-If NULL, the original time limits of the plot are used.}
-
-\item{timeAlign}{Logical, if TRUE (by default)
-the different plots are horizontally aligned.
-If set to FALSE, each plot has its own time-limits.}
+\code{\link{getXLimSubjectProfilePlots}} function.}
 
 \item{refLines}{(optional) nested list with details for reference line(s).
 Each sublist contains:
@@ -39,6 +34,9 @@ Each sublist contains:
 \item{refLinesLabelVar}{string, variable of \code{refLinesData} with label for reference line(s)}
 
 \item{subjectVar}{string, variable of \code{data} with subject ID}
+
+\item{timeTrans}{Time transformation, or list of such transformation
+named by module. If NULL, no transformation are done.}
 }
 \value{
 \code{subjectProfilePlot} object, containing the combined
