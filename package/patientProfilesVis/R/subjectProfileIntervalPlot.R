@@ -97,8 +97,11 @@ subjectProfileIntervalPlot <- function(
 	# so jitter the start/end in this case (proportion of the total x-range)
 	idxSameStartEnd <- which(data[, timeStartVar] == data[, timeEndVar])
 	if(length(idxSameStartEnd) > 0){
-		if(is.null(rangeSimilarStartEnd))
-			rangeSimilarStartEnd <- diff(timeLim)/1000
+		if(is.null(rangeSimilarStartEnd)){
+			rangeSimilarStartEnd <- if(!is.null(timeTrans)){
+				timeTrans$inverse(diff(timeTrans$transform(timeLim))/1000)
+			}else	diff(timeLim)/1000
+		}
 		data[idxSameStartEnd, c(timeStartVar, timeEndVar)] <-
 			sweep(
 				x = data[idxSameStartEnd, c(timeStartVar, timeEndVar)], 

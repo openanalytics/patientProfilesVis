@@ -1,5 +1,6 @@
 0.7.0
     o timeAlign, timeAlignPerSubject: specification per or across modules
+    o subjectProfileIntervalPlot: fix when timeTrans and same start/end values
 0.6.0
     o subjectProfileTextPlot: table format
     o custom 'trans', getTimeTrans
