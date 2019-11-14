@@ -233,7 +233,7 @@ subjectProfileExport <- function(
 	shiny = FALSE, verbose = FALSE, nCores = NULL,
 	exportFigures = FALSE){
 
-	outputDir <- normalizePath(dirname(outputFile), winslash = "/")
+	outputDir <- normalizePath(dirname(outputFile), winslash = "/", mustWork = FALSE)
 	if(!dir.exists(outputDir))	dir.create(outputDir, recursive = TRUE)
 
 	pathTemplate <- getPathTemplate("subjectProfile.Rnw")

@@ -16,6 +16,8 @@
 #' @return ggplot2 transformation (see \code{\link[scales]{trans_new}})
 #' @author Pieter-Jan Stiers, Laure Cougnaud
 #' @importFrom scales trans_new
+#' @importFrom grDevices axisTicks
+#' @importFrom utils head
 #' @export
 getTimeTrans <- function(
 	type = c("asinh", "asinh-neg"),
