@@ -5,6 +5,7 @@
 #' @importFrom cowplot ggdraw draw_label
 #' @inheritParams prepareSubjectProfile
 #' @inheritParams combineVerticallyGGplot
+#' @inheritParams getXLimSubjectProfilePlots
 #' @author Laure Cougnaud
 #' @export
 subjectProfileCombine <- function(
@@ -254,10 +255,11 @@ prepareSubjectProfile <- function(
 #' Check if some of the modules are time transformed,
 #' and if some of the plots to align (with specified \code{timeLim})
 #' don't have/have different alignment options.
-#' @param listPlots 
-#' @param timeLim 
+#' @param listPlots list of plots
+#' @param timeLim time limits
 #' @return List of time transformation for each module
 #' (named by \code{listPlots})
+#' @importFrom utils head tail
 #' @author Laure Cougnaud
 checkTimeTrans <- function(listPlots, timeLim = NULL){
 	

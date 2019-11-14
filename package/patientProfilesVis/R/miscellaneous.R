@@ -535,6 +535,7 @@ formatParamVarTextPlot <- function(data,
 #' @param widthValue max number of characters in the code{paramValueVar} parameter.
 #' @inheritParams getPageVar
 #' @return Numeric vector of \code{length(ncol(data))} with optimal widths.
+#' @importFrom stats median
 #' @author Laure Cougnaud
 getOptimalColWidth <- function(data,
 	widthValue = ifelse(
@@ -553,11 +554,13 @@ getOptimalColWidth <- function(data,
 			if(length(y) > 0)	max(nchar(y))	else	2
 		)
 	})
-	nCharacMinCol <- apply(nCharacWordMin, 2, max)
+	nCharacMinCol <- apply(nCharacWordMin, 2, max, na.rm = TRUE)
+	nCharacMinCol[is.na(nCharacMinCol)] <- 0
 	
 	# determine median number of characters in a column
 	nCharac <-  apply(data, 2, nchar)
-	nCharacMedian <- apply(nCharac, 2, median)
+	nCharacMedian <- apply(nCharac, 2, median, na.rm = TRUE)
+	nCharacMedian[is.na(nCharacMedian)] <- 0
 	 
 	idxTooSmall <- which(nCharacMedian < nCharacMinCol)
 	nCharacMedian[idxTooSmall] <- nCharacMinCol[idxTooSmall]
@@ -680,20 +683,20 @@ formatLongLabel <- function(x, width = 20){
 
 #' Check if the all profile(s) is/are 'time-variant',
 #' so not a subject profile 'text' module or empty plot
-#' @param plots object of class \code{subjectProfileX} 
+#' @param gg object of class \code{subjectProfileX} 
 #' (and \code{\link[ggplot2]{ggplot}}) or potentially
 #' nested list of such objects.
 #' @param empty Logical, should empty subject profile be
 #' considered as time-variant?
 #' @return Logical, is plot time variant?
 #' @author Laure Cougnaud
-isSubjectProfileTimeVariant <- function(plot, empty = TRUE){
+isSubjectProfileTimeVariant <- function(gg, empty = TRUE){
 	
-	if(inherits(plot, "ggplot")){
+	if(inherits(gg, "ggplot")){
 		classesNonTV <- c(if(empty)	"subjectProfileEmptyPlot", "subjectProfileTextPlot")
-		test <- !inherits(plot, classesNonTV)
+		test <- !inherits(gg, classesNonTV)
 	}else{
-		test <- all(sapply(plot, isSubjectProfileTimeVariant))
+		test <- all(sapply(gg, isSubjectProfileTimeVariant))
 		if(length(test) > 1)
 			stop("Time variant and non time variant plots are both available.")
 	}

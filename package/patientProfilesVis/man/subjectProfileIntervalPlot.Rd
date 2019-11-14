@@ -3,7 +3,8 @@
 \name{subjectProfileIntervalPlot}
 \alias{subjectProfileIntervalPlot}
 \title{Create plot of subject profiles with segments for range of parameters 
-If no start and/or end date is available, specific arrows are created.}
+If no start and/or end date is available and \code{timeStartShapeVar},
+\code{timeEndShapeVar} are not specified: specific arrows are created.}
 \usage{
 subjectProfileIntervalPlot(data, paramVar, paramVarSep = " - ",
   paramLab = toString(getLabelVar(paramVar, labelVars = labelVars)),
@@ -119,7 +120,8 @@ also of class \code{subjectProfileIntervalPlot}, with additional metaData attrib
 }
 \description{
 Create plot of subject profiles with segments for range of parameters 
-If no start and/or end date is available, specific arrows are created.
+If no start and/or end date is available and \code{timeStartShapeVar},
+\code{timeEndShapeVar} are not specified: specific arrows are created.
 }
 \details{
 In case of missing values for the time start or end variables, they are replaced by:

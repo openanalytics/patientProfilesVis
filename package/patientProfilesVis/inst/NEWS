@@ -1,3 +1,6 @@
+0.8.0
+    o subjectprofileTextPlot: fix in case paramValueVar is empty
+    o subjectProfileIntervalPlot: use vertical segment if start and end dates are equal
 0.7.0
     o timeAlign, timeAlignPerSubject: specification per or across modules
     o subjectProfileIntervalPlot: fix when timeTrans and same start/end values

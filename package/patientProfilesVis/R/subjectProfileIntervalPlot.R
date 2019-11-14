@@ -1,5 +1,6 @@
 #' Create plot of subject profiles with segments for range of parameters 
-#' If no start and/or end date is available, specific arrows are created.
+#' If no start and/or end date is available and \code{timeStartShapeVar},
+#' \code{timeEndShapeVar} are not specified: specific arrows are created.
 #' @inherit formatTimeInterval details
 #' @param paramVar string, variable of \code{data} with parameter (used in the y-axis)
 #' @param paramLab string, label for \code{paramVar}
@@ -93,24 +94,6 @@ subjectProfileIntervalPlot <- function(
 	# otherwise if missing values for start/end for all records of a patient
 	# 'segment' span entire plotting window
 	
-	# if same start/end, data not included by geom_segment
-	# so jitter the start/end in this case (proportion of the total x-range)
-	idxSameStartEnd <- which(data[, timeStartVar] == data[, timeEndVar])
-	if(length(idxSameStartEnd) > 0){
-		if(is.null(rangeSimilarStartEnd)){
-			rangeSimilarStartEnd <- if(!is.null(timeTrans)){
-				timeTrans$inverse(diff(timeTrans$transform(timeLim))/1000)
-			}else	diff(timeLim)/1000
-		}
-		data[idxSameStartEnd, c(timeStartVar, timeEndVar)] <-
-			sweep(
-				x = data[idxSameStartEnd, c(timeStartVar, timeEndVar)], 
-				MARGIN = 2, 
-				STATS = c(-1, 1) * rangeSimilarStartEnd/2,
-				FUN = "+"
-			)
-	}
-	
 	# concatenate variable(s) if multiple are specified
 	data$yVar <- if(length(paramVar) > 1)
 		apply(data[, paramVar], 1, paste, collapse = paramVarSep)	else	data[, paramVar]
@@ -170,14 +153,15 @@ subjectProfileIntervalPlot <- function(
 		)
 		
 		listPlots <- dlply(dataSubject, "pagePlot", function(dataSubjectPage){
-			
-			aesArgs <- c(
+					
+			getAes <- function(list){
+				c(list, if(!is.null(colorVar))	list(color = colorVar))
+			}		
+			aesArgs <- getAes(
 				list(
 					x = timeStartVar, xend = timeEndVar, 
-					y = "yVar", yend = "yVar"#,
-	#			linetype = "missingStartEndPlot"
-				),
-				if(!is.null(colorVar))	list(color = colorVar)
+					y = "yVar", yend = "yVar"
+				)
 			)
 			
 			# build aesthetic
@@ -197,6 +181,27 @@ subjectProfileIntervalPlot <- function(
 			# records with start/end date
 			# and for records with missing start and/or date: plot segment to have color legend without segment
 			gg <- gg + geomSegmentCustom(data = dataSubjectPage, show.legend = TRUE)	
+			
+			# if same start/end, data not included by geom_segment
+			# so create a vertical segment
+			idxStartIsEnd <- which(dataSubjectPage[[timeStartVar]] == dataSubjectPage[[timeEndVar]])
+			if(length(idxStartIsEnd) > 0){
+				dataStartIsEnd <- dataSubjectPage[idxStartIsEnd, ]
+				yVarNum <- as.numeric(dataStartIsEnd[, "yVar"])
+				dataStartIsEnd[, "ymin"] <- yVarNum - 0.05
+				dataStartIsEnd[, "ymax"] <- yVarNum + 0.05
+				aesStartIsEnd <- getAes(
+					list(
+						x = timeStartVar, xend = timeStartVar, 
+						y = "ymin", yend = "ymax"
+					)	
+				)
+				gg <- gg + geom_segment(
+					data = dataStartIsEnd, 
+					mapping = do.call(aes_string, aesStartIsEnd),
+					show.legend = FALSE
+				)
+			}
 			
 			if(hasShapeVar){
 				
@@ -280,7 +285,7 @@ subjectProfileIntervalPlot <- function(
 				#				labels = linetypeLabels[linetypeLims]
 				#			)
 				
-				# remove paramneters without data, set theme and labels
+				# remove parameters without data, set theme and labels
 				caption <- paste0("Arrow represents missing start/end ", timeLabel, ".")
 			
 			}
