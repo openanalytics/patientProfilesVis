@@ -9,9 +9,9 @@ don't have/have different alignment options.}
 checkTimeTrans(listPlots, timeLim = NULL)
 }
 \arguments{
-\item{listPlots}{}
+\item{listPlots}{list of plots}
 
-\item{timeLim}{}
+\item{timeLim}{time limits}
 }
 \value{
 List of time transformation for each module

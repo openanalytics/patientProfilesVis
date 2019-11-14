@@ -5,15 +5,15 @@
 \title{Check if the all profile(s) is/are 'time-variant',
 so not a subject profile 'text' module or empty plot}
 \usage{
-isSubjectProfileTimeVariant(plot, empty = TRUE)
+isSubjectProfileTimeVariant(gg, empty = TRUE)
 }
 \arguments{
-\item{empty}{Logical, should empty subject profile be
-considered as time-variant?}
-
-\item{plots}{object of class \code{subjectProfileX} 
+\item{gg}{object of class \code{subjectProfileX} 
 (and \code{\link[ggplot2]{ggplot}}) or potentially
 nested list of such objects.}
+
+\item{empty}{Logical, should empty subject profile be
+considered as time-variant?}
 }
 \value{
 Logical, is plot time variant?
