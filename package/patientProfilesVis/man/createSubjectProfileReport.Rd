@@ -33,9 +33,25 @@ axis range. So for interval module(s) if the specified \code{timeLim}
 is smaller than the time limits in the input plot, no arrows are created in case than
 the time goes above/below specified \code{timeLim} (the segment is cut).}
 
-\item{timeAlign}{Logical, if TRUE (by default)
-the different plots are horizontally aligned.
-If set to FALSE, each plot has its own time-limits.}
+\item{timeAlign}{Character vector with time alignment, either:
+\itemize{
+\item{'all' (by default): }{all plots have the same time limits}
+\item{'none': }{each of the plot has its own time limits}
+\item{character vector with names of the modules which
+should have the same time limits
+(should correspond to the names of \code{listPlots})}
+}}
+
+\item{timeAlignPerSubject}{Character vector specifying
+which modules of \code{timeAlign} should have subject-specific time limits
+\itemize{
+\item{'none' (by default): }{these modules have the same time limit across subjects}
+\item{'all': }{these modules have different time limits per subject}
+\item{character vector with subset of these modules which should have
+ different time limits per subject
+(should correspond to the names of \code{listPlots})}
+}
+This is only used for the modules with which \code{timeAlign} is specified.}
 
 \item{refLines}{(optional) nested list with details for reference line(s).
 Each sublist contains:
