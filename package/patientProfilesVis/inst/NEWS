@@ -1,4 +1,4 @@
-0.8.1
+0.9.0
     o subjectProfileCombine: fix extraction time limits in case no plot
     o remove panel border for empty plot
     o timeExpand
