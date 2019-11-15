@@ -46,7 +46,10 @@ subjectProfileCombine <- function(
 	listPlotsAll <- sapply(listPlots, function(x){
 		list <- setNames(x[subjectsID], subjectsID) # in case plot not available for one subject
 		list <- sapply(subjectsID, function(subj){
-			structure(list[[subj]], metaData = list(subject = subj))
+			xObj <- if(!is.null(list[[subj]])){
+				list[[subj]]
+			}else	list()
+			structure(xObj, metaData = list(subject = subj))
 		}, simplify = FALSE)
 		attr(list, 'metaData') <- attr(x, 'metaData')
 		list
@@ -66,6 +69,12 @@ subjectProfileCombine <- function(
 	if(verbose)	message(msgProgress)
 	if(shiny)	incProgress(0, detail = msgProgress)
 	timeTrans <- checkTimeTrans(listPlots = listPlotsAll, timeLim = timeLim)
+	
+	# get required time expand for each module
+	msgProgress <- "Check time expand."
+	if(verbose)	message(msgProgress)
+	if(shiny)	incProgress(0, detail = msgProgress)
+	timeExpand <- checkTimeExpand(listPlots = listPlotsAll, timeLim = timeLim)
 
 	# re-format plots: same timeLim, ...
 	msgProgress <- "Prepare subject profiles to be combined."
@@ -80,7 +89,8 @@ subjectProfileCombine <- function(
 					refLines = refLines, refLinesData = refLinesData, 
 					refLinesTimeVar = refLinesTimeVar, refLinesLabelVar = refLinesLabelVar,
 					subjectVar = subjectVar,
-					timeLim = timeLim, timeTrans = timeTrans
+					timeLim = timeLim, timeTrans = timeTrans,
+					timeExpand = timeExpand
 				)
 			),
 			listPlotsAll
@@ -138,7 +148,8 @@ prepareSubjectProfile <- function(
 	refLinesTimeVar = NULL,
 	refLinesLabelVar = NULL,
 	subjectVar = "USUBJID",
-	timeTrans = NULL){
+	timeTrans = NULL,
+	timeExpand = NULL){
 	
 	listPlotsInit <- list(...)
 	
@@ -148,12 +159,12 @@ prepareSubjectProfile <- function(
 		stop("Issue during extraction of subject IDs.")
 	
 	# 'empty' plot in case a specific plot is not available for this subject
-	isEmpty <- which(sapply(listPlotsInit, is.null))
+	isEmpty <- which(sapply(listPlotsInit, function(x) is.null(x) | length(x) == 0))
 	if(length(isEmpty) > 0){
 		listPlotsInit[isEmpty] <- lapply(isEmpty, function(i)
 			if(labels[i] != ""){
 				title <- paste("No", labels[i], "available.")
-				gg <- ggplot() + theme_bw() + ggtitle(title)
+				gg <- ggplot() + theme_bw() + theme(panel.border = element_blank()) + ggtitle(title)
 				attr(gg, 'metaData') <- list(nLines = getNLinesLabel(value = title, elName = "title"))
 				class(gg) <- c("subjectProfileEmptyPlot", class(gg))
 				list(gg)
@@ -192,12 +203,24 @@ prepareSubjectProfile <- function(
 
 				# set time transformation
 				timeTransMod <- if(!is.null(timeTrans)){
-					if(is.list(timeTrans)){
-						if(mod %in% names(timeTrans))	timeTrans[[mod]]
-					}else timeTrans
+					if(inherits(timeTrans, "trans")){
+						timeTrans
+					}else	if(is.list(timeTrans) && mod %in% names(timeTrans)){
+						timeTrans[[mod]]
+					} 
 				}
-				if(!is.null(timeTransMod))
-					gg <- gg + scale_x_continuous(trans = timeTransMod)
+				# set time expand
+				timeExpandMod <- if(!is.null(timeExpand)){
+					if(is.list(timeExpand)){
+						if(mod %in% names(timeExpand))	timeExpand[[mod]]
+					}else timeExpand
+				}
+				argsScaleX <- c(
+					if(!is.null(timeExpandMod))	list(expand = timeExpandMod),
+					if(!is.null(timeTransMod))	list(trans = timeTransMod)
+				)
+				if(length(argsScaleX) > 0)
+					gg <- gg + do.call("scale_x_continuous", argsScaleX)
 				
 				# extract time limits for the module
 				getTimeLim <- function(timeLim, el){
@@ -250,6 +273,270 @@ prepareSubjectProfile <- function(
 	
 }
 
+#' Get limits for a list of plots.
+#' 
+#' These limits are extracted from specified \code{timeLim} for each
+#' module (stored in the \code{attributes()$metaData$timeLim}), 
+#' and if empty for all modules: from the maximal range
+#' of the x-coordinates across all plots.
+#' @param listPlots list of list of \code{subjectProfile[X]Plot} plots
+#' @param timeAlign Character vector with time alignment, either:
+#' \itemize{
+#' \item{'all' (by default): }{all plots have the same time limits}
+#' \item{'none': }{each of the plot has its own time limits}
+#' \item{character vector with names of the modules which
+#' should have the same time limits
+#' (should correspond to the names of \code{listPlots})}
+#' }
+#' @param timeAlignPerSubject Character vector specifying
+#' which modules of \code{timeAlign} should have subject-specific time limits
+#' \itemize{
+#' \item{'none' (by default): }{these modules have the same time limit across subjects}
+#' \item{'all': }{these modules have different time limits per subject}
+#' \item{character vector with subset of these modules which should have
+#'  different time limits per subject
+#' (should correspond to the names of \code{listPlots})}
+#' }
+#' This is only used for the modules with which \code{timeAlign} is specified.
+#' @return Time limits, as a numeric vector of length 2,
+#' or a list with time limits for each module,
+#' or nested list with time limits for each module and subject.
+#' @importFrom ggplot2 ggplot_build
+#' @author Laure Cougnaud
+getXLimSubjectProfilePlots <- function(
+	listPlots, 
+	timeAlign = "all", timeAlignPerSubject = "none"){
+	
+	if(is.logical(timeAlign)){
+		
+		warning(
+			"'timeAlign' as a logical is deprecated, ",
+			"please use instead: timeAlign = 'all' if TRUE or 'none' if FALSE."
+		)
+		timeAlign <- ifelse(timeAlign, "all", "none")
+		
+	}
+	
+	if(length(timeAlign) == 1 && timeAlign == "none"){
+		
+		timeLim <- NULL
+		
+	}else{
+		
+		modTimeVariant <- names(which(sapply(listPlots, isSubjectProfileTimeVariant, empty = FALSE)))
+		
+		if(is.null(names(listPlots)))
+			stop("'listPlots' should be named if time alignment is required.")
+		
+		if(length(timeAlign) == 1 && timeAlign == "all"){
+			
+			alignMod <- modTimeVariant
+			
+		}else{
+			
+			alignModulesNA <- setdiff(timeAlign, names(listPlots))
+			if(length(alignModulesNA > 0)){
+				warning(paste("Modules to align:", toString(alignModulesNA), "are not available",
+					"in the names of the list of plots."))
+			}
+			alignModuleNotTV <- setdiff(timeAlign, modTimeVariant)
+			if(length(alignModuleNotTV) > 0){
+				warning(paste("Modules to align:", toString(alignModuleNotTV), "are not",
+					"time variant, so these won't be aligned."))
+			}
+			
+			alignMod <- intersect(timeAlign, modTimeVariant)
+			
+		}
+		
+		if(length(alignMod) > 0){
+			
+			# extract modules that should be aligned per subject
+			alignPerSubjectMod <- if(length(timeAlignPerSubject) == 1){
+				switch(
+					timeAlignPerSubject,
+					'all' = names(listPlots),
+					'none' = NULL,
+					timeAlignPerSubject
+				)
+			}else	timeAlignPerSubject
+			
+			alignPerSubjectModNA <- setdiff(alignPerSubjectMod, alignMod)
+			if(!(length(timeAlignPerSubject) == 1 && timeAlignPerSubject == "all") &
+				length(alignPerSubjectModNA) > 0){
+				warning(paste("Modules:", toString(alignPerSubjectModNA),
+					"are specified to be aligned per subject, but are not specified/available among",
+					"the modules to align, so these are ignored."))
+			}
+			alignPerSubjectMod <- intersect(alignPerSubjectMod, alignMod)
+			
+			# create empty element in case subject not present in one of the module
+			# for the 'mapply' below...
+			subjectsID <- unique(unlist(lapply(listPlots, names)))
+			listPlotsAll <- sapply(listPlots, function(x){
+				list <- setNames(x[subjectsID], subjectsID) # in case plot not available for one subject
+				list <- sapply(subjectsID, function(subj){
+					if(!is.null(list[[subj]])){
+						structure(list[[subj]], metaData = list(subject = subj))
+					}
+				}, simplify = FALSE)
+				attr(list, 'metaData') <- attr(x, 'metaData')
+				list
+			}, simplify = FALSE)
+			
+			# compute time limits for each module and subject
+			timeLimPlotsSubj <- sapply(alignMod, function(mod){
+						
+				listPlotsMod <- listPlotsAll[[mod]]
+				
+				# extract time limits were specified for a specific plot
+				timeLimPlots <- attributes(listPlotsMod)$metaData$timeLim
+				
+				# if time limits not specified
+				if(is.null(timeLimPlots)){
+					
+					timeTrans <- attr(listPlotsMod, "metaData")$timeTrans
+					
+					timeLimDataSubject <- sapply(listPlotsMod, function(listPlotsSubj){
+								
+						# extract time limits for all elements
+						timeLimDataList <- lapply(listPlotsSubj, function(gg)
+							if(!inherits(gg, "subjectProfileTextPlot"))
+								lapply(ggplot_build(gg)$data, function(dataPlot) 
+									c(dataPlot$x, if("xend" %in% colnames(dataPlot))	dataPlot$xend)
+								)
+						)
+						timeLimData <- unlist(timeLimDataList)
+						
+						if(!is.null(timeLimData)){
+							
+							# apply transformation if specified
+							if(!is.null(timeTrans)){
+								if(is.function(timeTrans$inverse)){
+									timeLimData <- timeTrans$inverse(timeLimData)
+								}else{
+									warning(paste("Time transformation in module", mod,
+										"not available as a function,",
+										"so time limits for plots of this module are not considered."))
+									timeLimData <- NULL
+								}
+							}
+							
+							# extract time limits
+							if(!is.null(timeLimData))	range(timeLimData, na.rm = TRUE)
+							
+						}
+
+					}, simplify = FALSE)
+				
+				}else{
+					
+					if(timeAlignPerSubject)
+						warning(paste("Alignment per subject is not available for module", mod,
+							"because time limits were specified during module creation."))
+					
+					setNames(
+						replicate(length(listPlotsMod), timeLimPlots, simplify = FALSE),
+						names(listPlotsMod)
+					)
+					
+				}
+				
+			}, simplify = FALSE)
+			
+			getRange <- function(...){
+				if(all(sapply(..., is.null))){
+					NULL
+				}else	range(..., na.rm = TRUE)
+			}
+			
+			# extract limits across modules for each subject
+			timeLimPerSubj <- do.call(mapply, 
+				c(timeLimPlotsSubj[alignMod],
+					list(FUN = range, na.rm = TRUE, SIMPLIFY = FALSE))
+			)
+			timeLim <- setNames(
+				replicate(length(alignMod), timeLimPerSubj, simplify = FALSE),
+				alignMod
+			)
+			
+			# if alignment across subjects
+			# should extract limits across subjects for each module
+			alignAcrossSubjectMod <- setdiff(alignMod, alignPerSubjectMod)
+			if(length(alignAcrossSubjectMod) > 0)
+				timeLim[alignAcrossSubjectMod] <- sapply(timeLim[alignAcrossSubjectMod], function(x){
+					getRange(unlist(x)) 
+				}, simplify = FALSE)
+			
+		}else	timeLim <- NULL
+		
+	}
+	
+	return(timeLim)
+	
+}
+
+#' Check if some of the modules are time expanded,
+#' and extract maximum time expand for each module.
+#' @inheritParams checkTimeTrans
+#' @return List of time expand for each module
+#' (named by \code{listPlots})
+#' @importFrom utils head tail
+#' @author Laure Cougnaud
+checkTimeExpand <- function(listPlots, timeLim = NULL){
+	
+	# Set time transformation, if some modules
+	# have time transformation but not all (or not the same )
+	timeExpandMod <- sapply(listPlots, function(x) 
+		attr(x, "metaData")$timeExpand, 
+		simplify = FALSE
+	)	
+	timeExpand <- NULL
+	if(!is.null(timeLim)){
+		
+		# consider only the modules to be aligned
+		if(is.list(timeLim))
+			timeExpandMod <- timeExpandMod[names(timeLim)]
+		# and time variant
+		modTimeVariant <- names(which(sapply(listPlots, isSubjectProfileTimeVariant, empty = FALSE)))
+		timeExpandMod <- timeExpandMod[modTimeVariant]
+		
+		# time expand specified
+		timeExpandModSpec <- timeExpandMod[!sapply(timeExpandMod, is.null)]
+		
+		if(length(timeExpandModSpec) > 0 & length(timeExpandMod) > 0){
+		
+			checkFctId <- function(list)	
+				if(length(list) > 1){
+					all(mapply(identical, head(list, -1), tail(list, -1)))
+				}else	TRUE
+			
+			isTimeExpandSet <- all(names(timeExpandMod) %in% names(timeExpandModSpec)) && checkFctId(timeExpandModSpec)
+			
+			if(!isTimeExpandSet){
+			
+				# take max of all expand
+				timeExpandMax <- do.call(pmax, timeExpandModSpec)
+				
+				timeExpand <- setNames(
+					replicate(n = length(timeExpandMod), timeExpandMax, simplify = FALSE),
+					names(timeExpandMod)
+				)
+				message(paste0(toString(names(timeExpandMod)), " modules",
+					" are expanded (expand is: ", toString(timeExpandMax), ")",
+					" to be time aligned."
+				))
+		
+			}
+		
+		}
+		
+	}
+	
+	return(timeExpand)
+	
+}
+
 
 
 #' Check if some of the modules are time transformed,
@@ -293,19 +580,19 @@ checkTimeTrans <- function(listPlots, timeLim = NULL){
 				
 				timeTransUsed <- timeTransModSpec[[1]]	
 				# set new transformation for all modules without this transformation
-				timeTrans <- if(is.list(timeLim)){
-					modToTrans <- setdiff(names(timeLim), names(timeTransModSpec))
-					if(length(modToTrans) > 0){
-						modToTransST <- paste("Modules:", toString(modToTrans))
-						setNames(replicate(length(modToTrans), timeTransUsed, simplify = FALSE), modToTrans)
-					}
-				}else{
-					modToTransST <- "All modules"
-					timeTransUsed
-				}
+#				timeTrans <- if(is.list(timeLim)){
+#					modToTrans <- setdiff(names(timeLim), names(timeTransModSpec))
+#					if(length(modToTrans) > 0){
+#						modToTransST <- paste("Modules:", toString(modToTrans))
+#						setNames(replicate(length(timeLim), timeTransUsed, simplify = FALSE), modToTrans)
+#					}
+#				}else{
+				# set transformation for all modules in case timeExpand specified for one of them
+				modToTransST <- "All modules"
+				timeTrans <- timeTransUsed
+#				}
 				if(!is.null(timeTrans))
-					message(paste(modToTransST,
-						"is transformed with", timeTransUsed$name, 
+					message(paste("All modules are transformed with", timeTransUsed$name, 
 						"to be time aligned."
 					))
 				

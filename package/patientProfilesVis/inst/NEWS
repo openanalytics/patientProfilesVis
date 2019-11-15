@@ -1,3 +1,7 @@
+0.8.1
+    o subjectProfileCombine: fix extraction time limits in case no plot
+    o remove panel border for empty plot
+    o timeExpand
 0.8.0
     o subjectprofileTextPlot: fix in case paramValueVar is empty
     o subjectProfileIntervalPlot: use vertical segment if start and end dates are equal

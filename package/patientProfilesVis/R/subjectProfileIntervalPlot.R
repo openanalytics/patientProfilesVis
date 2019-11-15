@@ -31,8 +31,8 @@
 #' @param timeAlign Logical, if TRUE (by default)
 #' the different plots are horizontally aligned.
 #' If set to FALSE, each plot has its own time-limits.
-#' @param timeTrans ggplot2 transformation (see \code{\link[scales]{trans_new}}),
-#' e.g. produced by the \code{\link{getTimeTrans}} function.
+#' @param timeExpand Vector of range expansion constants for the time axis
+#' (see \code{expand} parameter of the \code{\link[ggplot2]{scale_x_continuous}} function).
 #' @inheritParams filterData
 #' @inheritParams formatParamVar
 #' @inheritParams formatTimeInterval
@@ -57,7 +57,7 @@ subjectProfileIntervalPlot <- function(
 	subjectVar = "USUBJID", subjectSubset = NULL,
 	subsetData = NULL, subsetVar = NULL, subsetValue = NULL, 
 	timeLim = NULL, timeLimData = NULL, timeLimStartVar = NULL, timeLimEndVar = NULL,
-	timeTrans = NULL,
+	timeTrans = NULL, timeExpand = NULL,
 	timeAlign = TRUE,
 	rangeSimilarStartEnd = NULL,
 	xLab = paste(getLabelVar(c(timeStartVar, timeEndVar), labelVars = labelVars), collapse = "/"),
@@ -180,6 +180,9 @@ subjectProfileIntervalPlot <- function(
 	
 			# records with start/end date
 			# and for records with missing start and/or date: plot segment to have color legend without segment
+			# important! entire data should be defined with the first geom
+			# and segment defined first, otherwise
+			# order in labels of y-axis can be different between geom_point and geom_segment
 			gg <- gg + geomSegmentCustom(data = dataSubjectPage, show.legend = TRUE)	
 			
 			# if same start/end, data not included by geom_segment
@@ -304,8 +307,12 @@ subjectProfileIntervalPlot <- function(
 					guides(color = guide_legend(override.aes = list(shape = NA)))
 			}else	gg <- gg + scale_color_manual(values = colorPalette)
 			
-			if(!is.null(timeTrans))
-				gg <- gg + scale_x_continuous(trans = timeTrans)
+			argsScaleX <- c(
+				if(!is.null(timeExpand))	list(expand = timeExpand),
+				if(!is.null(timeTrans))	list(trans = timeTrans)
+			)
+			if(length(argsScaleX) > 0)
+				gg <- gg + do.call("scale_x_continuous", argsScaleX)
 					
 			# set time limits for the x-axis
 			# default: FALSE in case time limits are changed afterwards
@@ -361,7 +368,8 @@ subjectProfileIntervalPlot <- function(
 	# metaData: stored plot label
 	attr(listPlots, 'metaData') <- c(
 		list(label = label, timeLim = timeLimInit),
-		if(!is.null(timeTrans))	list(timeTrans = timeTrans)
+		if(!is.null(timeTrans))	list(timeTrans = timeTrans),
+		if(!is.null(timeExpand))	list(timeExpand = timeExpand)
 	)
 
 	return(listPlots)
