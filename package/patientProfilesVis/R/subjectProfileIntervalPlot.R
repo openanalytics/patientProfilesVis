@@ -31,6 +31,8 @@
 #' @param timeAlign Logical, if TRUE (by default)
 #' the different plots are horizontally aligned.
 #' If set to FALSE, each plot has its own time-limits.
+#' @param timeTrans ggplot2 transformation (see \code{\link[scales]{trans_new}}),
+#' e.g. produced by the \code{\link{getTimeTrans}} function.
 #' @param timeExpand Vector of range expansion constants for the time axis
 #' (see \code{expand} parameter of the \code{\link[ggplot2]{scale_x_continuous}} function).
 #' @inheritParams filterData
