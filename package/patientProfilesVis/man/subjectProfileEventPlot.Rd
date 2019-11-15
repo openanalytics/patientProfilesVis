@@ -10,7 +10,7 @@ subjectProfileEventPlot(data, paramVar,
   colorLab = getLabelVar(colorVar, labelVars = labelVars),
   colorPalette = NULL, shapeVar = colorVar,
   shapeLab = getLabelVar(shapeVar, labelVars = labelVars),
-  shapePalette = NULL, timeVar, timeTrans = NULL,
+  shapePalette = NULL, timeVar, timeTrans = NULL, timeExpand = NULL,
   subjectVar = "USUBJID", subjectSubset = NULL, subsetData = NULL,
   subsetVar = NULL, subsetValue = NULL, xLab = getLabelVar(timeVar,
   labelVars = labelVars), yLab = "", timeLim = NULL,
@@ -44,8 +44,8 @@ If specified, the parameters will be grouped by this(these) variable(s) in the y
 
 \item{timeVar}{string, variable of \code{data} with time}
 
-\item{timeTrans}{ggplot2 transformation (see \code{\link[scales]{trans_new}}),
-e.g. produced by the \code{\link{getTimeTrans}} function.}
+\item{timeExpand}{Vector of range expansion constants for the time axis
+(see \code{expand} parameter of the \code{\link[ggplot2]{scale_x_continuous}} function).}
 
 \item{subjectVar}{string, variable of \code{data} with subject ID}
 

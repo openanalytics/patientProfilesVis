@@ -6,7 +6,8 @@
 \usage{
 prepareSubjectProfile(..., labels, timeLim = NULL, refLines = NULL,
   refLinesData = NULL, refLinesTimeVar = NULL,
-  refLinesLabelVar = NULL, subjectVar = "USUBJID", timeTrans = NULL)
+  refLinesLabelVar = NULL, subjectVar = "USUBJID", timeTrans = NULL,
+  timeExpand = NULL)
 }
 \arguments{
 \item{...}{list of subject profiles (across modules)}
@@ -37,6 +38,9 @@ Each sublist contains:
 
 \item{timeTrans}{Time transformation, or list of such transformation
 named by module. If NULL, no transformation are done.}
+
+\item{timeExpand}{Vector of range expansion constants for the time axis
+(see \code{expand} parameter of the \code{\link[ggplot2]{scale_x_continuous}} function).}
 }
 \value{
 \code{subjectProfilePlot} object, containing the combined

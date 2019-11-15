@@ -35,7 +35,7 @@ subjectProfileLinePlot <- function(
 	shapeVar = colorVar, shapeLab = getLabelVar(shapeVar, labelVars = labelVars),
 	shapePalette = NULL,
 	paramGroupVar = NULL,
-	timeVar, timeTrans = NULL,
+	timeVar, timeTrans = NULL, timeExpand = NULL,
 	subjectVar = "USUBJID", subjectSubset = NULL,
 	subsetData = NULL, subsetVar = NULL, subsetValue = NULL, 
 	xLab = getLabelVar(timeVar, labelVars = labelVars),
@@ -47,7 +47,6 @@ subjectProfileLinePlot <- function(
 	formatReport = subjectProfileReportFormat(),
 	paging = TRUE
 ){
-	
 	
 	# in case data is a tibble:
 	data <- as.data.frame(data)
@@ -183,8 +182,12 @@ subjectProfileLinePlot <- function(
 				gg <- gg + 
 					getAesScaleManual(lab = shapeLab, palette = shapePalette, type = "shape")	
 		
-			if(!is.null(timeTrans))
-				gg <- gg + scale_x_continuous(trans = timeTrans)
+			argsScaleX <- c(
+				if(!is.null(timeExpand))	list(expand = timeExpand),
+				if(!is.null(timeTrans))	list(trans = timeTrans)
+			)
+			if(length(argsScaleX) > 0)
+				gg <- gg + do.call("scale_x_continuous", argsScaleX)
 		
 			# set time limits for the x-axis
 			# default: FALSE in case time limits are changed afterwards
@@ -228,7 +231,8 @@ subjectProfileLinePlot <- function(
 	# stored plot label
 	attr(listPlots, 'metaData') <- c(
 		list(label = label, timeLim = timeLim),
-		if(!is.null(timeTrans))	list(timeTrans = timeTrans)
+		if(!is.null(timeTrans))	list(timeTrans = timeTrans),
+		if(!is.null(timeExpand))	list(timeExpand = timeExpand)
 	)
 	
 	return(listPlots)

@@ -22,7 +22,7 @@ subjectProfileEventPlot <- function(
 	colorPalette = NULL,
 	shapeVar = colorVar, shapeLab = getLabelVar(shapeVar, labelVars = labelVars),
 	shapePalette = NULL,
-	timeVar, timeTrans = NULL,
+	timeVar, timeTrans = NULL, timeExpand = NULL,
 	subjectVar = "USUBJID", subjectSubset = NULL, 
 	subsetData = NULL, subsetVar = NULL, subsetValue = NULL,
 	xLab = getLabelVar(timeVar, labelVars = labelVars),
@@ -120,8 +120,12 @@ subjectProfileEventPlot <- function(
 			if(!is.null(shapeVar))
 				gg <- gg + getAesScaleManual(lab = shapeLab, palette = shapePalette, type = "shape")
 			
-			if(!is.null(timeTrans))
-				gg <- gg + scale_x_continuous(trans = timeTrans)
+			argsScaleX <- c(
+				if(!is.null(timeExpand))	list(expand = timeExpand),
+				if(!is.null(timeTrans))	list(trans = timeTrans)
+			)
+			if(length(argsScaleX) > 0)
+				gg <- gg + do.call("scale_x_continuous", argsScaleX)
 			
 			# set time limits for the x-axis
 			# default: TRUE in case time limits are changed afterwards
@@ -168,7 +172,8 @@ subjectProfileEventPlot <- function(
 	# stored plot label
 	attr(listPlots, 'metaData') <- c(
 		list(label = label, timeLim = timeLim),
-		if(!is.null(timeTrans))	list(timeTrans = timeTrans)
+		if(!is.null(timeTrans))	list(timeTrans = timeTrans),
+		if(!is.null(timeExpand))	list(timeExpand = timeExpand)
 	)
 	
 	return(listPlots)

@@ -12,11 +12,11 @@ subjectProfileIntervalPlot(data, paramVar, paramVarSep = " - ",
   subjectVar = "USUBJID", subjectSubset = NULL, subsetData = NULL,
   subsetVar = NULL, subsetValue = NULL, timeLim = NULL,
   timeLimData = NULL, timeLimStartVar = NULL, timeLimEndVar = NULL,
-  timeTrans = NULL, timeAlign = TRUE, rangeSimilarStartEnd = NULL,
-  xLab = paste(getLabelVar(c(timeStartVar, timeEndVar), labelVars =
-  labelVars), collapse = "/"), yLab = "", colorVar = NULL,
-  colorLab = getLabelVar(colorVar, labelVars = labelVars),
-  colorPalette = NULL, timeStartShapeVar = NULL,
+  timeTrans = NULL, timeExpand = NULL, timeAlign = TRUE,
+  rangeSimilarStartEnd = NULL, xLab = paste(getLabelVar(c(timeStartVar,
+  timeEndVar), labelVars = labelVars), collapse = "/"), yLab = "",
+  colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars =
+  labelVars), colorPalette = NULL, timeStartShapeVar = NULL,
   timeEndShapeVar = NULL, shapePalette = NULL,
   shapeLab = toString(unique(getLabelVar(c(timeStartShapeVar,
   timeEndShapeVar), labelVars = labelVars))), shapeSize = rel(1),
@@ -67,8 +67,8 @@ and maximum \code{timeEndVar} per subject.}
 
 \item{timeLimEndVar}{string, variable of \code{timeLimData} with time end}
 
-\item{timeTrans}{ggplot2 transformation (see \code{\link[scales]{trans_new}}),
-e.g. produced by the \code{\link{getTimeTrans}} function.}
+\item{timeExpand}{Vector of range expansion constants for the time axis
+(see \code{expand} parameter of the \code{\link[ggplot2]{scale_x_continuous}} function).}
 
 \item{timeAlign}{Logical, if TRUE (by default)
 the different plots are horizontally aligned.
