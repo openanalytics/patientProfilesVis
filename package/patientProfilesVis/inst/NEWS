@@ -1,3 +1,5 @@
+0.9.1
+    o createSubjectProfileReport: margin set by patient if reportPerSubject
 0.9.0
     o subjectProfileCombine: fix extraction time limits in case no plot
     o remove panel border for empty plot

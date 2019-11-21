@@ -8,7 +8,7 @@ subjectProfileCombine(listPlots, timeLim = NULL, timeAlign = "all",
   timeAlignPerSubject = "none", subjectVar = "USUBJID",
   maxNLines = NULL, refLines = NULL, refLinesData = NULL,
   refLinesTimeVar = NULL, refLinesLabelVar = NULL, shiny = FALSE,
-  verbose = FALSE, nCores = 1)
+  verbose = FALSE, nCores = 1, reportPerSubject = FALSE)
 }
 \arguments{
 \item{listPlots}{list of subject profiles (modules/subjectsID)}
@@ -69,6 +69,9 @@ In this case, the \code{shiny} package should be available.}
 \item{nCores}{Integer containing the number of cores used for the computation
 (1 by default). If more than 1, computation is parallelized, in this case
 the package \code{parallel} is required.}
+
+\item{reportPerSubject}{Logical, if TRUE (FALSE by default)
+export a subject profile report by subject.}
 }
 \value{
 a list of \code{subjectProfilePlot} object, containing the combined

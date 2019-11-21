@@ -14,16 +14,20 @@
 #' Messages during report creation will be included in the Shiny interface,
 #' and it will be mentioned at the end of the report.
 #' In this case, the \code{shiny} package should be available.
+#' @param reportPerSubject Logical, if TRUE (FALSE by default)
+#' export a subject profile report by subject.
 #' @return a list of list of \code{\link[ggplot2]{ggplot}} object (subject/page)
 #' @author Laure Cougnaud
 #' @importFrom parallel makeCluster parSapply stopCluster
 #' @importFrom ggplot2 ggplotGrob
 #' @importFrom cowplot ggdraw draw_grob
 #' @importFrom grDevices graphics.off
-combineVerticallyGGplot <- function(listPlots, 
+combineVerticallyGGplot <- function(
+	listPlots, 
 	maxNLines = NULL, 
 	nCores = 1, 
-	shiny = FALSE, verbose = FALSE){
+	shiny = FALSE, verbose = FALSE,
+	reportPerSubject = FALSE){
 
 	if(shiny && !requireNamespace("shiny", quietly = TRUE))
 		stop("The package 'shiny' is required to report progress.")
@@ -87,12 +91,14 @@ combineVerticallyGGplot <- function(listPlots,
 
 	# extract maximum of left/right margin
 	getMaxMargin <- function(label){
-		marMax <- lapply(grobsMarginsInfo, function(x){
+		marMax <- sapply(grobsMarginsInfo, function(x){
 			mar <- lapply(x, function(y)	y[[label]])
 			do.call(max, mar)
-		})
+		}, simplify = FALSE)
 		# call convertUnit to keep only results of computation
-		do.call(max, marMax)
+		if(reportPerSubject){
+			marMax
+		}else	do.call(max, marMax)
 	}
 	leftMarginMax <- getMaxMargin(label = "leftMargin")
 	rightMarginMax <- getMaxMargin(label = "rightMargin")
@@ -104,11 +110,16 @@ combineVerticallyGGplot <- function(listPlots,
 			grob <- grobsAllSubjects[[patient]][[iPlot]]
 			widths <- grob$widths
 			marInfo <- grobsMarginsInfo[[patient]][[iPlot]]
+			
 			# adjust left margin
-			widths[1] <- leftMarginMax - sum(widths[setdiff(marInfo$idxLeftMargin, 1)])
+			leftMarginMaxPatient <- if(reportPerSubject){leftMarginMax[[patient]]}else{leftMarginMax}
+			widths[1] <- leftMarginMaxPatient - sum(widths[setdiff(marInfo$idxLeftMargin, 1)])
+			
 			# adjust right margin
+			rightMarginMaxPatient <- if(reportPerSubject){rightMarginMax[[patient]]}else{rightMarginMax}
 			idxRightMarginMax <- max(marInfo$idxRightMargin)
-			widths[idxRightMarginMax] <- rightMarginMax - sum(widths[setdiff(marInfo$idxRightMargin, idxRightMarginMax)])
+			widths[idxRightMarginMax] <- rightMarginMaxPatient - sum(widths[setdiff(marInfo$idxRightMargin, idxRightMarginMax)])
+			
 			grob$widths <- widths
 			
 			grob

@@ -19,7 +19,8 @@ subjectProfileCombine <- function(
 	refLinesTimeVar = NULL,
 	refLinesLabelVar = NULL,
 	shiny = FALSE, verbose = FALSE,
-	nCores = 1){
+	nCores = 1,
+	reportPerSubject = FALSE){
 	
 	if(shiny && !requireNamespace("shiny", quietly = TRUE))
 		stop("The package 'shiny' is required to report progress.")
@@ -119,7 +120,8 @@ subjectProfileCombine <- function(
 		maxNLines = maxNLines,
 		verbose = verbose,
 		shiny = shiny,
-		nCores = nCores
+		nCores = nCores,
+		reportPerSubject = reportPerSubject
 	)
 	
 	return(listPlotsPerSubject)
