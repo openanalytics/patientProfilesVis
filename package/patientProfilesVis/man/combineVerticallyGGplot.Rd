@@ -5,7 +5,7 @@
 \title{Combine vertically multiple \code{\link[ggplot2]{ggplot}}.}
 \usage{
 combineVerticallyGGplot(listPlots, maxNLines = NULL, nCores = 1,
-  shiny = FALSE, verbose = FALSE)
+  shiny = FALSE, verbose = FALSE, reportPerSubject = FALSE)
 }
 \arguments{
 \item{listPlots}{a list of subject profile (subject/modules)}
@@ -24,6 +24,9 @@ and it will be mentioned at the end of the report.
 In this case, the \code{shiny} package should be available.}
 
 \item{verbose}{logical, if TRUE print messages during execution}
+
+\item{reportPerSubject}{Logical, if TRUE (FALSE by default)
+export a subject profile report by subject.}
 }
 \value{
 a list of list of \code{\link[ggplot2]{ggplot}} object (subject/page)

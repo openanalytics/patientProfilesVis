@@ -35,8 +35,6 @@
 #' axis range. So for interval module(s) if the specified \code{timeLim}
 #' is smaller than the time limits in the input plot, no arrows are created in case than
 #' the time goes above/below specified \code{timeLim} (the segment is cut).
-#' @param reportPerSubject Logical, if TRUE (FALSE by default)
-#' export a subject profile report by subject.
 #' @inheritParams subjectProfileCombine
 #' @inheritParams subjectProfileIntervalPlot
 #' @inheritParams subjectProfileExport
@@ -133,7 +131,8 @@ createSubjectProfileReport <- function(
 		maxNLines = maxNLines,
 		shiny = shiny,
 		verbose = verbose,
-		nCores = nCores
+		nCores = nCores,
+		reportPerSubject = reportPerSubject
 	)
 	
 	if(!is.null(subjectSortData) & !is.null(subjectSortVar)){
