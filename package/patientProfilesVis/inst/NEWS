@@ -1,5 +1,6 @@
 0.9.2
     o createSubjectProfileReport: set knitr environment (to be used within rmd doc)
+    o export convertAesVar
 0.9.1
     o createSubjectProfileReport: margin set by patient if reportPerSubject
 0.9.0

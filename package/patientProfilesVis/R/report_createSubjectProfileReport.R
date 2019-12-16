@@ -290,6 +290,7 @@ subjectProfileExport <- function(
 	if(!exportFigures)	unlink("figures/", recursive = TRUE)
 	
 	setwd(oldwd)
+	unlink("Sweave.sty")
 	
 }
 
