@@ -222,7 +222,7 @@ createSubjectProfileReport <- function(
 #' @inheritParams subjectProfileCombine 
 #' @inheritParams subjectProfileIntervalPlot
 #' @importFrom tools texi2pdf file_path_sans_ext
-#' @importFrom knitr knit
+#' @importFrom knitr knit knit_patterns knit_hooks pat_rnw render_sweave
 #' @author Laure Cougnaud
 subjectProfileExport <- function(
 	listPlotsSubject, 
@@ -254,12 +254,21 @@ subjectProfileExport <- function(
 	assign("inputParameters", inputParameters, envir = inputParametersEnv)
 	
 	## convert Rnw -> tex
+	# in order that the function be called within Rmd doc:
+	# Sweave-specific patterns and render function should be set
+	# before calling: 'knitr::knit'
+	knitPatInit <- knit_patterns$get();knitHookInit <- knit_hooks$get()
+	# set Sweave pre-defined pattern list
+	pat_rnw()
+	# set output hooks for Sweave
+	render_sweave()
 	outputFileKnitr <- knitr::knit(
 		input = pathTemplateWd, 
 		output = pathTexFile,
-		quiet = TRUE,
-		envir = inputParametersEnv
+		envir = inputParametersEnv,
+		quiet = TRUE
 	)
+	knit_patterns$set(knitPatInit);knit_hooks$set(knitHookInit)
 	
 	## convert tex -> pdf
 	
