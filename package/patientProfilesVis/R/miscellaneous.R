@@ -321,6 +321,7 @@ subjectProfileTheme <- function(){
 #' @param var variable of \code{data} with aesthetic
 #' @return updated factor \code{var} variable
 #' @author Laure Cougnaud
+#' @export
 convertAesVar <- function(data, var){
 	x <- data[, var]
 	idxEmpty <- which(x == "")
