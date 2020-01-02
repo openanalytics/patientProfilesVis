@@ -293,12 +293,35 @@ missing start/end date are represented**.
 
 ```
 
+By default, **missing start/end values are represented as an arrow, positioned at the minimum/maximum
+time value per subject**.
 To set the values represented for records with missing start/end dates,
-the time limits can be specified via the `timeLim` parameter or a dataset,
-or extracted from a specified dataset containing the start/end date for each
-patient via the `timeLimData` and `timeLimVar` parameters.
-The second option is used below to extract the time limits based on all visits
-for a specific subject from the subject-level SDTM dataset.
+the **time limits can be specified** via the **`timeLim`** parameter
+or extracted from a **specified dataset containing the start/end date for each
+subject** via the **`timeLimData` and `timeLimVar`** parameters.
+
+```{r exampleIntervalModule-ae-timeLim}
+
+	aePlotsTimLim <- subjectProfileIntervalPlot(
+		data = dataAE,
+		paramVar = "AETERM",
+		timeStartVar = "AESTDY",
+		timeEndVar = "AEENDY",
+		colorVar = "AESEV",
+		labelVars = labelVarsSDTMPelican,
+		title = "Adverse events",
+		timeLim = c(0, NA)
+	)
+	
+```
+
+```{r exampleIntervalModule-ae-timeLim-include, echo = FALSE, fig.height = attributes(aePlotsTimLim[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste0("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", names(aePlotsTimLimFromSV)[1], ". Missing start/end date are extracted from the specified time limits.")}
+
+	print(aePlotsTimLim[[1]][[1]])
+
+```
+
+The second option is used below to extract the time limits based on all visits for a specific subject from the subject-level SDTM dataset.
 
 ```{r exampleIntervalModule-ae-timeLimData}
 
@@ -486,7 +509,7 @@ in Unicode format in hexadecimal (see [List of unicode symbols](https://en.wikip
 ### Non-alignment across subjects {#subjectIntervalTimeAlign}
 
 By default, the visualizations created with the `subjectProfileIntervalPlot`
-are aligned in the time-axis.
+are aligned in the time-axis across subjects.
 
 To obtain visualization which don't align, the parameter: `timeAlign` is set to FALSE.
 
@@ -852,14 +875,18 @@ corresponding numeric variable can be used for sorting:
 # Time transformation
 
 For certain module, it might be of interest to transform the time axis to e.g.
-'zoom' in the study timeframe.
+'zoom' in one part of the the study timeframe.
 The `timeTrans` parameter is used to specify a custom transformation of the time-axis.
 
-The `getTimeTrans` provides convenient transformations: 'asinh' and 'asinh' only for
-negative relative time.
-The latest is typically of interest for specific domain
-including a long time frame before baseline, 
-e.g. for concomitant medications which might be recorded long before the start of the study.
+The `getTimeTrans` provides convenient transformations: 
+
+* 'asinh': hyperbolic arc-sine transformation, to zoom in small time values (around 0).
+Negative and positive values are represented in a log-like fashion.
+* 'asinh-neg': hyperbolic arc-sine transformation only for
+negative relative time. The positive time frame is represented in a linear scale
+and negative times are represented in a log-like fashion.
+This is typically of interest for domains including events occurring/recorded
+long before the start of the study (e.g. concomitant medications).
 
 ```{r exampleIntervalModule-cm-timeTransformation}
 

@@ -1,4 +1,5 @@
-#' Create plot of subject profiles with segments for range of parameters 
+#' Create plot of subject profiles with segments for range of parameters.
+#' 
 #' If no start and/or end date is available and \code{timeStartShapeVar},
 #' \code{timeEndShapeVar} are not specified: specific arrows are created.
 #' @inherit formatTimeInterval details
@@ -322,8 +323,10 @@ subjectProfileIntervalPlot <- function(
 					
 			# set time limits for the x-axis
 			# default: FALSE in case time limits are changed afterwards
-			if(!is.null(timeLim) & timeAlign)
-				gg <- gg + coord_cartesian(xlim = timeLim, default = TRUE)
+			if(!is.null(timeLim) & timeAlign){
+				timeLimSubject <- if(is.list(timeLimInit))	timeLimInit[[subject]]	else	timeLimInit
+				gg <- gg + coord_cartesian(xlim = timeLimSubject, default = TRUE)
+			}
 
 			# to deal with custom shape (e.g. partial dates)
 			# use geom_point
@@ -421,7 +424,9 @@ subjectProfileIntervalPlot <- function(
 #' \item{'timeLim': }{vector of length 2 with minimum/maximum time limits across subjects.
 #' }
 #' \item{'timeLimSpecified': }{vector of length 2 with time limits as specified by the user,
-#' either extracted from \code{timeLim} or from \code{timeLimData}
+#' either extracted from \code{timeLim} or from \code{timeLimData}.
+#' If missing value within \code{timeLim}, the corresponding minimum/maximum
+#' value in the (updated) data is used.
 #' }
 #' }
 #' @importFrom plyr ddply
@@ -469,14 +474,14 @@ formatTimeInterval <- function(data,
 		# check missing start date		
 		x$missingStartPlot <- is.na(x[, timeStartVar])
 		if(any(x$missingStartPlot)){
-			startTime <- ifelse(!is.null(timeLim), timeLim[1], min(timeRangeData))
+			startTime <- ifelse(!is.null(timeLim) && !is.na(timeLim[1]), timeLim[1], min(timeRangeData))
 			x[x$missingStartPlot, timeStartVar] <- startTime
 		}
 		
 		# check missing end date
 		x$missingEndPlot <- is.na(x[, timeEndVar])
 		if(any(x$missingEndPlot)){
-			endTime <- ifelse(!is.null(timeLim), timeLim[2], max(timeRangeData))
+			endTime <- ifelse(!is.null(timeLim) && !is.na(timeLim[2]), timeLim[2], max(timeRangeData))
 			x[x$missingEndPlot, timeEndVar] <- endTime
 		}
 		
@@ -488,11 +493,17 @@ formatTimeInterval <- function(data,
 	data$missingStartEndPlot <- with(data, interaction(missingStartPlot, missingEndPlot))
 	
 	timeLimSpecified <- if(!is.null(timeLim)){
-		timeLim
+				
+		formatTimeLim(
+			data = data, subjectVar = subjectVar, 
+			timeStartVar = timeStartVar, timeEndVar = timeEndVar, timeLim = timeLim
+		)
+
 	}else if(timeLimDataSpec){
 		range(timeLimData[, c(timeLimStartVar, timeLimEndVar)], na.rm = TRUE)
 	}
 	
+	# time limits for the plot
 	if(is.null(timeLim)){
 		timeLim <- if(timeLimDataSpec){
 			range(timeLimData[, c(timeLimStartVar, timeLimEndVar)], na.rm = TRUE)

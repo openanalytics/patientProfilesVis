@@ -75,6 +75,12 @@ subjectProfileEventPlot <- function(
 		revert = TRUE, width = formatReport$yLabelWidth
 	)
 	
+	
+	timeLim <- formatTimeLim(
+		data = data, subjectVar = subjectVar, 
+		timeStartVar = timeVar, timeEndVar = timeVar, timeLim = timeLim
+	)
+	
 	listPlots <- dlply(data, subjectVar, function(dataSubject){	
 				
 		subject <- unique(dataSubject[, subjectVar])
@@ -130,8 +136,10 @@ subjectProfileEventPlot <- function(
 			
 			# set time limits for the x-axis
 			# default: TRUE in case time limits are changed afterwards
-			if(!is.null(timeLim))
-				gg <- gg + coord_cartesian(xlim = timeLim, default = TRUE)
+			if(!is.null(timeLim)){
+				timeLimSubject <- if(is.list(timeLim))	timeLim[[subject]]	else	timeLim
+				gg <- gg + coord_cartesian(xlim = timeLimSubject, default = TRUE)
+			}
 			
 			## extract number of lines
 			

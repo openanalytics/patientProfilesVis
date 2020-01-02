@@ -102,4 +102,50 @@ test_that("createSubjectProfileReport - text module - long axis label and table 
 			
 })
 
+test_that("createSubjectProfileReport - specification of only one time limit", {
+			
+	# AEPTCD: preferred term code
+	dataAE <- SDTMDataPelican$AE
+	
+	aePlots <- subjectProfileIntervalPlot(
+		data = dataAE,
+		paramVar = "AETERM",
+		timeStartVar = "AESTDY",
+		timeEndVar = "AEENDY",
+		colorVar = "AESEV",
+		labelVars = labelVarsSDTMPelican,
+		title = "Adverse events",
+		timeLim = c(0, NA)
+	)
+	
+	library(glpgUtilityFct)
+	data(SDTMDataPelican)
+	data(labelVarsSDTMPelican)
+	
+	# prepare data for plots:
+	dataLB <- SDTMDataPelican$LB
+	# sort the categories (empty values '' becomes NA)
+	dataLB$LBNRIND <- factor(dataLB$LBNRIND, levels = c("LOW", "NORMAL", "HIGH"))
+	lbLinePlots <- subjectProfileLinePlot(
+		data = dataLB,
+		paramNameVar = "LBTEST", 
+		paramValueVar = "LBSTRESN",
+		paramGroupVar = "LBSCAT",
+		paramValueRangeVar = c("LBSTNRLO", "LBSTNRHI"),
+		timeVar = "LBDY",
+		title = "Laboratory test measurements: actual value",
+		labelVars = labelVarsSDTMPelican
+	)
+	
+	lPlots <- list(aePlots, lbLinePlots)
+	createSubjectProfileReport(
+		listPlots = lPlots,
+		outputFile = "subjectProfile_timeLim_oneMissing.pdf",
+		subset = names(aePlots)[1:2],
+		verbose = TRUE
+	)
+	
+})
+
+
 

@@ -16,7 +16,8 @@ subjectProfileLinePlot(data, paramValueVar,
   subsetValue = NULL, xLab = getLabelVar(timeVar, labelVars =
   labelVars), yLab = "", timeLim = NULL, title = paramLab,
   label = title, labelVars = NULL,
-  formatReport = subjectProfileReportFormat(), paging = TRUE)
+  formatReport = subjectProfileReportFormat(), paging = TRUE,
+  alpha = 1)
 }
 \arguments{
 \item{data}{data.frame with data}
@@ -89,6 +90,8 @@ e.g. output of the \code{\link{subjectProfileReportFormat}} function}
 
 \item{paging}{Logical, if TRUE (by default), the automatic 
 paging is enabled, otherwise only one page is used.}
+
+\item{alpha}{Numeric with transparency, 1 by default.}
 }
 \value{
 List of (across subjects) of list (across modules) 

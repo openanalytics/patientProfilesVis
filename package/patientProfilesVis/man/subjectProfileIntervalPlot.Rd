@@ -2,9 +2,7 @@
 % Please edit documentation in R/subjectProfileIntervalPlot.R
 \name{subjectProfileIntervalPlot}
 \alias{subjectProfileIntervalPlot}
-\title{Create plot of subject profiles with segments for range of parameters 
-If no start and/or end date is available and \code{timeStartShapeVar},
-\code{timeEndShapeVar} are not specified: specific arrows are created.}
+\title{Create plot of subject profiles with segments for range of parameters.}
 \usage{
 subjectProfileIntervalPlot(data, paramVar, paramVarSep = " - ",
   paramLab = toString(getLabelVar(paramVar, labelVars = labelVars)),
@@ -125,7 +123,6 @@ also of class \code{subjectProfileIntervalPlot}, with additional metaData attrib
 '\code{label}' and 'timeLim' and 'timeTrans' (if specified).
 }
 \description{
-Create plot of subject profiles with segments for range of parameters 
 If no start and/or end date is available and \code{timeStartShapeVar},
 \code{timeEndShapeVar} are not specified: specific arrows are created.
 }

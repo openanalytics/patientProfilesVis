@@ -717,3 +717,36 @@ isSubjectProfileTimeVariant <- function(gg, empty = TRUE){
 	}
 	return(test)
 }
+
+#' Format specified \code{timeLim}.
+#' 
+#' In case one of the limits if missing,
+#' the corresponding minimum/maximum across subjects is used.
+#' @inheritParams subjectProfileIntervalPlot
+#' @return Numeric vector of length 2 or list of such element
+#' for each subject.
+#' @importFrom plyr dlply
+#' @author Laure Cougnaud
+formatTimeLim <- function(data, subjectVar = "USUBJID", 
+	timeStartVar, timeEndVar, timeLim = NULL){
+	
+	if(!is.null(timeLim)){
+		
+		if(any(is.na(timeLim))){
+			
+			idxTimeLimNA <- which(is.na(timeLim))
+			timeLim <- dlply(data, subjectVar, function(dataSubject){
+				timeLimData <- with(dataSubject, c(
+					min(get(timeStartVar), na.rm = TRUE), 
+					max(get(timeEndVar), na.rm = TRUE))
+				)
+				ifelse(is.na(timeLim), timeLimData, timeLim)
+			})
+	
+		}
+		
+	}
+	
+	return(timeLim)
+	
+}

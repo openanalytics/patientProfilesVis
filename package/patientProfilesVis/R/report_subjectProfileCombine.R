@@ -361,7 +361,7 @@ getXLimSubjectProfilePlots <- function(
 				switch(
 					timeAlignPerSubject,
 					'all' = names(listPlots),
-					'none' = NULL,
+					'none' = character(),
 					timeAlignPerSubject
 				)
 			}else	timeAlignPerSubject
@@ -436,14 +436,18 @@ getXLimSubjectProfilePlots <- function(
 				
 				}else{
 					
-					if(timeAlignPerSubject)
+					if(length(alignPerSubjectMod))
 						warning(paste("Alignment per subject is not available for module", mod,
 							"because time limits were specified during module creation."))
 					
-					setNames(
-						replicate(length(listPlotsMod), timeLimPlots, simplify = FALSE),
-						names(listPlotsMod)
-					)
+					# if timeLim same across subjects: replicate
+					if(!is.list(timeLimPlots)){
+						setNames(
+							replicate(length(listPlotsMod), timeLimPlots, simplify = FALSE),
+							names(listPlotsMod)
+						)
+					# if not (e.g. one of the specified timeLim is missing)
+					}else	timeLimPlots[names(listPlotsMod)]
 					
 				}
 				
