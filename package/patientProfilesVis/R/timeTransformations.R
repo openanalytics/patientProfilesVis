@@ -2,8 +2,8 @@
 #' in patient profiles.
 #' @param type String with transformation type, either:
 #' \itemize{
-#' \item{'asinh': }{asinh transformation}
-#' \item{'asinh-neg': }{asinh transformation only for the negative values,
+#' \item{'asinh': }{hyperbolic arc-sine (\code{\link{asinh}}) transformation}
+#' \item{'asinh-neg': }{hyperbolic arc-sine transformation only for the negative values,
 #' otherwise linear scale}
 #' }
 #' @param scale Numeric vector of length 1 (1 by default)

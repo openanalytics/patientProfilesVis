@@ -37,7 +37,9 @@ set to TRUE if the records had missing \code{timeStartVar} and \code{timeEndVar}
 \item{'timeLim': }{vector of length 2 with minimum/maximum time limits across subjects.
 }
 \item{'timeLimSpecified': }{vector of length 2 with time limits as specified by the user,
-either extracted from \code{timeLim} or from \code{timeLimData}
+either extracted from \code{timeLim} or from \code{timeLimData}.
+If missing value within \code{timeLim}, the corresponding minimum/maximum
+value in the (updated) data is used.
 }
 }
 }

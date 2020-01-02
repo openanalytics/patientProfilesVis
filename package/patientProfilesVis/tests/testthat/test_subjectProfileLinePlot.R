@@ -12,7 +12,7 @@ dataLB$LBNRIND <- factor(dataLB$LBNRIND, levels = c("LOW", "NORMAL", "HIGH"))
 test_that("subjectProfileLinePlot - basic plot", {
 					
 	lbLinePlots <- subjectProfileLinePlot(
-		data = dataLB,
+		data = subset(dataLB, USUBJID == "study-4902-02"),
 		paramNameVar = "LBTEST", 
 		paramValueVar = "LBSTRESN",
 		paramGroupVar = "LBSCAT",

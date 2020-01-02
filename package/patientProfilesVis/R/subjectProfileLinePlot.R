@@ -45,7 +45,8 @@ subjectProfileLinePlot <- function(
 	label = title,
 	labelVars = NULL,
 	formatReport = subjectProfileReportFormat(),
-	paging = TRUE
+	paging = TRUE,
+	alpha = 1
 ){
 	
 	# in case data is a tibble:
@@ -81,6 +82,11 @@ subjectProfileLinePlot <- function(
 		data[, shapeVar] <- convertAesVar(data, var = shapeVar)
 		if(is.null(shapePalette))	shapePalette <- getGLPGShapePalettePatientProfile(x = data[, shapeVar])
 	}
+	
+	timeLim <- formatTimeLim(
+		data = data, subjectVar = subjectVar, 
+		timeStartVar = timeVar, timeEndVar = timeVar, timeLim = timeLim
+	)
 	
 	listPlots <- dlply(data, subjectVar, function(dataSubject){	
 				
@@ -191,8 +197,10 @@ subjectProfileLinePlot <- function(
 		
 			# set time limits for the x-axis
 			# default: FALSE in case time limits are changed afterwards
-			if(!is.null(timeLim))
-				gg <- gg + coord_cartesian(xlim = timeLim, default = TRUE)
+			if(!is.null(timeLim)){
+				timeLimSubject <- if(is.list(timeLim))	timeLim[[subject]]	else	timeLim
+				gg <- gg + coord_cartesian(xlim = timeLimSubject, default = TRUE)
+			}
 		
 			## extract number of lines
 			
