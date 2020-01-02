@@ -45,7 +45,7 @@ test_that("createSubjectProfileReport - unicode symbols", {
 })
 
 
-test_that("createSubjectProfileReport - unicode symbols", {
+test_that("createSubjectProfileReport - text module - long axis label and table format", {
 			
 	dataPlot <- SDTMDataPelican$AE		
 	dataPlot[1, "AEDECOD"] <- paste(sample(LETTERS, size = 200, replace = TRUE), collapse = " ")
@@ -68,12 +68,38 @@ test_that("createSubjectProfileReport - unicode symbols", {
 	
 	createSubjectProfileReport(
 		listPlots = list(aeListingPlotsTable, aeListingPlots),
-		outputFile = "subjectProfile_textTable.pdf",
+		outputFile = "subjectProfile_longVariable.pdf",
 #		subjectSubset = "study-4909-01",
 		exportFigures = TRUE,
 		verbose = TRUE
 	)
 	
+})
+
+
+test_that("createSubjectProfileReport - text module - long axis label and table format", {
+			
+	# AEPTCD: preferred term code
+	dataAE <- SDTMDataPelican$AE
+	
+	aePlots <- subjectProfileIntervalPlot(
+		data = dataAE,
+		paramVar = "AETERM",
+		timeStartVar = "AESTDY",
+		timeEndVar = "AEENDY",
+		colorVar = "AESOC",
+		labelVars = labelVarsSDTMPelican,
+		title = "Adverse events"
+	)
+	attr(aePlots[["study-4903-04"]][[1]], "metaData")$nLines
+	
+	createSubjectProfileReport(
+		listPlots = list(aePlots),
+		outputFile = "subjectProfile_legend.pdf",
+		subset = "study-4903-04",
+		verbose = TRUE
+	)
+			
 })
 
 

@@ -10,12 +10,13 @@ subjectProfileEventPlot(data, paramVar,
   colorLab = getLabelVar(colorVar, labelVars = labelVars),
   colorPalette = NULL, shapeVar = colorVar,
   shapeLab = getLabelVar(shapeVar, labelVars = labelVars),
-  shapePalette = NULL, timeVar, timeTrans = NULL, timeExpand = NULL,
-  subjectVar = "USUBJID", subjectSubset = NULL, subsetData = NULL,
-  subsetVar = NULL, subsetValue = NULL, xLab = getLabelVar(timeVar,
-  labelVars = labelVars), yLab = "", timeLim = NULL,
-  title = paramLab, label = title, labelVars = NULL,
-  formatReport = subjectProfileReportFormat(), paging = TRUE)
+  shapePalette = NULL, alpha = 1, timeVar, timeTrans = NULL,
+  timeExpand = NULL, subjectVar = "USUBJID", subjectSubset = NULL,
+  subsetData = NULL, subsetVar = NULL, subsetValue = NULL,
+  xLab = getLabelVar(timeVar, labelVars = labelVars), yLab = "",
+  timeLim = NULL, title = paramLab, label = title,
+  labelVars = NULL, formatReport = subjectProfileReportFormat(),
+  paging = TRUE)
 }
 \arguments{
 \item{data}{data.frame with data}
@@ -41,6 +42,8 @@ If specified, the parameters will be grouped by this(these) variable(s) in the y
 \item{shapeLab}{string, label for \code{shapeVar}}
 
 \item{shapePalette}{named vector with shape for \code{shapeVar}}
+
+\item{alpha}{Numeric with transparency, 1 by default.}
 
 \item{timeVar}{string, variable of \code{data} with time}
 

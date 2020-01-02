@@ -67,11 +67,13 @@ getNLinesYGgplot <- function(gg){
 #' and title (\code{legendTitle})
 #' @param gg \code{\link[ggplot2]{ggplot2}} object
 #' @param values Vector with unique legend values
+#' @param data Data.frame with data
+#' @param var Character vector with variable in legend.
 #' @param title Vector with legend title
 #' @return integer with (approximated) number of lines
 #' @author Laure Cougnaud
 #' @importFrom ggplot2 ggplot_gtable ggplot_build
-getNLinesLegend <- function(gg, values, title){
+getNLinesLegend <- function(gg, values, data, var, title){
 	
 	if(!missing(gg)){
 	
@@ -105,9 +107,21 @@ getNLinesLegend <- function(gg, values, title){
 
 	}else	if(!missing(values)){
 		
-		nLinesLegendTotal <- sum(countNLines(values)) + if(!missing(title))	countNLines(title)
+		nLinesLegendTotal <- sum(countNLines(values))
+		
+	}else	if(!missing(data) & !missing(var)){
+		
+		nLinesLegendList <- lapply(var, function(varI){
+			x <- data[, varI]
+			values <- if(is.factor(x))	levels(x)	else unique(x)
+			getNLinesLegend(values = values)	
+		})
+		nLinesLegendTotal <- sum(unlist(nLinesLegendList))
 		
 	}else	stop("Legend values via 'values' or a ggplot2 object via 'gg' should be specified.")
+	
+	if(missing(gg) & !missing(title))
+		nLinesLegendTotal <- nLinesLegendTotal + countNLines(title)
 	
 	return(nLinesLegendTotal)
 	

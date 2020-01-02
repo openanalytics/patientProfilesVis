@@ -16,8 +16,9 @@ subjectProfileIntervalPlot(data, paramVar, paramVarSep = " - ",
   rangeSimilarStartEnd = NULL, xLab = paste(getLabelVar(c(timeStartVar,
   timeEndVar), labelVars = labelVars), collapse = "/"), yLab = "",
   colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars =
-  labelVars), colorPalette = NULL, timeStartShapeVar = NULL,
-  timeEndShapeVar = NULL, shapePalette = NULL,
+  labelVars), colorPalette = NULL, alpha = 1,
+  timeStartShapeVar = NULL, timeEndShapeVar = NULL,
+  shapePalette = NULL,
   shapeLab = toString(unique(getLabelVar(c(timeStartShapeVar,
   timeEndShapeVar), labelVars = labelVars))), shapeSize = rel(1),
   title = paramLab, label = title, labelVars = NULL,
@@ -91,6 +92,8 @@ By default, a thousandth of the range of \code{timeLim}
 \item{colorLab}{string, label for \code{colorVar}}
 
 \item{colorPalette}{named vector with color for \code{colorVar}}
+
+\item{alpha}{Numeric with transparency, 1 by default.}
 
 \item{timeStartShapeVar, timeEndShapeVar}{(optional) string with
 names of the variables in \code{data} used for symbol shape

@@ -35,6 +35,7 @@
 #' e.g. produced by the \code{\link{getTimeTrans}} function.
 #' @param timeExpand Vector of range expansion constants for the time axis
 #' (see \code{expand} parameter of the \code{\link[ggplot2]{scale_x_continuous}} function).
+#' @param alpha Numeric with transparency, 1 by default.
 #' @inheritParams filterData
 #' @inheritParams formatParamVar
 #' @inheritParams formatTimeInterval
@@ -66,6 +67,7 @@ subjectProfileIntervalPlot <- function(
 	yLab = "",
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
 	colorPalette = NULL,
+	alpha = 1,
 	timeStartShapeVar = NULL, timeEndShapeVar = NULL,
 	shapePalette = NULL, 
 	shapeLab = toString(unique(getLabelVar(c(timeStartShapeVar, timeEndShapeVar), labelVars = labelVars))),
@@ -171,7 +173,8 @@ subjectProfileIntervalPlot <- function(
 			geomSegmentCustom <- function(..., show.legend = FALSE){
 				geom_segment(
 					do.call(aes_string, aesArgs),
-					size = 2, show.legend = show.legend, ...
+					size = 2, show.legend = show.legend, 
+					alpha = alpha, ...
 				) 
 			}
 					
@@ -220,7 +223,8 @@ subjectProfileIntervalPlot <- function(
 						mapping = do.call(aes_string, aesPC), 
 						fill = "white",
 						size = shapeSize,
-						position = position_nudge(y = -0.01)
+						position = position_nudge(y = -0.01),
+						alpha = alpha
 					)
 				}
 				
@@ -335,15 +339,12 @@ subjectProfileIntervalPlot <- function(
 			nLinesLegend <- 0
 			# for the color variable
 			if(!is.null(colorVar))
-				nLinesLegend <- getNLinesLegend(
-					values = unique(dataSubjectPage[, colorVar]), 
-					title = colorLab
-				)
+				nLinesLegend <- getNLinesLegend(data = data, var = colorVar, title = colorLab)
 			if(hasShapeVar){
-				shapes <- unique(unlist(dataSubjectPage[, c(timeStartShapeVar, timeEndShapeVar)]))
 				nLinesLegend <- nLinesLegend +
 					getNLinesLegend(
-						values = shapes, 
+						data = data,
+						var = c(timeStartShapeVar, timeEndShapeVar),
 						title = shapeLab
 				)
 			}
