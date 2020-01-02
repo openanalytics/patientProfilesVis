@@ -221,8 +221,11 @@ prepareSubjectProfile <- function(
 					if(!is.null(timeExpandMod))	list(expand = timeExpandMod),
 					if(!is.null(timeTransMod))	list(trans = timeTransMod)
 				)
+				# warning removed because message already include at checkTime[Trans|Expand]
 				if(length(argsScaleX) > 0)
-					gg <- gg + do.call("scale_x_continuous", argsScaleX)
+					suppressMessages(
+						gg <- gg + do.call("scale_x_continuous", argsScaleX)
+					)
 				
 				# extract time limits for the module
 				getTimeLim <- function(timeLim, el){
