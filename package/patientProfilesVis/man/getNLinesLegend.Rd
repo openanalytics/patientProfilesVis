@@ -7,12 +7,16 @@ either from directly the \code{\link[ggplot2]{ggplot2}} object,
 or from the values of the legend (\code{legendValues})
 and title (\code{legendTitle})}
 \usage{
-getNLinesLegend(gg, values, title)
+getNLinesLegend(gg, values, data, var, title)
 }
 \arguments{
 \item{gg}{\code{\link[ggplot2]{ggplot2}} object}
 
 \item{values}{Vector with unique legend values}
+
+\item{data}{Data.frame with data}
+
+\item{var}{Character vector with variable in legend.}
 
 \item{title}{Vector with legend title}
 }

@@ -22,6 +22,7 @@ subjectProfileEventPlot <- function(
 	colorPalette = NULL,
 	shapeVar = colorVar, shapeLab = getLabelVar(shapeVar, labelVars = labelVars),
 	shapePalette = NULL,
+	alpha = 1,
 	timeVar, timeTrans = NULL, timeExpand = NULL,
 	subjectVar = "USUBJID", subjectSubset = NULL, 
 	subsetData = NULL, subsetVar = NULL, subsetValue = NULL,
@@ -101,7 +102,7 @@ subjectProfileEventPlot <- function(
 			gg <- ggplot(data = dataSubjectPage) +
 				geom_point(
 					do.call(aes_string, aesArgs),
-					size = 3
+					size = 3, alpha = alpha
 				) +
 				scale_y_discrete(drop = TRUE) +
 				subjectProfileTheme() +
@@ -141,9 +142,9 @@ subjectProfileEventPlot <- function(
 			# legend:
 			nLinesLegend <- 0 +
 				if(!is.null(colorVar))
-					getNLinesLegend(values = unique(dataSubjectPage[, colorVar]), title = colorLab) +
+					getNLinesLegend(data = data, var = colorVar, title = colorLab) +
 				if(!is.null(shapeVar))
-					getNLinesLegend(values = unique(dataSubjectPage[, shapeVar]), title = shapeLab) +
+					getNLinesLegend(data = data, var = shapeVar, title = shapeLab) +
 				# 1 line to separate the two legends if color and shape are specified and different
 				# (ggplot will create separate legend if the title differ)
 				if(!is.null(colorVar) & !is.null(shapeVar) && (colorVar != shapeVar || colorLab != shapeLab))	1

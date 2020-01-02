@@ -128,7 +128,7 @@ subjectProfileLinePlot <- function(
 				dataSubjectPage[which(dataSubjectPage[, paramNameVar] %in% paramNameRetained), ]
 			}else	dataLine <- dataSubjectPage
 			if(nrow(dataLine) > 0)
-				gg <- gg + geom_line(data = dataLine)
+				gg <- gg + geom_line(data = dataLine, alpha = alpha)
 			
 			# point
 			aesArgsPoint <- c(
@@ -137,7 +137,7 @@ subjectProfileLinePlot <- function(
 			)
 			gg <- gg +
 				if(length(aesArgsPoint) > 0){
-					geom_point(do.call(aes_string, aesArgsPoint))
+					geom_point(do.call(aes_string, aesArgsPoint), alpha = alpha)
 				}else geom_point()
 			
 			# general
@@ -199,10 +199,10 @@ subjectProfileLinePlot <- function(
 			# in legend
 			nLinesLegend <- 0 +
 				# for the color variable
-				if(!is.null(colorVar))	getNLinesLegend(values = unique(dataSubjectPage[, colorVar]), title = colorLab) + 
+				if(!is.null(colorVar))	getNLinesLegend(data = data, var = colorVar, title = colorLab) + 
 				# for the shape variable
 				if(!is.null(shapeVar))
-					getNLinesLegend(values = unique(dataSubjectPage[, shapeVar]), title = shapeLab) + 
+					getNLinesLegend(data = data, var = shapeVar, title = shapeLab) + 
 				# 1 line to separate the two legends if color and shape are specified and different
 				# (ggplot will create separate legend if the title differ)
 				if(!is.null(colorVar) & !is.null(shapeVar) && (colorVar != shapeVar || colorLab != shapeLab))	1
