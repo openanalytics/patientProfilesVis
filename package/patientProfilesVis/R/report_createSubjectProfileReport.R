@@ -261,7 +261,8 @@ subjectProfileExport <- function(
 	# set Sweave pre-defined pattern list
 	pat_rnw()
 	# set output hooks for Sweave
-	render_sweave()
+	# suppress warning("unable to find LaTeX package 'Sweave'; will use a copy from knitr")
+	suppressWarnings(render_sweave())
 	outputFileKnitr <- knitr::knit(
 		input = pathTemplateWd, 
 		output = pathTexFile,
