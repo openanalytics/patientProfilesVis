@@ -461,7 +461,8 @@ getXLimSubjectProfilePlots <- function(
 			
 			# extract limits across modules for each subject
 			timeLimPerSubj <- do.call(mapply, 
-				c(timeLimPlotsSubj[alignMod],
+				c(
+					timeLimPlotsSubj[alignMod],
 					list(FUN = range, na.rm = TRUE, SIMPLIFY = FALSE))
 			)
 			timeLim <- setNames(

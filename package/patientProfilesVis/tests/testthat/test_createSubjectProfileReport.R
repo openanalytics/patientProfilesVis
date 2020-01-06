@@ -137,12 +137,20 @@ test_that("createSubjectProfileReport - specification of only one time limit", {
 		labelVars = labelVarsSDTMPelican
 	)
 	
-	lPlots <- list(aePlots, lbLinePlots)
+	lPlots <- list(AE = aePlots, LB = lbLinePlots)
 	createSubjectProfileReport(
 		listPlots = lPlots,
 		outputFile = "subjectProfile_timeLim_oneMissing.pdf",
 		subset = names(aePlots)[1:2],
 		verbose = TRUE
+	)
+	
+	createSubjectProfileReport(
+		listPlots = lPlots,
+		outputFile = "subjectProfile_timeLim_oneMissing.pdf",
+		subset = names(aePlots)[1:2],
+		verbose = TRUE,
+		timeAlign = "AE"
 	)
 	
 })
