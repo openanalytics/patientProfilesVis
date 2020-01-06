@@ -315,7 +315,7 @@ subject** via the **`timeLimData` and `timeLimVar`** parameters.
 	
 ```
 
-```{r exampleIntervalModule-ae-timeLim-include, echo = FALSE, fig.height = attributes(aePlotsTimLim[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste0("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", names(aePlotsTimLimFromSV)[1], ". Missing start/end date are extracted from the specified time limits.")}
+```{r exampleIntervalModule-ae-timeLim-include, echo = FALSE, fig.height = attributes(aePlotsTimLim[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste0("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", names(aePlotsTimLim)[1], ". Missing start/end date are extracted from the specified time limits.")}
 
 	print(aePlotsTimLim[[1]][[1]])
 
@@ -921,7 +921,12 @@ The function `createSubjectProfileReport` has mainly two purposes:
   `subjectProfileCombine` function)
 * creating a _pdf_ report containing the resulting plots (one page per subject)
 
-## Reference lines for Statistical Analysis Plan
+## Reference lines
+
+### Reference lines for Statistical Analysis Plan
+
+As the creation of the report is time-consuming, the report creation
+is not run during the vignette creation.
 
 ```{r createReportWithAllModules-referenceLinesFromSAP, eval = FALSE}
 
@@ -976,11 +981,13 @@ The function `createSubjectProfileReport` has mainly two purposes:
 
 ```
 
-## Reference lines from subject visits
+### Reference lines from subject visits
 
 In the following example: the reference lines are extracted from the subject
 visits: `SV` dataset. Bookmarks are used to reference the sex and arm for each
 subject.
+
+As the creation of the report is time-consuming, the report creation is not run during the vignette creation.
 
 ```{r createReportWithAllModules-referenceLinesFromSV, eval = FALSE}
 
@@ -1009,43 +1016,136 @@ when combining a visualization displaying concomitant medications
 with historical data with a high time range and 
 visualization of events occuring only during the study 
 timeframe; or for modules with different time units:
-the `createSubjectProfileReport` should be called
-with the parameter `timeAlign` set to `FALSE`.
+the modules to be aligned can be specified to the `timeAlign`
+parameter.
 
 Please note that the corresponding interval module(s)
 should also be created with the parameter: `timeAlign = FALSE`
 in the function `subjectProfileIntervalPlot` call 
 (see section [Interval module](#subjectIntervalTimeAlign)).
 
-```{r createReportWithAllModules, eval = FALSE}
+Please find an example below of subject profiles displaying 
+the adverse events occurring from baseline associated with
+the laboratory measurements before and after baseline.
 
-	# extract patients with CM starting early/late
-	CMWithStartEnd <- subset(SDTMDataPelican$CM, !is.na(CMSTDY))
-	subjectSubset <- CMWithStartEnd[c(which.max(CMWithStartEnd$CMSTDY), which.min(CMWithStartEnd$CMSTDY)), "USUBJID"]
-	
-	# create report
-	createSubjectProfileReport(
-		# general
-		listPlots = list(dmPlots, cmPlotsNotAligned, exPlots, aePlots, lbPlotsColor),
-		subset = subjectSubset,
-		timeAlign = FALSE,
-		outputFile = "subjectProfile_SDTM_referenceLinesFromSV_nonAlign.pdf",
-		# reference line(s)
-		refLinesData = SDTMDataPelican$SV,
-		refLinesTimeVar = "SVSTDY",
-		refLinesLabelVar = "VISIT",
-		# bookmark(s)
-		bookmarkData = SDTMDataPelican$DM,
-		bookmarkVar = c("SEX", "ARM"),
-		labelVars = attr(SDTMDataPelican, "labelVars"),
-		exportFigures = TRUE
+```{r createReportWithAllModules-example}
+
+	# Adverse events visualization
+	dataAE <- SDTMDataPelican$AE
+	aePlots <- subjectProfileIntervalPlot(
+		data = dataAE,
+		paramVar = "AETERM",
+		timeStartVar = "AESTDY",
+		timeEndVar = "AEENDY",
+		colorVar = "AESEV",
+		labelVars = labelVarsSDTMPelican,
+		title = "Adverse events",
+		# occurring from baseline on
+		timeLim = c(0, NA)
 	)
 
+	# Laboratory measurements
+	dataLB <- SDTMDataPelican$LB
+	# sort the categories (empty values '' becomes NA)
+	dataLB$LBNRIND <- factor(dataLB$LBNRIND, levels = c("LOW", "NORMAL", "HIGH"))
+	lbLinePlots <- subjectProfileLinePlot(
+		data = dataLB,
+		paramNameVar = "LBTEST", 
+		paramValueVar = "LBSTRESN",
+		paramGroupVar = "LBSCAT",
+		paramValueRangeVar = c("LBSTNRLO", "LBSTNRHI"),
+		timeVar = "LBDY",
+		title = "Laboratory test measurements: actual value",
+		labelVars = labelVarsSDTMPelican
+	)
+
+	# create the list of visualizations
+	# The list is named in order that the names are used
+	# to reference the module for the alignment parameters
+	lPlots <- list(AE = aePlots, LB = lbLinePlots)
+	subsetPatients <- Reduce(intersect, lapply(lPlots, names))[1:2]
+
+```
+
+### Visualizations aligned across domains and subjects
+
+By default, the visualizations are aligned across domains (`timeAlign` is 'all') 
+and subjects (`timeAlignPerSubject`  is "none").
+
+Please note that because all domains are aligned, the adverse event domain
+is extended to also contain the times for laboratory measurements
+(and not only from baseline on as specified during the creation of the AE visualizations). 
+
+```{r createReportWithAllModules-default, out.width = "100%", out.height = "700px"}
+
+	pathReport <- "subjectProfile_timeAlign-all_timeAlignPerSubject-none.pdf"
+	createSubjectProfileReport(
+		listPlots = lPlots,
+		outputFile = pathReport,
+		subset = subsetPatients
+	)
+	include_graphics(pathReport)
+	
+```
+
+### Visualizations aligned across subjects only for a specific domain
+
+The visualizations are aligned only for the adverse events domain 
+(`timeAlign` set to: 'AE') and across subjects (`timeAlignPerSubject`  is "none").
+The specified time limits are used for the adverse events module.
+
+```{r createReportWithAllModules-timeAlign-AE, out.width = "100%", out.height = "700px"}
+
+	pathReport <- "subjectProfile_timeAlign-AE_timeAlignPerSubject-none.pdf"
+	createSubjectProfileReport(
+		listPlots = lPlots,
+		outputFile = pathReport,
+		subset = subsetPatients,
+		timeAlign = "AE"
+	)
+	include_graphics(pathReport)
+	
+```
+
+### Visualizations not aligned across domains
+
+The visualizations are not aligned across domain (`timeAlign` set to: 'none') neither subjects (`timeAlignPerSubject`  is "none").
+
+```{r createReportWithAllModules-timeAlign-none, out.width = "100%", out.height = "700px"}
+
+	pathReport <- "subjectProfile_timeAlign-none_timeAlignPerSubject-none.pdf"
+	createSubjectProfileReport(
+		listPlots = lPlots,
+		outputFile = pathReport,
+		subset = subsetPatients,
+		timeAlign = "none"
+	)
+	include_graphics(pathReport)
+	
+```
+
+### Visualizations aligned per subject
+
+The visualizations are aligned (`timeAlign` set to: 'all') per subject (`timeAlignPerSubject`  is "all").
+
+```{r createReportWithAllModules-timeAlignPerSubject-all, out.width = "100%", out.height = "700px"}
+
+	pathReport <- "subjectProfile_timeAlign-all_timeAlignPerSubject-all.pdf"
+	createSubjectProfileReport(
+		listPlots = lPlots,
+		outputFile = pathReport,
+		subset = subsetPatients,
+		timeAlignPerSubject = "all"
+	)
+	include_graphics(pathReport)
+	
 ```
 
 ## Example with the 'ADaM' dataset/format
 
 ADaM dataset can also be used in the same framework.
+
+As the creation of the report is time-consuming, the report creation is not run during the vignette creation.
 
 ```{r createReportFromADAMDataset, eval = FALSE}
 
@@ -1100,12 +1200,14 @@ ADaM dataset can also be used in the same framework.
 
 	# create report
 	listPlotsADaM <- list(slPlotsADaM, mhPlotsADaM, exPlotsADaM, aePlotsADaM, lbPlotsADaM)
+	pathReport <- "subjectProfile_ADAM.pdf"
 	system.time(createSubjectProfileReport(
 		listPlotsADaM,
 		refLines = refLinesParam,
-		outputFile = "subjectProfile_ADAM.pdf",
+		outputFile = pathReport,
 		subjectSubset = "study-4902-02"
 	))
+	include_graphics(pathReport)
 
 ```
 
