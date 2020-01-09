@@ -55,3 +55,26 @@ test_that("subjectProfileLinePlot - color/shape variable and palette specificati
 	)
 	
 })
+
+test_that("subjectProfileLinePlot - yLimFrom - value", {
+			
+	lbLinePlots <- subjectProfileLinePlot(
+		data = subset(dataLB, USUBJID == "study-4902-02"),
+		paramNameVar = "LBTEST", 
+		paramValueVar = "LBSTRESN",
+		paramGroupVar = "LBSCAT",
+		paramValueRangeVar = c("LBSTNRLO", "LBSTNRHI"),
+		timeVar = "LBDY",
+		title = "Laboratory test measurements: actual value",
+		labelVars = labelVarsSDTMPelican,
+		yLimFrom = "value"
+	)
+			
+	vdiffr::expect_doppelganger(
+		title = "yLimFrom-value", 
+		fig = lbLinePlots[[1]][[1]],
+		path = "subjectProfileLinePlot",
+		verbose = TRUE
+	)
+			
+})

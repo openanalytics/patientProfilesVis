@@ -2,15 +2,28 @@
 #' @param timeVar string, variable of \code{data} with time
 #' @param paramValueVar string, variable of \code{data} with parameter value to represent
 #' @param paramNameVar string, variable of \code{data} with parameter name
-#' @param paramValueRangeVar character vector of length 2 containing variables of \code{data}
-#' with minimum and maximum range for \code{paramValueVar},
+#' @param paramValueRangeVar character vector of length 2 containing 
+#' variables of \code{data} with minimum and maximum value 
+#' for \code{paramValueVar}.
+#' This range is represented as a ribbon in the plot background.
 #' e.g. to represent the reference range of the variable.
+#' @param colorValueRange String with color for the ribbon
+#' represented by \code{paramValueRangeVar}.
 #' @param colorVar string, variable of \code{data} with color, used for the points only.
 #' @param colorLab string, label for \code{colorVar}
 #' @param colorPalette named vector with color for \code{colorVar}
 #' @param shapeVar string, variable of \code{data} with shape, used for the points only.
 #' @param shapeLab string, label for \code{shapeVar}
 #' @param shapePalette named vector with shape for \code{shapeVar}
+#' @param yLimFrom String with specification on the limits of the y-axis, either:
+#' \itemize{
+#' \item{'valueRange' (by default): }{for each parameter, the y-axis range
+#' spans the min/max specified via \code{paramValueRangeVar} (if specified),
+#' the parameter value range otherwise}
+#' \item{'value': }{the y-axis range is extracted from the min/max observed
+#' value of each parameter available in \code{paramValueVar} (without considering the range
+#' specified via \code{paramValueRangeVar}}
+#' }
 #' @inheritParams subjectProfileIntervalPlot
 #' @return List of (across subjects) of list (across modules) 
 #' of \code{\link[ggplot2]{ggplot2} objects}, 
@@ -29,7 +42,7 @@ subjectProfileLinePlot <- function(
 	data,
 	paramValueVar, paramLab = toString(getLabelVar(paramValueVar, labelVars = labelVars)),
 	paramNameVar = NULL, 
-	paramValueRangeVar = NULL,
+	paramValueRangeVar = NULL, colorValueRange = unname(glpgColor("extra")["lightGreen"]),
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
 	colorPalette = NULL,
 	shapeVar = colorVar, shapeLab = getLabelVar(shapeVar, labelVars = labelVars),
@@ -46,8 +59,11 @@ subjectProfileLinePlot <- function(
 	labelVars = NULL,
 	formatReport = subjectProfileReportFormat(),
 	paging = TRUE,
-	alpha = 1
+	alpha = 1,
+	yLimFrom = c("valueRange", "value")
 ){
+	
+	yLimFrom <- match.arg(yLimFrom)
 	
 	# in case data is a tibble:
 	data <- as.data.frame(data)
@@ -88,6 +104,36 @@ subjectProfileLinePlot <- function(
 		timeStartVar = timeVar, timeEndVar = timeVar, timeLim = timeLim
 	)
 	
+	# if axes limits shouldn't span the reference range (only if specified)
+	if(!is.null(paramValueRangeVar) & yLimFrom == "value"){
+		
+		data <- ddply(data, c(subjectVar, paramNameVar), function(x){
+					
+			# extract data range
+			valueRange <- range(x[, paramValueVar], na.rm = TRUE)
+			
+			# replace reference range by value range
+			xMinRV <- x[, paramValueRangeVar[1]]
+			xMaxRV <- x[, paramValueRangeVar[2]]
+			
+			x[, paramValueRangeVar[1]] <- ifelse(
+				# all data out of reference range
+				(xMinRV > valueRange[2]) | (xMaxRV < valueRange[1]), NA, 
+				# otherwise if: min ref less than min data, take data min
+				ifelse(xMinRV < valueRange[1], valueRange[1], xMinRV)
+			)
+			
+			x[, paramValueRangeVar[2]] <- ifelse(
+				# all data out of reference range
+				(xMinRV > valueRange[2]) | (xMaxRV < valueRange[1]), NA, 
+				# otherwise if: max ref range more max data, take data max
+				ifelse(xMaxRV > valueRange[2], valueRange[2], xMaxRV)
+			)
+			x
+		})
+		
+	}
+	
 	listPlots <- dlply(data, subjectVar, function(dataSubject){	
 				
 		# split plot into multiple page(s)
@@ -117,10 +163,11 @@ subjectProfileLinePlot <- function(
 				# use geom_ribbon instead of geom_rect in case different intervals for different time points
 				gg <- gg + 
 					geom_ribbon(
-						aes_string(x = timeVar, 
+						aes_string(
+							x = timeVar, 
 							ymin = paramValueRangeVar[1], ymax = paramValueRangeVar[2]
 						),
-						fill = unname(glpgColor("extra")["lightGreen"]), alpha = 0.1
+						fill = colorValueRange, alpha = 0.1
 					)
 			}
 			

@@ -6,9 +6,10 @@
 \usage{
 subjectProfileLinePlot(data, paramValueVar,
   paramLab = toString(getLabelVar(paramValueVar, labelVars = labelVars)),
-  paramNameVar = NULL, paramValueRangeVar = NULL, colorVar = NULL,
-  colorLab = getLabelVar(colorVar, labelVars = labelVars),
-  colorPalette = NULL, shapeVar = colorVar,
+  paramNameVar = NULL, paramValueRangeVar = NULL,
+  colorValueRange = unname(glpgColor("extra")["lightGreen"]),
+  colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars =
+  labelVars), colorPalette = NULL, shapeVar = colorVar,
   shapeLab = getLabelVar(shapeVar, labelVars = labelVars),
   shapePalette = NULL, paramGroupVar = NULL, timeVar,
   timeTrans = NULL, timeExpand = NULL, subjectVar = "USUBJID",
@@ -17,7 +18,7 @@ subjectProfileLinePlot(data, paramValueVar,
   labelVars), yLab = "", timeLim = NULL, title = paramLab,
   label = title, labelVars = NULL,
   formatReport = subjectProfileReportFormat(), paging = TRUE,
-  alpha = 1)
+  alpha = 1, yLimFrom = c("valueRange", "value"))
 }
 \arguments{
 \item{data}{data.frame with data}
@@ -28,9 +29,14 @@ subjectProfileLinePlot(data, paramValueVar,
 
 \item{paramNameVar}{string, variable of \code{data} with parameter name}
 
-\item{paramValueRangeVar}{character vector of length 2 containing variables of \code{data}
-with minimum and maximum range for \code{paramValueVar},
+\item{paramValueRangeVar}{character vector of length 2 containing 
+variables of \code{data} with minimum and maximum value 
+for \code{paramValueVar}.
+This range is represented as a ribbon in the plot background.
 e.g. to represent the reference range of the variable.}
+
+\item{colorValueRange}{String with color for the ribbon
+represented by \code{paramValueRangeVar}.}
 
 \item{colorVar}{string, variable of \code{data} with color, used for the points only.}
 
@@ -92,6 +98,16 @@ e.g. output of the \code{\link{subjectProfileReportFormat}} function}
 paging is enabled, otherwise only one page is used.}
 
 \item{alpha}{Numeric with transparency, 1 by default.}
+
+\item{yLimFrom}{String with specification on the limits of the y-axis, either:
+\itemize{
+\item{'valueRange' (by default): }{for each parameter, the y-axis range
+spans the min/max specified via \code{paramValueRangeVar} (if specified),
+the parameter value range otherwise}
+\item{'value': }{the y-axis range is extracted from the min/max observed
+value of each parameter available in \code{paramValueVar} (without considering the range
+specified via \code{paramValueRangeVar}}
+}}
 }
 \value{
 List of (across subjects) of list (across modules) 
