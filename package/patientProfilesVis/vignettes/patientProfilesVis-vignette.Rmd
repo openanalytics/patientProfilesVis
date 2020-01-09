@@ -735,6 +735,8 @@ highlighted in the plot.
 
 ```{r exampleLineModule}
 
+	stop('test')
+
 	# create plot
 	lbLinePlots <- subjectProfileLinePlot(
 		data = dataLB,
