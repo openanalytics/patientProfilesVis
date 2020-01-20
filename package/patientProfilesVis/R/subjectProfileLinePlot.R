@@ -17,12 +17,13 @@
 #' @param shapePalette named vector with shape for \code{shapeVar}
 #' @param yLimFrom String with specification on the limits of the y-axis, either:
 #' \itemize{
-#' \item{'valueRange' (by default): }{for each parameter, the y-axis range
-#' spans the min/max specified via \code{paramValueRangeVar} (if specified),
-#' the parameter value range otherwise}
-#' \item{'value': }{the y-axis range is extracted from the min/max observed
-#' value of each parameter available in \code{paramValueVar} (without considering the range
-#' specified via \code{paramValueRangeVar}}
+#' \item{'all' (by default): }{for each parameter (\code{paramNameVar}), 
+#' the y-axis range contains the minimum/maximum value of 
+#' the reference range (\code{paramValueRangeVar}) or data}
+#' \item{'value': }{for each parameter (\code{paramNameVar}), 
+#' the y-axis minimum/maximum value is restricted to the data range only.
+#' Please note that the ribbon visualizing the reference range is also restricted
+#' to the data range if wider.}
 #' }
 #' @inheritParams subjectProfileIntervalPlot
 #' @return List of (across subjects) of list (across modules) 
@@ -60,7 +61,7 @@ subjectProfileLinePlot <- function(
 	formatReport = subjectProfileReportFormat(),
 	paging = TRUE,
 	alpha = 1,
-	yLimFrom = c("valueRange", "value")
+	yLimFrom = c("all", "value")
 ){
 	
 	yLimFrom <- match.arg(yLimFrom)
