@@ -735,8 +735,6 @@ highlighted in the plot.
 
 ```{r exampleLineModule}
 
-	stop('test')
-
 	# create plot
 	lbLinePlots <- subjectProfileLinePlot(
 		data = dataLB,
@@ -757,7 +755,7 @@ highlighted in the plot.
 
 ```
 
-### Color/symbols
+### Color/symbols of each observation
 
 The color and the shape of the points can be specified via the 
 `colorVar` and `shapeVar` parameters, similarly as for
@@ -786,6 +784,38 @@ The reference range measurement is represented via these parameters.
 ```{r exampleLineModule-colorShape-include, echo = FALSE, fig.height = attributes(lbLinePlotsColorShape[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with reference range with the 'subjectProfileLinePlot' function for patient:", names(lbLinePlotsColorShape)[1])}
 
 	print(lbLinePlotsColorShape[[1]][[1]])
+
+```
+
+### Axis range based on the observations or reference range
+
+By default, the range of the y-axis spans the reference range or the
+range of the observations is smaller.
+
+If the range of the y-axis should only contain the data range, so shouldn't be extended
+to cover the reference range, the `yLimFrom` parameter should be set on:
+'value'.
+
+```{r exampleLineModule-yLimFrom-value}
+
+	# create plot
+	lbLineYLimFromValuePlots <- subjectProfileLinePlot(
+		data = dataLB,
+		paramNameVar = "LBTEST", 
+		paramValueVar = "LBSTRESN",
+		paramGroupVar = "LBSCAT",
+		paramValueRangeVar = c("LBSTNRLO", "LBSTNRHI"),
+		yLimFrom = "value",
+		timeVar = "LBDY",
+		title = "Laboratory test measurements: actual value",
+		labelVars = labelVarsSDTMPelican
+	)
+	
+```
+
+```{r exampleLineModule-yLimFrom-value-include, echo = FALSE, fig.height = attributes(lbLineYLimFromValuePlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with the 'subjectProfileLinePlot' function for patient:", names(lbLineYLimFromValuePlots)[1])}
+
+	print(lbLineYLimFromValuePlots[[1]][[1]])
 
 ```
 
