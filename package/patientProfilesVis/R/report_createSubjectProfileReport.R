@@ -10,12 +10,19 @@
 #' @param listPlots nested list of plots, as returned by the \code{\link{subjectProfileTextPlot}},
 #' \code{\link{subjectProfileEventPlot}}, \code{\link{subjectProfileIntervalPlot}} or
 #' \code{\link{subjectProfileLinePlot}} functions.
-#' @param bookmarkData data.frame with data containing information on which the index should be based
+#' @param bookmarkData Data.frame with data containing information on which the index should be based
 #' @param bookmarkVar variable(s) of \code{data} of interest for the index
-#' @param subjectSortData data.frame with data containing information on how the subjects 
-#' should be sorted in the report, by default same as \code{bookmarkData}
-#' @param subjectSortVar variable(s) of \code{data} indicating the order for the subjects in the report,
+#' @param subjectSortData Data.frame with data containing information on how the subjects 
+#' should be sorted (by default same as \code{bookmarkData}):
+#' \itemize{
+#' \item{in the report, in case one single report is created for all subjects}
+#' \item{for the export, in case \code{reportPerSubject} is TRUE}
+#' }
+#' This data should contain \code{subjectSortVar} and \code{subjectVar}.
+#' @param subjectSortVar variable(s) of \code{subjectSortData} indicating the order for the subjects in the report,
 #' by default same as \code{bookmarkVar}
+#' @param subjectSortDecreasing Logical, if TRUE (FALSE by default)
+#' subjects are sorted based on decreasing order of \code{subjectSortVar}.
 #' @param subjectSubsetData data.frame with data used to select subset of subjects of interest.
 #' It should contain the \code{subjectVar} variable.
 #' @param subjectSubsetVar string with variable of \code{subjectSubsetData} used for subsetting.
@@ -35,6 +42,11 @@
 #' axis range. So for interval module(s) if the specified \code{timeLim}
 #' is smaller than the time limits in the input plot, no arrows are created in case than
 #' the time goes above/below specified \code{timeLim} (the segment is cut).
+#' @param exportBatchSize (optional) Integer, if specified, the
+#' patient-profile reports are created by batch of this number of subjects.
+#' This might speed up the export for a high number of subjects.
+#' Only available if report is created by subject (\code{reportPerSubject} is TRUE)
+#' and modules are not aligned across subjects (\code{timeAlignPerSubject} is: 'all').
 #' @inheritParams subjectProfileCombine
 #' @inheritParams subjectProfileIntervalPlot
 #' @inheritParams subjectProfileExport
@@ -57,6 +69,7 @@ createSubjectProfileReport <- function(
 	bookmarkVar = NULL,
 	subjectSortData = bookmarkData,
 	subjectSortVar = bookmarkVar,
+	subjectSortDecreasing = FALSE,
 	subjectVar = "USUBJID",
 	subjectSubset = NULL,
 	subjectSubsetData = NULL,
@@ -66,6 +79,7 @@ createSubjectProfileReport <- function(
 	outputFile = "subjectProfile.pdf",
 	exportFigures = FALSE,
 	reportPerSubject = FALSE,
+	exportBatchSize = NULL,
 	labelVars = NULL,
 	maxNLines = NULL,
 	shiny = FALSE,
@@ -73,20 +87,8 @@ createSubjectProfileReport <- function(
 	verbose = FALSE,
 	nCores = 1){
 
-	if(shiny && !requireNamespace("shiny", quietly = TRUE))
-		stop("The package 'shiny' is required to report progress.")
-
-	# margin of document in inches
-	if(is.null(maxNLines)){
-		if(verbose)	message("Get maximum number of lines for each page.")
-		inputGetMNL <- formatReport[names(formatReport) != "yLabelWidth"]
-		maxNLines <- do.call(getMaxNLinesCombinePlot, inputGetMNL)
-	}
-	
-	
-	# plots should be named in case timeAlign/timeAlignPerSubject is specified
-	if(is.null(names(listPlots)))
-		names(listPlots) <- paste0("module", seq_along(listPlots))
+	# store input parameters of the function
+	inputArgs <- c(as.list(environment())) #, list(...)
 
 	# filter subjects if subset[Data/Var/Value] is specified
 	if(!is.null(subset) | !is.null(subjectSubsetData)){
@@ -120,6 +122,68 @@ createSubjectProfileReport <- function(
 		
 	}
 	
+	## export per batch
+	if(!is.null(exportBatchSize)){
+		if(!reportPerSubject){
+			warning(
+				"Creation of patient profiles per batch not possible",
+				"for one single report across subjects.",
+				"You might want to set 'reportPerSubject' to TRUE."
+			)
+		}else	if(!(length(timeAlignPerSubject) == 1 && timeAlignPerSubject == "all")){
+			warning(
+				"Creation of patient profiles per batch not possible",
+				"if plots should be aligned across subjects.",
+				"You might want to set 'timeAlignPerSubject' to 'all'."
+			)
+		}else{
+			
+			# all subjects
+			subjects <- Reduce(union, lapply(listPlots, names)) 
+			
+			# sort them (if specified)
+			subjects <- sortSubjects(
+				subjects = subjects, 
+				subjectSortData = subjectSortData,
+				subjectSortVar = subjectSortVar,
+				subjectSortDecreasing = subjectSortDecreasing,
+				subjectVar = subjectVar,
+				verbose = verbose
+			)
+			
+			# create report per batch:
+			subjectsBatchId <- ceiling(seq(from = 1, to = length(subjects))/exportBatchSize)
+			subjectsPerBatch <- split(subjects, subjectsBatchId)
+			
+			res <- lapply(seq_along(subjectsPerBatch), function(batch){
+				if(verbose)	
+					message(paste0("Creation of patient profiles for batch ", batch, "."))
+				inputArgsBatch <- inputArgs
+				inputArgsBatch$subset <- subjectsPerBatch[[batch]]
+				inputArgsBatch$exportBatchSize <- NULL
+				do.call(createSubjectProfileReport, inputArgsBatch)
+			})
+			res <- Reduce(c, res)
+			return(invisible(res))
+			
+		}
+	}
+	
+	if(shiny && !requireNamespace("shiny", quietly = TRUE))
+		stop("The package 'shiny' is required to report progress.")	
+	
+	# plots should be named in case timeAlign/timeAlignPerSubject is specified
+	if(is.null(names(listPlots)))
+		names(listPlots) <- paste0("module", seq_along(listPlots))
+	
+	
+	# margin of document in inches
+	if(is.null(maxNLines)){
+		if(verbose)	message("Get maximum number of lines for each page.")
+		inputGetMNL <- formatReport[names(formatReport) != "yLabelWidth"]
+		maxNLines <- do.call(getMaxNLinesCombinePlot, inputGetMNL)
+	}
+	
 	# combine plots
 	listPlotsPerSubjectList <- subjectProfileCombine(
 		listPlots, 
@@ -135,18 +199,16 @@ createSubjectProfileReport <- function(
 		reportPerSubject = reportPerSubject
 	)
 	
-	if(!is.null(subjectSortData) & !is.null(subjectSortVar)){
-		if(verbose)	message("Order subjects based on subjectSortData/subjectSortVar.")
-		subjectsOrdered <- ddply(unique(subjectSortData[, c(subjectVar, subjectSortVar)]), subjectSortVar)[[subjectVar]]
-		if(all(names(listPlotsPerSubjectList) %in% subjectsOrdered)){
-			# in case more subjects are available in sortData than in the plot(s)
-			subjectsOrderedInData <- subjectsOrdered[subjectsOrdered %in% names(listPlotsPerSubjectList)]
-			listPlotsPerSubjectList <- listPlotsPerSubjectList[subjectsOrderedInData]
-		}else{
-			warning("The subjects are not ordered according to the specified 'subjectSortVar',",
-				"because not all subjects are contained in the 'subjectSortData'.")
-		}
-	}
+	# sort plots based on specified dataset/var, ...
+	subjectsOrdered <- sortSubjects(
+		subjects = names(listPlotsPerSubjectList), 
+		subjectSortData = subjectSortData,
+		subjectSortVar = subjectSortVar,
+		subjectSortDecreasing = subjectSortDecreasing,
+		subjectVar = subjectVar,
+		verbose = verbose
+	)
+	listPlotsPerSubjectList <- listPlotsPerSubjectList[subjectsOrdered]
 	
 	# extract bookmark(s) (if any)
 	index <- if(!is.null(bookmarkData) & !is.null(bookmarkVar)){
@@ -209,6 +271,55 @@ createSubjectProfileReport <- function(
 	
 	invisible(res)
 	
+}
+
+#' Sort subjects based on a specified dataset/variable.
+#' @param subjects Character vector with subjects of interest
+#' @param subjectVar String, variable of \code{data} with subject ID
+#' @param subjectSortData Data.frame with data containing information on how the subjects 
+#' should be sorted.
+#' @param subjectSortVar Variable(s) of \code{subjectSortData} 
+#' used  the order for the subjects.
+#' @param subjectSortDecreasing Logical, if TRUE (FALSE by default)
+#' subjects are sorted based on inverse order of \code{subjectSortVar}.
+#' @param verbose logical, if TRUE print messages during execution
+#' @return Updated \code{subjects}
+#' @author Laure Cougnaud
+#' @export
+sortSubjects <- function(
+	subjects, 
+	subjectVar = "USUBJID",
+	subjectSortData = NULL,
+	subjectSortVar = NULL,
+	subjectSortDecreasing = FALSE,
+	verbose = FALSE){
+
+	if(!is.null(subjectSortData) & !is.null(subjectSortVar)){
+		
+		varsNotInData <- setdiff(c(subjectSortVar, subjectVar), colnames(subjectSortData))
+		if(length(varsNotInData) == 0){
+			
+			if(verbose)	message(paste0("Order subjects based on: ", toString(sQuote(subjectSortVar)), "."))
+			
+			# sort subjects based on: 'subjectSortData'/'subjectSortVar'
+			idxOrderSubjects <- order(subjectSortData[, subjectSortVar], decreasing = subjectSortDecreasing)
+			subjectsSorted <- unique(subjectSortData[idxOrderSubjects, subjectVar])
+			
+			# only specified subjects
+			subjectsSpecifiedAndSorted <- intersect(subjectsSorted, subjects)
+			# subjects not in 'sortData'
+			subjectsSpecifiedAndNotInSortData <- setdiff(subjects, subjectsSpecifiedAndSorted) 
+			subjects <- c(subjectsSpecifiedAndSorted, subjectsSpecifiedAndNotInSortData)
+			
+		}else{
+			warning("The subjects are not ordered according the specification, ",
+				"because variable(s): ", toString(sQuote(varsNotInData)), 
+				" are not available in the data.")
+		}
+	}
+	
+	return(subjects)
+
 }
 
 #' Create report

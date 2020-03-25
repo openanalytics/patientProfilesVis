@@ -17,6 +17,7 @@ createSubjectProfileReport(
   bookmarkVar = NULL,
   subjectSortData = bookmarkData,
   subjectSortVar = bookmarkVar,
+  subjectSortDecreasing = FALSE,
   subjectVar = "USUBJID",
   subjectSubset = NULL,
   subjectSubsetData = NULL,
@@ -26,6 +27,7 @@ createSubjectProfileReport(
   outputFile = "subjectProfile.pdf",
   exportFigures = FALSE,
   reportPerSubject = FALSE,
+  exportBatchSize = NULL,
   labelVars = NULL,
   maxNLines = NULL,
   shiny = FALSE,
@@ -87,15 +89,23 @@ Each sublist contains:
 
 \item{refLinesLabelVar}{string, variable of \code{refLinesData} with label for reference line(s)}
 
-\item{bookmarkData}{data.frame with data containing information on which the index should be based}
+\item{bookmarkData}{Data.frame with data containing information on which the index should be based}
 
 \item{bookmarkVar}{variable(s) of \code{data} of interest for the index}
 
-\item{subjectSortData}{data.frame with data containing information on how the subjects 
-should be sorted in the report, by default same as \code{bookmarkData}}
+\item{subjectSortData}{Data.frame with data containing information on how the subjects 
+should be sorted (by default same as \code{bookmarkData}):
+\itemize{
+\item{in the report, in case one single report is created for all subjects}
+\item{for the export, in case \code{reportPerSubject} is TRUE}
+}
+This data should contain \code{subjectSortVar} and \code{subjectVar}.}
 
-\item{subjectSortVar}{variable(s) of \code{data} indicating the order for the subjects in the report,
+\item{subjectSortVar}{variable(s) of \code{subjectSortData} indicating the order for the subjects in the report,
 by default same as \code{bookmarkVar}}
+
+\item{subjectSortDecreasing}{Logical, if TRUE (FALSE by default)
+subjects are sorted based on decreasing order of \code{subjectSortVar}.}
 
 \item{subjectVar}{string, variable of \code{data} with subject ID}
 
@@ -120,6 +130,12 @@ in png format in a 'figures' folder}
 
 \item{reportPerSubject}{Logical, if TRUE (FALSE by default)
 export a subject profile report by subject.}
+
+\item{exportBatchSize}{(optional) Integer, if specified, the
+patient-profile reports are created by batch of this number of subjects.
+This might speed up the export for a high number of subjects.
+Only available if report is created by subject (\code{reportPerSubject} is TRUE)
+and modules are not aligned across subjects (\code{timeAlignPerSubject} is: 'all').}
 
 \item{labelVars}{named string with variable labels (names are the variable code)}
 
