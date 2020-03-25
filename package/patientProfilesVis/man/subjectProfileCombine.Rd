@@ -4,11 +4,22 @@
 \alias{subjectProfileCombine}
 \title{Combine subject profile plots.}
 \usage{
-subjectProfileCombine(listPlots, timeLim = NULL, timeAlign = "all",
-  timeAlignPerSubject = "none", subjectVar = "USUBJID",
-  maxNLines = NULL, refLines = NULL, refLinesData = NULL,
-  refLinesTimeVar = NULL, refLinesLabelVar = NULL, shiny = FALSE,
-  verbose = FALSE, nCores = 1, reportPerSubject = FALSE)
+subjectProfileCombine(
+  listPlots,
+  timeLim = NULL,
+  timeAlign = "all",
+  timeAlignPerSubject = "none",
+  subjectVar = "USUBJID",
+  maxNLines = NULL,
+  refLines = NULL,
+  refLinesData = NULL,
+  refLinesTimeVar = NULL,
+  refLinesLabelVar = NULL,
+  shiny = FALSE,
+  verbose = FALSE,
+  nCores = 1,
+  reportPerSubject = FALSE
+)
 }
 \arguments{
 \item{listPlots}{list of subject profiles (modules/subjectsID)}

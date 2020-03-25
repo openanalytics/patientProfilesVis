@@ -4,18 +4,35 @@
 \alias{createSubjectProfileReport}
 \title{Create subject profile report.}
 \usage{
-createSubjectProfileReport(listPlots, timeLim = NULL,
-  timeAlign = "all", timeAlignPerSubject = "none", refLines = NULL,
-  refLinesData = NULL, refLinesTimeVar = NULL,
-  refLinesLabelVar = NULL, bookmarkData = NULL, bookmarkVar = NULL,
-  subjectSortData = bookmarkData, subjectSortVar = bookmarkVar,
-  subjectVar = "USUBJID", subjectSubset = NULL,
-  subjectSubsetData = NULL, subjectSubsetVar = NULL,
-  subjectSubsetValue = NULL, subset = NULL,
-  outputFile = "subjectProfile.pdf", exportFigures = FALSE,
-  reportPerSubject = FALSE, labelVars = NULL, maxNLines = NULL,
-  shiny = FALSE, formatReport = subjectProfileReportFormat(),
-  verbose = FALSE, nCores = 1)
+createSubjectProfileReport(
+  listPlots,
+  timeLim = NULL,
+  timeAlign = "all",
+  timeAlignPerSubject = "none",
+  refLines = NULL,
+  refLinesData = NULL,
+  refLinesTimeVar = NULL,
+  refLinesLabelVar = NULL,
+  bookmarkData = NULL,
+  bookmarkVar = NULL,
+  subjectSortData = bookmarkData,
+  subjectSortVar = bookmarkVar,
+  subjectVar = "USUBJID",
+  subjectSubset = NULL,
+  subjectSubsetData = NULL,
+  subjectSubsetVar = NULL,
+  subjectSubsetValue = NULL,
+  subset = NULL,
+  outputFile = "subjectProfile.pdf",
+  exportFigures = FALSE,
+  reportPerSubject = FALSE,
+  labelVars = NULL,
+  maxNLines = NULL,
+  shiny = FALSE,
+  formatReport = subjectProfileReportFormat(),
+  verbose = FALSE,
+  nCores = 1
+)
 }
 \arguments{
 \item{listPlots}{nested list of plots, as returned by the \code{\link{subjectProfileTextPlot}},

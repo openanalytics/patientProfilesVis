@@ -4,21 +4,41 @@
 \alias{subjectProfileLinePlot}
 \title{Create spaghetti plot for subject profiles}
 \usage{
-subjectProfileLinePlot(data, paramValueVar,
+subjectProfileLinePlot(
+  data,
+  paramValueVar,
   paramLab = toString(getLabelVar(paramValueVar, labelVars = labelVars)),
-  paramNameVar = NULL, paramValueRangeVar = NULL,
+  paramNameVar = NULL,
+  paramVarSep = " - ",
+  paramValueRangeVar = NULL,
   colorValueRange = unname(glpgColor("extra")["lightGreen"]),
-  colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars =
-  labelVars), colorPalette = NULL, shapeVar = colorVar,
+  colorVar = NULL,
+  colorLab = getLabelVar(colorVar, labelVars = labelVars),
+  colorPalette = NULL,
+  shapeVar = colorVar,
   shapeLab = getLabelVar(shapeVar, labelVars = labelVars),
-  shapePalette = NULL, paramGroupVar = NULL, timeVar,
-  timeTrans = NULL, timeExpand = NULL, subjectVar = "USUBJID",
-  subjectSubset = NULL, subsetData = NULL, subsetVar = NULL,
-  subsetValue = NULL, xLab = getLabelVar(timeVar, labelVars =
-  labelVars), yLab = "", timeLim = NULL, title = paramLab,
-  label = title, labelVars = NULL,
-  formatReport = subjectProfileReportFormat(), paging = TRUE,
-  alpha = 1, yLimFrom = c("all", "value"))
+  shapePalette = NULL,
+  paramGroupVar = NULL,
+  timeVar,
+  timeTrans = NULL,
+  timeExpand = NULL,
+  subjectVar = "USUBJID",
+  subjectSubset = NULL,
+  subsetData = NULL,
+  subsetVar = NULL,
+  subsetValue = NULL,
+  xLab = getLabelVar(timeVar, labelVars = labelVars),
+  yLab = "",
+  timeLim = NULL,
+  title = paramLab,
+  label = title,
+  labelVars = NULL,
+  formatReport = subjectProfileReportFormat(),
+  paging = TRUE,
+  alpha = 1,
+  shapeSize = rel(1),
+  yLimFrom = c("all", "value")
+)
 }
 \arguments{
 \item{data}{data.frame with data}
@@ -27,7 +47,11 @@ subjectProfileLinePlot(data, paramValueVar,
 
 \item{paramLab}{string, label for \code{paramVar}}
 
-\item{paramNameVar}{string, variable of \code{data} with parameter name}
+\item{paramNameVar}{Character vector with variable(s) of \code{data} with parameter name.
+If multiple, they are concatenated with \code{paramVarSep}.}
+
+\item{paramVarSep}{string with character(s) used to concatenate multiple 
+\code{paramNameVar}, ' - ' by default.}
 
 \item{paramValueRangeVar}{character vector of length 2 containing 
 variables of \code{data} with minimum and maximum value 
@@ -98,6 +122,9 @@ e.g. output of the \code{\link{subjectProfileReportFormat}} function}
 paging is enabled, otherwise only one page is used.}
 
 \item{alpha}{Numeric with transparency, 1 by default.}
+
+\item{shapeSize}{Size for the symbols, any integer or 
+object supported by \code{size} in \code{\link[ggplot2]{geom_point}}.}
 
 \item{yLimFrom}{String with specification on the limits of the y-axis, either:
 \itemize{

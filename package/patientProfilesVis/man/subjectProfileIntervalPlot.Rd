@@ -4,23 +4,47 @@
 \alias{subjectProfileIntervalPlot}
 \title{Create plot of subject profiles with segments for range of parameters.}
 \usage{
-subjectProfileIntervalPlot(data, paramVar, paramVarSep = " - ",
+subjectProfileIntervalPlot(
+  data,
+  paramVar,
+  paramVarSep = " - ",
   paramLab = toString(getLabelVar(paramVar, labelVars = labelVars)),
-  paramGroupVar = NULL, timeStartVar, timeEndVar, timeLabel = "time",
-  subjectVar = "USUBJID", subjectSubset = NULL, subsetData = NULL,
-  subsetVar = NULL, subsetValue = NULL, timeLim = NULL,
-  timeLimData = NULL, timeLimStartVar = NULL, timeLimEndVar = NULL,
-  timeTrans = NULL, timeExpand = NULL, timeAlign = TRUE,
-  rangeSimilarStartEnd = NULL, xLab = paste(getLabelVar(c(timeStartVar,
-  timeEndVar), labelVars = labelVars), collapse = "/"), yLab = "",
-  colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars =
-  labelVars), colorPalette = NULL, alpha = 1,
-  timeStartShapeVar = NULL, timeEndShapeVar = NULL,
+  paramGroupVar = NULL,
+  timeStartVar,
+  timeEndVar,
+  timeLabel = "time",
+  subjectVar = "USUBJID",
+  subjectSubset = NULL,
+  subsetData = NULL,
+  subsetVar = NULL,
+  subsetValue = NULL,
+  timeLim = NULL,
+  timeLimData = NULL,
+  timeLimStartVar = NULL,
+  timeLimEndVar = NULL,
+  timeTrans = NULL,
+  timeExpand = NULL,
+  timeAlign = TRUE,
+  rangeSimilarStartEnd = NULL,
+  xLab = paste(getLabelVar(c(timeStartVar, timeEndVar), labelVars = labelVars), collapse
+    = "/"),
+  yLab = "",
+  colorVar = NULL,
+  colorLab = getLabelVar(colorVar, labelVars = labelVars),
+  colorPalette = NULL,
+  alpha = 1,
+  timeStartShapeVar = NULL,
+  timeEndShapeVar = NULL,
   shapePalette = NULL,
-  shapeLab = toString(unique(getLabelVar(c(timeStartShapeVar,
-  timeEndShapeVar), labelVars = labelVars))), shapeSize = rel(1),
-  title = paramLab, label = title, labelVars = NULL,
-  formatReport = subjectProfileReportFormat(), paging = TRUE)
+  shapeLab = toString(unique(getLabelVar(c(timeStartShapeVar, timeEndShapeVar),
+    labelVars = labelVars))),
+  shapeSize = rel(1),
+  title = paramLab,
+  label = title,
+  labelVars = NULL,
+  formatReport = subjectProfileReportFormat(),
+  paging = TRUE
+)
 }
 \arguments{
 \item{data}{data.frame with data}

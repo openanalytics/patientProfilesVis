@@ -4,9 +4,16 @@
 \alias{formatTimeInterval}
 \title{Set missing start/end time variable in the data.}
 \usage{
-formatTimeInterval(data, timeStartVar, timeEndVar,
-  subjectVar = "USUBJID", timeLim = NULL, timeLimData = NULL,
-  timeLimStartVar = NULL, timeLimEndVar = NULL)
+formatTimeInterval(
+  data,
+  timeStartVar,
+  timeEndVar,
+  subjectVar = "USUBJID",
+  timeLim = NULL,
+  timeLimData = NULL,
+  timeLimStartVar = NULL,
+  timeLimEndVar = NULL
+)
 }
 \arguments{
 \item{data}{data.frame with data}

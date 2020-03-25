@@ -5,9 +5,17 @@
 \title{Get variable with page of the plot,
 used for automatic paging of a plot}
 \usage{
-getPageVar(data, var, typeVar = c("y", "panel"),
-  formatReport = subjectProfileReportFormat(), title = TRUE,
-  xLab = TRUE, caption = TRUE, paging = TRUE, table = FALSE)
+getPageVar(
+  data,
+  var,
+  typeVar = c("y", "panel"),
+  formatReport = subjectProfileReportFormat(),
+  title = TRUE,
+  xLab = TRUE,
+  caption = TRUE,
+  paging = TRUE,
+  table = FALSE
+)
 }
 \arguments{
 \item{data}{data.frame with data}

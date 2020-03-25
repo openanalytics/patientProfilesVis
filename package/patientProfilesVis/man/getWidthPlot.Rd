@@ -4,9 +4,11 @@
 \alias{getWidthPlot}
 \title{Get width for a plot for a certain page layout}
 \usage{
-getWidthPlot(margin = subjectProfileReportFormat()$margin,
+getWidthPlot(
+  margin = subjectProfileReportFormat()$margin,
   landscape = subjectProfileReportFormat()$landscape,
-  aspectRatio = subjectProfileReportFormat()$aspectRatio)
+  aspectRatio = subjectProfileReportFormat()$aspectRatio
+)
 }
 \arguments{
 \item{margin}{margin in inches}

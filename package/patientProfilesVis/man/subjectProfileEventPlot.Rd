@@ -4,19 +4,36 @@
 \alias{subjectProfileEventPlot}
 \title{Create plot of subject profiles for events}
 \usage{
-subjectProfileEventPlot(data, paramVar,
+subjectProfileEventPlot(
+  data,
+  paramVar,
   paramLab = toString(getLabelVar(paramVar, labelVars = labelVars)),
-  paramVarSep = " - ", paramGroupVar = NULL, colorVar = NULL,
+  paramVarSep = " - ",
+  paramGroupVar = NULL,
+  colorVar = NULL,
   colorLab = getLabelVar(colorVar, labelVars = labelVars),
-  colorPalette = NULL, shapeVar = colorVar,
+  colorPalette = NULL,
+  shapeVar = colorVar,
   shapeLab = getLabelVar(shapeVar, labelVars = labelVars),
-  shapePalette = NULL, alpha = 1, timeVar, timeTrans = NULL,
-  timeExpand = NULL, subjectVar = "USUBJID", subjectSubset = NULL,
-  subsetData = NULL, subsetVar = NULL, subsetValue = NULL,
-  xLab = getLabelVar(timeVar, labelVars = labelVars), yLab = "",
-  timeLim = NULL, title = paramLab, label = title,
-  labelVars = NULL, formatReport = subjectProfileReportFormat(),
-  paging = TRUE)
+  shapePalette = NULL,
+  alpha = 1,
+  timeVar,
+  timeTrans = NULL,
+  timeExpand = NULL,
+  subjectVar = "USUBJID",
+  subjectSubset = NULL,
+  subsetData = NULL,
+  subsetVar = NULL,
+  subsetValue = NULL,
+  xLab = getLabelVar(timeVar, labelVars = labelVars),
+  yLab = "",
+  timeLim = NULL,
+  title = paramLab,
+  label = title,
+  labelVars = NULL,
+  formatReport = subjectProfileReportFormat(),
+  paging = TRUE
+)
 }
 \arguments{
 \item{data}{data.frame with data}

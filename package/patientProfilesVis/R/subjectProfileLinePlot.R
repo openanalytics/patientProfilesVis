@@ -1,7 +1,10 @@
 #' Create spaghetti plot for subject profiles
 #' @param timeVar string, variable of \code{data} with time
 #' @param paramValueVar string, variable of \code{data} with parameter value to represent
-#' @param paramNameVar string, variable of \code{data} with parameter name
+#' @param paramNameVar Character vector with variable(s) of \code{data} with parameter name.
+#' If multiple, they are concatenated with \code{paramVarSep}.
+#' @param paramVarSep string with character(s) used to concatenate multiple 
+#' \code{paramNameVar}, ' - ' by default.
 #' @param paramValueRangeVar character vector of length 2 containing 
 #' variables of \code{data} with minimum and maximum value 
 #' for \code{paramValueVar}.
@@ -25,6 +28,8 @@
 #' Please note that the ribbon visualizing the reference range is also restricted
 #' to the data range if wider.}
 #' }
+#' @param shapeSize Size for the symbols, any integer or 
+#' object supported by \code{size} in \code{\link[ggplot2]{geom_point}}.
 #' @inheritParams subjectProfileIntervalPlot
 #' @return List of (across subjects) of list (across modules) 
 #' of \code{\link[ggplot2]{ggplot2} objects}, 
@@ -42,7 +47,7 @@
 subjectProfileLinePlot <- function(
 	data,
 	paramValueVar, paramLab = toString(getLabelVar(paramValueVar, labelVars = labelVars)),
-	paramNameVar = NULL, 
+	paramNameVar = NULL, paramVarSep = " - ",
 	paramValueRangeVar = NULL, colorValueRange = unname(glpgColor("extra")["lightGreen"]),
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
 	colorPalette = NULL,
@@ -60,7 +65,7 @@ subjectProfileLinePlot <- function(
 	labelVars = NULL,
 	formatReport = subjectProfileReportFormat(),
 	paging = TRUE,
-	alpha = 1,
+	alpha = 1, shapeSize = rel(1),
 	yLimFrom = c("all", "value")
 ){
 	
@@ -68,6 +73,13 @@ subjectProfileLinePlot <- function(
 	
 	# in case data is a tibble:
 	data <- as.data.frame(data)
+	
+	# concatenate variable(s) if multiple are specified
+	data[, "paramFacetVar"] <- if(length(paramNameVar) > 1){
+		apply(data[, paramNameVar], 1, paste, collapse = paramVarSep)
+	}else{
+		data[, paramNameVar]
+	}
 	
 	data[, "yVar"] <- data[, paramValueVar]
 	
@@ -85,8 +97,8 @@ subjectProfileLinePlot <- function(
 	)
 	
 	# format variable
-	data[, paramNameVar] <- formatParamVar(
-		data = data, paramVar = paramNameVar, paramGroupVar = paramGroupVar,
+	data[, "paramFacetVar"] <- formatParamVar(
+		data = data, paramVar = "paramFacetVar", paramGroupVar = paramGroupVar,
 		width = formatReport$yLabelWidth
 	)
 		
@@ -108,7 +120,7 @@ subjectProfileLinePlot <- function(
 	# if axes limits shouldn't span the reference range (only if specified)
 	if(!is.null(paramValueRangeVar) & yLimFrom == "value"){
 		
-		data <- ddply(data, c(subjectVar, paramNameVar), function(x){
+		data <- ddply(data, c(subjectVar, "paramFacetVar"), function(x){
 					
 			# extract data range
 			valueRange <- range(x[, paramValueVar], na.rm = TRUE)
@@ -140,7 +152,7 @@ subjectProfileLinePlot <- function(
 		# split plot into multiple page(s)
 		dataSubject <- getPageVar(
 			data = dataSubject, 
-			var = paramNameVar, typeVar = "panel",
+			var = "paramFacetVar", typeVar = "panel",
 			formatReport = formatReport,
 			title = !is.null(title),
 			xLab = !is.null(xLab),
@@ -164,7 +176,7 @@ subjectProfileLinePlot <- function(
 				# use geom_ribbon instead of geom_rect in case different intervals for different time points
 				gg <- gg + 
 					geom_ribbon(
-						aes_string(
+						mapping = aes_string(
 							x = timeVar, 
 							ymin = paramValueRangeVar[1], ymax = paramValueRangeVar[2]
 						),
@@ -177,9 +189,9 @@ subjectProfileLinePlot <- function(
 				# remove rows with only one point (no need to connect points with the line)
 				# to avoid warning: geom_path: Each group consists of only one observation. Do you need to adjust the group aesthetic?
 				# when 'facet_grid' is called
-				nPointsPerParamName <- ddply(dataSubjectPage, paramNameVar, nrow)
-				paramNameRetained <- subset(nPointsPerParamName, V1 > 1)[, paramNameVar]
-				dataSubjectPage[which(dataSubjectPage[, paramNameVar] %in% paramNameRetained), ]
+				nPointsPerParamName <- ddply(dataSubjectPage, "paramFacetVar", nrow)
+				paramNameRetained <- subset(nPointsPerParamName, V1 > 1)[, "paramFacetVar"]
+				dataSubjectPage[which(dataSubjectPage[, "paramFacetVar"] %in% paramNameRetained), ]
 			}else	dataLine <- dataSubjectPage
 			if(nrow(dataLine) > 0)
 				gg <- gg + geom_line(data = dataLine, alpha = alpha)
@@ -191,8 +203,9 @@ subjectProfileLinePlot <- function(
 			)
 			gg <- gg +
 				if(length(aesArgsPoint) > 0){
-					geom_point(do.call(aes_string, aesArgsPoint), alpha = alpha)
-				}else geom_point()
+					geom_point(do.call(aes_string, aesArgsPoint), 
+						alpha = alpha, size = shapeSize)
+				}else geom_point(alpha = alpha, size = shapeSize)
 			
 			# general
 			gg <- gg + 
@@ -203,7 +216,7 @@ subjectProfileLinePlot <- function(
 			if(!is.null(paramNameVar)){
 				
 				gg <- gg + facet_grid(
-					paste0(paramNameVar, "~."), 
+					paste0("paramFacetVar", "~."), 
 					scales = "free_y", switch = "y"#,
 #					labeller = label_wrap_gen(width = Inf)
 					) +
@@ -216,7 +229,7 @@ subjectProfileLinePlot <- function(
 					)
 			
 				# count number of lines each facet will take
-				nLinesPlot <- countNLines(unique(dataSubjectPage[, paramNameVar]))
+				nLinesPlot <- countNLines(unique(dataSubjectPage[, "paramFacetVar"]))
 				nLinesPlot <- Vectorize(FUN = function(x){max(c(x, 4))})(nLinesPlot)
 				
 			}else	nLinesPlot <- 4

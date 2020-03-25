@@ -4,8 +4,14 @@
 \alias{combineVerticallyGGplot}
 \title{Combine vertically multiple \code{\link[ggplot2]{ggplot}}.}
 \usage{
-combineVerticallyGGplot(listPlots, maxNLines = NULL, nCores = 1,
-  shiny = FALSE, verbose = FALSE, reportPerSubject = FALSE)
+combineVerticallyGGplot(
+  listPlots,
+  maxNLines = NULL,
+  nCores = 1,
+  shiny = FALSE,
+  verbose = FALSE,
+  reportPerSubject = FALSE
+)
 }
 \arguments{
 \item{listPlots}{a list of subject profile (subject/modules)}

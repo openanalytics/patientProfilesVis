@@ -5,11 +5,12 @@
 \title{Get maximum number of lines of a 'combined plot'
 for a specific document}
 \usage{
-
-  getMaxNLinesCombinePlot(heightLineIn = subjectProfileReportFormat()$heightLineIn,
+getMaxNLinesCombinePlot(
+  heightLineIn = subjectProfileReportFormat()$heightLineIn,
   margin = subjectProfileReportFormat()$margin,
   landscape = subjectProfileReportFormat()$landscape,
-  aspectRatio = subjectProfileReportFormat()$aspectRatio)
+  aspectRatio = subjectProfileReportFormat()$aspectRatio
+)
 }
 \arguments{
 \item{heightLineIn}{height of a line in inches}

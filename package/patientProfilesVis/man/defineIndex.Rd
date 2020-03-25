@@ -5,8 +5,7 @@
 \title{Define LaTeX index based on specified variable(s)
 of the dataset}
 \usage{
-defineIndex(subjects, data, var, subjectVar = "USUBJID",
-  labelVars = NULL)
+defineIndex(subjects, data, var, subjectVar = "USUBJID", labelVars = NULL)
 }
 \arguments{
 \item{subjects}{vector with subject IDs (based on the \code{subjectVar} variable)}

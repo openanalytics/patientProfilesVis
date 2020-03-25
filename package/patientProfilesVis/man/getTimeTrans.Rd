@@ -5,8 +5,12 @@
 \title{Get useful transformation for the time variable
 in patient profiles.}
 \usage{
-getTimeTrans(type = c("asinh", "asinh-neg"), scale = 1,
-  formatFct = prettyNum, n = 10)
+getTimeTrans(
+  type = c("asinh", "asinh-neg"),
+  scale = 1,
+  formatFct = prettyNum,
+  n = 10
+)
 }
 \arguments{
 \item{type}{String with transformation type, either:
