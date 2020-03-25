@@ -1,6 +1,7 @@
-0.11.1
+0.12.0
     o checkTimeTrans: fix in case all cont module have the same transf
     o subjectProfileLinePlot: shapeSize, paramNameVar can be multiple
+    o createSubjectProfileReport: exportBatchSize, subjectSort[] used also for order export of patient profiles, subjectSortDecreasing
 0.11.0
     o subjectProfileLinePlot: yLimFrom new parameter
 0.10.0
