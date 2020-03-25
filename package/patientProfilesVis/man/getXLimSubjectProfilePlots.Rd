@@ -4,8 +4,11 @@
 \alias{getXLimSubjectProfilePlots}
 \title{Get limits for a list of plots.}
 \usage{
-getXLimSubjectProfilePlots(listPlots, timeAlign = "all",
-  timeAlignPerSubject = "none")
+getXLimSubjectProfilePlots(
+  listPlots,
+  timeAlign = "all",
+  timeAlignPerSubject = "none"
+)
 }
 \arguments{
 \item{listPlots}{list of list of \code{subjectProfile[X]Plot} plots}

@@ -4,14 +4,28 @@
 \alias{subjectProfileTextPlot}
 \title{Create plot of subject profiles for events.}
 \usage{
-subjectProfileTextPlot(data, paramValueVar,
+subjectProfileTextPlot(
+  data,
+  paramValueVar,
   paramValueLab = getLabelVar(paramValueVar, labelVars = labelVars),
-  paramNameVar = NULL, paramGroupVar = NULL, subsetData = NULL,
-  subsetVar = NULL, subsetValue = NULL, subjectVar = "USUBJID",
-  subjectSubset = NULL, xLab = "", yLab = "",
-  title = "Subject information", label = title, labelVars = NULL,
-  paramVarSep = " - ", formatReport = subjectProfileReportFormat(),
-  paging = TRUE, table = FALSE, colWidth = NULL)
+  paramNameVar = NULL,
+  paramGroupVar = NULL,
+  subsetData = NULL,
+  subsetVar = NULL,
+  subsetValue = NULL,
+  subjectVar = "USUBJID",
+  subjectSubset = NULL,
+  xLab = "",
+  yLab = "",
+  title = "Subject information",
+  label = title,
+  labelVars = NULL,
+  paramVarSep = " - ",
+  formatReport = subjectProfileReportFormat(),
+  paging = TRUE,
+  table = FALSE,
+  colWidth = NULL
+)
 }
 \arguments{
 \item{data}{data.frame with data}

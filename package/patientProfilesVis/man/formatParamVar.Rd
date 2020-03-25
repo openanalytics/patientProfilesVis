@@ -7,8 +7,13 @@ wrap it across multiple lines if needed
 and optionally sorted according to the levels
 of a grouping variable}
 \usage{
-formatParamVar(data, paramVar = NULL, paramGroupVar = NULL,
-  revert = FALSE, width = 20)
+formatParamVar(
+  data,
+  paramVar = NULL,
+  paramGroupVar = NULL,
+  revert = FALSE,
+  width = 20
+)
 }
 \arguments{
 \item{data}{data.frame with data}

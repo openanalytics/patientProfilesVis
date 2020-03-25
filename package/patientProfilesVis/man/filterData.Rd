@@ -4,8 +4,14 @@
 \alias{filterData}
 \title{Filter a dataset for records of interest}
 \usage{
-filterData(data, subsetData = NULL, subsetVar = NULL,
-  subsetValue = NULL, subjectVar = "USUBJID", subjectSubset = NULL)
+filterData(
+  data,
+  subsetData = NULL,
+  subsetVar = NULL,
+  subsetValue = NULL,
+  subjectVar = "USUBJID",
+  subjectSubset = NULL
+)
 }
 \arguments{
 \item{data}{data data.frame with data}

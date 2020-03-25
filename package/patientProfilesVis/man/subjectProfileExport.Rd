@@ -4,10 +4,16 @@
 \alias{subjectProfileExport}
 \title{Create report}
 \usage{
-subjectProfileExport(listPlotsSubject, outputFile = "subjectProfile.pdf",
-  index = NULL, formatReport = subjectProfileReportFormat(),
-  shiny = FALSE, verbose = FALSE, nCores = NULL,
-  exportFigures = FALSE)
+subjectProfileExport(
+  listPlotsSubject,
+  outputFile = "subjectProfile.pdf",
+  index = NULL,
+  formatReport = subjectProfileReportFormat(),
+  shiny = FALSE,
+  verbose = FALSE,
+  nCores = NULL,
+  exportFigures = FALSE
+)
 }
 \arguments{
 \item{listPlotsSubject}{List of plots for each subject}

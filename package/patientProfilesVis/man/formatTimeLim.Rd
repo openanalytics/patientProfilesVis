@@ -4,8 +4,13 @@
 \alias{formatTimeLim}
 \title{Format specified \code{timeLim}.}
 \usage{
-formatTimeLim(data, subjectVar = "USUBJID", timeStartVar, timeEndVar,
-  timeLim = NULL)
+formatTimeLim(
+  data,
+  subjectVar = "USUBJID",
+  timeStartVar,
+  timeEndVar,
+  timeLim = NULL
+)
 }
 \arguments{
 \item{data}{data.frame with data}

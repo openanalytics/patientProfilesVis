@@ -5,8 +5,12 @@
 \title{Get optimal column widths, based on the minimum word size
 and median number of characters in each column.}
 \usage{
-getOptimalColWidth(data, widthValue = ifelse(formatReport$landscape, 240,
-  190), labels = NULL, formatReport = subjectProfileReportFormat())
+getOptimalColWidth(
+  data,
+  widthValue = ifelse(formatReport$landscape, 240, 190),
+  labels = NULL,
+  formatReport = subjectProfileReportFormat()
+)
 }
 \arguments{
 \item{data}{Data.frame with columns for which optimal width should be extracted.}

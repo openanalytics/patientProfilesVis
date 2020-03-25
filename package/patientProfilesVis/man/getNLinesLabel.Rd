@@ -6,8 +6,12 @@
 from a \code{\link[ggplot2]{ggplot2}} object via \code{gg}
 or from the label  via \code{value}}
 \usage{
-getNLinesLabel(gg, value, elName = c("x", "y", "title", "caption"),
-  elNLines = NULL)
+getNLinesLabel(
+  gg,
+  value,
+  elName = c("x", "y", "title", "caption"),
+  elNLines = NULL
+)
 }
 \arguments{
 \item{gg}{\code{\link[ggplot2]{ggplot2}} object}

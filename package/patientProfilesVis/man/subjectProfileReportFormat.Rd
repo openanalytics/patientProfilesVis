@@ -5,8 +5,13 @@
 \title{Get list with format specification for subject profile report,
 setting default for entire workflow}
 \usage{
-subjectProfileReportFormat(heightLineIn = 0.2, margin = 0.75,
-  landscape = FALSE, aspectRatio = 0.5, yLabelWidth = 30)
+subjectProfileReportFormat(
+  heightLineIn = 0.2,
+  margin = 0.75,
+  landscape = FALSE,
+  aspectRatio = 0.5,
+  yLabelWidth = 30
+)
 }
 \arguments{
 \item{heightLineIn}{height of a line in inches}

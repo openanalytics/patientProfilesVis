@@ -7,12 +7,19 @@ wrap it across multiple lines if needed,
 and optionally sorted according to the levels
 of a grouping variable}
 \usage{
-formatParamVarTextPlot(data, paramVar = NULL, paramValueVar = NULL,
-  paramValueLab = NULL, paramGroupVar = NULL, revert = FALSE,
+formatParamVarTextPlot(
+  data,
+  paramVar = NULL,
+  paramValueVar = NULL,
+  paramValueLab = NULL,
+  paramGroupVar = NULL,
+  revert = FALSE,
   width = formatReport$yLabelWidth,
   widthValue = ifelse(formatReport$landscape, 240, 190),
-  formatReport = subjectProfileReportFormat(), table = FALSE,
-  colWidth = NULL)
+  formatReport = subjectProfileReportFormat(),
+  table = FALSE,
+  colWidth = NULL
+)
 }
 \arguments{
 \item{data}{data.frame with data}

@@ -576,16 +576,16 @@ checkTimeTrans <- function(listPlots, timeLim = NULL){
 		modTimeVariant <- names(which(sapply(listPlots, isSubjectProfileTimeVariant, empty = FALSE)))
 		timeTransMod <- timeTransMod[modTimeVariant]
 		
-		checkFctId <- function(list)	
-			if(length(list) > 1){
-				all(mapply(identical, head(list, -1), tail(list, -1)))
-			}else	TRUE
-		
-		# if the transformation is not the same for all modules to be aligned
-		if(!checkFctId(timeTransMod)){
+		# set transformation for all modules in case timeExpand specified for one of them
+		# or plots should be time-aligned
+		if(length(timeTransMod) > 0){
 			
 			# if only one transformation is specified
 			timeTransModSpec <- timeTransMod[!sapply(timeTransMod, is.null)]
+			checkFctId <- function(list)	
+				if(length(list) > 1){
+					all(mapply(identical, head(list, -1), tail(list, -1)))
+				}else	TRUE
 			if(checkFctId(timeTransModSpec)){
 				
 				timeTransUsed <- timeTransModSpec[[1]]	
