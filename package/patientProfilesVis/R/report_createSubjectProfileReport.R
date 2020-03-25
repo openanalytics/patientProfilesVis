@@ -285,7 +285,6 @@ createSubjectProfileReport <- function(
 #' @param verbose logical, if TRUE print messages during execution
 #' @return Updated \code{subjects}
 #' @author Laure Cougnaud
-#' @export
 sortSubjects <- function(
 	subjects, 
 	subjectVar = "USUBJID",
