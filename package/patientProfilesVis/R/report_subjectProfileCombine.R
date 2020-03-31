@@ -576,12 +576,13 @@ checkTimeTrans <- function(listPlots, timeLim = NULL){
 		modTimeVariant <- names(which(sapply(listPlots, isSubjectProfileTimeVariant, empty = FALSE)))
 		timeTransMod <- timeTransMod[modTimeVariant]
 		
+		timeTransModSpec <- timeTransMod[!sapply(timeTransMod, is.null)]
+		
 		# set transformation for all modules in case timeExpand specified for one of them
 		# or plots should be time-aligned
-		if(length(timeTransMod) > 0){
+		if(length(timeTransModSpec) > 0){
 			
 			# if only one transformation is specified
-			timeTransModSpec <- timeTransMod[!sapply(timeTransMod, is.null)]
 			checkFctId <- function(list)	
 				if(length(list) > 1){
 					all(mapply(identical, head(list, -1), tail(list, -1)))
@@ -602,7 +603,7 @@ checkTimeTrans <- function(listPlots, timeLim = NULL){
 				timeTrans <- timeTransUsed
 #				}
 				if(!is.null(timeTrans))
-					message(paste("All modules are transformed with", timeTransUsed$name, 
+					message(paste("All modules are transformed with", timeTrans$name, 
 						"to be time aligned."
 					))
 				
@@ -610,7 +611,7 @@ checkTimeTrans <- function(listPlots, timeLim = NULL){
 				# the modules cannot be aligned
 			}else{
 				
-				timeTransModName <- sapply(timeTransMod, function(x) ifelse(is.null(x), "none", x$name))
+				timeTransModName <- sapply(timeTransModSpec, function(x) ifelse(is.null(x), "none", x$name))
 				timeTransModNameST <- toString(paste(names(timeTransModName), timeTransModName, sep = ": "))
 				stop("Different time transformations are ",
 					"specified for different modules to align: ",

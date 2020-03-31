@@ -39,3 +39,7 @@ pc <- package_coverage(
 )
 report(x = pc, file = "testCoverage-patientProfilesVis.html")
 
+compareFigs(
+	pathFigRef = "../package/patientProfilesVis/tests/figs/subjectProfileLinePlot/",
+	pathFigNew = "../package/patientProfilesVis.Rcheck/tests/figs/subjectProfileLinePlot/"
+)

@@ -6,7 +6,6 @@
 #' @param includeNA Logical (TRUE by default), should NA elements be retained in the palette.
 #' @param ... Additional parameters for the 
 #' \code{\link[glpgUtilityFct]{getGLPGColorPalette}} function.
-#' @inheritParams glpgUtilityFct:::getGLPGColorPalette
 #' @inherit glpgUtilityFct:::getGLPGColorPalette return
 #' @author Laure Cougnaud
 #' @importFrom glpgUtilityFct getGLPGColorPalette
