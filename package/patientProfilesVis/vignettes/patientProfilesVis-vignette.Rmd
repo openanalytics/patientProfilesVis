@@ -1243,10 +1243,21 @@ As the creation of the report is time-consuming, the report creation is not run 
 
 ```
 
-# Parallelization
+# Optimization of patient profiles creation
 
-For big clinical trial, the creation of the subject profile report can be
-parallelized by specifying a number of cores > 1 to the parameter **`nCores`**
+For big clinical trial, the creation of the subject profile report can be time-consuming.
+
+Please find below a few advices:
+
+* during the development of the patient profiles for 
+a specific study, the different modules can be created only for a
+subset of the subjects via the `subjectSubset` or `subsetData`/`subsetVar`/`subsetValue`
+parameters
+* for the final creation of the  patient profiles on the entire set of patients:
+    + the reports can be exported by batch of X subjects, via the `exportBatchSize`
+    parameter. Exporting the patient profiles by 10 subjects can be a good first trial
+    for study with numerous patients.
+    + the report can be parallelized by specifying a number of cores > 1 to the parameter **`nCores`**
 of the `createSubjectProfileReport` function. In this case,
 the **package `parallel` is required**. To check the number of cores available
 in your system, you may use: `parallel::detectCores()`.
