@@ -223,7 +223,11 @@ subjectProfileTextPlot <- function(
 			gg <- gg + xlim(c(0, 1)) +
 				subjectProfileTheme() +
 				theme(
-					panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+					# panel.grid.major = element_blank doesn't work with ggplot2 >= 3.3.0
+					panel.grid.major.x = element_blank(), 
+					panel.grid.minor.x = element_blank(),
+					panel.grid.major.y = element_blank(), 
+					panel.grid.minor.y = element_blank(),
 					axis.ticks = element_blank(),
 					axis.text.x = element_blank(),
 					axis.ticks.x = element_blank()

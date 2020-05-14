@@ -413,15 +413,15 @@ formatParamVar <- function(data,
 			
 			if(any(!paramGroupVarInData))
 				warning("The variable(s): ", toString(shQuote(paramGroupVar[!paramGroupVarInData])),
-					" used for grouping is(are) not used because not in the data.")
+					" used for grouping are not used because they are not available in the data.")
 		
 			if(any(paramGroupVarInData)){
 				
 				paramGroupVar <- paramGroupVar[paramGroupVarInData]
 				
 				if(is.null(paramVar)){
-					warning("The variable used for grouping ('paramGroupVar') is not used",
-						"because no variable for parameter ('paramVar') is not specified.")
+					warning("The variable(s) used for grouping ('paramGroupVar') are not used",
+						"because no parameter variable ('paramVar') is specified.")
 				}else{
 					groupVariable <- if(length(paramGroupVar) > 1){
 						interaction(data[, paramGroupVar])
@@ -429,9 +429,12 @@ formatParamVar <- function(data,
 						if(!is.factor(data[, paramGroupVar]))
 							factor(data[, paramGroupVar])	else	data[, paramGroupVar]
 					}	
-					if(!all(tapply(groupVariable, paramVarVect, n_distinct) == 1, na.rm = TRUE)){
-						warning(paste("The grouping variable:", groupVariable, "is not used, ",
-							"because it is not unique for all parameters."))
+					check <- tapply(groupVariable, paramVarVect, n_distinct) == 1
+					if(!all(check, na.rm = TRUE)){
+						warning(
+							paste("The grouping variable(s):", toString(paramGroupVar), 
+							"are not used, because they are not unique for all parameters.")
+						)
 					}else{
 						paramVarVect <- reorder(paramVarVect, groupVariable, unique)
 					}
