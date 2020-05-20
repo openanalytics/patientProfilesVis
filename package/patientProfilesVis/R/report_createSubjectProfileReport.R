@@ -228,7 +228,7 @@ createSubjectProfileReport <- function(
 		
 		msgProgress <- "Create subject profile report."
 		if(verbose)	message(msgProgress)
-		if(shiny)	incProgress(0.3, detail = msgProgress)
+		if(shiny)	shiny::incProgress(0.3, detail = msgProgress)
 		
 		subjectProfileExport(
 			listPlotsSubject = listPlotsPerSubjectList, 
@@ -254,7 +254,7 @@ createSubjectProfileReport <- function(
 		
 			msgProgress <- paste("Create subject profile report for subject:", subject)
 			if(verbose)	message(msgProgress)
-			if(shiny)	incProgress(0.3, detail = msgProgress)
+			if(shiny)	shiny::incProgress(0.3, detail = msgProgress)
 			
 			subjectProfileExport(
 				listPlotsSubject = listPlotsPerSubjectList[subject], 

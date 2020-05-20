@@ -16,7 +16,8 @@ defineIndex(subjects, data, var, subjectVar = "USUBJID", labelVars = NULL)
 
 \item{subjectVar}{string, variable of \code{data} with subject ID}
 
-\item{labelVars}{named string with variable labels (names are the variable code)}
+\item{labelVars}{Named character vector with variable labels 
+(names are the variable code)}
 }
 \value{
 list with elements:

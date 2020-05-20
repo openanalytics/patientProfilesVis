@@ -42,10 +42,17 @@ and maximum \code{timeEndVar} per subject.}
 
 \item{timeLimStartVar}{string, variable of \code{timeLimData} with time start}
 
+\item{timeLimStartLab}{String, label for \code{timeLimeStartVar}.}
+
 \item{timeLimEndVar}{string, variable of \code{timeLimData} with time end}
+
+\item{timeLimEndLab}{String, label for \code{timeLimEndVar}.}
 
 \item{timeImpType}{String with imputation type: 'minimal' (default),
 'data-based' or 'none'.}
+
+\item{labelVars}{Named character vector with variable labels 
+(names are the variable code)}
 }
 \value{
 list with:
@@ -76,7 +83,7 @@ Set missing start/end time variable in the data.
 In case of missing values for the time start or end variables, they are replaced by:
 \itemize{
 \item{in case \code{timeLimData}, \code{timeLimStartVar} and \code{timeLimEndVar} are specified: }{
- the minimum/maximum values in the variables: \br\code{timeLimStartVar}/\code{timeLimEndVar} 
+ the minimum/maximum values in the variables: \code{timeLimStartVar}/\code{timeLimEndVar} 
 respectively are considered
  in the data: \code{timeLimData}
 for the specific subject (if available). If there are missing for a specific subject,

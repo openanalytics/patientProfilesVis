@@ -18,7 +18,6 @@
 #' @param label string, label used in the plot.
 #' This label is used to report the name of the panel 
 #' in the text when the plots are combined (e.g. if the plot is empty).
-#' @param labelVars named string with variable labels (names are the variable code)
 #' @param paramVarSep string with character(s) used to concatenate multiple 
 #' \code{paramVar}, ' - ' by default.
 #' @param timeLabel string with general time label, used
@@ -318,7 +317,7 @@ subjectProfileIntervalPlot <- function(
 #' In case of missing values for the time start or end variables, they are replaced by:
 #' \itemize{
 #' \item{in case \code{timeLimData}, \code{timeLimStartVar} and \code{timeLimEndVar} are specified: }{
-#'  the minimum/maximum values in the variables: \br\code{timeLimStartVar}/\code{timeLimEndVar} 
+#'  the minimum/maximum values in the variables: \code{timeLimStartVar}/\code{timeLimEndVar} 
 #' respectively are considered
 #'  in the data: \code{timeLimData}
 #' for the specific subject (if available). If there are missing for a specific subject,
@@ -356,9 +355,13 @@ subjectProfileIntervalPlot <- function(
 #' and maximum \code{timeEndVar} per subject.
 #' @param timeLimData data.frame with data used to extract time limits per subject
 #' @param timeLimStartVar string, variable of \code{timeLimData} with time start
+#' @param timeLimStartLab String, label for \code{timeLimeStartVar}.
 #' @param timeLimEndVar string, variable of \code{timeLimData} with time end
+#' @param timeLimEndLab String, label for \code{timeLimEndVar}.
 #' @param timeImpType String with imputation type: 'minimal' (default),
 #' 'data-based' or 'none'.
+#' @param labelVars Named character vector with variable labels 
+#' (names are the variable code)
 #' @inheritParams filterData
 #' @return list with:
 #' \itemize{
@@ -381,6 +384,7 @@ subjectProfileIntervalPlot <- function(
 #' \item{'caption': }{String with extra explanation concerning imputation that could be included in plot caption.}
 #' }
 #' @importFrom plyr ddply
+#' @importFrom glpgUtilityFct getLabelVar
 #' @author Laure Cougnaud
 formatTimeInterval <- function(data, 
 	timeStartVar, timeStartLab = getLabelVar(timeStartVar, labelVars = labelVars),
