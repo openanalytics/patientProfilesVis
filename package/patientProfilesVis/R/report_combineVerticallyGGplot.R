@@ -57,7 +57,7 @@ combineVerticallyGGplot <- function(
 			msgProgress <- paste0("Combine profile: ", subjID, " across modules.")
 			if(verbose)	message(msgProgress)
 			if(shiny)	incProgress(0, detail = msgProgress)
-			lapply(listPlots[[subjID]], ggplotGrob)
+			suppressWarnings(lapply(listPlots[[subjID]], ggplotGrob))
 		}, simplify = FALSE)
 		# because each call to the function ggplot2::ggplotGrob open a new window:
 		# shuts down all open graphics devices

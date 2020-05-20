@@ -23,12 +23,34 @@ test_that("subjectProfileIntervalPlot - default time limits extraction", {
 			
 	vdiffr::expect_doppelganger(
 		title = "timeLimitsDefault", 
-		fig = aePlots[[1]][[1]],
+		fig = aePlots[["study-4903-01"]][[1]],
 		path = "subjectProfileIntervalPlot",
 		verbose = TRUE
 	)
 			
 })
+
+test_that("subjectProfileIntervalPlot - default time limits extraction - all missing values", {
+			
+	aePlots <- subjectProfileIntervalPlot(
+		data = dataPlot,
+		paramVar = "AETERM",
+		timeStartVar = "AESTDY",
+		timeEndVar = "AEENDY",
+		colorVar = "AESEV",
+		labelVars = labelVarsSDTMPelican,
+		title = "Adverse events"
+	)
+	
+	vdiffr::expect_doppelganger(
+		title = "timeLimitsDefaults-Missing", 
+		fig = aePlots[["study-4902-01"]][[1]],
+		path = "subjectProfileIntervalPlot",
+		verbose = TRUE
+	)
+			
+			
+})			
 
 test_that("subjectProfileIntervalPlot - time limits extracted from a dataset", {
 			
@@ -79,9 +101,10 @@ test_that("subjectProfileIntervalPlot - multiple parameter variables", {
 test_that("subjectProfileIntervalPlot - time limits fixed", {
 			
 	timeLim <- c(-28, 53)
+	dataCM <- SDTMDataPelican$CM
 	cmPlotsTimeSpec <- subjectProfileIntervalPlot(
-		data = SDTMDataPelican$CM,
-		paramVar = c("CMINDC", "CMDECOD", "CMDOSTXT", "CMDOSU", "CMROUTE", "CMDOSFRQ"),
+		data = dataCM,
+		paramVar = "CMDECOD",
 		timeStartVar = "CMSTDY",
 		timeEndVar = "CMENDY",
 		paramGroupVar = "CMINDC",
@@ -91,9 +114,15 @@ test_that("subjectProfileIntervalPlot - time limits fixed", {
 		timeLim = timeLim
 	)
 	
+	# consider subject with start and end date and with max non missing end date
+	subjectWithStartEndTime <- by(dataCM, dataCM$USUBJID, function(x){
+		if(any(!is.na(x$CMSTDY) & !is.na(x$CMENDY)))	sum(!is.na(x$CMENDY))
+	})
+	subject <- names(which.max(unlist(subjectWithStartEndTime)))
+	
 	vdiffr::expect_doppelganger(
 		title = "timeLimitsFixed", 
-		fig = cmPlotsTimeSpec[[1]][[1]],
+		fig = cmPlotsTimeSpec[[subject]][[1]],
 		path = "subjectProfileIntervalPlot",
 		verbose = TRUE
 	)

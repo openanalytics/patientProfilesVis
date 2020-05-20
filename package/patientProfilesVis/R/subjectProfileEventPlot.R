@@ -48,7 +48,7 @@ subjectProfileEventPlot <- function(
 	}
 	
 	# remove records without parameter or time variables
-	isYMissing <- is.na(data[, yVar]) || data[, yVar] == ""
+	isYMissing <- is.na(data[, "yVar"]) || data[, "yVar"] == ""
 	if(any(isYMissing))
 		message(paste(sum(isYMissing), "record(s) with missing", 
 			toString(paramLab), "are not considered.")
@@ -58,7 +58,7 @@ subjectProfileEventPlot <- function(
 		message(paste(sum(isTimeMissing), "record(s) with missing", 
 			toString(timeLab), "are not considered.")
 		)
-	data <- data[isYMissing & !isTimeMissing, ]
+	data <- data[!isYMissing & !isTimeMissing, ]
 	
 	# only keep records of interest
 	data <- filterData(
