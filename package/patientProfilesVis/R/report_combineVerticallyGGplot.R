@@ -33,7 +33,7 @@ combineVerticallyGGplot <- function(
 		stop("The package 'shiny' is required to report progress.")
 	msgProgress <- "Combine profiles across subjects/modules."
 	if(verbose)	message(msgProgress)
-	if(shiny)	incProgress(0.1, detail = msgProgress)
+	if(shiny)	shiny::incProgress(0.1, detail = msgProgress)
 	
 	# transform all plots to gtable
 	isParallel <- (nCores > 1)
@@ -56,7 +56,7 @@ combineVerticallyGGplot <- function(
 		grobsAllSubjects <- sapply(names(listPlots), function(subjID){	
 			msgProgress <- paste0("Combine profile: ", subjID, " across modules.")
 			if(verbose)	message(msgProgress)
-			if(shiny)	incProgress(0, detail = msgProgress)
+			if(shiny)	shiny::incProgress(0, detail = msgProgress)
 			suppressWarnings(lapply(listPlots[[subjID]], ggplotGrob))
 		}, simplify = FALSE)
 		# because each call to the function ggplot2::ggplotGrob open a new window:

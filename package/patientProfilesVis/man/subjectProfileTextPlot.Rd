@@ -83,7 +83,8 @@ Records from \code{data} are then mapped by the \code{subjectVar} variable.}
 This label is used to report the name of the panel 
 in the text when the plots are combined (e.g. if the plot is empty).}
 
-\item{labelVars}{named string with variable labels (names are the variable code)}
+\item{labelVars}{Named character vector with variable labels 
+(names are the variable code)}
 
 \item{paramVarSep}{string with character(s) used to concatenate multiple 
 \code{paramNameVar} or \code{paramValueVar}, ' - ' by default.}

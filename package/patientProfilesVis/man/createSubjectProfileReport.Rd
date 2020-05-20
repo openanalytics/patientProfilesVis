@@ -137,7 +137,8 @@ This might speed up the export for a high number of subjects.
 Only available if report is created by subject (\code{reportPerSubject} is TRUE)
 and modules are not aligned across subjects (\code{timeAlignPerSubject} is: 'all').}
 
-\item{labelVars}{named string with variable labels (names are the variable code)}
+\item{labelVars}{Named character vector with variable labels 
+(names are the variable code)}
 
 \item{maxNLines}{maximum number of lines for a combined plot,
 to fit in the page height}

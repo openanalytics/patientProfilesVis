@@ -99,7 +99,11 @@ and maximum \code{timeEndVar} per subject.}
 
 \item{timeLimStartVar}{string, variable of \code{timeLimData} with time start}
 
+\item{timeLimStartLab}{String, label for \code{timeLimeStartVar}.}
+
 \item{timeLimEndVar}{string, variable of \code{timeLimData} with time end}
+
+\item{timeLimEndLab}{String, label for \code{timeLimEndVar}.}
 
 \item{timeTrans}{ggplot2 transformation (see \code{\link[scales]{trans_new}}),
 e.g. produced by the \code{\link{getTimeTrans}} function.}
@@ -144,7 +148,8 @@ for \code{timeStartVar}/\code{timeEndVar}.}
 This label is used to report the name of the panel 
 in the text when the plots are combined (e.g. if the plot is empty).}
 
-\item{labelVars}{named string with variable labels (names are the variable code)}
+\item{labelVars}{Named character vector with variable labels 
+(names are the variable code)}
 
 \item{formatReport}{list with parameters used to specify the format of the report,
 e.g. output of the \code{\link{subjectProfileReportFormat}} function}
@@ -167,7 +172,7 @@ If no start and/or end date is available and \code{timeStartShapeVar},
 In case of missing values for the time start or end variables, they are replaced by:
 \itemize{
 \item{in case \code{timeLimData}, \code{timeLimStartVar} and \code{timeLimEndVar} are specified: }{
- the minimum/maximum values in the variables: \br\code{timeLimStartVar}/\code{timeLimEndVar} 
+ the minimum/maximum values in the variables: \code{timeLimStartVar}/\code{timeLimEndVar} 
 respectively are considered
  in the data: \code{timeLimData}
 for the specific subject (if available). If there are missing for a specific subject,

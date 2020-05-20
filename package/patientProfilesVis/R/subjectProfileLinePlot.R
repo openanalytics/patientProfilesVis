@@ -190,7 +190,7 @@ subjectProfileLinePlot <- function(
 				# to avoid warning: geom_path: Each group consists of only one observation. Do you need to adjust the group aesthetic?
 				# when 'facet_grid' is called
 				nPointsPerParamName <- ddply(dataSubjectPage, "paramFacetVar", nrow)
-				paramNameRetained <- subset(nPointsPerParamName, V1 > 1)[, "paramFacetVar"]
+				paramNameRetained <- nPointsPerParamName[which(nPointsPerParamName$V1 > 1), "paramFacetVar"]
 				dataSubjectPage[which(dataSubjectPage[, "paramFacetVar"] %in% paramNameRetained), ]
 			}else	dataLine <- dataSubjectPage
 			if(nrow(dataLine) > 0)

@@ -1,5 +1,6 @@
 #' Create plot of subject profiles for events
 #' @param timeVar string, variable of \code{data} with time
+#' @param timeLab String, label for \code{timeVar}.
 #' @param shapeVar string, variable of \code{data} for shape of the points
 #' @param shapeLab string, label for \code{shapeVar}
 #' @param shapePalette named vector with shape for \code{shapeVar}
@@ -48,7 +49,7 @@ subjectProfileEventPlot <- function(
 	}
 	
 	# remove records without parameter or time variables
-	isYMissing <- is.na(data[, "yVar"]) || data[, "yVar"] == ""
+	isYMissing <- is.na(data[, "yVar"]) | data[, "yVar"] == ""
 	if(any(isYMissing))
 		message(paste(sum(isYMissing), "record(s) with missing", 
 			toString(paramLab), "are not considered.")

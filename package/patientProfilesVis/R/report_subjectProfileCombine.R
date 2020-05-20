@@ -28,7 +28,7 @@ subjectProfileCombine <- function(
 	if(is.null(timeLim)){
 		msgProgress <- "Get limits x-axis."
 		if(verbose)	message(msgProgress)
-		if(shiny)	incProgress(0, detail = msgProgress)
+		if(shiny)	shiny::incProgress(0, detail = msgProgress)
 		timeLim <- getXLimSubjectProfilePlots(
 			listPlots, 
 			timeAlign = timeAlign, 
@@ -43,7 +43,7 @@ subjectProfileCombine <- function(
 	# create empty element in the list if the plot is not available for a certain subject
 	msgProgress <- "Create empty profile."
 	if(verbose)	message(msgProgress)
-	if(shiny)	incProgress(0.1, detail = msgProgress)
+	if(shiny)	shiny::incProgress(0.1, detail = msgProgress)
 	listPlotsAll <- sapply(listPlots, function(x){
 		list <- setNames(x[subjectsID], subjectsID) # in case plot not available for one subject
 		list <- sapply(subjectsID, function(subj){
@@ -59,7 +59,7 @@ subjectProfileCombine <- function(
 	# extract label
 	msgProgress <- "Extract plot labels."
 	if(verbose)	message(msgProgress)
-	if(shiny)	incProgress(0, detail = msgProgress)
+	if(shiny)	shiny::incProgress(0, detail = msgProgress)
 	plotLabels <- sapply(listPlotsAll, function(x){
 		label <- attributes(x)$metaData$label
 		ifelse(is.null(label), "", label)
@@ -68,19 +68,19 @@ subjectProfileCombine <- function(
 	# get required time transformation for each module
 	msgProgress <- "Check time transformations."
 	if(verbose)	message(msgProgress)
-	if(shiny)	incProgress(0, detail = msgProgress)
+	if(shiny)	shiny::incProgress(0, detail = msgProgress)
 	timeTrans <- checkTimeTrans(listPlots = listPlotsAll, timeLim = timeLim)
 	
 	# get required time expand for each module
 	msgProgress <- "Check time expand."
 	if(verbose)	message(msgProgress)
-	if(shiny)	incProgress(0, detail = msgProgress)
+	if(shiny)	shiny::incProgress(0, detail = msgProgress)
 	timeExpand <- checkTimeExpand(listPlots = listPlotsAll, timeLim = timeLim)
 
 	# re-format plots: same timeLim, ...
 	msgProgress <- "Prepare subject profiles to be combined."
 	if(verbose)	message(msgProgress)
-	if(shiny)	incProgress(0, detail = msgProgress)
+	if(shiny)	shiny::incProgress(0, detail = msgProgress)
 	listPlotsPerSubject <- do.call(mapply, 
 		c(
 			list(
