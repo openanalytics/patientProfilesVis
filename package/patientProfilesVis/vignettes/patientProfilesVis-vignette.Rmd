@@ -79,7 +79,7 @@ A few `sdtm` datasets from the _Pelican_ study are included in the
 	data(ADaMDataPelican)
 	# ... and corresponding labels
 	data(labelVarsADaMPelican)
-
+	
 ```
 
 # Creation of the plot submodules

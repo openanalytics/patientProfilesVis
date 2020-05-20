@@ -1,3 +1,5 @@
+1.0.0
+    o change default time imputation in subjectProfileIntervalPlot (see 'timeImpType' parameter)
 0.12.1
     o formatParamVar: fix message issue grouping
     o subjectProfileTextPlot: fix panel grid ggplot2 >= 3.3.0
