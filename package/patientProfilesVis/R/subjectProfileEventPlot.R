@@ -23,7 +23,8 @@ subjectProfileEventPlot <- function(
 	shapeVar = colorVar, shapeLab = getLabelVar(shapeVar, labelVars = labelVars),
 	shapePalette = NULL,
 	alpha = 1,
-	timeVar, timeTrans = NULL, timeExpand = NULL,
+	timeVar, timeLab = getLabelVar(timeVar, labelVars = labelVars),
+	timeTrans = NULL, timeExpand = NULL,
 	subjectVar = "USUBJID", subjectSubset = NULL, 
 	subsetData = NULL, subsetVar = NULL, subsetValue = NULL,
 	xLab = getLabelVar(timeVar, labelVars = labelVars),
@@ -47,7 +48,17 @@ subjectProfileEventPlot <- function(
 	}
 	
 	# remove records without parameter or time variables
-	data <- data[with(data, !is.na(yVar) & yVar != "" & !is.na(get(timeVar))), ]
+	isYMissing <- is.na(data[, yVar]) || data[, yVar] == ""
+	if(any(isYMissing))
+		message(paste(sum(isYMissing), "record(s) with missing", 
+			toString(paramLab), "are not considered.")
+		)
+	isTimeMissing <- is.na(data[, timeVar])
+	if(any(isTimeMissing))
+		message(paste(sum(isTimeMissing), "record(s) with missing", 
+			toString(timeLab), "are not considered.")
+		)
+	data <- data[isYMissing & !isTimeMissing, ]
 	
 	# only keep records of interest
 	data <- filterData(
@@ -74,7 +85,6 @@ subjectProfileEventPlot <- function(
 		data = data, paramVar = "yVar", paramGroupVar = paramGroupVar,
 		revert = TRUE, width = formatReport$yLabelWidth
 	)
-	
 	
 	timeLim <- formatTimeLim(
 		data = data, subjectVar = subjectVar, 

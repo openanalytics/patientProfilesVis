@@ -55,16 +55,19 @@ subjectProfileIntervalPlot <- function(
 	paramVar, paramVarSep = " - ",
 	paramLab = toString(getLabelVar(paramVar, labelVars = labelVars)),
 	paramGroupVar = NULL,
-	timeStartVar,
-	timeEndVar,
+	timeStartVar, timeStartLab = getLabelVar(timeStartVar, labelVars = labelVars),
+	timeEndVar, timeEndLab = getLabelVar(timeEndVar, labelVars = labelVars),
 	timeLabel = "time",
 	subjectVar = "USUBJID", subjectSubset = NULL,
 	subsetData = NULL, subsetVar = NULL, subsetValue = NULL, 
-	timeLim = NULL, timeLimData = NULL, timeLimStartVar = NULL, timeLimEndVar = NULL,
+	timeImpType = c("minimal", "data-by-subject", "none"),
+	timeLim = NULL, timeLimData = NULL, 
+	timeLimStartVar = NULL, timeLimStartLab = getLabelVar(timeLimStartVar, labelVars = labelVars),
+	timeLimEndVar = NULL, timeLimEndLab = getLabelVar(timeLimEndVar, labelVars = labelVars),
 	timeTrans = NULL, timeExpand = NULL,
 	timeAlign = TRUE,
 	rangeSimilarStartEnd = NULL,
-	xLab = paste(getLabelVar(c(timeStartVar, timeEndVar), labelVars = labelVars), collapse = "/"),
+	xLab = paste(c(timeStartLab, timeEndLab), collapse = "/"),
 	yLab = "",
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
 	colorPalette = NULL,
@@ -72,13 +75,14 @@ subjectProfileIntervalPlot <- function(
 	timeStartShapeVar = NULL, timeEndShapeVar = NULL,
 	shapePalette = NULL, 
 	shapeLab = toString(unique(getLabelVar(c(timeStartShapeVar, timeEndShapeVar), labelVars = labelVars))),
-	shapeSize = rel(1),
+	shapeSize = rel(3),
 	title = paramLab,
 	label = title,
 	labelVars = NULL,
 	formatReport = subjectProfileReportFormat(),
-	paging = TRUE
-){
+	paging = TRUE){
+	
+	timeImpType <- match.arg(timeImpType)
 	
 	# in case data is a tibble:
 	data <- as.data.frame(data)
@@ -86,14 +90,18 @@ subjectProfileIntervalPlot <- function(
 	# fill missing start/end time and extract time limits
 	resMSED <- formatTimeInterval(
 		data = data, 
-		timeStartVar = timeStartVar, timeEndVar = timeEndVar, 
+		timeStartVar = timeStartVar, timeStartLab = timeStartLab,
+		timeEndVar = timeEndVar, timeEndLab = timeEndLab,
 		subjectVar = subjectVar,
 		timeLim = timeLim, timeLimData = timeLimData, 
-		timeLimStartVar = timeLimStartVar, timeLimEndVar = timeLimEndVar
+		timeImpType = timeImpType,
+		timeLimStartVar = timeLimStartVar, timeLimStartLab = timeLimStartLab,
+		timeLimEndVar = timeLimEndVar, timeLimEndLab = timeLimEndLab
 	)
 	data <- resMSED$data
 	timeLim <- resMSED$timeLim
 	timeLimInit <- resMSED$timeLimSpecified
+	timeShapePalette <- timeShapePalette
 	
 	# specify the time limits if not specified
 	# otherwise if missing values for start/end for all records of a patient
@@ -190,115 +198,42 @@ subjectProfileIntervalPlot <- function(
 			# and segment defined first, otherwise
 			# order in labels of y-axis can be different between geom_point and geom_segment
 			gg <- gg + geomSegmentCustom(data = dataSubjectPage, show.legend = TRUE)	
-			
-			# if same start/end, data not included by geom_segment
-			# so create a vertical segment
-			idxStartIsEnd <- which(dataSubjectPage[[timeStartVar]] == dataSubjectPage[[timeEndVar]])
-			if(length(idxStartIsEnd) > 0){
-				dataStartIsEnd <- dataSubjectPage[idxStartIsEnd, ]
-				yVarNum <- as.numeric(dataStartIsEnd[, "yVar"])
-				dataStartIsEnd[, "ymin"] <- yVarNum - 0.05
-				dataStartIsEnd[, "ymax"] <- yVarNum + 0.05
-				aesStartIsEnd <- getAes(
-					list(
-						x = timeStartVar, xend = timeStartVar, 
-						y = "ymin", yend = "ymax"
-					)	
+				
+			geomPointCustom <- function(gg, xVar, shapeVar){			
+				aesPC <- c(
+					list(x = xVar, y = "yVar", shape = shapeVar), 
+					if(!is.null(colorVar))	list(color = colorVar)
 				)
-				gg <- gg + geom_segment(
-					data = dataStartIsEnd, 
-					mapping = do.call(aes_string, aesStartIsEnd),
-					show.legend = FALSE
+				gg + geom_point(
+					data = dataSubjectPage, 
+					mapping = do.call(aes_string, aesPC), 
+					fill = "white",
+					size = shapeSize,
+					position = position_nudge(y = -0.01),
+					alpha = alpha
 				)
 			}
 			
-			if(hasShapeVar){
-				
-				geomPointCustom <- function(gg, xVar, shapeVar){			
-					aesPC <- c(
-						list(x = xVar, y = "yVar", shape = shapeVar), 
-						if(!is.null(colorVar))	list(color = colorVar)
-					)
-					gg + geom_point(
-						data = dataSubjectPage, 
-						mapping = do.call(aes_string, aesPC), 
-						fill = "white",
-						size = shapeSize,
-						position = position_nudge(y = -0.01),
-						alpha = alpha
-					)
-				}
-				
-				if(!is.null(timeStartShapeVar))
-					gg <- geomPointCustom(gg, xVar = timeStartVar, shapeVar = timeStartShapeVar)
-				if(!is.null(timeEndShapeVar))
-					gg <- geomPointCustom(gg, xVar = timeEndVar, shapeVar = timeEndShapeVar)
-				
-				if(!is.null(shapePalette))
-					gg <- gg + getAesScaleManual(lab = shapeLab, palette = shapePalette, type = "shape")
-				
-				# lines are included in shape legend
-				gg <- gg + guides(shape = guide_legend(override.aes = list(linetype = NA)))
-				
-				caption <- NULL
-				
-			}else{
-				
-				# separate data versus different arrows
-				# Note: in case of missing end date
-				# right-directed triangle not available in shape palette
-				# option 1: use Unicode, but symbol not centered
-				# option 2: draw segment
-				dataPlotByME <- dlply(dataSubjectPage, c("missingStartPlot", "missingEndPlot"))
+			caption <- if(is.null(timeStartShapeVar) | is.null(timeEndShapeVar))
+				paste0("Arrow represents missing start/end ", timeLabel, ".")
 			
-				# records with start date and missing end date
-				if("FALSE.TRUE" %in% names(dataPlotByME))
-					gg <- gg + geomSegmentCustom(
-						data = dataPlotByME[["FALSE.TRUE"]],
-						arrow = arrow(length = unit(1, "char"), ends = "last")
-					)
-				
-				# records with missing start date but with end date
-				if("TRUE.FALSE" %in% names(dataPlotByME)){
-					gg <- gg + geomSegmentCustom(
-						data = dataPlotByME[["TRUE.FALSE"]],
-						arrow = arrow(length = unit(1, "char"), ends = "first")
-					)
-				}
-				
-				# records with missing start and end dates
-				if("TRUE.TRUE" %in% names(dataPlotByME))
-					gg <- gg + geomSegmentCustom(
-						data = dataPlotByME[["TRUE.TRUE"]],
-						arrow = arrow(length = unit(1, "char"), ends = "both")
-					)
-				
-				
-				# set labels for linetype in legend
-				#		linetypeVals <- c(
-				#			'TRUE.TRUE' = "dotted", 'FALSE.TRUE' = "dashed", 
-				#			'TRUE.FALSE' = "longdash", 'FALSE.FALSE' = "solid"
-				#		)
-				#		linetypeLabels <- c(
-				#			'TRUE.TRUE' = "Missing start/end", 
-				#			'FALSE.TRUE' = "Missing end", 
-				#			'TRUE.FALSE' = "Missing start", 
-				#			'FALSE.FALSE' = "No missing start/end"
-				#		)
-				#		linetypeLims <- c('TRUE.TRUE', 'FALSE.TRUE', 'TRUE.FALSE', 'FALSE.FALSE')
-				#		linetypeLims <- linetypeLims[linetypeLims %in% unique(dataSubject$missingStartEnd)]
-				#		gg <- gg + 
-				#			scale_linetype_manual(
-				#				name = "Missing time", 
-				#				values = linetypeVals[linetypeLims], 
-				#				limits = linetypeLims,
-				#				labels = linetypeLabels[linetypeLims]
-				#			)
-				
-				# remove parameters without data, set theme and labels
-				caption <- paste0("Arrow represents missing start/end ", timeLabel, ".")
+			if(is.null(timeStartShapeVar) | is.null(timeEndShapeVar))
+				shapePalette <- c(shapePalette, timeShapePalette)
+			shapePalette <- shapePalette[!duplicated(names(shapePalette))]
 			
-			}
+			if(is.null(timeStartShapeVar))
+				timeStartShapeVar <- "timeStartStatus"
+			if(is.null(timeEndShapeVar))
+				timeEndShapeVar <- "timeEndStatus"
+			
+			gg <- geomPointCustom(gg, xVar = timeStartVar, shapeVar = timeStartShapeVar)
+			gg <- geomPointCustom(gg, xVar = timeEndVar, shapeVar = timeEndShapeVar)
+			
+			if(!is.null(shapePalette))
+				gg <- gg + getAesScaleManual(lab = shapeLab, palette = shapePalette, type = "shape")
+			
+			# lines are included in shape legend
+			gg <- gg + guides(shape = guide_legend(override.aes = list(linetype = NA)))
 			
 			gg <- gg +
 				scale_y_discrete(drop = TRUE) +
@@ -386,126 +321,217 @@ subjectProfileIntervalPlot <- function(
 #' @details 
 #' In case of missing values for the time start or end variables, they are replaced by:
 #' \itemize{
-#' \item{in case \code{timeLim} is specified: }{specified time limits}
-#' \item{otherwise, in case \code{timeLimData}, \code{timeLimStartVar} and \code{timeLimEndVar} are specified: }{
+#' \item{in case \code{timeLimData}, \code{timeLimStartVar} and \code{timeLimEndVar} are specified: }{
 #' minimum/maximum values in the variable: \code{timeLimVar} in the data: \code{timeLimData}
 #' for the specific subject (if available). If there are missing for a specific subject,
-#' they are taken across subjects.
-#' }
-#' \item{otherwise (default): }{the missing values for start/end date are replaced by the 
-#' minimum/maximum of the times available in the \code{timeStartVar} and 
-#' \code{timeEndVar} of the visualized \code{data} PER SUBJECT (if available).
-#' }
-#' \item{if all time are missings, the range is set to 0 and Inf} 
-#' }
+#' they are taken across subjects.}
+#' \item{otherwise, depending on the imputation type (\code{timeImpType}): }{
+#' \itemize{
+#' \item{'minimal' (by default): }{
+#' \itemize{
+#' \item{if start end and time are missing: }{no imputation is done}
+#' \item{if start time is missing and end time is not missing: }{
+#' start time is imputed with end time, and status is set to 'Missing start'}
+#' \item{if end time is missing and start time is not missing: }{
+#' end time is imputed with start time, and status is set to 'Missing end'}
+#' }}
+#' \item{'data-based' (default in version < 1.0.0): }{
+#' minimum/maximum values in the start/end time variables in the data are considered
+#' for the specific subject (if available). If there are missing for a specific subject,
+#' they are taken across subjects. If all time are missings, the range is set to 0 and Inf}
+#' \item{'none': }{no imputation is done}
+#' }}}
 #' The time limits are the same across subjects, and set to:
 #' \itemize{
 #' \item{\code{timeLim} if specified}
 #' \item{maximum time range in \code{timeLimStartVar} and \code{timeLimEndVar} in \code{timeLimData} 
 #' if specified}
-#' \item{the maximum range on the data obtained after filling missing values}
+#' \item{the maximum range on the data obtained after imputation of missing values}
 #' }
 #' @param data data.frame with data
 #' @param timeStartVar string, variable of \code{data} with start of range
+#' @param timeStartLab String, label for \code{timeStartVar}.
 #' @param timeEndVar string, variable of \code{data} with end of range
+#' @param timeEndLab String, label for \code{timeEndVar}.
 #' @param timeLim (optional) vector of length 2 with time limits (x-axis)
 #' If not specified, extracted from the minimum \code{timeStartVar} 
 #' and maximum \code{timeEndVar} per subject.
 #' @param timeLimData data.frame with data used to extract time limits per subject
 #' @param timeLimStartVar string, variable of \code{timeLimData} with time start
 #' @param timeLimEndVar string, variable of \code{timeLimData} with time end
+#' @param timeImpType String with imputation type: 'minimal' (default),
+#' 'data-based' or 'none'.
 #' @inheritParams filterData
 #' @return list with:
 #' \itemize{
-#' \item{'data': }{data with filled missing start/end time variables.
-#' The data also contains additional logical columns 'missingStartPlot' and 'missingEndPlot',
-#' set to TRUE if the records had missing \code{timeStartVar} and \code{timeEndVar} variables.
-#' }
-#' \item{'timeLim': }{vector of length 2 with minimum/maximum time limits across subjects.
-#' }
+#' \item{'data': }{Data with:
+#' \itemize{
+#' \item{imputed \code{timeStartVar} and \code{timeEndVar}}
+#' \item{new column 'timeStartStatus': }{
+#' character vector containing status of \code{timeStartVar} variable:
+#'  'Complete' or 'Missing start' or NA}
+#' \item{new column 'timeEndStatus': }{
+#' character vector containing status of \code{timeEndVar} variable:
+#'  'Complete' or 'Missing end' or NA}
+#' }}
+#' \item{'timeLim': }{vector of length 2 with minimum/maximum time limits across subjects.}
 #' \item{'timeLimSpecified': }{vector of length 2 with time limits as specified by the user,
 #' either extracted from \code{timeLim} or from \code{timeLimData}.
 #' If missing value within \code{timeLim}, the corresponding minimum/maximum
-#' value in the (updated) data is used.
-#' }
+#' value in the (updated) data is used.}
+#' \item{'timeShapePalette': }{Named character vector with symbols for the different time status}
 #' }
 #' @importFrom plyr ddply
 #' @author Laure Cougnaud
 formatTimeInterval <- function(data, 
-	timeStartVar, timeEndVar, 
+	timeStartVar, timeStartLab = getLabelVar(timeStartVar, labelVars = labelVars),
+	timeEndVar, timeEndLab = getLabelVar(timeEndVar, labelVars = labelVars),
 	subjectVar = "USUBJID",
-	timeLim = NULL, timeLimData = NULL, 
-	timeLimStartVar = NULL, timeLimEndVar = NULL
+	timeLim = NULL, 
+	timeLimData = NULL, 
+	timeLimStartVar = NULL, timeLimStartLab = getLabelVar(timeLimStartVar, labelVars = labelVars),
+	timeLimEndVar = NULL, timeLimEndLab = getLabelVar(timeLimEndVar, labelVars = labelVars),
+	timeImpType = c("minimal", "data-based", "none"),
+	labelVars = NULL
 ){
-
-	timeLimInData <- with(data, c(min(get(timeStartVar), na.rm = TRUE), max(get(timeEndVar), na.rm = TRUE)))
+	
+	timeImpType <- match.arg(timeImpType)
 	
 	timeLimDataSpec <- !is.null(timeLimData) & 
-		!is.null(timeLimStartVar) & !is.null(timeLimEndVar) && 
-		all(c(timeLimStartVar, timeLimEndVar) %in% colnames(timeLimData))
+		!(
+			!is.null(timeLimStartVar) & !is.null(timeLimEndVar) && 
+			all(c(timeLimStartVar, timeLimEndVar) %in% colnames(timeLimData))
+		)
+	if(!is.null(timeLimData) & !timeLimDataSpec){
+		warning(paste(
+			"Dataset to extract time limits ('timeLimData') is specified",
+			"but start/end variable(s) are not specified",
+			"or not available in this data."
+		))
+		timeLimData <- NULL
+	}
 	
 	# in case data is a tibble:
 	if(!is.null(timeLimData))
 		timeLimData <- as.data.frame(timeLimData)
-
+	
+	# which records have missing values?
+	data$missingStartPlot <- is.na(data[, timeStartVar])
+	data$missingEndPlot <- is.na(data[, timeEndVar])
+	
+	# message for the user:
+	if(any(data$missingStartPlot | data$missingEndPlot)){
+		msg <- paste(c(
+			if(any(data$missingStartPlot))	paste(sum(data$missingStartPlot), "records with missing", timeStartLab),
+			if(any(data$missingEndPlot))	paste(sum(data$missingEndPlot), "records with missing", timeEndLab)
+		), collapse = " and ")
+		msg <- switch(timeImpType,
+			'none' = paste(msg, "are ignored for the visualization."),
+			paste0(msg, " are imputed with ", 
+				if(timeLimDataSpec)	paste(paste(c(timeLimStartLab, timeLimEndLab), collapse = "/"), " or "),
+				timeImpType, " imputation."
+			)
+		)
+		message(msg)
+	}
+	
+	# variables with status used for the shapes
+	data$timeStartStatus <- ifelse(data$missingStartPlot, "Missing start", "Complete")
+	data$timeEndStatus <- ifelse(data$missingEndPlot, "Missing end", "Complete")
+	
+	# variables used for the symbols	
 	data <- ddply(data, subjectVar, function(x){
 				
 		subject <- unique(x[, subjectVar])
 		
-		xTimeData <- if(timeLimDataSpec){
+		# 1) extract limits from specified 'timeLimeData'
+		if(!is.null(timeLimData)){
 			xTimeData <- subset(timeLimData, get(subjectVar) == subject)[, c(timeLimStartVar, timeLimEndVar)]
 			if(all(is.na(xTimeData))){
-				timeLimData[, c(timeLimStartVar, timeLimEndVar)]
-			}else xTimeData
-		}
-		
-		if(is.null(xTimeData) || all(is.na(xTimeData)))
-			xTimeData <- x[, c(timeStartVar, timeEndVar)]
-		
-		# extract time range
-		timeRangeData <- if(all(is.na(xTimeData))){
-			if(!is.null(timeLimInData) && all(!is.na(timeLimInData))){
-				timeLimInData
-			}else{
-				c(0, Inf)
+				xTimeData <- timeLimData[, c(timeLimStartVar, timeLimEndVar)]
 			}
-		}else range(xTimeData, na.rm = TRUE)
-		
-		# check missing start date		
-		x$missingStartPlot <- is.na(x[, timeStartVar])
-		if(any(x$missingStartPlot)){
-			startTime <- ifelse(!is.null(timeLim) && !is.na(timeLim[1]), timeLim[1], min(timeRangeData))
-			x[x$missingStartPlot, timeStartVar] <- startTime
+			xTimeDataRange <- range(xTimeData, na.rm = TRUE)
 		}
 		
-		# check missing end date
-		x$missingEndPlot <- is.na(x[, timeEndVar])
-		if(any(x$missingEndPlot)){
-			endTime <- ifelse(!is.null(timeLim) && !is.na(timeLim[2]), timeLim[2], max(timeRangeData))
-			x[x$missingEndPlot, timeEndVar] <- endTime
+		# impute values from specified timeLimData
+		if(!is.null(timeLimData) && !any(is.na(xTimeDataRange))){
+			
+			x[which(x$missingStartPlot), timeStartVar] <- min(xTimeDataRange)
+			x[which(x$missingEndPlot), timeEndVar] <- max(xTimeDataRange)
+			
+		# or rules based on 'timeImpType' parameter:
+		}else{
+		
+			switch(timeImpType,
+							
+				`data-based` = {
+					
+					xTimeData <- x[, c(timeStartVar, timeEndVar)]
+					
+					suppressWarnings(timeLimInData <- with(data, 
+						c(min(get(timeStartVar), na.rm = TRUE), max(get(timeEndVar), na.rm = TRUE))
+					))
+					
+					# extract time range
+					timeRangeData <- if(all(is.na(xTimeData))){
+						if(!is.null(timeLimInData) && all(!is.na(timeLimInData)) && all(is.finite(timeLimInData))){
+							timeLimInData
+						}else{
+							c(0, Inf)
+						}
+					}else range(xTimeData, na.rm = TRUE)
+					
+					x[which(x$missingStartPlot), timeStartVar] <- min(timeRangeData)
+					x[which(x$missingEndPlot), timeEndVar] <- max(timeRangeData)
+					
+				},
+				
+				`minimal` = {
+					
+					# missing start/end: NA (only label is displayed in the y-axis)
+					idxMissingEndAndStart <- which(x$missingStartPlot & x$missingEndPlot)
+					x[idxMissingEndAndStart, timeStartVar] <- 
+						x[idxMissingEndAndStart, timeEndVar] <- NA_character_
+					
+					# missing start: impute with end date
+					idxMissingStartNotEnd <- which(x$missingStartPlot & !x$missingEndPlot)
+					x[idxMissingStartNotEnd, timeStartVar] <- x[idxMissingStartNotEnd, timeEndVar]
+					x[idxMissingStartNotEnd, "timeEndStatus"] <- NA_character_
+					
+					# missing end: impute with start date
+					idxMissingEndNotStart <- which(x$missingEndPlot & !x$missingStartPlot)
+					x[idxMissingEndNotStart, timeEndVar] <- x[idxMissingEndNotStart, timeStartVar]
+					x[idxMissingEndNotStart, "timeStartStatus"] <- NA_character_
+					
+				}
+				
+			)
+			
 		}
 		
 		# return the data
 		x				
 				
 	})
-
-	data$missingStartEndPlot <- with(data, interaction(missingStartPlot, missingEndPlot))
+	
+	data$missingStartPlot <- data$missingEndPlot <- NULL
+	shapePalette <- c(Complete = '\u25A0', `Missing start` = "\u25C0", `Missing end` = "\u25B6")
 	
 	timeLimSpecified <- if(!is.null(timeLim)){
 				
 		formatTimeLim(
 			data = data, subjectVar = subjectVar, 
-			timeStartVar = timeStartVar, timeEndVar = timeEndVar, timeLim = timeLim
+			timeStartVar = timeStartVar, timeEndVar = timeEndVar, 
+			timeLim = timeLim
 		)
 
-	}else if(timeLimDataSpec){
+	}else if(!is.null(timeLimData)){
 		range(timeLimData[, c(timeLimStartVar, timeLimEndVar)], na.rm = TRUE)
 	}
 	
 	# time limits for the plot
 	if(is.null(timeLim)){
-		timeLim <- if(timeLimDataSpec){
+		timeLim <- if(!is.null(timeLimData)){
 			range(timeLimData[, c(timeLimStartVar, timeLimEndVar)], na.rm = TRUE)
 		}else{
 			dataForTimeLim <- data[, c(timeStartVar, timeEndVar)]
@@ -513,7 +539,12 @@ formatTimeInterval <- function(data,
 		}
 	}
 
-	res <- list(data = data, timeLim = timeLim, timeLimSpecified = timeLimSpecified)
+	res <- list(
+		data = data, 
+		timeLim = timeLim, 
+		timeLimSpecified = timeLimSpecified,
+		timeShapePalette = shapePalette
+	)
 	
 	return(res)
 	
