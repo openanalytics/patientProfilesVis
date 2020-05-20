@@ -66,6 +66,7 @@ either extracted from \code{timeLim} or from \code{timeLimData}.
 If missing value within \code{timeLim}, the corresponding minimum/maximum
 value in the (updated) data is used.}
 \item{'timeShapePalette': }{Named character vector with symbols for the different time status}
+\item{'caption': }{String with extra explanation concerning imputation that could be included in plot caption.}
 }
 }
 \description{
@@ -75,14 +76,16 @@ Set missing start/end time variable in the data.
 In case of missing values for the time start or end variables, they are replaced by:
 \itemize{
 \item{in case \code{timeLimData}, \code{timeLimStartVar} and \code{timeLimEndVar} are specified: }{
-minimum/maximum values in the variable: \code{timeLimVar} in the data: \code{timeLimData}
+ the minimum/maximum values in the variables: \br\code{timeLimStartVar}/\code{timeLimEndVar} 
+respectively are considered
+ in the data: \code{timeLimData}
 for the specific subject (if available). If there are missing for a specific subject,
 they are taken across subjects.}
 \item{otherwise, depending on the imputation type (\code{timeImpType}): }{
 \itemize{
 \item{'minimal' (by default): }{
 \itemize{
-\item{if start end and time are missing: }{no imputation is done}
+\item{if start end and time are missing: }{no imputation is done, only the label is displayed}
 \item{if start time is missing and end time is not missing: }{
 start time is imputed with end time, and status is set to 'Missing start'}
 \item{if end time is missing and start time is not missing: }{
