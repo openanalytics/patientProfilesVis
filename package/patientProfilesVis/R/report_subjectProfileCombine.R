@@ -407,11 +407,13 @@ getXLimSubjectProfilePlots <- function(
 						# extract time limits for all elements
 						timeLimDataList <- lapply(listPlotsSubj, function(gg)
 							if(!inherits(gg, "subjectProfileTextPlot"))
-								lapply(ggplot_build(gg)$data, function(dataPlot) 
-									c(dataPlot$x, if("xend" %in% colnames(dataPlot))	dataPlot$xend)
-								)
+								lapply(ggplot_build(gg)$data, function(dataPlot){
+									xPlot <- c(dataPlot$x, if("xend" %in% colnames(dataPlot))	dataPlot$xend)
+									xPlot[!is.na(xPlot)]
+								})
 						)
 						timeLimData <- unlist(timeLimDataList)
+						if(length(timeLimData) == 0)	timeLimData <- NULL
 						
 						if(!is.null(timeLimData)){
 							
@@ -453,17 +455,16 @@ getXLimSubjectProfilePlots <- function(
 				
 			}, simplify = FALSE)
 			
-			getRange <- function(...){
-				if(all(sapply(..., is.null))){
-					NULL
-				}else	range(..., na.rm = TRUE)
-			}
-			
 			# extract limits across modules for each subject
+			getRangeCustom <- function(...){
+				x <- unlist(list(...))
+				if(!is.null(x)){range(x, na.rm = TRUE)}
+			}
 			timeLimPerSubj <- do.call(mapply, 
 				c(
 					timeLimPlotsSubj[alignMod],
-					list(FUN = range, na.rm = TRUE, SIMPLIFY = FALSE))
+					list(FUN = getRangeCustom, SIMPLIFY = FALSE)
+				)
 			)
 			timeLim <- setNames(
 				replicate(length(alignMod), timeLimPerSubj, simplify = FALSE),
@@ -473,9 +474,14 @@ getXLimSubjectProfilePlots <- function(
 			# if alignment across subjects
 			# should extract limits across subjects for each module
 			alignAcrossSubjectMod <- setdiff(alignMod, alignPerSubjectMod)
+			getRangeList <- function(...){
+				if(all(sapply(..., is.null))){
+					NULL
+				}else	range(..., na.rm = TRUE)
+			}
 			if(length(alignAcrossSubjectMod) > 0)
 				timeLim[alignAcrossSubjectMod] <- sapply(timeLim[alignAcrossSubjectMod], function(x){
-					getRange(unlist(x)) 
+					getRangeList(unlist(x)) 
 				}, simplify = FALSE)
 			
 		}else	timeLim <- NULL

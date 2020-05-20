@@ -155,5 +155,56 @@ test_that("createSubjectProfileReport - specification of only one time limit", {
 	
 })
 
+test_that("createSubjectProfileReport - missing start/end", {
+			
+	# AEPTCD: preferred term code
+	dataAE <- SDTMDataPelican$AE
+	
+	aePlots <- subjectProfileIntervalPlot(
+		data = dataAE,
+		paramVar = "AETERM",
+		timeStartVar = "AESTDY",
+		timeEndVar = "AEENDY",
+		colorVar = "AESEV",
+		labelVars = labelVarsSDTMPelican,
+		title = "Adverse events"
+	)
+	
+	# prepare data for plots:
+	dataLB <- SDTMDataPelican$LB
+	# sort the categories (empty values '' becomes NA)
+	dataLB$LBNRIND <- factor(dataLB$LBNRIND, levels = c("LOW", "NORMAL", "HIGH"))
+	lbLinePlots <- subjectProfileLinePlot(
+		data = dataLB,
+		paramNameVar = "LBTEST", 
+		paramValueVar = "LBSTRESN",
+		paramGroupVar = "LBSCAT",
+		paramValueRangeVar = c("LBSTNRLO", "LBSTNRHI"),
+		timeVar = "LBDY",
+		title = "Laboratory test measurements: actual value",
+		labelVars = labelVarsSDTMPelican
+	)
+			
+	lPlots <- list(AE = aePlots, LB = lbLinePlots)
+	createSubjectProfileReport(
+		listPlots = list(AE = aePlots),
+		outputFile = "subjectProfile_missingStartEnd.pdf",
+		verbose = TRUE,
+		subset = "study-4902-01",
+		timeAlign = "AE"
+	)
+	
+	subjectWithLBAE <- intersect(names(aePlots), names(lbLinePlots))[1:2]
+	subjects <- c("study-4902-01", subjectWithLBAE)
+	createSubjectProfileReport(
+		listPlots = list(AE = aePlots, LB = lbLinePlots),
+		outputFile = "subjectProfile_missingStartEnd.pdf",
+		verbose = TRUE,
+		subset = subjects,
+		timeAlign = "AE"
+	)
+
+})
+
 
 
