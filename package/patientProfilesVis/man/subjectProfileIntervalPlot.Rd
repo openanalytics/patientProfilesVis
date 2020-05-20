@@ -153,9 +153,11 @@ e.g. output of the \code{\link{subjectProfileReportFormat}} function}
 paging is enabled, otherwise only one page is used.}
 }
 \value{
-list of (across subjects) of list (across modules) of \code{\link[ggplot2]{ggplot2} objects}, 
-also of class \code{subjectProfileIntervalPlot}, with additional metaData attributes containing
-'\code{label}' and 'timeLim' and 'timeTrans' (if specified).
+list of (across subjects) of list (across pages) 
+of \code{\link[ggplot2]{ggplot2} objects}, 
+also of class \code{subjectProfileIntervalPlot}.
+ with additional 'metaData' attributes containing
+'\code{label}', 'timeLim' \code{timeTrans} and \code{timeExpand} (if specified).
 }
 \description{
 If no start and/or end date is available and \code{timeStartShapeVar},
@@ -165,14 +167,16 @@ If no start and/or end date is available and \code{timeStartShapeVar},
 In case of missing values for the time start or end variables, they are replaced by:
 \itemize{
 \item{in case \code{timeLimData}, \code{timeLimStartVar} and \code{timeLimEndVar} are specified: }{
-minimum/maximum values in the variable: \code{timeLimVar} in the data: \code{timeLimData}
+ the minimum/maximum values in the variables: \br\code{timeLimStartVar}/\code{timeLimEndVar} 
+respectively are considered
+ in the data: \code{timeLimData}
 for the specific subject (if available). If there are missing for a specific subject,
 they are taken across subjects.}
 \item{otherwise, depending on the imputation type (\code{timeImpType}): }{
 \itemize{
 \item{'minimal' (by default): }{
 \itemize{
-\item{if start end and time are missing: }{no imputation is done}
+\item{if start end and time are missing: }{no imputation is done, only the label is displayed}
 \item{if start time is missing and end time is not missing: }{
 start time is imputed with end time, and status is set to 'Missing start'}
 \item{if end time is missing and start time is not missing: }{
