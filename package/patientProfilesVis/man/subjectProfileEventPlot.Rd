@@ -18,6 +18,7 @@ subjectProfileEventPlot(
   shapePalette = NULL,
   alpha = 1,
   timeVar,
+  timeLab = getLabelVar(timeVar, labelVars = labelVars),
   timeTrans = NULL,
   timeExpand = NULL,
   subjectVar = "USUBJID",
