@@ -50,7 +50,7 @@
 #' @importFrom gridExtra tableGrob ttheme_minimal
 #' @importFrom plyr dlply ddply
 #' @importFrom reshape2 melt
-#' @importFrom glpgUtilityFct getLabelVar
+#' @importFrom glpgUtilityFct getLabelVar formatLongLabel
 #' @export
 subjectProfileTextPlot <- function(
 	data,

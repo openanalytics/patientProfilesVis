@@ -12,6 +12,7 @@
 #' @import ggplot2
 #' @importFrom plyr dlply
 #' @importFrom stats reorder
+#' @importFrom glpgUtilityFct formatVarForPlotLabel
 #' @importFrom glpgUtilityFct getLabelVar
 #' @export
 subjectProfileEventPlot <- function(
@@ -82,7 +83,7 @@ subjectProfileEventPlot <- function(
 	}
 	
 	# format variable
-	data$yVar <- formatParamVar(
+	data$yVar <- formatVarForPlotLabel(
 		data = data, paramVar = "yVar", paramGroupVar = paramGroupVar,
 		revert = TRUE, width = formatReport$yLabelWidth
 	)

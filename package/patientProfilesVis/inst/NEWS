@@ -1,3 +1,5 @@
+1.1.0
+    o formatParamVar -> formatVarForPlotLabel/formatLongLabel: moved to glpgUtilityFct
 1.0.0
     o change default time imputation in subjectProfileIntervalPlot (see 'timeImpType' parameter)
     o getXLimSubjectProfilePlots: fixes for empty interval plot

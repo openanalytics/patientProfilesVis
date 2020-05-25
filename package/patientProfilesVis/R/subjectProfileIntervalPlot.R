@@ -37,7 +37,7 @@
 #' (see \code{expand} parameter of the \code{\link[ggplot2]{scale_x_continuous}} function).
 #' @param alpha Numeric with transparency, 1 by default.
 #' @inheritParams filterData
-#' @inheritParams formatParamVar
+#' @inheritParams glpgUtilityFct::formatVarForPlotLabel
 #' @inheritParams formatTimeInterval
 #' @inheritParams getPageVar
 #' @return list of (across subjects) of list (across pages) 
@@ -49,7 +49,7 @@
 #' @import ggplot2
 #' @importFrom plyr dlply
 #' @importFrom stats reorder
-#' @importFrom glpgUtilityFct getLabelVar
+#' @importFrom glpgUtilityFct getLabelVar formatVarForPlotLabel
 #' @export
 subjectProfileIntervalPlot <- function(
 	data,
@@ -127,7 +127,7 @@ subjectProfileIntervalPlot <- function(
 	)
 
 	# if paramGroupVar is specified: change order levels of 'variable'
-	data$yVar <- formatParamVar(
+	data$yVar <- formatVarForPlotLabel(
 		data = data, paramVar = "yVar", paramGroupVar = paramGroupVar,
 		revert = TRUE, width = formatReport$yLabelWidth
 	)

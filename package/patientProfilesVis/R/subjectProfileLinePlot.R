@@ -42,7 +42,7 @@
 #' @import ggplot2
 #' @importFrom glpgStyle glpgColor
 #' @importFrom plyr dlply
-#' @importFrom glpgUtilityFct getLabelVar
+#' @importFrom glpgUtilityFct getLabelVar formatVarForPlotLabel
 #' @export
 subjectProfileLinePlot <- function(
 	data,
@@ -97,7 +97,7 @@ subjectProfileLinePlot <- function(
 	)
 	
 	# format variable
-	data[, "paramFacetVar"] <- formatParamVar(
+	data[, "paramFacetVar"] <- formatVarForPlotLabel(
 		data = data, paramVar = "paramFacetVar", paramGroupVar = paramGroupVar,
 		width = formatReport$yLabelWidth
 	)

@@ -122,7 +122,7 @@ test_that("subjectProfileIntervalPlot - time limits fixed", {
 	
 	vdiffr::expect_doppelganger(
 		title = "timeLimitsFixed", 
-		fig = cmPlotsTimeSpec[[subject]][[1]],
+		fig = cmPlotsTimeSpec[["study-4907-04"]][[1]],
 		path = "subjectProfileIntervalPlot",
 		verbose = TRUE
 	)
