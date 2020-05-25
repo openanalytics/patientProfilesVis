@@ -73,6 +73,7 @@ getNLinesYGgplot <- function(gg){
 #' @return integer with (approximated) number of lines
 #' @author Laure Cougnaud
 #' @importFrom ggplot2 ggplot_gtable ggplot_build
+#' @importFrom dplyr n_distinct
 getNLinesLegend <- function(gg, values, data, var, title){
 	
 	if(!missing(gg)){
@@ -372,85 +373,7 @@ getAesScaleManual <- function(lab, palette, type){
 	
 }
 
-#' Format a variable as factor, 
-#' wrap it across multiple lines if needed
-#' and optionally sorted according to the levels
-#' of a grouping variable
-#' @param data data.frame with data
-#' @param paramVar string, variable of \code{data} with parameter
-#' @param paramGroupVar (optional) character vector with variable(s) of \code{data} with grouping.
-#' If specified, the parameters will be grouped by this(these) variable(s) in the y-axis.
-#' @param revert logical, if TRUE revert the order of the levels of the variable
-#' @param width max number of characters in the code{paramVar} parameter.
-#' @return vector with re-formatted \code{paramVar}, NULL if empty
-#' @importFrom dplyr n_distinct
-#' @author Laure Cougnaud
-formatParamVar <- function(data, 
-	paramVar = NULL, paramGroupVar = NULL, 
-	revert = FALSE,
-	width = 20){
-	
-	res <- if(!is.null(paramVar)){
-		
-		paramVarVect <- if(!is.factor(data[, paramVar])){	
-			as.factor(data[, paramVar])
-		}else{
-			data[, paramVar]
-		}
 
-		# cut too long labels
-		paramVarLevels <- formatLongLabel(x = levels(paramVarVect), width = width)
-		
-		# convert paramVar
-		# don't use directly ( labels to avoid error: duplicated factor levels
-		paramVarVectNew <- paramVarLevels[as.character(paramVarVect)]		
-		paramVarVect <- factor(paramVarVectNew,	levels = unique(paramVarLevels))
-	
-		# if paramGroupVar is specified: change order levels of 'variable'
-		if(!is.null(paramGroupVar)){
-			
-			paramGroupVarInData <- paramGroupVar %in% names(data)
-			
-			if(any(!paramGroupVarInData))
-				warning("The variable(s): ", toString(shQuote(paramGroupVar[!paramGroupVarInData])),
-					" used for grouping are not used because they are not available in the data.")
-		
-			if(any(paramGroupVarInData)){
-				
-				paramGroupVar <- paramGroupVar[paramGroupVarInData]
-				
-				if(is.null(paramVar)){
-					warning("The variable(s) used for grouping ('paramGroupVar') are not used",
-						"because no parameter variable ('paramVar') is specified.")
-				}else{
-					groupVariable <- if(length(paramGroupVar) > 1){
-						interaction(data[, paramGroupVar])
-					}else{
-						if(!is.factor(data[, paramGroupVar]))
-							factor(data[, paramGroupVar])	else	data[, paramGroupVar]
-					}	
-					check <- tapply(groupVariable, paramVarVect, n_distinct) == 1
-					if(!all(check, na.rm = TRUE)){
-						warning(
-							paste("The grouping variable(s):", toString(paramGroupVar), 
-							"are not used, because they are not unique for all parameters.")
-						)
-					}else{
-						paramVarVect <- reorder(paramVarVect, groupVariable, unique)
-					}
-				}
-			}
-		}
-		
-		if(revert){
-			factor(paramVarVect, levels = rev(levels(paramVarVect)))
-		}else	paramVarVect
-	
-	}
-	
-	return(res)
-	
-}
 
 #' Format text variables for the \code{\link{subjectProfileTextPlot}} function, 
 #' wrap it across multiple lines if needed,
@@ -465,11 +388,12 @@ formatParamVar <- function(data,
 #' Only used if parameter values are displayed as a table (\code{table} is TRUE).
 #' Note: columns can be slightly bigger if content larger than the specified width.
 #' If not specified, optimized widths are determined.
-#' @inheritParams formatParamVar
+#' @inheritParams glpgUtilityFct::formatVarForPlotLabel
 #' @inheritParams getPageVar
 #' @inheritParams getOptimalColWidth
 #' @return \code{data} with reformatted \code{paramVar} and \code{paramValueVar} variables,
 #' with additional attribute: \code{colWidth}.
+#' @importFrom glpgUtilityFct formatVarForPlotLabel
 #' @author Laure Cougnaud
 formatParamVarTextPlot <- function(data, 
 	paramVar = NULL, 
@@ -503,7 +427,7 @@ formatParamVarTextPlot <- function(data,
 		
 		data[, paramValueVar] <- lapply(seq_along(paramValueVar), function(i){
 			paramVar <- paramValueVar[i]
-			formatParamVar(
+			formatVarForPlotLabel(
 				data = data, 
 				paramVar = paramVar,
 				revert = FALSE, 
@@ -523,7 +447,7 @@ formatParamVarTextPlot <- function(data,
 	}else{
 
 		## parameter value variable
-		data[, paramValueVar] <- formatParamVar(
+		data[, paramValueVar] <- formatVarForPlotLabel(
 			data = data, 
 			paramVar = paramValueVar,
 			revert = FALSE, paramGroupVar = NULL,
@@ -531,7 +455,7 @@ formatParamVarTextPlot <- function(data,
 		)
 		
 		## parameter name variable
-		data[, paramVar] <- formatParamVar(
+		data[, paramVar] <- formatVarForPlotLabel(
 			data = data, 
 			paramVar = paramVar,
 			revert = revert, paramGroupVar = paramGroupVar,
@@ -678,25 +602,6 @@ subjectProfileReportFormat <- function(
 	
 	return(paramFormat)
 
-}
-
-#' Custom formatting function for labels in plot.
-#' @param x character vector with labels to format
-#' @param width target maximum size. Note: a word
-#' longer that this width won't be split (see \code{\link{strwrap}}).
-#' @return vector with formatted labels
-#' @author Laure Cougnaud
-formatLongLabel <- function(x, width = 20){
-	
-	xRF <- vapply(x, function(x1)
-		xRF <- paste(strwrap(x1, width = width), collapse = "\n"),
-		FUN.VALUE = character(1)
-	)
-	if(length(x) != length(xRF))
-		stop("Reformatting of labels failed.")
-	
-	return(xRF)
-	
 }
 
 #' Check if the all profile(s) is/are 'time-variant',
