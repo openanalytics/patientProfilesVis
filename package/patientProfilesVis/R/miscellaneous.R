@@ -616,8 +616,14 @@ subjectProfileReportFormat <- function(
 isSubjectProfileTimeVariant <- function(gg, empty = TRUE){
 	
 	if(inherits(gg, "ggplot")){
+		# for interval plot with only labels, axis is categorical
+		# leading to the issue: Error: Discrete value supplied to continuous scale
+		# if 'trans' is applied
+		xVars <- c("x", "xend")
+		xValues <- unlist(lapply(ggplot_build(gg)$data, function(x) x[, intersect(xVars, colnames(x))]))
+		xAllMissing <- all(is.na(xValues))
 		classesNonTV <- c(if(empty)	"subjectProfileEmptyPlot", "subjectProfileTextPlot")
-		test <- !inherits(gg, classesNonTV)
+		test <- (!inherits(gg, classesNonTV)) & (!xAllMissing)
 	}else{
 		test <- all(sapply(gg, isSubjectProfileTimeVariant))
 		if(length(test) > 1)

@@ -1,14 +1,8 @@
 ---
-title: "Vignette of the `patientProfilesVis` package"
+title: "Introduction to the `patientProfilesVis` package"
 author: "Laure Cougnaud"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
-output: 
-  rmarkdown::html_document:
-    toc: true
-    toc_level: 4
-    toc_float:
-      collapsed: true
-    number_sections: true
+output: glpgStyle::html_report
 vignette: >
   %\VignetteIndexEntry{patientProfilesVis package}
   %\VignetteEngine{knitr::rmarkdown}
