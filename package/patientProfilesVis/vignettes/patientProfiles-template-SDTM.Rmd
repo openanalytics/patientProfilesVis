@@ -5,11 +5,12 @@ author: "Laure Cougnaud"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output: glpgStyle::html_report
 vignette: >
-  %\VignetteIndexEntry{patientProfilesVis package}
+  %\VignetteIndexEntry{SDTM template for patient profiles}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
 
+# Introduction
 
 This document presents an example of standard patient profile report
 for SDTM datasets.
@@ -21,28 +22,23 @@ You can copy the source code of this document into your working directory with:
 
 # get template from the package
 pathTemplate <- system.file(
-	"doc", "patientProfiles-templateSDTM.Rmd", 
-	package = "medicalMonitoring"
+	"doc", "patientProfiles-template-SDTM.Rmd", 
+	package = "patientProfilesVis"
 )
 file.copy(from = pathTemplate, to = ".")
-# Note: your current working directory can be checked with: 
-# getwd()
+# Note: your current working directory can be checked with: getwd()
 ```
 This template can then be further tailored to your specific study (changing data path,
 variables available in the data, ...).
-
-# Patient profiles
 
 ```{r patientProfiles-optionsChunks, echo = FALSE, cache = FALSE}
 
 	library(knitr)
 
 	knitr::opts_chunk$set(
-		# don't print code in the report
-		echo = FALSE, 
+		echo = TRUE, # print code in the report
 		message = TRUE,
-		# stop document execution if error (not the default)
-		error = FALSE, # stop-on-error
+		error = FALSE, # stop document execution if error (not the default)
 		fig.align = "center",
 		warning = FALSE,
 		# to have list of DT included within a chunk with: glpgUtilityFct::knitPrintListObjects
@@ -51,12 +47,19 @@ variables available in the data, ...).
 	
 ```
 
+The following R packages are required:
+
 ```{r patientProfiles-loadPackages}
 
 	library(patientProfilesVis)
 	library(glpgUtilityFct)
+	library(glpgStyle)
 
 ```
+
+## Dataset
+
+The SDTMs datasets are imported into R.
 
 ```{r patientProfiles-loadData}
 	
@@ -75,13 +78,14 @@ variables available in the data, ...).
 
 ```
 
+## Palettes
+
 Color and shape palette for the reference indicator variable are
 created. These shape of the symbols are specified Unicode format in hexadecimal
  (see [List of unicode symbols](https://en.wikipedia.org/wiki/List_of_Unicode_characters)).
 
 ```{r patientProfiles-palettes}
 
-	library(glpgStyle)
 	colorPalette <- glpgColor(c("main", "extra", "highlight"))
 	
 	# color/shape palette for reference range indicator (abnormality lab/vs)
@@ -119,6 +123,11 @@ created. These shape of the symbols are specified Unicode format in hexadecimal
 
 ```
 
+# Creation of patient profiles
+
+For each domain of interest, the subject profiles are created.
+See the vignette: 
+
 ## Demographics
 
 ```{r patientProfiles-demographics}
@@ -129,6 +138,7 @@ created. These shape of the symbols are specified Unicode format in hexadecimal
 			"SEX", "RACE", "COUNTRY", "ARM",
 			"SITEID", "AGE", "RFSTDTC"
 		),
+		# optional:
 		labelVars = labelVars
 	)
 	patientProfilesPlots <- c(patientProfilesPlots, list(DM = dmPlots))
@@ -142,6 +152,7 @@ created. These shape of the symbols are specified Unicode format in hexadecimal
 	mhPlots <- subjectProfileTextPlot(
 		data = dataAll$MH,
 		paramValueVar = c("MHDECOD", "MHSTDTC", "MHENDTC"),
+		# optional:
 		paramGroupVar = "MHSTDTC",
 		title = "Medical history (Start - End)",
 		labelVars = labelVars,
@@ -156,13 +167,10 @@ created. These shape of the symbols are specified Unicode format in hexadecimal
 ```{r patientProfiles-concomitantMedications}
 
 	cmPlots <- subjectProfileIntervalPlot(
-		
-		# required:
 		data = dataAll$CM,
 		paramVar = c("CMDECOD", "CMDOSTXT", "CMDOSU", "CMDOSFRQ", "CMROUTE"),
 		timeStartVar = "CMSTDY",
 		timeEndVar = "CMENDY",
-		
 		# optional:
 		paramGroupVar = "CMINDC",
 		colorVar = "CMINDC",
@@ -189,6 +197,7 @@ created. These shape of the symbols are specified Unicode format in hexadecimal
 		paramVar = c("EXTRT", "EXDOSE", "EXDOSU", "EXDOSFRM", "EXDOSFRQ", "EXROUTE", "EXTPT"),
 		timeStartVar = "EXSTDY",
 		timeEndVar = "EXENDY",
+		# optional:
 		colorVar = "EXDOSFRM",
 		title = "Treatment exposure",
 		timeAlign = FALSE,
@@ -205,9 +214,10 @@ created. These shape of the symbols are specified Unicode format in hexadecimal
 	aePlots <- subjectProfileIntervalPlot(
 		data = dataAll$AE,
 		paramVar = "AEDECOD",
-		paramGroupVar = "AESOC",
 		timeStartVar = "AESTDY",
 		timeEndVar = "AEENDY",
+		# optional:
+		paramGroupVar = "AESOC",
 		colorVar = "AESEV", 
 		title = "Adverse events",
 		timeAlign = FALSE,
@@ -232,9 +242,10 @@ created. These shape of the symbols are specified Unicode format in hexadecimal
 		data = dataAll$LB,
 		paramValueVar = "LBSTRESN",
 		paramNameVar = "LBTEST",
+		timeVar = "LBDY",
+		# optional
 		paramValueRangeVar = c("LBSTNRLO", "LBSTNRHI"),
 		paramGroupVar = c("LBCAT", "LBSCAT"),
-		timeVar = "LBDY",
 		colorVar = "LBNRIND", colorPalette = colorPaletteLB,
 		shapeVar = "LBNRIND", shapePalette = shapePaletteLB,
 		shapeSize = 4,
@@ -258,10 +269,11 @@ created. These shape of the symbols are specified Unicode format in hexadecimal
 		data = dataAll$VS,
 		paramValueVar = "VSSTRESN",
 		paramNameVar = "VSTEST",
-		paramGroupVar = "VSCAT",
 		timeVar = "VSDY",
+		# optional
+		paramGroupVar = "VSCAT",
 		colorVar = "VSCAT", 
-		shapeSize = 4,
+		shapeSize = 2,
 		title = "Vital signs",
 		alpha = 0.8,
 		labelVars = labelVars
@@ -282,6 +294,7 @@ created. These shape of the symbols are specified Unicode format in hexadecimal
 		paramValueVar = "EGSTRESN",
 		paramNameVar = "EGTEST",
 		timeVar = "EGDY",
+		# optional
 		title = "Electrocardiogram",
 		alpha = 0.8,
 		labelVars = labelVars
@@ -292,7 +305,7 @@ created. These shape of the symbols are specified Unicode format in hexadecimal
 
 ## Creation of the subject profiles
 
-```{r patientProfiles-createSubjectProfileReport, message = TRUE, warning = TRUE}
+```{r patientProfiles-createSubjectProfileReport, message = FALSE, warning = TRUE}
 
 	pathsPatientProfiles <- createSubjectProfileReport(
 			
@@ -308,7 +321,7 @@ created. These shape of the symbols are specified Unicode format in hexadecimal
 		# export subjects with highest AE toxicity grades first
 		subjectSortData = dataAll$AE,
 		subjectSortVar = "AESEV",
-		subjectSortDecreasing = TRUE
+		subjectSortDecreasing = TRUE,
 		
 #		# only consider subset of patients:
 #		# - option 1: from a dataset
@@ -316,7 +329,7 @@ created. These shape of the symbols are specified Unicode format in hexadecimal
 #		subsetVar = "AETOXGR",
 #		subsetValue = c("MODERATE", "SEVERE"),
 #		# - or from specified USUBJID
-#		subset = c("study-4902-01", "study-4903-01")
+		subset = c("study-4903-07", "study-4908-01", "study-4907-07")
 
 	)
 
@@ -324,7 +337,7 @@ created. These shape of the symbols are specified Unicode format in hexadecimal
 
 # Session information
 
-```{r sessionInformation}
+```{r sessionInformation, echo = FALSE}
 
 	library(pander)
 	pander(sessionInfo())

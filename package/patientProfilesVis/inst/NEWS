@@ -2,6 +2,7 @@
     o add vignette with standard patient profiles for SDTM data
     o prepareSubjectProfile: fix in case trans and all missing values for interval plot
     o subjectProfileLinePlot: fix for orientation of paramNameVar labels in ggplot2 >= 3.0.0
+    o fix bug when Rmd created after createSubjectProfileReport
 1.1.0
     o formatParamVar -> formatVarForPlotLabel/formatLongLabel: moved to glpgUtilityFct
 1.0.0

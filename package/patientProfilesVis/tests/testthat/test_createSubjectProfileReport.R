@@ -206,5 +206,46 @@ test_that("createSubjectProfileReport - missing start/end", {
 
 })
 
+test_that("Rendering of Rmd document after creation of Sweave patient profiles", {
+	
+	# AEPTCD: preferred term code
+	dataAE <- SDTMDataPelican$AE
+	
+	aePlots <- subjectProfileIntervalPlot(
+		data = dataAE,
+		paramVar = "AETERM",
+		timeStartVar = "AESTDY",
+		timeEndVar = "AEENDY",
+		colorVar = "AESEV",
+		labelVars = labelVarsSDTMPelican,
+		title = "Adverse events"
+	)
+	createSubjectProfileReport(
+		listPlots = list(AE = aePlots),
+		outputFile = "subjectProfile_missingStartEnd.pdf",
+		verbose = TRUE,
+		subset = names(aePlots)[1],
+		timeAlign = "AE"
+	)
+	
+	# Note: test with dummy Rmd, vignette cannot be used because
+	# not yet created 
+	pathTestRmd <- "test.Rmd"
+	cat('---',
+		'title: "Test document"',
+		'subtitle: "Study: X, Batch X"',
+		'---\n',
+		'### Test section  \n',
+		'This is a test paragraph',
+		sep = "\n",
+		file = "test.Rmd"
+	)
+	# version < 1.2.0: 
+	# Error in gsub(inline.code, "\\1", input[idx]) : invalid 'pattern' argument
+	expect_silent(test <- rmarkdown::render("test.Rmd", quiet = TRUE))
+	# clean
+	tmp <- file.remove(c("test.Rmd", "test.html")) 
+	
+})
 
 

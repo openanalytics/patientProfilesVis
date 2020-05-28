@@ -4,7 +4,7 @@ author: "Laure Cougnaud"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output: glpgStyle::html_report
 vignette: >
-  %\VignetteIndexEntry{patientProfilesVis package}
+  %\VignetteIndexEntry{Introduction to the patientProfilesVis package}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -1251,8 +1251,8 @@ a specific study, the different modules can be created only for a
 parameters
 * for the final creation of the  patient profiles on the entire set of patients:
     + the reports can be exported **by batch of X subjects**, via the `exportBatchSize`
-    parameter. Exporting the patient profiles by 10 subjects can be a good first trial
-    for study with numerous patients.
+    parameter. Exporting the patient profiles by batch of 10 subjects can be a good idea for a
+    for study with a high number of patients.
     + the report can be parallelized by specifying a number of cores > 1 to the parameter **`nCores`**
 of the `createSubjectProfileReport` function. In this case,
 the **package `parallel` is required**. To check the number of cores available
