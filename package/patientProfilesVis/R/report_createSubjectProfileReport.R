@@ -379,7 +379,9 @@ subjectProfileExport <- function(
 		envir = inputParametersEnv,
 		quiet = TRUE
 	)
-	knit_patterns$set(knitPatInit);knit_hooks$set(knitHookInit)
+	# use 'restore' and not: 'set' to avoid issue 
+	# when rmd is created afterwards
+	knit_patterns$restore(knitPatInit);knit_hooks$restore(knitHookInit)
 	
 	## convert tex -> pdf
 	

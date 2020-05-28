@@ -43,6 +43,7 @@
 #' @importFrom glpgStyle glpgColor
 #' @importFrom plyr dlply
 #' @importFrom glpgUtilityFct getLabelVar formatVarForPlotLabel
+#' @importFrom utils packageVersion
 #' @export
 subjectProfileLinePlot <- function(
 	data,
