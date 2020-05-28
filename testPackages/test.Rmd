@@ -1,8 +1,0 @@
----
-title: "Test document"
-subtitle: "Study: X, Batch X"
----
-
-### Test section  
-
-This is a test paragraph
