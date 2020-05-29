@@ -342,17 +342,34 @@ this time interval visualization
 
 ### Missing starting/end time {#intervalMissingStartEnd}
 
+The interval visualization requires specified start/end time for each record.
+However, records with missing starting/end time are frequently collected.
+Different types of missing values can occur during a clinical study:
+
+* partial dates, e.g. concomitant medication in 2012, relative date not encoded
+* on-going event at data collection, e.g. adverse event
+* 'true' missing: actual date not reported
+
+It might be important to still display these records in the visualization, so
+different types of imputation for missing start/end date for the
+interval visualization are available in the package.
+
+Please **have a look at the section 'Details' of the documentation of 
+the `subjectProfileIntervalPlot` function for the 
+most up-to-date information on this imputation**.
+
 #### Default imputation
 
-Records with missing starting/end time are imputed for the visualization.
-By default, specific symbols are used to represent missing starting/end time.
 By default, **minimal imputation** is used (specified via the parameter `timeImpType`).
+Specific symbols are used to represent missing starting/end time.
 
-Please **have a look at the section 'Details' of the documentation of the 
-`subjectProfileIntervalPlot` function for the most up-to-date information on 
-this imputation**.
+Records with:
 
-```{r exampleIntervalModule-ae-default}
+* missing start and end times are only displayed with their labels in the y-axis
+* missing start only: record are displayed at the specified end with an left-directed arrow
+* missing end only: record are displayed at the specified start with an right-directed arrow
+
+```{r exampleIntervalModule-ae-default, message = TRUE}
 
 	# AEPTCD: preferred term code
 	dataAE <- SDTMDataPelican$AE
@@ -386,7 +403,7 @@ the **`timeLimData`/`timeLimStartVar`/`timeLimEndVar`** parameters.
 This option is used below to impute missing starting/end time with the first/last visit
 for each subject based on the 'Subject Visit' dataset.
 
-```{r exampleIntervalModule-ae-timeLimData}
+```{r exampleIntervalModule-ae-timeLimData, message = TRUE}
 
 	aePlotsTimLimFromSV <- subjectProfileIntervalPlot(
 		data = dataAE,
@@ -407,6 +424,11 @@ for each subject based on the 'Subject Visit' dataset.
 
 	print(aePlotsTimLimFromSV[[subjectAE]][[1]])
 
+```
+
+```{r exampleIntervalModule-ae-timeLimData-svData}
+	svSubjectAE <- subset(SDTMDataPelican$SV, USUBJID == "study-4907-07")[, c("VISIT", "SVSTDY", "SVENDY")]
+	pander(svSubjectAE)
 ```
 
 This is also used to restrict the time limits of the plots.
@@ -483,9 +505,9 @@ in Unicode format in hexadecimal (see [List of unicode symbols](https://en.wikip
 
 ```
 
-```{r exampleIntervalModule-ae-customMissingPartialDates-include, echo = FALSE, fig.height = attributes(aePlotsShape[[subjectAE]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", subjectAE, "with custom shape specification")}
+```{r exampleIntervalModule-ae-customMissingPartialDates-include, echo = FALSE, fig.height = attributes(aePlotsShape[["study-4904-01"]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", subjectAE, "with custom shape specification")}
 
-	print(aePlotsShape[[subjectAE]][[1]])
+	print(aePlotsShape[["study-4904-01"]][[1]])
 
 ```
 

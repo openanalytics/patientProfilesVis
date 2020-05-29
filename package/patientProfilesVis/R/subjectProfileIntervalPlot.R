@@ -22,9 +22,6 @@
 #' \code{paramVar}, ' - ' by default.
 #' @param timeLabel string with general time label, used
 #' in the footnote for the explanation of the arrow, 'time' by default.
-#' @param timeStartShapeVar,timeEndShapeVar (optional) string with
-#' names of the variables in \code{data} used for symbol shape
-#' for \code{timeStartVar}/\code{timeEndVar}.
 #' @param shapePalette Named vector with shape for \code{timeStartShapeVar}\code{timeEndShapeVar}.
 #' @param shapeLab String with label for \code{timeStartShapeVar}\code{timeEndShapeVar}
 #' @param shapeSize Size for symbols (only used if \code{timeStartShapeVar}/\code{timeEndShapeVar} is specified).
@@ -75,7 +72,7 @@ subjectProfileIntervalPlot <- function(
 	alpha = 1,
 	timeStartShapeVar = NULL, timeEndShapeVar = NULL,
 	shapePalette = NULL, 
-	shapeLab = toString(unique(getLabelVar(c(timeStartShapeVar, timeEndShapeVar), labelVars = labelVars))),
+	shapeLab = NULL,
 	shapeSize = rel(3),
 	title = paramLab,
 	label = title,
@@ -85,6 +82,9 @@ subjectProfileIntervalPlot <- function(
 	
 	timeImpType <- match.arg(timeImpType)
 	
+	if(is.null(shapeLab))
+		shapeLab <- toString(unique(getLabelVar(c(timeStartShapeVar, timeEndShapeVar), labelVars = labelVars)))
+	
 	# in case data is a tibble:
 	data <- as.data.frame(data)
 		
@@ -93,6 +93,7 @@ subjectProfileIntervalPlot <- function(
 		data = data, 
 		timeStartVar = timeStartVar, timeStartLab = timeStartLab,
 		timeEndVar = timeEndVar, timeEndLab = timeEndLab,
+		timeStartShapeVar = timeStartShapeVar, timeEndShapeVar = timeEndShapeVar,
 		subjectVar = subjectVar,
 		timeLim = timeLim, timeLimData = timeLimData, 
 		timeImpType = timeImpType,
@@ -151,6 +152,14 @@ subjectProfileIntervalPlot <- function(
 			shapePalette <- getGLPGShapePalettePatientProfile(x = shapes)
 		}
 	}
+	if(is.null(timeStartShapeVar) | is.null(timeEndShapeVar))
+		shapePalette <- c(shapePalette, timeShapePalette)
+	shapePalette <- shapePalette[!duplicated(names(shapePalette))]
+	
+	if(is.null(timeStartShapeVar))
+		timeStartShapeVar <- "timeStartStatus"
+	if(is.null(timeEndShapeVar))
+		timeEndShapeVar <- "timeEndStatus"
 	
 	listPlots <- dlply(data, subjectVar, function(dataSubject){	
 						
@@ -208,15 +217,6 @@ subjectProfileIntervalPlot <- function(
 					alpha = alpha
 				)
 			}
-			
-			if(is.null(timeStartShapeVar) | is.null(timeEndShapeVar))
-				shapePalette <- c(shapePalette, timeShapePalette)
-			shapePalette <- shapePalette[!duplicated(names(shapePalette))]
-			
-			if(is.null(timeStartShapeVar))
-				timeStartShapeVar <- "timeStartStatus"
-			if(is.null(timeEndShapeVar))
-				timeEndShapeVar <- "timeEndStatus"
 			
 			gg <- geomPointCustom(gg, xVar = timeStartVar, shapeVar = timeStartShapeVar)
 			gg <- geomPointCustom(gg, xVar = timeEndVar, shapeVar = timeEndShapeVar)
@@ -362,6 +362,9 @@ subjectProfileIntervalPlot <- function(
 #' 'data-based' or 'none'.
 #' @param labelVars Named character vector with variable labels 
 #' (names are the variable code)
+#' @param timeStartShapeVar,timeEndShapeVar (optional) string with
+#' names of the variables in \code{data} used for symbol shape
+#' for \code{timeStartVar}/\code{timeEndVar}.
 #' @inheritParams filterData
 #' @return list with:
 #' \itemize{
@@ -389,6 +392,7 @@ subjectProfileIntervalPlot <- function(
 formatTimeInterval <- function(data, 
 	timeStartVar, timeStartLab = getLabelVar(timeStartVar, labelVars = labelVars),
 	timeEndVar, timeEndLab = getLabelVar(timeEndVar, labelVars = labelVars),
+	timeStartShapeVar = NULL, timeEndShapeVar = NULL,
 	subjectVar = "USUBJID",
 	timeLim = NULL, 
 	timeLimData = NULL, 
@@ -407,7 +411,7 @@ formatTimeInterval <- function(data,
 		warning(paste(
 			"Dataset to extract time limits ('timeLimData') is specified",
 			"but start/end variable(s) are not specified",
-			"or not available in this data."
+			"or not available in this data. So 'timeLimData' is not considered."
 		))
 		timeLimData <- NULL
 	}
@@ -520,7 +524,11 @@ formatTimeInterval <- function(data,
 				
 	})
 	
-	shapePalette <- c(Complete = '\u25A0', `Missing start` = "\u25C0", `Missing end` = "\u25B6")
+	shapePalette <- c(
+		if(is.null(timeStartShapeVar) | is.null(timeEndShapeVar))	c(Complete = '\u25A0'), 
+		if(is.null(timeStartShapeVar))	c(`Missing start` = "\u25C0"), 
+		if(is.null(timeEndShapeVar))	c(`Missing end` = "\u25B6")
+	)
 	
 	timeLimSpecified <- if(!is.null(timeLim)){
 				
