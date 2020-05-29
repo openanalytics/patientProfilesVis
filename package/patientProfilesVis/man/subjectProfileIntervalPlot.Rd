@@ -40,8 +40,7 @@ subjectProfileIntervalPlot(
   timeStartShapeVar = NULL,
   timeEndShapeVar = NULL,
   shapePalette = NULL,
-  shapeLab = toString(unique(getLabelVar(c(timeStartShapeVar, timeEndShapeVar),
-    labelVars = labelVars))),
+  shapeLab = NULL,
   shapeSize = rel(3),
   title = paramLab,
   label = title,
@@ -132,7 +131,11 @@ By default, a thousandth of the range of \code{timeLim}
 
 \item{alpha}{Numeric with transparency, 1 by default.}
 
-\item{timeStartShapeVar, timeEndShapeVar}{(optional) string with
+\item{timeStartShapeVar}{(optional) string with
+names of the variables in \code{data} used for symbol shape
+for \code{timeStartVar}/\code{timeEndVar}.}
+
+\item{timeEndShapeVar}{(optional) string with
 names of the variables in \code{data} used for symbol shape
 for \code{timeStartVar}/\code{timeEndVar}.}
 

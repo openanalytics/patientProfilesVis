@@ -128,3 +128,18 @@ test_that("subjectProfileIntervalPlot - time limits fixed", {
 	)
 
 })
+
+test_that("subjectProfileIntervalPlot - mix of Unicode and standard ggplot2 shape palette", {
+
+	cmPlots <- subjectProfileIntervalPlot(
+		data = SDTMDataPelican$CM,
+		paramVar ="CMDECOD",
+		timeStartVar = "CMSTDY",
+		timeEndVar = "CMENDY",
+		timeEndShapeVar = "CMENRTPT"
+	)
+	
+	# Error: Can't find shape name: '19' (with version < 1.2.0)
+	print(cmPlots[["study-4902-02"]][[1]])
+	
+})

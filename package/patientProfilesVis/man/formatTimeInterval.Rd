@@ -10,6 +10,8 @@ formatTimeInterval(
   timeStartLab = getLabelVar(timeStartVar, labelVars = labelVars),
   timeEndVar,
   timeEndLab = getLabelVar(timeEndVar, labelVars = labelVars),
+  timeStartShapeVar = NULL,
+  timeEndShapeVar = NULL,
   subjectVar = "USUBJID",
   timeLim = NULL,
   timeLimData = NULL,
@@ -31,6 +33,10 @@ formatTimeInterval(
 \item{timeEndVar}{string, variable of \code{data} with end of range}
 
 \item{timeEndLab}{String, label for \code{timeEndVar}.}
+
+\item{timeStartShapeVar, timeEndShapeVar}{(optional) string with
+names of the variables in \code{data} used for symbol shape
+for \code{timeStartVar}/\code{timeEndVar}.}
 
 \item{subjectVar}{string, variable of \code{data} with subject ID}
 

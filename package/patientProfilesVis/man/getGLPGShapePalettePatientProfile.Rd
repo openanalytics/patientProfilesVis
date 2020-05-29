@@ -3,28 +3,27 @@
 \name{getGLPGShapePalettePatientProfile}
 \alias{getGLPGShapePalettePatientProfile}
 \title{Get a Galapagos shape palette palette of specified length
-for patient profile visualization visualization.
-This is only a wrapper above \code{\link[glpgUtilityFct]{getGLPGShapePalette}},
-including by default missing values (contrary to the default of the
-code{\link[glpgUtilityFct]{getGLPGShapePalette}} function).}
+for patient profile visualization visualization.}
 \usage{
-getGLPGShapePalettePatientProfile(..., includeNA = TRUE)
+getGLPGShapePalettePatientProfile(..., includeNA = TRUE, asText = TRUE)
 }
 \arguments{
 \item{...}{Additional parameters for the 
 \code{\link[glpgUtilityFct]{getGLPGShapePalette}} function.}
 
 \item{includeNA}{Logical (TRUE by default), should NA elements be retained in the palette.}
+
+\item{asText}{Logical (TRUE by default), should the palette
+be expressed as integer (base R plot and ggplot2 compatible)
+or in text format (e.g. required if combined with unicode symbols in ggplot2)?}
 }
 \value{
-vector of integer values with shape
+vector of shape values
 }
 \description{
-Get a Galapagos shape palette palette of specified length
-for patient profile visualization visualization.
 This is only a wrapper above \code{\link[glpgUtilityFct]{getGLPGShapePalette}},
-including by default missing values (contrary to the default of the
-code{\link[glpgUtilityFct]{getGLPGShapePalette}} function).
+including by default missing values and formatting the symbols as text
+(in case mixed with Unicode).
 }
 \author{
 Laure Cougnaud
