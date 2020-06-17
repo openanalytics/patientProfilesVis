@@ -12,7 +12,7 @@ getGLPGColorPalettePatientProfile(..., includeNA = TRUE)
 }
 \arguments{
 \item{...}{Additional parameters for the 
-\code{\link[glpgUtilityFct]{getGLPGColorPalette}} function.}
+\code{\link[glpgStyle]{getGLPGColorPalette}} function.}
 
 \item{includeNA}{Logical (TRUE by default), should NA elements be retained in the palette.}
 }

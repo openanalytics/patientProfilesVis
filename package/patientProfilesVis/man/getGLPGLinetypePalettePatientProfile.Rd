@@ -12,7 +12,7 @@ getGLPGLinetypePalettePatientProfile(..., includeNA = TRUE)
 }
 \arguments{
 \item{...}{Additional parameters for the 
-\code{\link[glpgUtilityFct]{getGLPGLinetypePalette}} function.}
+\code{\link[glpgStyle]{getGLPGLinetypePalette}} function.}
 
 \item{includeNA}{Logical (TRUE by default), should NA elements be retained in the palette.}
 }
