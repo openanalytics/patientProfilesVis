@@ -24,7 +24,7 @@ or in text format (e.g. required if combined with unicode symbols in ggplot2)?}
 vector of shape values
 }
 \description{
-This is only a wrapper above \code{\link[glpgUtilityFct]{getGLPGShapePalette}},
+This is only a wrapper above \code{\link[glpgStyle]{getGLPGShapePalette}},
 including by default missing values and formatting the symbols as text
 (in case mixed with Unicode).
 }
