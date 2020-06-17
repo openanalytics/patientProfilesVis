@@ -46,7 +46,7 @@ getGLPGLinetypePalettePatientProfile <- function(...,
 #' including by default missing values (contrary to the default of the
 #' code{\link[glpgStyle]{getGLPGShapePalette}} function).
 #' 
-#' This is only a wrapper above \code{\link[glpgUtilityFct]{getGLPGShapePalette}},
+#' This is only a wrapper above \code{\link[glpgStyle]{getGLPGShapePalette}},
 #' including by default missing values and formatting the symbols as text
 #' (in case mixed with Unicode).
 #' @param asText Logical (TRUE by default), should the palette
