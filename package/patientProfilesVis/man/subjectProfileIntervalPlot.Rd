@@ -11,23 +11,27 @@ subjectProfileIntervalPlot(
   paramLab = toString(getLabelVar(paramVar, labelVars = labelVars)),
   paramGroupVar = NULL,
   timeStartVar,
+  timeStartLab = getLabelVar(timeStartVar, labelVars = labelVars),
   timeEndVar,
+  timeEndLab = getLabelVar(timeEndVar, labelVars = labelVars),
   timeLabel = "time",
   subjectVar = "USUBJID",
   subjectSubset = NULL,
   subsetData = NULL,
   subsetVar = NULL,
   subsetValue = NULL,
+  timeImpType = c("minimal", "data-by-subject", "none"),
   timeLim = NULL,
   timeLimData = NULL,
   timeLimStartVar = NULL,
+  timeLimStartLab = getLabelVar(timeLimStartVar, labelVars = labelVars),
   timeLimEndVar = NULL,
+  timeLimEndLab = getLabelVar(timeLimEndVar, labelVars = labelVars),
   timeTrans = NULL,
   timeExpand = NULL,
   timeAlign = TRUE,
   rangeSimilarStartEnd = NULL,
-  xLab = paste(getLabelVar(c(timeStartVar, timeEndVar), labelVars = labelVars), collapse
-    = "/"),
+  xLab = paste(c(timeStartLab, timeEndLab), collapse = "/"),
   yLab = "",
   colorVar = NULL,
   colorLab = getLabelVar(colorVar, labelVars = labelVars),
@@ -36,9 +40,8 @@ subjectProfileIntervalPlot(
   timeStartShapeVar = NULL,
   timeEndShapeVar = NULL,
   shapePalette = NULL,
-  shapeLab = toString(unique(getLabelVar(c(timeStartShapeVar, timeEndShapeVar),
-    labelVars = labelVars))),
-  shapeSize = rel(1),
+  shapeLab = NULL,
+  shapeSize = rel(3),
   title = paramLab,
   label = title,
   labelVars = NULL,
@@ -61,7 +64,11 @@ If specified, the parameters will be grouped by this(these) variable(s) in the y
 
 \item{timeStartVar}{string, variable of \code{data} with start of range}
 
+\item{timeStartLab}{String, label for \code{timeStartVar}.}
+
 \item{timeEndVar}{string, variable of \code{data} with end of range}
+
+\item{timeEndLab}{String, label for \code{timeEndVar}.}
 
 \item{timeLabel}{string with general time label, used
 in the footnote for the explanation of the arrow, 'time' by default.}
@@ -80,6 +87,9 @@ Records from \code{data} are then mapped by the \code{subjectVar} variable.}
 \item{subsetValue}{character vector with value(s) of interest to consider for 
 \code{subsetVar}}
 
+\item{timeImpType}{String with imputation type: 'minimal' (default),
+'data-based' or 'none'.}
+
 \item{timeLim}{(optional) vector of length 2 with time limits (x-axis)
 If not specified, extracted from the minimum \code{timeStartVar} 
 and maximum \code{timeEndVar} per subject.}
@@ -88,7 +98,11 @@ and maximum \code{timeEndVar} per subject.}
 
 \item{timeLimStartVar}{string, variable of \code{timeLimData} with time start}
 
+\item{timeLimStartLab}{String, label for \code{timeLimeStartVar}.}
+
 \item{timeLimEndVar}{string, variable of \code{timeLimData} with time end}
+
+\item{timeLimEndLab}{String, label for \code{timeLimEndVar}.}
 
 \item{timeTrans}{ggplot2 transformation (see \code{\link[scales]{trans_new}}),
 e.g. produced by the \code{\link{getTimeTrans}} function.}
@@ -117,7 +131,11 @@ By default, a thousandth of the range of \code{timeLim}
 
 \item{alpha}{Numeric with transparency, 1 by default.}
 
-\item{timeStartShapeVar, timeEndShapeVar}{(optional) string with
+\item{timeStartShapeVar}{(optional) string with
+names of the variables in \code{data} used for symbol shape
+for \code{timeStartVar}/\code{timeEndVar}.}
+
+\item{timeEndShapeVar}{(optional) string with
 names of the variables in \code{data} used for symbol shape
 for \code{timeStartVar}/\code{timeEndVar}.}
 
@@ -133,7 +151,8 @@ for \code{timeStartVar}/\code{timeEndVar}.}
 This label is used to report the name of the panel 
 in the text when the plots are combined (e.g. if the plot is empty).}
 
-\item{labelVars}{named string with variable labels (names are the variable code)}
+\item{labelVars}{Named character vector with variable labels 
+(names are the variable code)}
 
 \item{formatReport}{list with parameters used to specify the format of the report,
 e.g. output of the \code{\link{subjectProfileReportFormat}} function}
@@ -142,9 +161,11 @@ e.g. output of the \code{\link{subjectProfileReportFormat}} function}
 paging is enabled, otherwise only one page is used.}
 }
 \value{
-list of (across subjects) of list (across modules) of \code{\link[ggplot2]{ggplot2} objects}, 
-also of class \code{subjectProfileIntervalPlot}, with additional metaData attributes containing
-'\code{label}' and 'timeLim' and 'timeTrans' (if specified).
+list of (across subjects) of list (across pages) 
+of \code{\link[ggplot2]{ggplot2} objects}, 
+also of class \code{subjectProfileIntervalPlot}.
+ with additional 'metaData' attributes containing
+'\code{label}', 'timeLim' \code{timeTrans} and \code{timeExpand} (if specified).
 }
 \description{
 If no start and/or end date is available and \code{timeStartShapeVar},
@@ -153,24 +174,34 @@ If no start and/or end date is available and \code{timeStartShapeVar},
 \details{
 In case of missing values for the time start or end variables, they are replaced by:
 \itemize{
-\item{in case \code{timeLim} is specified: }{specified time limits}
-\item{otherwise, in case \code{timeLimData}, \code{timeLimStartVar} and \code{timeLimEndVar} are specified: }{
-minimum/maximum values in the variable: \code{timeLimVar} in the data: \code{timeLimData}
+\item{in case \code{timeLimData}, \code{timeLimStartVar} and \code{timeLimEndVar} are specified: }{
+ the minimum/maximum values in the variables: \code{timeLimStartVar}/\code{timeLimEndVar} 
+respectively are considered
+ in the data: \code{timeLimData}
 for the specific subject (if available). If there are missing for a specific subject,
-they are taken across subjects.
-}
-\item{otherwise (default): }{the missing values for start/end date are replaced by the 
-minimum/maximum of the times available in the \code{timeStartVar} and 
-\code{timeEndVar} of the visualized \code{data} PER SUBJECT (if available).
-}
-\item{if all time are missings, the range is set to 0 and Inf} 
-}
+they are taken across subjects.}
+\item{otherwise, depending on the imputation type (\code{timeImpType}): }{
+\itemize{
+\item{'minimal' (by default): }{
+\itemize{
+\item{if start end and time are missing: }{no imputation is done, only the label is displayed}
+\item{if start time is missing and end time is not missing: }{
+start time is imputed with end time, and status is set to 'Missing start'}
+\item{if end time is missing and start time is not missing: }{
+end time is imputed with start time, and status is set to 'Missing end'}
+}}
+\item{'data-based' (default in version < 1.0.0): }{
+minimum/maximum values in the start/end time variables in the data are considered
+for the specific subject (if available). If there are missing for a specific subject,
+they are taken across subjects. If all time are missings, the range is set to 0 and Inf}
+\item{'none': }{no imputation is done}
+}}}
 The time limits are the same across subjects, and set to:
 \itemize{
 \item{\code{timeLim} if specified}
 \item{maximum time range in \code{timeLimStartVar} and \code{timeLimEndVar} in \code{timeLimData} 
 if specified}
-\item{the maximum range on the data obtained after filling missing values}
+\item{the maximum range on the data obtained after imputation of missing values}
 }
 }
 \author{

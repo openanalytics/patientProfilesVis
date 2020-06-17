@@ -42,7 +42,8 @@
 #' @import ggplot2
 #' @importFrom glpgStyle glpgColor
 #' @importFrom plyr dlply
-#' @importFrom glpgUtilityFct getLabelVar
+#' @importFrom glpgUtilityFct getLabelVar formatVarForPlotLabel
+#' @importFrom utils packageVersion
 #' @export
 subjectProfileLinePlot <- function(
 	data,
@@ -97,7 +98,7 @@ subjectProfileLinePlot <- function(
 	)
 	
 	# format variable
-	data[, "paramFacetVar"] <- formatParamVar(
+	data[, "paramFacetVar"] <- formatVarForPlotLabel(
 		data = data, paramVar = "paramFacetVar", paramGroupVar = paramGroupVar,
 		width = formatReport$yLabelWidth
 	)
@@ -185,13 +186,13 @@ subjectProfileLinePlot <- function(
 			}
 			
 			# line
-			dataLine <- if(!is.null(paramNameVar)){
+			if(!is.null(paramNameVar)){
 				# remove rows with only one point (no need to connect points with the line)
 				# to avoid warning: geom_path: Each group consists of only one observation. Do you need to adjust the group aesthetic?
 				# when 'facet_grid' is called
 				nPointsPerParamName <- ddply(dataSubjectPage, "paramFacetVar", nrow)
-				paramNameRetained <- subset(nPointsPerParamName, V1 > 1)[, "paramFacetVar"]
-				dataSubjectPage[which(dataSubjectPage[, "paramFacetVar"] %in% paramNameRetained), ]
+				paramNameRetained <- nPointsPerParamName[which(nPointsPerParamName$V1 > 1), "paramFacetVar"]
+				dataLine <- dataSubjectPage[which(dataSubjectPage[, "paramFacetVar"] %in% paramNameRetained), ]
 			}else	dataLine <- dataSubjectPage
 			if(nrow(dataLine) > 0)
 				gg <- gg + geom_line(data = dataLine, alpha = alpha)
@@ -201,11 +202,13 @@ subjectProfileLinePlot <- function(
 				if(!is.null(colorVar))	list(color = colorVar, fill = colorVar),
 				if(!is.null(shapeVar))	list(shape = shapeVar)
 			)
-			gg <- gg +
-				if(length(aesArgsPoint) > 0){
-					geom_point(do.call(aes_string, aesArgsPoint), 
-						alpha = alpha, size = shapeSize)
-				}else geom_point(alpha = alpha, size = shapeSize)
+			
+			if(length(aesArgsPoint) > 0){
+				gg <- gg + geom_point(do.call(aes_string, aesArgsPoint), 
+					alpha = alpha, size = shapeSize)
+			}else{
+				gg <- gg + geom_point(alpha = alpha, size = shapeSize)
+			}
 			
 			# general
 			gg <- gg + 
@@ -219,14 +222,22 @@ subjectProfileLinePlot <- function(
 					paste0("paramFacetVar", "~."), 
 					scales = "free_y", switch = "y"#,
 #					labeller = label_wrap_gen(width = Inf)
-					) +
-					theme(
-						strip.placement = "outside", 
-						strip.text.y = element_text(
-							angle = 180, size = 8, hjust = 1
-						),
-						strip.background = element_rect(color = NA, fill = NA)
+				)
+				
+				argsTheme <- list(
+					strip.placement = "outside", 
+					strip.background = element_rect(color = NA, fill = NA)
+				)
+				if(packageVersion("ggplot2") >= "3.0.0"){
+					argsTheme <- c(argsTheme, 
+						list(strip.text.y.left = element_text(angle = 0, size = 8, hjust = 1))
 					)
+				}else{
+					argsTheme <- c(argsTheme, 
+						list(strip.text.y = element_text(angle = 180, size = 8, hjust = 1))
+					)
+				}
+				gg <- gg + do.call(theme, argsTheme)
 			
 				# count number of lines each facet will take
 				nLinesPlot <- countNLines(unique(dataSubjectPage[, "paramFacetVar"]))

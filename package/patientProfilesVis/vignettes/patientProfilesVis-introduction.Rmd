@@ -1,15 +1,10 @@
 ---
-title: "Vignette of the `patientProfilesVis` package"
+title: "Introduction to the `patientProfilesVis` package"
 author: "Laure Cougnaud"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
-output: 
-  rmarkdown::html_document:
-    toc: true
-    toc_float:
-      collapsed: true
-    number_sections: true
+output: glpgStyle::html_report
 vignette: >
-  %\VignetteIndexEntry{patientProfilesVis package}
+  %\VignetteIndexEntry{Introduction to the patientProfilesVis package}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -79,7 +74,7 @@ A few `sdtm` datasets from the _Pelican_ study are included in the
 	data(ADaMDataPelican)
 	# ... and corresponding labels
 	data(labelVarsADaMPelican)
-
+	
 ```
 
 # Creation of the plot submodules
@@ -265,8 +260,8 @@ some parameters/events of interest.
 
 It is used here to represent the start/end date of the adverse events.
 
-Please **have a look at the section 'Details' of the documentation of the
-`subjectProfileIntervalPlot` function for further information on records with
+Please **check section [Missing starting/end time](#intervalMissingStartEnd) for further information 
+on how records with
 missing start/end date are represented**.
 
 ```{r exampleIntervalModule-ae}
@@ -284,65 +279,13 @@ missing start/end date are represented**.
 		labelVars = labelVarsSDTMPelican,
 		title = "Adverse events"
 	)
-	
+	subjectAE <- "study-4907-07"
+		
 ```
 
-```{r exampleIntervalModule-ae-include, echo = FALSE, fig.height = attributes(aePlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", names(aePlots)[1])}
+```{r exampleIntervalModule-ae-include, echo = FALSE, fig.height = attributes(aePlots[[subjectAE]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", subjectAE)}
 
-	print(aePlots[[1]][[1]])
-
-```
-
-By default, **missing start/end values are represented as an arrow, positioned at the minimum/maximum
-time value per subject**.
-To set the values represented for records with missing start/end dates,
-the **time limits can be specified** via the **`timeLim`** parameter
-or extracted from a **specified dataset containing the start/end date for each
-subject** via the **`timeLimData` and `timeLimVar`** parameters.
-
-```{r exampleIntervalModule-ae-timeLim}
-
-	aePlotsTimLim <- subjectProfileIntervalPlot(
-		data = dataAE,
-		paramVar = "AETERM",
-		timeStartVar = "AESTDY",
-		timeEndVar = "AEENDY",
-		colorVar = "AESEV",
-		labelVars = labelVarsSDTMPelican,
-		title = "Adverse events",
-		timeLim = c(0, NA)
-	)
-	
-```
-
-```{r exampleIntervalModule-ae-timeLim-include, echo = FALSE, fig.height = attributes(aePlotsTimLim[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste0("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", names(aePlotsTimLim)[1], ". Missing start/end date are extracted from the specified time limits.")}
-
-	print(aePlotsTimLim[[1]][[1]])
-
-```
-
-The second option is used below to extract the time limits based on all visits for a specific subject from the subject-level SDTM dataset.
-
-```{r exampleIntervalModule-ae-timeLimData}
-
-	aePlotsTimLimFromSV <- subjectProfileIntervalPlot(
-		data = dataAE,
-		paramVar = "AETERM",
-		timeStartVar = "AESTDY",
-		timeEndVar = "AEENDY",
-		colorVar = "AESEV",
-		labelVars = labelVarsSDTMPelican,
-		title = "Adverse events",
-		timeLimData = SDTMDataPelican$SV,
-		timeLimStartVar = "SVSTDY", 
-		timeLimEndVar = "SVENDY"
-	)
-	
-```
-
-```{r exampleIntervalModule-ae-timeLimData-include, echo = FALSE, fig.height = attributes(aePlotsTimLimFromSV[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste0("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", names(aePlotsTimLimFromSV)[1], ". Missing start/end date are extracted from the subject-level datasets.")}
-
-	print(aePlotsTimLimFromSV[[1]][[1]])
+	print(aePlots[[subjectAE]][[1]])
 
 ```
 
@@ -366,7 +309,7 @@ this time interval visualization
 
 ```
 
-```{r exampleIntervalModule-exinclude, echo = FALSE, fig.height = attributes(exPlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Exposure interval with the 'subjectProfileIntervalPlot' function for patient:", names(aePlots)[1])}
+```{r exampleIntervalModule-exinclude, echo = FALSE, fig.height = attributes(exPlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Exposure interval with the 'subjectProfileIntervalPlot' function for patient:", names(exPlots)[1])}
 
 	print(exPlots[[1]][[1]])
 
@@ -387,21 +330,108 @@ this time interval visualization
 		labelVars = labelVarsSDTMPelican,
 		title = "Concomitant medications"
 	)
+	subjectCM <- "study-4905-02"
 
 ```
 
-```{r exampleIntervalModule-cm-include, echo = FALSE, fig.height = attributes(cmPlots[["study-4905-02"]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlots)[1])}
+```{r exampleIntervalModule-cm-include, echo = FALSE, fig.height = attributes(cmPlots[[subjectCM]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", subjectCM)}
 
-	print(cmPlots[[1]][[1]])
+	print(cmPlots[[subjectCM]][[1]])
 
 ```
 
 ### Missing starting/end time {#intervalMissingStartEnd}
 
-By default, in case of missing values, the minimum/maximum time range for the
-specific subject is used, and across subjects if all missing. This might result
-in big time range for this plot.
+The interval visualization requires specified start/end time for each record.
+However, records with missing starting/end time are frequently collected.
+Different types of missing values can occur during a clinical study:
 
+* partial dates, e.g. concomitant medication in 2012, relative date not encoded
+* on-going event at data collection, e.g. adverse event
+* 'true' missing: actual date not reported
+
+It might be important to still display these records in the visualization, so
+different types of imputation for missing start/end date for the
+interval visualization are available in the package.
+
+Please **have a look at the section 'Details' of the documentation of 
+the `subjectProfileIntervalPlot` function for the 
+most up-to-date information on this imputation**.
+
+#### Default imputation
+
+By default, **minimal imputation** is used (specified via the parameter `timeImpType`).
+Specific symbols are used to represent missing starting/end time.
+
+Records with:
+
+* missing start and end times are only displayed with their labels in the y-axis
+* missing start only: record are displayed at the specified end with an left-directed arrow
+* missing end only: record are displayed at the specified start with an right-directed arrow
+
+```{r exampleIntervalModule-ae-default, message = TRUE}
+
+	# AEPTCD: preferred term code
+	dataAE <- SDTMDataPelican$AE
+	# specify order of value in 'AESEV'
+	dataAE[, "AESEV"] <- factor(dataAE[, "AESEV"], levels = c("MILD", "MODERATE"))
+	aePlots <- subjectProfileIntervalPlot(
+		data = dataAE,
+		paramVar = "AETERM",
+		timeStartVar = "AESTDY",
+		timeEndVar = "AEENDY",
+		colorVar = "AESEV",
+		labelVars = labelVarsSDTMPelican,
+		title = "Adverse events"
+	)
+		
+```
+
+```{r exampleIntervalModule-ae-default-include, echo = FALSE, fig.height = attributes(aePlots[[subjectAE]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", subjectAE)}
+
+	print(aePlots[[subjectAE]][[1]])
+
+```
+
+#### Imputation based on an external dataset
+
+To set the values represented for records with missing start/end dates, 
+the **time limits can be extracted** from a 
+**specified dataset containing the start/end date for each subject** via 
+the **`timeLimData`/`timeLimStartVar`/`timeLimEndVar`** parameters.
+
+This option is used below to impute missing starting/end time with the first/last visit
+for each subject based on the 'Subject Visit' dataset.
+
+```{r exampleIntervalModule-ae-timeLimData, message = TRUE}
+
+	aePlotsTimLimFromSV <- subjectProfileIntervalPlot(
+		data = dataAE,
+		paramVar = "AETERM",
+		timeStartVar = "AESTDY",
+		timeEndVar = "AEENDY",
+		colorVar = "AESEV",
+		labelVars = labelVarsSDTMPelican,
+		title = "Adverse events",
+		timeLimData = SDTMDataPelican$SV,
+		timeLimStartVar = "SVSTDY", 
+		timeLimEndVar = "SVENDY"
+	)
+	
+```
+
+```{r exampleIntervalModule-ae-timeLimData-include, echo = FALSE, fig.height = attributes(aePlotsTimLimFromSV[[subjectAE]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste0("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", subjectAE, ". Missing start/end date are extracted from the subject-level dataset.")}
+
+	print(aePlotsTimLimFromSV[[subjectAE]][[1]])
+
+```
+
+```{r exampleIntervalModule-ae-timeLimData-svData}
+	svSubjectAE <- subset(SDTMDataPelican$SV, USUBJID == "study-4907-07")[, c("VISIT", "SVSTDY", "SVENDY")]
+	pander(svSubjectAE)
+```
+
+This is also used to restrict the time limits of the plots.
 The time limits of the concomitant medications is quite large compared to the
 study time range.
 As the modules will be combined with the same time limits, it might be
@@ -428,14 +458,62 @@ time range of the subject visits.
 
 ```
 
-```{r exampleIntervalModule-cm-restrictedTimeLimits-include, echo = FALSE, fig.height = attributes(cmPlotsTimeSV[["study-4905-02"]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlots)[1], "with time limits restricted to subject visits")}
+```{r exampleIntervalModule-cm-restrictedTimeLimits-include, echo = FALSE, fig.height = attributes(cmPlotsTimeSV[[subjectCM]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", subjectCM, "with time limits restricted to subject visits")}
 
-	print(cmPlotsTimeSV[[1]][[1]])
+	print(cmPlotsTimeSV[[subjectCM]][[1]])
 
 ```
 
-Please note that the same behaviour can be obtained by specifying directly the
-time limits via the `timeLim` parameter:
+#### Custom specification for missing and partial dates
+
+Missing start/end dates, partial dates or custom date status can be specified
+by creating two extra variables in the input data containing the status of the
+start/end time (`timeStartShapeVar`/`timeEndShapeVar`). 
+This status is represented as different symbols in the plot.
+In this case the `timeStartVar`/`timeEndVar` variables already contain the imputed
+date in case of missing values.
+
+Please note that because the [default `ggplot2` symbol palette](https://ggplot2.tidyverse.org/reference/scale_shape.html)
+doesn't contain the left and right triangle symbols; these are specified
+in Unicode format in hexadecimal (see [List of unicode symbols](https://en.wikipedia.org/wiki/List_of_Unicode_characters)).
+
+```{r exampleIntervalModule-ae-customMissingPartialDates}
+
+	# add status for dates:
+	dataAE$AESTDYST <- with(dataAE, 
+		ifelse(is.na(AESTDY) & !is.na(AESTDY), "Missing start", "")
+	)
+	
+	shapePalette <- c(
+		`Missing start`= "\u25C0", # left-pointing arrow
+		'NOT RECOVERED/NOT RESOLVED' = "\u25B6", # right-pointing arrow
+		'RECOVERED/RESOLVED' = "\u25A0", # small square
+		UNKNOWN = "+"
+	)
+	
+	aePlotsShape <- subjectProfileIntervalPlot(
+		data = dataAE,
+		paramVar = "AETERM",
+		timeStartVar = "AESTDY", timeEndVar = "AEENDY",
+		timeStartShapeVar = "AESTDYST", timeEndShapeVar = "AEOUT",
+		shapePalette = shapePalette,
+		shapeLab = "Study date status", 
+		colorVar = "AESEV",
+		labelVars = labelVarsSDTMPelican,
+		title = "Adverse events"
+	)
+
+```
+
+```{r exampleIntervalModule-ae-customMissingPartialDates-include, echo = FALSE, fig.height = attributes(aePlotsShape[["study-4904-01"]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", subjectAE, "with custom shape specification")}
+
+	print(aePlotsShape[["study-4904-01"]][[1]])
+
+```
+
+### Specification of time limits
+
+To restrict the time range in the visualization, the time limits can be set via the `timeLim` parameter:
 
 ```{r exampleIntervalModule-cm-restrictedTimeLimits2}
 
@@ -454,55 +532,9 @@ time limits via the `timeLim` parameter:
 
 ```
 
-```{r exampleIntervalModule-cm-restrictedTimeLimits2-include, echo = FALSE, fig.height = attributes(cmPlotsTimeSpec[["study-4905-02"]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlotsTimeSpec)[1], "with time limits restricted to: (", toString(timeLim), ")")}
+```{r exampleIntervalModule-cm-restrictedTimeLimits2-include, echo = FALSE, fig.height = attributes(cmPlotsTimeSpec[[subjectCM]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", subjectCM, "with time limits restricted to: (", toString(timeLim), ")")}
 
-	print(cmPlotsTimeSpec[[1]][[1]])
-
-```
-
-### Custom specification for missing and partial dates
-
-Missing start/end dates, partial dates or custom date status can be specified
-by creating two extra variables in the input data containing the status of the
-start/end time (`timeStartShapeVar`/`timeEndShapeVar`). 
-This status is represented as different symbols in the plot.
-In this case the `timeStartVar`/`timeEndVar` variables already contain the imputed
-date in case of missing values.
-
-Please note that because the default `ggplot2` symbol palette
-doesn't contain the left and right triangle symbols; these are specified
-in Unicode format in hexadecimal (see [List of unicode symbols](https://en.wikipedia.org/wiki/List_of_Unicode_characters)).
-
-```{r exampleIntervalModule-ae-customMissingPartialDates}
-
-	# add status for dates:
-	set.seed(1234) 
-	dataAE[, paste0(c("AESTDY", "AEENDY"), "ST")] <- 
-		sample(x = c("missing start", "missing end", "partial", "complete"), 
-		size = nrow(dataAE)*2, replace = TRUE)
-	
-	aePlotsShape <- subjectProfileIntervalPlot(
-		data = dataAE,
-		paramVar = "AETERM",
-		timeStartVar = "AESTDY", timeEndVar = "AEENDY",
-		timeStartShapeVar = "AESTDYST", timeEndShapeVar = "AEENDYST",
-		# left/right triangle not available in default ggplot palette
-		# so use unicode character (hexadecimal notation)
-		shapePalette = c(
-			complete = '\u25A0', partial = '\u25EF', 
-			`missing start` = "\u25C0", `missing end` = "\u25B6"
-		),
-		shapeLab = "Study date status", shapeSize = 4,
-		colorVar = "AESEV",
-		labelVars = labelVarsSDTMPelican,
-		title = "Adverse events"
-	)
-
-```
-
-```{r exampleIntervalModule-ae-customMissingPartialDates-include, echo = FALSE, fig.height = attributes(aePlotsShape[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", names(aePlotsShape)[1], "with custom shape specification")}
-
-	print(aePlotsShape[[1]][[1]])
+	print(cmPlotsTimeSpec[[subjectCM]][[1]])
 
 ```
 
@@ -531,19 +563,9 @@ To obtain visualization which don't align, the parameter: `timeAlign` is set to 
 
 In this case, each visualization contains specific time-limits.
 
-```{r exampleIntervalModule-cm-timeAlign-FALSE-include-1, echo = FALSE, fig.height = attributes(cmPlotsNotAligned[[2]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlotsNotAligned)[2], "with custom shape specification")}
+```{r exampleIntervalModule-cm-timeAlign-FALSE-include-1, echo = FALSE, fig.height = attributes(cmPlotsNotAligned[[subjectCM]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", subjectCM, "with custom shape specification")}
 
-	print(cmPlotsNotAligned[[2]][[1]])
-
-```
-
-Please note that if all start/end times are missing for one subject,
-the minimum/maximum is taken across subjects (see section [#intervalMissingStartEnd]
-on how to customize the specification of time limits).
-
-```{r exampleIntervalModule-cm-timeAlign-FALSE-include-2, echo = FALSE, fig.height = attributes(cmPlotsNotAligned[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlotsNotAligned)[1], "with custom shape specification")}
-
-	print(cmPlotsNotAligned[[1]][[1]])
+	print(cmPlotsNotAligned[[subjectCM]][[1]])
 
 ```
 
@@ -649,7 +671,7 @@ hematology parameters.
 		labelVars = labelVarsSDTMPelican,
 		shapeVar = "LBNRIND",
 		shapePalette = c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24, 'NA' = 3),
-		title = "Hematology test measurements: reference range indicator"
+		title = "Hematology test measurements"
 	)
 	cat("The", length(lbPlotsSubset), "patients with hematology measurements:", toString(names(lbPlotsSubset)), "are considered.\n")
 	
@@ -679,7 +701,7 @@ extracted from the `subjectVar` parameter):
 		labelVars = labelVarsSDTMPelican,
 		shapeVar = "LBNRIND",
 		shapePalette = c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24, 'NA' = 3),
-		title = "Hematology test measurements: reference range indicator"
+		title = "Laboratory test measurements for subject of interest"
 	)
 	cat("Only the patient:", toString(names(lbPlotsSubjectSubset)), "is considered.\n")
 	
@@ -709,10 +731,9 @@ For example, to create the laboratory plots only for the patients with adverse e
 		labelVars = labelVarsSDTMPelican,
 		shapeVar = "LBNRIND",
 		shapePalette = c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24, 'NA' = 3),
-		title = "Hematology test measurements: reference range indicator"
+		title = "Laboratory test measurements for patients with adverse events"
 	)
-	cat("Only the", length(lbPlotsDataSubset), "subjects in the AE dataset with hematology measurements: ", 
-		toString(names(lbPlotsDataSubset)), " are considered.")
+	cat("Only the", length(lbPlotsDataSubset), "subjects in the AE dataset are considered.")
 	
 ```
 
@@ -912,7 +933,7 @@ The `timeTrans` parameter is used to specify a custom transformation of the time
 
 The `getTimeTrans` provides convenient transformations: 
 
-* 'asinh': hyperbolic arc-sine transformation, to zoom in small time values (around 0).
+* 'asinh': hyperbolic arc-sine transformation, to zoom in small absolute time values (around 0).
 Negative and positive values are represented in a log-like fashion.
 * 'asinh-neg': hyperbolic arc-sine transformation only for
 negative relative time. The positive time frame is represented in a linear scale
@@ -941,7 +962,7 @@ long before the start of the study (e.g. concomitant medications).
 
 ```{r exampleIntervalModule-cm-timeTransformation-include, echo = FALSE, fig.height = attributes(cmPlots[["study-4905-02"]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlots)[1])}
 
-	print(cmPlots[[1]][[1]])
+	print(cmPlots[["study-4905-02"]][[1]])
 
 ```
 
@@ -1071,9 +1092,7 @@ the laboratory measurements before and after baseline.
 		timeEndVar = "AEENDY",
 		colorVar = "AESEV",
 		labelVars = labelVarsSDTMPelican,
-		title = "Adverse events",
-		# occurring from baseline on
-		timeLim = c(0, NA)
+		title = "Adverse events"
 	)
 
 	# Laboratory measurements
@@ -1124,7 +1143,6 @@ is extended to also contain the times for laboratory measurements
 
 The visualizations are aligned only for the adverse events domain 
 (`timeAlign` set to: 'AE') and across subjects (`timeAlignPerSubject`  is "none").
-The specified time limits are used for the adverse events module.
 
 ```{r createReportWithAllModules-timeAlign-AE, out.width = "100%", out.height = "700px"}
 
@@ -1251,12 +1269,12 @@ Please find below a few advices:
 
 * during the development of the patient profiles for 
 a specific study, the different modules can be created only for a
-subset of the subjects via the `subjectSubset` or `subsetData`/`subsetVar`/`subsetValue`
+**subset of the subjects** via the `subjectSubset` or `subsetData`/`subsetVar`/`subsetValue`
 parameters
 * for the final creation of the  patient profiles on the entire set of patients:
-    + the reports can be exported by batch of X subjects, via the `exportBatchSize`
-    parameter. Exporting the patient profiles by 10 subjects can be a good first trial
-    for study with numerous patients.
+    + the reports can be exported **by batch of X subjects**, via the `exportBatchSize`
+    parameter. Exporting the patient profiles by batch of 10 subjects can be a good idea for a
+    for study with a high number of patients.
     + the report can be parallelized by specifying a number of cores > 1 to the parameter **`nCores`**
 of the `createSubjectProfileReport` function. In this case,
 the **package `parallel` is required**. To check the number of cores available

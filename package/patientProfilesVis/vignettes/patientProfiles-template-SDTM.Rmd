@@ -1,0 +1,345 @@
+---
+title: "Template to create patient profiles for SDTM datasets"
+subtitle: "Study: X, Batch X"
+author: "Laure Cougnaud"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output: glpgStyle::html_report
+vignette: >
+  %\VignetteIndexEntry{SDTM template for patient profiles}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+# Introduction
+
+This document presents an example of standard patient profile report
+for SDTM datasets.
+
+This document is intended to be used as a template to create patient profile
+report for your specific study.
+You can copy the source code of this document into your working directory with:
+```{r setUpTemplateForYourStudy, eval = FALSE}
+
+# get template from the package
+pathTemplate <- system.file(
+	"doc", "patientProfiles-template-SDTM.Rmd", 
+	package = "patientProfilesVis"
+)
+file.copy(from = pathTemplate, to = ".")
+# Note: your current working directory can be checked with: getwd()
+```
+This template can then be further tailored to your specific study (changing data path,
+variables available in the data, ...).
+
+```{r patientProfiles-optionsChunks, echo = FALSE, cache = FALSE}
+
+	library(knitr)
+
+	knitr::opts_chunk$set(
+		echo = TRUE, # print code in the report
+		message = TRUE,
+		error = FALSE, # stop document execution if error (not the default)
+		fig.align = "center",
+		warning = FALSE,
+		# to have list of DT included within a chunk with: glpgUtilityFct::knitPrintListObjects
+		results = 'asis'
+	)
+	
+```
+
+The following R packages are required:
+
+```{r patientProfiles-loadPackages}
+
+	library(patientProfilesVis)
+	library(glpgUtilityFct)
+	library(glpgStyle)
+
+```
+
+## Dataset
+
+The SDTMs datasets are imported into R.
+
+```{r patientProfiles-loadData}
+	
+	# For this vignette, an example STDM dataset from the Pelican
+	# study is imported into R
+	data(SDTMDataPelican, package = "glpgUtilityFct")
+	data(labelVarsSDTMPelican, package = "glpgUtilityFct")
+	dataAll <- SDTMDataPelican
+	labelVars <- labelVarsSDTMPelican
+	
+	# If SDTM datasets should be imported from the external folder,
+	# the following code could be used:
+#	pathFiles <- list.files(path = "/path/to/data", pattern = "*.sas7bdat$", full.names = TRUE)
+#	dataAll <- loadDataADaMSDTM(files = pathFiles)
+#	labelVars <- attr(dataAll, "labelVars")
+
+```
+
+## Palettes
+
+Color and shape palette for the reference indicator variable are
+created. These shape of the symbols are specified Unicode format in hexadecimal
+ (see [List of unicode symbols](https://en.wikipedia.org/wiki/List_of_Unicode_characters)).
+
+```{r patientProfiles-palettes}
+
+	colorPalette <- glpgColor(c("main", "extra", "highlight"))
+	
+	# color/shape palette for reference range indicator (abnormality lab/vs)
+	# Please note that this might be manually updated
+	shapePaletteRind <- c(
+		`Low Panic` = '\u25BC', # big filled up-pointing arrow
+		LOW = '\u25BC', Low = '\u25BC', # filled down-pointing arrow
+		`Low Normal` = '\u25BC', # small filled down-pointing arrow
+		NORMAL = '\u25CF', Normal = '\u25CF', # filled circle
+		`High Normal` = '\u25B2', # small filled up-pointing arrow
+		HIGH = '\u25B2', High = '\u25B2', # filled up-pointing arrow
+		`High Panic` = '\u25B2', # big filled up-pointing arrow
+		Abnormal = '\u2605', # star
+		'NA' = '\u271A', # cross (3)
+		Unknown = '\u271A'
+	)
+	colorPaletteRind <- c(
+		`Low Panic` = unname(colorPalette["signalRed"]),
+		LOW = unname(colorPalette["orange"]), Low = unname(colorPalette["orange"]),
+		`Low Normal` = unname(colorPalette["yellow"]),
+		NORMAL = unname(colorPalette["green"]), Normal = unname(colorPalette["green"]),
+		`High Normal` = unname(colorPalette["yellow"]),
+		HIGH = unname(colorPalette["orange"]), High = unname(colorPalette["orange"]),
+		`High Panic` = unname(colorPalette["signalRed"]),
+		Abnormal = unname(colorPalette["signalRed"]),
+		'NA' = unname(colorPalette["grey"]),
+		Unknown = unname(colorPalette["grey"])
+	)
+
+```
+
+```{r patientProfiles-initialization}
+
+	patientProfilesPlots <- list()
+
+```
+
+# Creation of patient profiles
+
+For each domain of interest, the subject profiles are created.
+See the vignette: 
+
+## Demographics
+
+```{r patientProfiles-demographics}
+
+	dmPlots <- subjectProfileTextPlot(
+		data = dataAll$DM,
+		paramValueVar = c(
+			"SEX", "RACE", "COUNTRY", "ARM",
+			"SITEID", "AGE", "RFSTDTC"
+		),
+		# optional:
+		labelVars = labelVars
+	)
+	patientProfilesPlots <- c(patientProfilesPlots, list(DM = dmPlots))
+
+```
+
+## Medical history
+
+```{r patientProfiles-medicalHistory}
+	
+	mhPlots <- subjectProfileTextPlot(
+		data = dataAll$MH,
+		paramValueVar = c("MHDECOD", "MHSTDTC", "MHENDTC"),
+		# optional:
+		paramGroupVar = "MHSTDTC",
+		title = "Medical history (Start - End)",
+		labelVars = labelVars,
+		table = TRUE
+	)
+	patientProfilesPlots <- c(patientProfilesPlots, list(MH = mhPlots))
+
+```
+
+## Concomitant medications
+
+```{r patientProfiles-concomitantMedications}
+
+	cmPlots <- subjectProfileIntervalPlot(
+		data = dataAll$CM,
+		paramVar = c("CMDECOD", "CMDOSTXT", "CMDOSU", "CMDOSFRQ", "CMROUTE"),
+		timeStartVar = "CMSTDY",
+		timeEndVar = "CMENDY",
+		# optional:
+		paramGroupVar = "CMINDC",
+		colorVar = "CMINDC",
+		labelVars = labelVars,
+		title = "Concomitant medications",
+		# To zoom in axis scale in study time frame
+		# (to avoid scale is focused on negative pre-study time frame for CM)
+		timeTrans = getTimeTrans(type = "asinh-neg"), 
+		alpha = 0.8,
+		timeAlign = FALSE
+	)
+	
+	patientProfilesPlots <- c(patientProfilesPlots, list(CM = cmPlots))
+
+```
+
+
+## Treatment exposure
+
+```{r patientProfiles-treatmentExposure}
+
+	exPlots <- subjectProfileIntervalPlot(
+		data = dataAll$EX,
+		paramVar = c("EXTRT", "EXDOSE", "EXDOSU", "EXDOSFRM", "EXDOSFRQ", "EXROUTE", "EXTPT"),
+		timeStartVar = "EXSTDY",
+		timeEndVar = "EXENDY",
+		# optional:
+		colorVar = "EXDOSFRM",
+		title = "Treatment exposure",
+		timeAlign = FALSE,
+		alpha = 0.8,
+		labelVars = labelVars
+	)
+
+```
+
+## Adverse events
+
+```{r patientProfiles-adverseEvents}
+
+	aePlots <- subjectProfileIntervalPlot(
+		data = dataAll$AE,
+		paramVar = "AEDECOD",
+		timeStartVar = "AESTDY",
+		timeEndVar = "AEENDY",
+		# optional:
+		paramGroupVar = "AESOC",
+		colorVar = "AESEV", 
+		title = "Adverse events",
+		timeAlign = FALSE,
+		alpha = 0.8,
+		labelVars = labelVars
+	)
+	
+	patientProfilesPlots <- c(patientProfilesPlots, list(AE = aePlots))
+	
+```
+
+## Laboratory measurements
+
+```{r patientProfiles-laboratory}
+
+	# specify custom color and shape palette
+	lbRind <- unique(dataAll$LB$LBNRIND)
+	colorPaletteLB <- colorPaletteRind[which(names(colorPaletteRind) %in% c(lbRind, "NA"))]
+	shapePaletteLB <- shapePaletteRind[which(names(shapePaletteRind) %in% c(lbRind, "NA"))]
+	
+	lbPlots <- subjectProfileLinePlot(
+		data = dataAll$LB,
+		paramValueVar = "LBSTRESN",
+		paramNameVar = "LBTEST",
+		timeVar = "LBDY",
+		# optional
+		paramValueRangeVar = c("LBSTNRLO", "LBSTNRHI"),
+		paramGroupVar = c("LBCAT", "LBSCAT"),
+		colorVar = "LBNRIND", colorPalette = colorPaletteLB,
+		shapeVar = "LBNRIND", shapePalette = shapePaletteLB,
+		shapeSize = 4,
+		title = "Laboratory test measurements",
+		alpha = 0.8,
+		labelVars = labelVars
+	)
+	
+	patientProfilesPlots <- c(patientProfilesPlots, list(LB = lbPlots))
+	
+```
+
+## Vital signs
+
+```{r patientProfiles-vitalSigns}
+
+	# If available, reference range indicator
+	# could be displayed via the color/shape variable
+
+	vsPlots <- subjectProfileLinePlot(
+		data = dataAll$VS,
+		paramValueVar = "VSSTRESN",
+		paramNameVar = "VSTEST",
+		timeVar = "VSDY",
+		# optional
+		paramGroupVar = "VSCAT",
+		colorVar = "VSCAT", 
+		shapeSize = 2,
+		title = "Vital signs",
+		alpha = 0.8,
+		labelVars = labelVars
+	)
+	patientProfilesPlots <- c(patientProfilesPlots, list(VS = vsPlots))
+	
+```
+
+## Electrocardiogram
+
+```{r patientProfiles-ECG}
+
+	# If available, reference range indicator
+	# could be displayed via the color/shape variable
+
+	egPlots <- subjectProfileLinePlot(
+		data = dataAll$EG,
+		paramValueVar = "EGSTRESN",
+		paramNameVar = "EGTEST",
+		timeVar = "EGDY",
+		# optional
+		title = "Electrocardiogram",
+		alpha = 0.8,
+		labelVars = labelVars
+	)
+	patientProfilesPlots <- c(patientProfilesPlots, list(EG = egPlots))
+	
+```
+
+## Creation of the subject profiles
+
+```{r patientProfiles-createSubjectProfileReport, message = FALSE, warning = TRUE}
+
+	pathsPatientProfiles <- createSubjectProfileReport(
+			
+		listPlots = patientProfilesPlots, 
+		
+		# optional
+		reportPerSubject = TRUE, 
+		verbose = TRUE,
+		outputFile = './patientProfiles/subjectProfile.pdf',
+		timeAlign = "all", timeAlignPerSubject = "all",
+		exportBatchSize = 5,
+		
+		# export subjects with highest AE toxicity grades first
+		subjectSortData = dataAll$AE,
+		subjectSortVar = "AESEV",
+		subjectSortDecreasing = TRUE,
+		
+#		# only consider subset of patients:
+#		# - option 1: from a dataset
+#		subjectSubsetData = dataAll$AE,
+#		subsetVar = "AETOXGR",
+#		subsetValue = c("MODERATE", "SEVERE"),
+#		# - or from specified USUBJID
+		subset = c("study-4903-07", "study-4908-01", "study-4907-07")
+
+	)
+
+```
+
+# Session information
+
+```{r sessionInformation, echo = FALSE}
+
+	library(pander)
+	pander(sessionInfo())
+
+```

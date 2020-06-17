@@ -112,13 +112,14 @@ subjects are sorted based on decreasing order of \code{subjectSortVar}.}
 \item{subjectSubset}{subjectSubset (optional) Character vector with subjects of interest 
 (available in \code{subjectVar}), NULL by default.}
 
-\item{subjectSubsetData}{data.frame with data used to select subset of subjects of interest.
-It should contain the \code{subjectVar} variable.}
+\item{subjectSubsetData}{Data.frame used to select subset of subjects of interest.}
 
-\item{subjectSubsetVar}{string with variable of \code{subjectSubsetData} used for subsetting.}
+\item{subjectSubsetVar}{String with variable of \code{subjectSubsetData} 
+that should be considered to filter subjects.
+If not specified, all subjects available in \code{subjectSubsetData} are considered.}
 
 \item{subjectSubsetValue}{Character vector with value(s) of \code{subjectSubsetVar}
-of interest to select subjects on.}
+of interest to filter subjects on.}
 
 \item{subset}{Character vector with subjects of interest 
 (among names of each list in \code{listPlots}).}
@@ -137,7 +138,8 @@ This might speed up the export for a high number of subjects.
 Only available if report is created by subject (\code{reportPerSubject} is TRUE)
 and modules are not aligned across subjects (\code{timeAlignPerSubject} is: 'all').}
 
-\item{labelVars}{named string with variable labels (names are the variable code)}
+\item{labelVars}{Named character vector with variable labels 
+(names are the variable code)}
 
 \item{maxNLines}{maximum number of lines for a combined plot,
 to fit in the page height}

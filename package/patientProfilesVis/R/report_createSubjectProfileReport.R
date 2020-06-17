@@ -23,11 +23,12 @@
 #' by default same as \code{bookmarkVar}
 #' @param subjectSortDecreasing Logical, if TRUE (FALSE by default)
 #' subjects are sorted based on decreasing order of \code{subjectSortVar}.
-#' @param subjectSubsetData data.frame with data used to select subset of subjects of interest.
-#' It should contain the \code{subjectVar} variable.
-#' @param subjectSubsetVar string with variable of \code{subjectSubsetData} used for subsetting.
+#' @param subjectSubsetData Data.frame used to select subset of subjects of interest.
+#' @param subjectSubsetVar String with variable of \code{subjectSubsetData} 
+#' that should be considered to filter subjects.
+#' If not specified, all subjects available in \code{subjectSubsetData} are considered.
 #' @param subjectSubsetValue Character vector with value(s) of \code{subjectSubsetVar}
-#' of interest to select subjects on.
+#' of interest to filter subjects on.
 #' @param subjectSubset subjectSubset (optional) Character vector with subjects of interest 
 #' (available in \code{subjectVar}), NULL by default.
 #' @param subset Character vector with subjects of interest 
@@ -125,17 +126,17 @@ createSubjectProfileReport <- function(
 	## export per batch
 	if(!is.null(exportBatchSize)){
 		if(!reportPerSubject){
-			warning(
+			warning(paste(
 				"Creation of patient profiles per batch not possible",
 				"for one single report across subjects.",
 				"You might want to set 'reportPerSubject' to TRUE."
-			)
+			))
 		}else	if(!(length(timeAlignPerSubject) == 1 && timeAlignPerSubject == "all")){
-			warning(
+			warning(paste(
 				"Creation of patient profiles per batch not possible",
 				"if plots should be aligned across subjects.",
 				"You might want to set 'timeAlignPerSubject' to 'all'."
-			)
+			))
 		}else{
 			
 			# all subjects
@@ -228,7 +229,7 @@ createSubjectProfileReport <- function(
 		
 		msgProgress <- "Create subject profile report."
 		if(verbose)	message(msgProgress)
-		if(shiny)	incProgress(0.3, detail = msgProgress)
+		if(shiny)	shiny::incProgress(0.3, detail = msgProgress)
 		
 		subjectProfileExport(
 			listPlotsSubject = listPlotsPerSubjectList, 
@@ -254,7 +255,7 @@ createSubjectProfileReport <- function(
 		
 			msgProgress <- paste("Create subject profile report for subject:", subject)
 			if(verbose)	message(msgProgress)
-			if(shiny)	incProgress(0.3, detail = msgProgress)
+			if(shiny)	shiny::incProgress(0.3, detail = msgProgress)
 			
 			subjectProfileExport(
 				listPlotsSubject = listPlotsPerSubjectList[subject], 
@@ -379,7 +380,9 @@ subjectProfileExport <- function(
 		envir = inputParametersEnv,
 		quiet = TRUE
 	)
-	knit_patterns$set(knitPatInit);knit_hooks$set(knitHookInit)
+	# use 'restore' and not: 'set' to avoid issue 
+	# when rmd is created afterwards
+	knit_patterns$restore(knitPatInit);knit_hooks$restore(knitHookInit)
 	
 	## convert tex -> pdf
 	
