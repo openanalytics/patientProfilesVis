@@ -4,9 +4,9 @@
 \alias{getGLPGLinetypePalettePatientProfile}
 \title{Get a Galapagos linetype palette palette of specified length
 for patient profile visualization visualization.
-This is only a wrapper above \code{\link[glpgUtilityFct]{getGLPGLinetypePalette}},
+This is only a wrapper above \code{\link[glpgStyle]{getGLPGLinetypePalette}},
 including by default missing values (contrary to the default of the
-code{\link[glpgUtilityFct]{getGLPGLinetypePalette}} function).}
+code{\link[glpgStyle]{getGLPGLinetypePalette}} function).}
 \usage{
 getGLPGLinetypePalettePatientProfile(..., includeNA = TRUE)
 }
@@ -22,9 +22,9 @@ character vector values with linetype
 \description{
 Get a Galapagos linetype palette palette of specified length
 for patient profile visualization visualization.
-This is only a wrapper above \code{\link[glpgUtilityFct]{getGLPGLinetypePalette}},
+This is only a wrapper above \code{\link[glpgStyle]{getGLPGLinetypePalette}},
 including by default missing values (contrary to the default of the
-code{\link[glpgUtilityFct]{getGLPGLinetypePalette}} function).
+code{\link[glpgStyle]{getGLPGLinetypePalette}} function).
 }
 \author{
 Laure Cougnaud

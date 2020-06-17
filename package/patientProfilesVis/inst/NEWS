@@ -1,3 +1,5 @@
+0.13.0
+	o change imports of color palette from 'glpgUtilityFct' to 'glpgStyle'
 0.12.1
     o formatParamVar: fix message issue grouping
     o subjectProfileTextPlot: fix panel grid ggplot2 >= 3.3.0
