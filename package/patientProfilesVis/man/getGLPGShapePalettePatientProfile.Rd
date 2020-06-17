@@ -4,9 +4,9 @@
 \alias{getGLPGShapePalettePatientProfile}
 \title{Get a Galapagos shape palette palette of specified length
 for patient profile visualization visualization.
-This is only a wrapper above \code{\link[glpgUtilityFct]{getGLPGShapePalette}},
+This is only a wrapper above \code{\link[glpgStyle]{getGLPGShapePalette}},
 including by default missing values (contrary to the default of the
-code{\link[glpgUtilityFct]{getGLPGShapePalette}} function).}
+code{\link[glpgStyle]{getGLPGShapePalette}} function).}
 \usage{
 getGLPGShapePalettePatientProfile(..., includeNA = TRUE)
 }
@@ -17,14 +17,14 @@ getGLPGShapePalettePatientProfile(..., includeNA = TRUE)
 \item{includeNA}{Logical (TRUE by default), should NA elements be retained in the palette.}
 }
 \value{
-vector of integer values with shape
+vector of shape values
 }
 \description{
 Get a Galapagos shape palette palette of specified length
 for patient profile visualization visualization.
-This is only a wrapper above \code{\link[glpgUtilityFct]{getGLPGShapePalette}},
+This is only a wrapper above \code{\link[glpgStyle]{getGLPGShapePalette}},
 including by default missing values (contrary to the default of the
-code{\link[glpgUtilityFct]{getGLPGShapePalette}} function).
+code{\link[glpgStyle]{getGLPGShapePalette}} function).
 }
 \author{
 Laure Cougnaud

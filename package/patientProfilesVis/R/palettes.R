@@ -1,14 +1,14 @@
 #' Get a Galapagos color palette of specified length
 #' for patient profile visualization visualization.
-#' This is only a wrapper above \code{\link[glpgUtilityFct]{getGLPGColorPalette}},
+#' This is only a wrapper above \code{\link[glpgStyle]{getGLPGColorPalette}},
 #' including by default missing values (contrary to the default of the
-#' code{\link[glpgUtilityFct]{getGLPGColorPalette}} function).
+#' code{\link[glpgStyle]{getGLPGColorPalette}} function).
 #' @param includeNA Logical (TRUE by default), should NA elements be retained in the palette.
 #' @param ... Additional parameters for the 
-#' \code{\link[glpgUtilityFct]{getGLPGColorPalette}} function.
-#' @inherit glpgUtilityFct:::getGLPGColorPalette return
+#' \code{\link[glpgStyle]{getGLPGColorPalette}} function.
+#' @inherit glpgStyle:::getGLPGColorPalette return
 #' @author Laure Cougnaud
-#' @importFrom glpgUtilityFct getGLPGColorPalette
+#' @importFrom glpgStyle getGLPGColorPalette
 #' @export
 getGLPGColorPalettePatientProfile <- function(...,
 	includeNA = TRUE){
@@ -21,15 +21,15 @@ getGLPGColorPalettePatientProfile <- function(...,
 
 #' Get a Galapagos linetype palette palette of specified length
 #' for patient profile visualization visualization.
-#' This is only a wrapper above \code{\link[glpgUtilityFct]{getGLPGLinetypePalette}},
+#' This is only a wrapper above \code{\link[glpgStyle]{getGLPGLinetypePalette}},
 #' including by default missing values (contrary to the default of the
-#' code{\link[glpgUtilityFct]{getGLPGLinetypePalette}} function).
+#' code{\link[glpgStyle]{getGLPGLinetypePalette}} function).
 #' @param ... Additional parameters for the 
-#' \code{\link[glpgUtilityFct]{getGLPGLinetypePalette}} function.
+#' \code{\link[glpgStyle]{getGLPGLinetypePalette}} function.
 #' @inheritParams getGLPGColorPalettePatientProfile
-#' @inherit glpgUtilityFct:::getGLPGLinetypePalette return
+#' @inherit glpgStyle:::getGLPGLinetypePalette return
 #' @author Laure Cougnaud
-#' @importFrom glpgUtilityFct getGLPGLinetypePalette
+#' @importFrom glpgStyle getGLPGLinetypePalette
 #' @export
 getGLPGLinetypePalettePatientProfile <- function(...,
 	includeNA = TRUE){
@@ -42,15 +42,15 @@ getGLPGLinetypePalettePatientProfile <- function(...,
 
 #' Get a Galapagos shape palette palette of specified length
 #' for patient profile visualization visualization.
-#' This is only a wrapper above \code{\link[glpgUtilityFct]{getGLPGShapePalette}},
+#' This is only a wrapper above \code{\link[glpgStyle]{getGLPGShapePalette}},
 #' including by default missing values (contrary to the default of the
-#' code{\link[glpgUtilityFct]{getGLPGShapePalette}} function).
+#' code{\link[glpgStyle]{getGLPGShapePalette}} function).
 #' @param ... Additional parameters for the 
-#' \code{\link[glpgUtilityFct]{getGLPGShapePalette}} function.
+#' \code{\link[glpgStyle]{getGLPGShapePalette}} function.
 #' @inheritParams getGLPGColorPalettePatientProfile
-#' @inherit glpgUtilityFct:::getGLPGShapePalette return
+#' @inherit glpgStyle:::getGLPGShapePalette return
 #' @author Laure Cougnaud
-#' @importFrom glpgUtilityFct getGLPGShapePalette
+#' @importFrom glpgStyle getGLPGShapePalette
 #' @export
 getGLPGShapePalettePatientProfile <- function(...,
 	includeNA = TRUE){

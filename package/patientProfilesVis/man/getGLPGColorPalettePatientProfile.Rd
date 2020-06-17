@@ -4,9 +4,9 @@
 \alias{getGLPGColorPalettePatientProfile}
 \title{Get a Galapagos color palette of specified length
 for patient profile visualization visualization.
-This is only a wrapper above \code{\link[glpgUtilityFct]{getGLPGColorPalette}},
+This is only a wrapper above \code{\link[glpgStyle]{getGLPGColorPalette}},
 including by default missing values (contrary to the default of the
-code{\link[glpgUtilityFct]{getGLPGColorPalette}} function).}
+code{\link[glpgStyle]{getGLPGColorPalette}} function).}
 \usage{
 getGLPGColorPalettePatientProfile(..., includeNA = TRUE)
 }
@@ -23,9 +23,9 @@ named with the elements in \code{x} if \code{x} is specified.
 \description{
 Get a Galapagos color palette of specified length
 for patient profile visualization visualization.
-This is only a wrapper above \code{\link[glpgUtilityFct]{getGLPGColorPalette}},
+This is only a wrapper above \code{\link[glpgStyle]{getGLPGColorPalette}},
 including by default missing values (contrary to the default of the
-code{\link[glpgUtilityFct]{getGLPGColorPalette}} function).
+code{\link[glpgStyle]{getGLPGColorPalette}} function).
 }
 \author{
 Laure Cougnaud
