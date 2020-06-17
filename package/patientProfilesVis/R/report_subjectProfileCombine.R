@@ -28,7 +28,7 @@ subjectProfileCombine <- function(
 	if(is.null(timeLim)){
 		msgProgress <- "Get limits x-axis."
 		if(verbose)	message(msgProgress)
-		if(shiny)	incProgress(0, detail = msgProgress)
+		if(shiny)	shiny::incProgress(0, detail = msgProgress)
 		timeLim <- getXLimSubjectProfilePlots(
 			listPlots, 
 			timeAlign = timeAlign, 
@@ -43,7 +43,7 @@ subjectProfileCombine <- function(
 	# create empty element in the list if the plot is not available for a certain subject
 	msgProgress <- "Create empty profile."
 	if(verbose)	message(msgProgress)
-	if(shiny)	incProgress(0.1, detail = msgProgress)
+	if(shiny)	shiny::incProgress(0.1, detail = msgProgress)
 	listPlotsAll <- sapply(listPlots, function(x){
 		list <- setNames(x[subjectsID], subjectsID) # in case plot not available for one subject
 		list <- sapply(subjectsID, function(subj){
@@ -59,7 +59,7 @@ subjectProfileCombine <- function(
 	# extract label
 	msgProgress <- "Extract plot labels."
 	if(verbose)	message(msgProgress)
-	if(shiny)	incProgress(0, detail = msgProgress)
+	if(shiny)	shiny::incProgress(0, detail = msgProgress)
 	plotLabels <- sapply(listPlotsAll, function(x){
 		label <- attributes(x)$metaData$label
 		ifelse(is.null(label), "", label)
@@ -68,19 +68,19 @@ subjectProfileCombine <- function(
 	# get required time transformation for each module
 	msgProgress <- "Check time transformations."
 	if(verbose)	message(msgProgress)
-	if(shiny)	incProgress(0, detail = msgProgress)
+	if(shiny)	shiny::incProgress(0, detail = msgProgress)
 	timeTrans <- checkTimeTrans(listPlots = listPlotsAll, timeLim = timeLim)
 	
 	# get required time expand for each module
 	msgProgress <- "Check time expand."
 	if(verbose)	message(msgProgress)
-	if(shiny)	incProgress(0, detail = msgProgress)
+	if(shiny)	shiny::incProgress(0, detail = msgProgress)
 	timeExpand <- checkTimeExpand(listPlots = listPlotsAll, timeLim = timeLim)
 
 	# re-format plots: same timeLim, ...
 	msgProgress <- "Prepare subject profiles to be combined."
 	if(verbose)	message(msgProgress)
-	if(shiny)	incProgress(0, detail = msgProgress)
+	if(shiny)	shiny::incProgress(0, detail = msgProgress)
 	listPlotsPerSubject <- do.call(mapply, 
 		c(
 			list(
@@ -407,11 +407,13 @@ getXLimSubjectProfilePlots <- function(
 						# extract time limits for all elements
 						timeLimDataList <- lapply(listPlotsSubj, function(gg)
 							if(!inherits(gg, "subjectProfileTextPlot"))
-								lapply(ggplot_build(gg)$data, function(dataPlot) 
-									c(dataPlot$x, if("xend" %in% colnames(dataPlot))	dataPlot$xend)
-								)
+								lapply(ggplot_build(gg)$data, function(dataPlot){
+									xPlot <- c(dataPlot$x, if("xend" %in% colnames(dataPlot))	dataPlot$xend)
+									xPlot[!is.na(xPlot)]
+								})
 						)
 						timeLimData <- unlist(timeLimDataList)
+						if(length(timeLimData) == 0)	timeLimData <- NULL
 						
 						if(!is.null(timeLimData)){
 							
@@ -453,17 +455,16 @@ getXLimSubjectProfilePlots <- function(
 				
 			}, simplify = FALSE)
 			
-			getRange <- function(...){
-				if(all(sapply(..., is.null))){
-					NULL
-				}else	range(..., na.rm = TRUE)
-			}
-			
 			# extract limits across modules for each subject
+			getRangeCustom <- function(...){
+				x <- unlist(list(...))
+				if(!is.null(x)){range(x, na.rm = TRUE)}
+			}
 			timeLimPerSubj <- do.call(mapply, 
 				c(
 					timeLimPlotsSubj[alignMod],
-					list(FUN = range, na.rm = TRUE, SIMPLIFY = FALSE))
+					list(FUN = getRangeCustom, SIMPLIFY = FALSE)
+				)
 			)
 			timeLim <- setNames(
 				replicate(length(alignMod), timeLimPerSubj, simplify = FALSE),
@@ -473,9 +474,14 @@ getXLimSubjectProfilePlots <- function(
 			# if alignment across subjects
 			# should extract limits across subjects for each module
 			alignAcrossSubjectMod <- setdiff(alignMod, alignPerSubjectMod)
+			getRangeList <- function(...){
+				if(all(sapply(..., is.null))){
+					NULL
+				}else	range(..., na.rm = TRUE)
+			}
 			if(length(alignAcrossSubjectMod) > 0)
 				timeLim[alignAcrossSubjectMod] <- sapply(timeLim[alignAcrossSubjectMod], function(x){
-					getRange(unlist(x)) 
+					getRangeList(unlist(x)) 
 				}, simplify = FALSE)
 			
 		}else	timeLim <- NULL

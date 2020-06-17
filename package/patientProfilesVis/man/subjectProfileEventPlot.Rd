@@ -18,6 +18,7 @@ subjectProfileEventPlot(
   shapePalette = NULL,
   alpha = 1,
   timeVar,
+  timeLab = getLabelVar(timeVar, labelVars = labelVars),
   timeTrans = NULL,
   timeExpand = NULL,
   subjectVar = "USUBJID",
@@ -64,6 +65,8 @@ If specified, the parameters will be grouped by this(these) variable(s) in the y
 
 \item{timeVar}{string, variable of \code{data} with time}
 
+\item{timeLab}{String, label for \code{timeVar}.}
+
 \item{timeTrans}{ggplot2 transformation (see \code{\link[scales]{trans_new}}),
 e.g. produced by the \code{\link{getTimeTrans}} function.}
 
@@ -98,7 +101,8 @@ and maximum \code{timeEndVar} per subject.}
 This label is used to report the name of the panel 
 in the text when the plots are combined (e.g. if the plot is empty).}
 
-\item{labelVars}{named string with variable labels (names are the variable code)}
+\item{labelVars}{Named character vector with variable labels 
+(names are the variable code)}
 
 \item{formatReport}{list with parameters used to specify the format of the report,
 e.g. output of the \code{\link{subjectProfileReportFormat}} function}

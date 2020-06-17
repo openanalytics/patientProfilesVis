@@ -45,6 +45,13 @@ getGLPGLinetypePalettePatientProfile <- function(...,
 #' This is only a wrapper above \code{\link[glpgStyle]{getGLPGShapePalette}},
 #' including by default missing values (contrary to the default of the
 #' code{\link[glpgStyle]{getGLPGShapePalette}} function).
+#' 
+#' This is only a wrapper above \code{\link[glpgUtilityFct]{getGLPGShapePalette}},
+#' including by default missing values and formatting the symbols as text
+#' (in case mixed with Unicode).
+#' @param asText Logical (TRUE by default), should the palette
+#' be expressed as integer (base R plot and ggplot2 compatible)
+#' or in text format (e.g. required if combined with unicode symbols in ggplot2)?
 #' @param ... Additional parameters for the 
 #' \code{\link[glpgStyle]{getGLPGShapePalette}} function.
 #' @inheritParams getGLPGColorPalettePatientProfile
@@ -53,9 +60,10 @@ getGLPGLinetypePalettePatientProfile <- function(...,
 #' @importFrom glpgStyle getGLPGShapePalette
 #' @export
 getGLPGShapePalettePatientProfile <- function(...,
-	includeNA = TRUE){
+	includeNA = TRUE,
+	asText = TRUE){
 	
-	palette <- getGLPGShapePalette(..., includeNA = includeNA)
+	palette <- getGLPGShapePalette(..., includeNA = includeNA, asText = asText)
 	
 	return(palette)
 	
