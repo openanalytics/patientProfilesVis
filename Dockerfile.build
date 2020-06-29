@@ -18,6 +18,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y libgit2-dev \
 	git-core \
 	pandoc \
 	pandoc-citeproc \
+	texlive-full \
 	texinfo
 RUN rm -rf /var/lib/apt/lists/*
 
