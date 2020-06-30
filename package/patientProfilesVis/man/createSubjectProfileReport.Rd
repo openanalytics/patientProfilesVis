@@ -163,6 +163,8 @@ the package \code{parallel} is required.}
 The path(s) of the report(s) is returned invisibly, and the
 the report is created at the location
 specified by \code{outputFile}.
+If no patient profiles are available in the input,
+nothing is returned and a warning is triggered.
 }
 \description{
 By default all subjects available in at least one module of \code{listPlots} are considered.

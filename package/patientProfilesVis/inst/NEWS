@@ -1,5 +1,6 @@
 1.3.0
-	o change imports of color palette from 'glpgUtilityFct' to 'glpgStyle'
+	  o change imports of color palette from 'glpgUtilityFct' to 'glpgStyle'
+	  o createSubjectProfileReport: test if input list is empty
 1.2.0
     o add vignette with standard patient profiles for SDTM data
     o prepareSubjectProfile: fix in case trans and all missing values for interval plot
