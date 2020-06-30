@@ -54,6 +54,8 @@
 #' @return The path(s) of the report(s) is returned invisibly, and the
 #' the report is created at the location
 #' specified by \code{outputFile}.
+#' If no patient profiles are available in the input,
+#' nothing is returned and a warning is triggered.
 #' @author Laure Cougnaud
 #' @importFrom plyr ddply
 #' @importFrom tools file_ext file_path_sans_ext
@@ -90,6 +92,11 @@ createSubjectProfileReport <- function(
 
 	# store input parameters of the function
 	inputArgs <- c(as.list(environment())) #, list(...)
+	
+	if(sum(sapply(listPlots, length)) == 0){
+		warning("No patient profiles available in the input.")
+		return(invisible())
+	}
 
 	# filter subjects if subset[Data/Var/Value] is specified
 	if(!is.null(subset) | !is.null(subjectSubsetData)){
