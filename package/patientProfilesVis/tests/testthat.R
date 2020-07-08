@@ -14,7 +14,12 @@ data(SDTMDataPelican)
 # and corresponding labels
 data(labelVarsSDTMPelican)
 
-test_check("patientProfilesVis")
+if (Sys.getenv("TESTTHAT_OUTPUT_FILE") != "")
+	options(testthat.output_file = Sys.getenv("TESTTHAT_OUTPUT_FILE", stdout()))
+test_check(
+		"patientProfilesVis",
+		reporter = Sys.getenv("TESTTHAT_DEFAULT_CHECK_REPORTER", "check"))
+
 
 # create figures for new test:
 # manage_cases()
