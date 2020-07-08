@@ -27,7 +27,7 @@ pipeline {
                 }
             }
             steps {
-            	copyArtifacts filter: '*.tar.gz', fingerprintArtifacts: true, projectName: 'git/glpgStyle/master', selector: lastSuccessful()
+            	  copyArtifacts filter: '*.tar.gz', fingerprintArtifacts: true, projectName: 'git/glpgStyle/master', selector: lastSuccessful()
                 copyArtifacts filter: '*.tar.gz', fingerprintArtifacts: true, projectName: 'git/GLPGUtilityFct/master', selector: lastSuccessful()   
                 withOARegistry {
                 	sh "docker build --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from ${env.REG}/${env.NS}/${env.IMAGE}:${env.TAG} --cache-from ${env.REG}/${env.NS}/${env.IMAGE}:master -t ${env.NS}/${env.IMAGE}:${env.TAG} -f Dockerfile.build ."
@@ -67,7 +67,16 @@ pipeline {
                         }
                         stage('Check') {
                             steps {
-                                sh 'ls patientProfilesVis_*.tar.gz && R CMD check patientProfilesVis_*.tar.gz --no-manual'
+                                sh '''
+                                export TESTTHAT_DEFAULT_CHECK_REPORTER="junit"
+                                export TESTTHAT_OUTPUT_FILE="results.xml"
+                                ls patientProfilesVis_*.tar.gz && R CMD check patientProfilesVis_*.tar.gz --no-manual
+                                '''
+                            }
+                            post {
+                                always {
+                                    junit "*.Rcheck/tests/results.xml"
+                                }
                             }
                         }
                         stage('Install') {
