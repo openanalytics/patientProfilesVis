@@ -12,7 +12,6 @@ documentation/
 shiny/moduleSettings
 *.docx
 testPackages/lib
-package/*/tests/figs
 .Rproj.user
 *.Rhistory
 PatientProfile_3067_101.Rmd
