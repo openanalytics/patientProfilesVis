@@ -10,6 +10,8 @@ pipeline {
         TAG = sh(returnStdout: true, script: "echo $BRANCH_NAME | sed -e 's/[A-Z]/\\L&/g' -e 's/[^a-z0-9._-]/./g'").trim()
         DOCKER_BUILDKIT = '1'
         CI = 'jenkins'
+        NOT_CRAN = 'true'
+        VDIFFR_RUN_TESTS = 'true'
     }
     stages {
         stage('Build Image') {
