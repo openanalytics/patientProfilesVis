@@ -9,7 +9,6 @@ pipeline {
         REG = '196229073436.dkr.ecr.eu-west-1.amazonaws.com'
         TAG = sh(returnStdout: true, script: "echo $BRANCH_NAME | sed -e 's/[A-Z]/\\L&/g' -e 's/[^a-z0-9._-]/./g'").trim()
         DOCKER_BUILDKIT = '1'
-        CI = 'jenkins'
         NOT_CRAN = 'true'
         VDIFFR_RUN_TESTS = 'true'
     }
