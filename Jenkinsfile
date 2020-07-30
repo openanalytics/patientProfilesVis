@@ -91,7 +91,7 @@ pipeline {
                 }
                 stage('Archive artifacts') {
                     steps {
-                        archiveArtifacts artifacts: '*.tar.gz, *.pdf, **/00check.log, *.Rout', fingerprint: true
+                        archiveArtifacts artifacts: '*.tar.gz, *.pdf, **/00check.log, *.Rout, **/vdiffr.Rout.fail', fingerprint: true
                     }
                 }
             }
