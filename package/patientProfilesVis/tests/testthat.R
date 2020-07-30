@@ -14,6 +14,9 @@ data(SDTMDataPelican)
 # and corresponding labels
 data(labelVarsSDTMPelican)
 
+# to have failed tests with vdiffr not skipped
+Sys.setenv("CI" = "true")
+
 if (Sys.getenv("TESTTHAT_OUTPUT_FILE") != "")
 	options(testthat.output_file = Sys.getenv("TESTTHAT_OUTPUT_FILE", stdout()))
 test_check(
