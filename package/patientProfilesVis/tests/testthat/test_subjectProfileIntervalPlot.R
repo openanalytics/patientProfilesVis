@@ -110,8 +110,8 @@ test_that("subjectProfileIntervalPlot - time limits fixed", {
 		paramGroupVar = "CMINDC",
 		colorVar = "CMINDC",
 		labelVars = labelVarsSDTMPelican,
-		title = "Concomitant medications",
-		timeLim = timeLim
+		title = "Concomitant medications"#,
+#		timeLim = timeLim
 	)
 	
 	# consider subject with start and end date and with max non missing end date
@@ -122,7 +122,7 @@ test_that("subjectProfileIntervalPlot - time limits fixed", {
 	
 	vdiffr::expect_doppelganger(
 		title = "timeLimitsFixed", 
-		fig = cmPlotsTimeSpec[["study-4907-04"]][[1]],
+		fig = cmPlotsTimeSpec[[subject]][[1]],
 		path = "subjectProfileIntervalPlot",
 		verbose = TRUE
 	)
