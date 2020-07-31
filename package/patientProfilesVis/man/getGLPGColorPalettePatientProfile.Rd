@@ -17,7 +17,7 @@ getGLPGColorPalettePatientProfile(..., includeNA = TRUE)
 \item{includeNA}{Logical (TRUE by default), should NA elements be retained in the palette.}
 }
 \value{
-vector of Galapagos colors,
+Vector of Galapagos colors,
 named with the elements in \code{x} if \code{x} is specified.
 }
 \description{
