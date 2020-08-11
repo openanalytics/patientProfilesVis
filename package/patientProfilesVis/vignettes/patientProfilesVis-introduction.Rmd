@@ -77,9 +77,9 @@ A few `sdtm` datasets from the _Pelican_ study are included in the
 	
 ```
 
-# Creation of the plot submodules
+# Creation of the plot modules
 
-Three plot types/modules are currently available in the package:
+Four plot types/modules are currently available in the package:
 
 * **'text'** module: patient specific information formatted as text, available
   via the `subjectProfileTextPlot` function
