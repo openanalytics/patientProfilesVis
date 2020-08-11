@@ -57,6 +57,7 @@ subjectProfileIntervalPlot <- function(
 	timeEndVar, timeEndLab = getLabelVar(timeEndVar, labelVars = labelVars),
 	timeLabel = "time",
 	subjectVar = "USUBJID", subjectSubset = NULL,
+	subjectSample = NULL, seed = 123,
 	subsetData = NULL, subsetVar = NULL, subsetValue = NULL, 
 	timeImpType = c("minimal", "data-by-subject", "none"),
 	timeLim = NULL, timeLimData = NULL, 
@@ -124,7 +125,9 @@ subjectProfileIntervalPlot <- function(
 		subsetValue = subsetValue,
 		subsetData = subsetData,
 		subjectVar = subjectVar, 
-		subjectSubset = subjectSubset
+		subjectSubset = subjectSubset,
+		subjectSample = subjectSample, 
+		seed = seed
 	)
 
 	# if paramGroupVar is specified: change order levels of 'variable'

@@ -57,6 +57,7 @@ subjectProfileLinePlot <- function(
 	paramGroupVar = NULL,
 	timeVar, timeTrans = NULL, timeExpand = NULL,
 	subjectVar = "USUBJID", subjectSubset = NULL,
+	subjectSample = NULL, seed = 123,
 	subsetData = NULL, subsetVar = NULL, subsetValue = NULL, 
 	xLab = getLabelVar(timeVar, labelVars = labelVars),
 	yLab = "",
@@ -94,7 +95,9 @@ subjectProfileLinePlot <- function(
 		subsetVar = subsetVar, 
 		subsetValue = subsetValue,
 		subjectVar = subjectVar, 
-		subjectSubset = subjectSubset
+		subjectSubset = subjectSubset,
+		subjectSample = subjectSample, 
+		seed = seed
 	)
 	
 	# format variable

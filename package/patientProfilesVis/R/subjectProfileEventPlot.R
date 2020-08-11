@@ -28,6 +28,7 @@ subjectProfileEventPlot <- function(
 	timeVar, timeLab = getLabelVar(timeVar, labelVars = labelVars),
 	timeTrans = NULL, timeExpand = NULL,
 	subjectVar = "USUBJID", subjectSubset = NULL, 
+	subjectSample = NULL, seed = 123,
 	subsetData = NULL, subsetVar = NULL, subsetValue = NULL,
 	xLab = getLabelVar(timeVar, labelVars = labelVars),
 	yLab = "",
@@ -69,7 +70,9 @@ subjectProfileEventPlot <- function(
 		subsetVar = subsetVar, 
 		subsetValue = subsetValue,
 		subjectVar = subjectVar, 
-		subjectSubset = subjectSubset
+		subjectSubset = subjectSubset,
+		subjectSample = subjectSample, 
+		seed = seed
 	)
 	
 	# convert aesthetic variables to factor

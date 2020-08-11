@@ -23,6 +23,8 @@ createSubjectProfileReport(
   subjectSubsetData = NULL,
   subjectSubsetVar = NULL,
   subjectSubsetValue = NULL,
+  subjectSample = NULL,
+  seed = 123,
   subset = NULL,
   outputFile = "subjectProfile.pdf",
   exportFigures = FALSE,
@@ -120,6 +122,13 @@ If not specified, all subjects available in \code{subjectSubsetData} are conside
 
 \item{subjectSubsetValue}{Character vector with value(s) of \code{subjectSubsetVar}
 of interest to filter subjects on.}
+
+\item{subjectSample}{Integer with number of random subject(s) that should be considered,
+e.g. to check the created patient profiles for a subset of the data.
+By default, all specified subjects are considered (set to NULL).}
+
+\item{seed}{Integer with seed used to select random subjects 
+if \code{subjectSample} is specified.}
 
 \item{subset}{Character vector with subjects of interest 
 (among names of each list in \code{listPlots}).}

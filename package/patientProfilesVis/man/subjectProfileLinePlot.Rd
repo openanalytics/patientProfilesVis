@@ -24,6 +24,8 @@ subjectProfileLinePlot(
   timeExpand = NULL,
   subjectVar = "USUBJID",
   subjectSubset = NULL,
+  subjectSample = NULL,
+  seed = 123,
   subsetData = NULL,
   subsetVar = NULL,
   subsetValue = NULL,
@@ -89,6 +91,13 @@ e.g. produced by the \code{\link{getTimeTrans}} function.}
 
 \item{subjectSubset}{(optional) Character vector with subjects of interest 
 (available in \code{subjectVar} of \code{data}), NULL by default.}
+
+\item{subjectSample}{Integer with number of random subject(s) that should be considered,
+e.g. to check the created patient profiles for a subset of the data.
+By default, all specified subjects are considered (set to NULL).}
+
+\item{seed}{Integer with seed used to select random subjects 
+if \code{subjectSample} is specified.}
 
 \item{subsetData}{Data.frame from which subset based on \code{subjectVar}/\code{subsetValue}
 should be extracted. If not specified, \code{data} is used.

@@ -78,6 +78,8 @@ createSubjectProfileReport <- function(
 	subjectSubsetData = NULL,
 	subjectSubsetVar = NULL,
 	subjectSubsetValue = NULL,
+	subjectSample = NULL, 
+	seed = 123,
 	subset = NULL,
 	outputFile = "subjectProfile.pdf",
 	exportFigures = FALSE,
@@ -99,7 +101,7 @@ createSubjectProfileReport <- function(
 	}
 
 	# filter subjects if subset[Data/Var/Value] is specified
-	if(!is.null(subset) | !is.null(subjectSubsetData)){
+	if(!is.null(subset) | !is.null(subjectSubsetData) | !is.null(subjectSample)){
 		
 		if(verbose)	message("Filter subjects of interests.")
 		
@@ -111,7 +113,9 @@ createSubjectProfileReport <- function(
 				subsetVar = subjectSubsetVar, 
 				subsetValue = subjectSubsetValue,
 				subjectSubset = subjectSubset,
-				subjectVar = subjectVar
+				subjectVar = subjectVar,
+				subjectSample = subjectSample, 
+				seed = seed
 			)
 			subset <- union(subset,
 				unique(as.character(dataSubjectSubset[, subjectVar]))

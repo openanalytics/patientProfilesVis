@@ -528,15 +528,23 @@ getOptimalColWidth <- function(data,
 #' @param subjectVar string, variable of \code{data} with subject ID
 #' @param subjectSubset (optional) Character vector with subjects of interest 
 #' (available in \code{subjectVar} of \code{data}), NULL by default.
+#' @param subjectSample Integer with number of random subject(s) that should be considered,
+#' e.g. to check the created patient profiles for a subset of the data.
+#' By default, all specified subjects are considered (set to NULL).
+#' @param seed Integer with seed used to select random subjects 
+#' if \code{subjectSample} is specified.
 #' @return possibly filtered dataset
 #' @author Laure Cougnaud
 #' @export
-filterData <- function(data,
+filterData <- function(
+	data,
 	subsetData = NULL,
 	subsetVar = NULL, 
 	subsetValue = NULL,
 	subjectVar = "USUBJID",
-	subjectSubset = NULL
+	subjectSubset = NULL,
+    subjectSample = NULL,
+	seed = 123
 ){	
 	
 	# in case data is a tibble:
@@ -566,8 +574,19 @@ filterData <- function(data,
 		subjectSubset <- subsetDataUsed[, subjectVar]
 	}else	data <- getDataSubset(subsetData = data)
 	
+	# subset dataset for selected subjects
 	if(!is.null(subjectSubset))
 		data <- data[which(data[, subjectVar] %in% subjectSubset), ]
+	
+	# take a random subset
+	if(!is.null(subjectSample)){
+		subjects <- unique(data[, subjectVar])
+		if(subjectSample < length(subjects)){
+			set.seed(seed)
+			subjectSubset <- sample(x = subjects, size = subjectSample)
+			data <- data[which(data[, subjectVar] %in% subjectSubset), ]
+		}
+	}
 	
 	return(data)
 	

@@ -1,5 +1,6 @@
 1.4.0
     o add unit tests figures
+    o filterData/subjectProfile[X]Plot/createSubjectProfileReport: new subsetSample parameter
 1.3.0
 	  o change imports of color palette from 'glpgUtilityFct' to 'glpgStyle'
 	  o createSubjectProfileReport: test if input list is empty
