@@ -32,8 +32,13 @@ test_that("subjectProfileEventPlot - basic plot", {
 
 test_that("subjectProfileEventPlot - coloring variable", {
 			
+	dataPlot <- dataLB
+			
+	# fix for ordering cat in tests
+	dataPlot$LBTEST <- with(dataPlot, reorder(LBTEST, LBTESTCD, unique))		
+			
 	lbPlotsColor <- subjectProfileEventPlot(
-		data = dataLB,
+		data = dataPlot,
 		paramVar = "LBTEST",
 		paramGroupVar = "LBSCAT",
 		timeVar = "LBDY",
@@ -55,8 +60,13 @@ test_that("subjectProfileEventPlot - coloring variable", {
 
 test_that("subjectProfileEventPlot - subset variable", {
 	
+	dataPlot <- dataLB
+	
+	# fix for ordering cat in tests
+	dataPlot$LBTEST <- with(dataPlot, reorder(LBTEST, LBTESTCD, unique))
+	
 	lbPlotsSubset <- subjectProfileEventPlot(
-		data = dataLB,
+		data = dataPlot,
 		paramVar = "LBTEST",
 		subsetVar = "LBCAT", subsetValue = "HEMATOLOGY",
 		timeVar = "LBDY",

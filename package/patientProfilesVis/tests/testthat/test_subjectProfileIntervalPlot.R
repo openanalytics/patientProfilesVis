@@ -114,15 +114,15 @@ test_that("subjectProfileIntervalPlot - time limits fixed", {
 #		timeLim = timeLim
 	)
 	
-	# consider subject with start and end date and with max non missing end date
-	subjectWithStartEndTime <- by(dataCM, dataCM$USUBJID, function(x){
-		if(any(!is.na(x$CMSTDY) & !is.na(x$CMENDY)))	sum(!is.na(x$CMENDY))
-	})
-	subject <- names(which.max(unlist(subjectWithStartEndTime)))
+#	# consider subject with start and end date and with max non missing end date
+#	subjectWithStartEndTime <- by(dataCM, dataCM$USUBJID, function(x){
+#		if(any(!is.na(x$CMSTDY) & !is.na(x$CMENDY)))	sum(!is.na(x$CMENDY))
+#	})
+#	subject <- names(which.max(unlist(subjectWithStartEndTime))) #"study-4905-02"
 	
 	vdiffr::expect_doppelganger(
 		title = "timeLimitsFixed", 
-		fig = cmPlotsTimeSpec[[subject]][[1]],
+		fig = cmPlotsTimeSpec[["study-4905-02"]][[1]],
 		path = "subjectProfileIntervalPlot",
 		verbose = TRUE
 	)
