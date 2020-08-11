@@ -60,6 +60,7 @@ subjectProfileTextPlot <- function(
 	paramGroupVar = NULL,
 	subsetData = NULL, subsetVar = NULL, subsetValue = NULL, 
 	subjectVar = "USUBJID", subjectSubset = NULL,
+	subjectSample = NULL, seed = 123,
 	xLab = "",
 	yLab = "",
 	title = "Subject information",
@@ -81,7 +82,9 @@ subjectProfileTextPlot <- function(
 		subsetVar = subsetVar, 
 		subsetValue = subsetValue,
 		subjectVar = subjectVar, 
-		subjectSubset = subjectSubset
+		subjectSubset = subjectSubset,
+		subjectSample = subjectSample, 
+		seed = seed
 	)
 	
 	if(table){

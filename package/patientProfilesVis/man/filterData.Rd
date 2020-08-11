@@ -10,7 +10,9 @@ filterData(
   subsetVar = NULL,
   subsetValue = NULL,
   subjectVar = "USUBJID",
-  subjectSubset = NULL
+  subjectSubset = NULL,
+  subjectSample = NULL,
+  seed = 123
 )
 }
 \arguments{
@@ -29,6 +31,13 @@ Records from \code{data} are then mapped by the \code{subjectVar} variable.}
 
 \item{subjectSubset}{(optional) Character vector with subjects of interest 
 (available in \code{subjectVar} of \code{data}), NULL by default.}
+
+\item{subjectSample}{Integer with number of random subject(s) that should be considered,
+e.g. to check the created patient profiles for a subset of the data.
+By default, all specified subjects are considered (set to NULL).}
+
+\item{seed}{Integer with seed used to select random subjects 
+if \code{subjectSample} is specified.}
 }
 \value{
 possibly filtered dataset

@@ -2,7 +2,7 @@ Package: patientProfilesVis
 Type: Package
 Title: Visualization Of Patient Profiles
 Version: 1.4.0
-Date: 2020-07-30
+Date: 2020-08-10
 Author: Laure Cougnaud
 Maintainer: Laure Cougnaud <laure.cougnaud@openanalytics.eu>
 Description: Creation of report with customizable visualization of patient profiles.
