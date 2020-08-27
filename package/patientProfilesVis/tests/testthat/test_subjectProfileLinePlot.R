@@ -9,6 +9,8 @@ dataLB <- SDTMDataPelican$LB
 # sort the categories (empty values '' becomes NA)
 dataLB$LBNRIND <- factor(dataLB$LBNRIND, levels = c("LOW", "NORMAL", "HIGH"))
 
+dataLB$LBTEST <- with(dataLB, reorder(LBTEST, LBTESTCD, unique))		
+
 test_that("subjectProfileLinePlot - basic plot", {
 					
 	lbLinePlots <- subjectProfileLinePlot(
