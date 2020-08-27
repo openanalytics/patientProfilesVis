@@ -1,6 +1,8 @@
 context("Compare 'subjectProfileLinePlot' with previous version")
 
 library(glpgUtilityFct)
+library(ggplot2)
+library(plyr)
 data(SDTMDataPelican)
 data(labelVarsSDTMPelican)
 
@@ -11,71 +13,80 @@ dataLB$LBNRIND <- factor(dataLB$LBNRIND, levels = c("LOW", "NORMAL", "HIGH"))
 
 dataLB$LBTEST <- with(dataLB, reorder(LBTEST, LBTESTCD, unique))		
 
+dataPlot <- subset(dataLB, USUBJID == "study-4902-02")
+dataPlot <- subset(dataPlot, LBTEST %in% unique(dataPlot[, "LBTEST"])[1:5])
+rownames(dataPlot) <- NULL
+
 test_that("subjectProfileLinePlot - basic plot", {
 					
-	lbLinePlots <- subjectProfileLinePlot(
-		data = subset(dataLB, USUBJID == "study-4902-02"),
-		paramNameVar = "LBTEST", 
-		paramValueVar = "LBSTRESN",
-		paramValueRangeVar = c("LBSTNRLO", "LBSTNRHI"),
-		timeVar = "LBDY",
-		title = "Laboratory test measurements: actual value",
-		labelVars = labelVarsSDTMPelican
+	title <- "Laboratory test measurements: actual value"
+	expect_error(
+		lbLinePlots <- subjectProfileLinePlot(
+			data = dataPlot,
+			paramNameVar = "LBTEST", 
+			paramValueVar = "LBSTRESN",
+			paramValueRangeVar = c("LBSTNRLO", "LBSTNRHI"),
+			timeVar = "LBDY",
+			title = title,
+			labelVars = labelVarsSDTMPelican
+		),
+		NA
 	)
-			
-	vdiffr::expect_doppelganger(
-		title = "basic", 
-		fig = lbLinePlots[[1]][[1]],
-		path = "subjectProfileLinePlot",
-		verbose = TRUE
-	)
+	
+	gg <- lbLinePlots[[1]][[1]]
+	ggData <- gg$data[, colnames(dataPlot)]
+	expect_equal(ggData, dataPlot)
+
+	expect_identical(gg$labels$title, title)
 	
 })
 
 test_that("subjectProfileLinePlot - color/shape variable and palette specification", {
 			
-	lbLinePlotsColorShape <- subjectProfileLinePlot(
-		data = dataLB,
-		paramNameVar = "LBTEST", 
-		paramValueVar = "LBSTRESN",
-		colorVar = "LBNRIND",
-		shapeVar = "LBNRIND",
-		shapePalette = c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24),
-		paramGroupVar = "LBSCAT",
-		paramValueRangeVar = c("LBSTNRLO", "LBSTNRHI"),
-		timeVar = "LBDY",
-		title = "Laboratory test measurements: actual value",
-		labelVars = labelVarsSDTMPelican
+	expect_error(
+		lbLinePlotsColorShape <- subjectProfileLinePlot(
+			data = dataPlot,
+			paramNameVar = "LBTEST", 
+			paramValueVar = "LBSTRESN",
+			colorVar = "LBNRIND",
+			shapeVar = "LBNRIND",
+			shapePalette = c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24),
+			paramGroupVar = "LBSCAT",
+			paramValueRangeVar = c("LBSTNRLO", "LBSTNRHI"),
+			timeVar = "LBDY",
+			title = "Laboratory test measurements: actual value",
+			labelVars = labelVarsSDTMPelican
+		),
+		NA
 	)
 	
-	vdiffr::expect_doppelganger(
-		title = "colorShapeVariablePalette", 
-		fig = lbLinePlotsColorShape[[1]][[1]],
-		path = "subjectProfileLinePlot",
-		verbose = TRUE
-	)
+	gg <- lbLinePlotsColorShape[[1]][[1]]
+	ggData <- gg$data[, colnames(dataPlot)]
+	expect_equal(colwise(as.character)(ggData), colwise(as.character)(dataPlot))
 	
 })
 
 test_that("subjectProfileLinePlot - yLimFrom - value", {
 			
-	lbLinePlots <- subjectProfileLinePlot(
-		data = subset(dataLB, USUBJID == "study-4902-02"),
-		paramNameVar = "LBTEST", 
-		paramValueVar = "LBSTRESN",
-		paramValueRangeVar = c("LBSTNRLO", "LBSTNRHI"),
-		timeVar = "LBDY",
-		title = "Laboratory test measurements: actual value",
-		labelVars = labelVarsSDTMPelican,
-		yLimFrom = "value"
+	expect_error(
+		lbLinePlots <- subjectProfileLinePlot(
+			data = dataPlot,
+			paramNameVar = "LBTEST", 
+			paramValueVar = "LBSTRESN",
+			paramValueRangeVar = c("LBSTNRLO", "LBSTNRHI"),
+			timeVar = "LBDY",
+			title = "Laboratory test measurements: actual value",
+			labelVars = labelVarsSDTMPelican,
+			yLimFrom = "value"
+		),
+		NA
 	)
-			
-	vdiffr::expect_doppelganger(
-		title = "yLimFrom-value", 
-		fig = lbLinePlots[[1]][[1]],
-		path = "subjectProfileLinePlot",
-		verbose = TRUE
-	)
+	
+	# output data from ggplot2
+#	gg <- lbLinePlots[[1]][[1]]
+#	ggBuildData <- ggplot_build(gg)$data
+#	dataPlot <- ggBuildData[[which.max(sapply(ggBuildData, nrow))]]
+#	dataPlot <- dataPlot[, c("PANEL", "x", "y")]
 			
 })
 
