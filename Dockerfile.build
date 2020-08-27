@@ -158,7 +158,7 @@ RUN R -e "remotes::install_version('readr', version = '1.3.1', upgrade = FALSE)"
 RUN R -e "remotes::install_version('ggplot2', version = '3.3.2', upgrade = FALSE)" && \
 	R -e "remotes::install_version('cowplot', version = '1.0.0', upgrade = FALSE)" && \
 	R -e "remotes::install_version('plotly', version = '4.9.2.1', upgrade = FALSE)" && \
-	R -e "remotes::install_version('vdiffr', version = '0.3.2', upgrade = FALSE)"
+	R -e "remotes::install_version('vdiffr', version = '0.3.2.2', upgrade = FALSE)"
 
 # install tar gz package(s)
 RUN mkdir -p /tmp

@@ -1,3 +1,5 @@
+1.4.1
+    o fix unit tests
 1.4.0
     o add unit tests figures
     o filterData/subjectProfile[X]Plot/createSubjectProfileReport: new subsetSample parameter
