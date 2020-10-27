@@ -282,10 +282,9 @@ subjectProfileLinePlot <- function(
 			# in legend
 			nLinesLegend <- 0 +
 				# for the color variable
-				if(!is.null(colorVar))	getNLinesLegend(data = data, var = colorVar, title = colorLab) + 
+				if(!is.null(colorVar))	getNLinesLegend(values = colorPalette, title = colorLab) + 
 				# for the shape variable
-				if(!is.null(shapeVar))
-					getNLinesLegend(data = data, var = shapeVar, title = shapeLab) + 
+				if(!is.null(shapeVar))	getNLinesLegend(values = shapePalette, title = shapeLab) + 
 				# 1 line to separate the two legends if color and shape are specified and different
 				# (ggplot will create separate legend if the title differ)
 				if(!is.null(colorVar) & !is.null(shapeVar) && (colorVar != shapeVar || colorLab != shapeLab))	1

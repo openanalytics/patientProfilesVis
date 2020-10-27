@@ -95,6 +95,7 @@ getNLinesLegend <- function(gg, values, data, var, title){
 					grobLegendI <- grobLegend$grobs[[i]]
 					idxLegendILabels <- grep("^label", grobLegendI$layout$name)
 					nLinesLegendILabels <- n_distinct(grobLegendI$layout[idxLegendILabels, "t"])
+					nLinesLegendILabels <- nLinesLegendILabels + 0.8 * nLinesLegendILabels
 					nLinesLegendITitle <- sum(grobLegendI$layout$name == "title")
 					nLinesLegendILabels + nLinesLegendITitle
 				}, FUN.VALUE = numeric(1))
@@ -108,16 +109,16 @@ getNLinesLegend <- function(gg, values, data, var, title){
 
 	}else	if(!missing(values)){
 		
-		nLinesLegendTotal <- sum(countNLines(values))
+		nLinesLegendTotal <- sum(countNLines(values)) + 0.8*(length(values)-1)
 		
 	}else	if(!missing(data) & !missing(var)){
 		
-		nLinesLegendList <- lapply(var, function(varI){
+		elLegendList <- lapply(var, function(varI){
 			x <- data[, varI]
 			values <- if(is.factor(x))	levels(x)	else unique(x)
-			getNLinesLegend(values = values)	
 		})
-		nLinesLegendTotal <- sum(unlist(nLinesLegendList))
+		elLegend <- unique(do.call(c, elLegendList))
+		nLinesLegendTotal <- getNLinesLegend(values = elLegend)	
 		
 	}else	stop("Legend values via 'values' or a ggplot2 object via 'gg' should be specified.")
 	

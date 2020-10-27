@@ -275,15 +275,23 @@ subjectProfileIntervalPlot <- function(
 			nLinesLegend <- 0
 			# for the color variable
 			if(!is.null(colorVar))
-				nLinesLegend <- getNLinesLegend(data = data, var = colorVar, title = colorLab)
+				nLinesLegend <- getNLinesLegend(
+					values = colorPalette,
+					title = colorLab
+				)
 			if(hasShapeVar){
 				nLinesLegend <- nLinesLegend +
 					getNLinesLegend(
-						data = data,
-						var = c(timeStartShapeVar, timeEndShapeVar),
+						values = shapePalette,
 						title = shapeLab
-				)
+					)
 			}
+			# 1 line to separate the two legends if color and shape are specified and different
+			# (ggplot will create separate legend if the title differ)
+			if(!is.null(colorVar) & hasShapeVar && colorLab != shapeLab){
+				nLinesLegend <- nLinesLegend + 1
+			}
+				
 			nLinesPlot <- max(nLinesPlot, nLinesLegend)
 			
 			# in title and axes
