@@ -134,9 +134,11 @@ subjectProfileEventPlot <- function(
 				gg <- gg + 
 					getAesScaleManual(lab = colorLab, palette = colorPalette, type = "color") +
 					getAesScaleManual(lab = colorLab, palette = colorPalette, type = "fill")
-			}else	gg <- gg + 
-						scale_color_manual(values = colorPalette) +
-						scale_fill_manual(values = colorPalette)
+			}else{
+				gg <- gg + 
+					scale_color_manual(values = colorPalette) +
+					scale_fill_manual(values = colorPalette)
+			}
 			
 			# change name for color scale
 			if(!is.null(shapeVar))
@@ -164,10 +166,8 @@ subjectProfileEventPlot <- function(
 			
 			# legend:
 			nLinesLegend <- 0 +
-				if(!is.null(colorVar))
-					getNLinesLegend(data = data, var = colorVar, title = colorLab) +
-				if(!is.null(shapeVar))
-					getNLinesLegend(data = data, var = shapeVar, title = shapeLab) +
+				if(!is.null(colorVar))	getNLinesLegend(values = colorPalette, title = colorLab) +
+				if(!is.null(shapeVar))	getNLinesLegend(values = shapePalette, title = shapeLab) +
 				# 1 line to separate the two legends if color and shape are specified and different
 				# (ggplot will create separate legend if the title differ)
 				if(!is.null(colorVar) & !is.null(shapeVar) && (colorVar != shapeVar || colorLab != shapeLab))	1
