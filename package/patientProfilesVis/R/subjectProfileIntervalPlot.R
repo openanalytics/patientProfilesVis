@@ -537,8 +537,8 @@ formatTimeInterval <- function(data,
 	
 	shapePalette <- c(
 		if(is.null(timeStartShapeVar) | is.null(timeEndShapeVar))	c(Complete = '\u25A0'), 
-		if(is.null(timeStartShapeVar))	c(`Missing start` = "\u25C0"), 
-		if(is.null(timeEndShapeVar))	c(`Missing end` = "\u25B6")
+		if(is.null(timeStartShapeVar))	c(`Missing start` = "\u25C4"), 
+		if(is.null(timeEndShapeVar))	c(`Missing end` = "\u25BA")
 	)
 	
 	timeLimSpecified <- if(!is.null(timeLim)){

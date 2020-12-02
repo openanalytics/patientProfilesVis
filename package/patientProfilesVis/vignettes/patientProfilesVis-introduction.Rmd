@@ -485,8 +485,8 @@ in Unicode format in hexadecimal (see [List of unicode symbols](https://en.wikip
 	)
 	
 	shapePalette <- c(
-		`Missing start`= "\u25C0", # left-pointing arrow
-		'NOT RECOVERED/NOT RESOLVED' = "\u25B6", # right-pointing arrow
+		`Missing start`= "\u25C4", # left-pointing arrow
+		'NOT RECOVERED/NOT RESOLVED' = "\u25BA", # right-pointing arrow
 		'RECOVERED/RESOLVED' = "\u25A0", # small square
 		UNKNOWN = "+"
 	)

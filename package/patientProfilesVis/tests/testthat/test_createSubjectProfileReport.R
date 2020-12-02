@@ -27,7 +27,7 @@ test_that("createSubjectProfileReport - unicode symbols", {
 		# so use unicode character (hexadecimal notation)
 		shapePalette = c(
 			complete = '\u25A0', partial = '\u25EF', 
-			`missing start` = "\u25C0", `missing end` = "\u25B6"
+			`missing start` = "\u25C4", `missing end` = "\u25BA"
 		),
 		shapeLab = "Study date status", shapeSize = 4,
 		colorVar = "AESEV",
