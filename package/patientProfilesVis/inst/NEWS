@@ -1,5 +1,5 @@
 1.4.3
-    o change default palette for Windows support: u25C0 -> u25C4, u25B6 -> u25BA
+    o change default palette for Windows support: u25C0 -> u25C4, u25B6 -> u25BA, u271A -> +, u2605 -> asterisk, u25EF -> u25CB
 1.4.2
     o subjectProfile[Interval|Event|Line]Plot: fix extraction size legend, add space between legend lines 
 1.4.1

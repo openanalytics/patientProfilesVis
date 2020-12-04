@@ -26,7 +26,7 @@ test_that("createSubjectProfileReport - unicode symbols", {
 		# left/right triangle not available in default ggplot palette
 		# so use unicode character (hexadecimal notation)
 		shapePalette = c(
-			complete = '\u25A0', partial = '\u25EF', 
+			complete = '\u25A0', partial = '\u25CB', 
 			`missing start` = "\u25C4", `missing end` = "\u25BA"
 		),
 		shapeLab = "Study date status", shapeSize = 4,
