@@ -98,7 +98,7 @@ created. These shape of the symbols are specified Unicode format in hexadecimal
 		`High Normal` = '\u25B2', # small filled up-pointing arrow
 		HIGH = '\u25B2', High = '\u25B2', # filled up-pointing arrow
 		`High Panic` = '\u25B2', # big filled up-pointing arrow
-		Abnormal = 'asterisk', # star
+		Abnormal = '\u2666', # star
 		'NA' = '+', # cross (3)
 		Unknown = '+'
 	)
@@ -233,10 +233,13 @@ See the vignette:
 
 ```{r patientProfiles-laboratory}
 
+	stop("test")
+
 	# specify custom color and shape palette
 	lbRind <- unique(dataAll$LB$LBNRIND)
 	colorPaletteLB <- colorPaletteRind[which(names(colorPaletteRind) %in% c(lbRind, "NA"))]
 	shapePaletteLB <- shapePaletteRind[which(names(shapePaletteRind) %in% c(lbRind, "NA"))]
+	
 	
 	lbPlots <- subjectProfileLinePlot(
 		data = dataAll$LB,
@@ -251,7 +254,8 @@ See the vignette:
 		shapeSize = 4,
 		title = "Laboratory test measurements",
 		alpha = 0.8,
-		labelVars = labelVars
+		labelVars = labelVars,
+		subjectSubset = "study-4902-02"
 	)
 	
 	patientProfilesPlots <- c(patientProfilesPlots, list(LB = lbPlots))
@@ -329,7 +333,7 @@ See the vignette:
 #		subsetVar = "AETOXGR",
 #		subsetValue = c("MODERATE", "SEVERE"),
 #		# - or from specified USUBJID
-		subset = c("study-4903-07", "study-4908-01", "study-4907-07")
+		subset = c("study-4902-02", "study-4903-07", "study-4908-01", "study-4907-07")
 
 	)
 
