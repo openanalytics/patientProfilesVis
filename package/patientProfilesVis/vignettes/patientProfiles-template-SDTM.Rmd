@@ -233,8 +233,6 @@ See the vignette:
 
 ```{r patientProfiles-laboratory}
 
-	stop("test")
-
 	# specify custom color and shape palette
 	lbRind <- unique(dataAll$LB$LBNRIND)
 	colorPaletteLB <- colorPaletteRind[which(names(colorPaletteRind) %in% c(lbRind, "NA"))]
