@@ -3,40 +3,47 @@
 #' There are two ways to specify the variables of interest to include:
 #' \itemize{
 #' \item{by specifying column(s) of interest containing parameter values, passed
-#' to the \code{paramValueVar} parameter
+#' to the \code{paramValueVar} parameter.\cr
+#' In this case, variable value is displayed in the plot area,
+#' and variable name in the label of the y-axis.
 #' }
 #' \item{by specifying a combination of a variable containing the parameter name
 #' (\code{paramNameVar}), coupled with a variable containing the 
-#' parameter values (\code{paramValueVar})
+#' parameter values (\code{paramValueVar}).\cr
+#' In this case, parameter values (if multiple) are concatenated 
+#' and displayed in the plot area for each parameter name,
+#' displayed in the label of the y-axis.}
 #' }
-#' }
-#' @param paramValueVar string, variable of \code{data}, either:
+#' @param paramValueVar Character vector, either:
 #' \itemize{
-#' \item{if used in combination with \code{paramNameVar}: }{
+#' \item{vector with names of variable(s) (multiple are possible) 
+#' of \code{data} of interest.
+#' The values are displayed in the plot area and variable name in the labels
+#' of the y-axis.\cr
+#' Multiple variables can be concatenated in the same line by specifying them,
+#' as an unique string separated by a 'pipe', e.g 'SEX|AGE'. Variable
+#' label(s) are concatenated (with ', ') and displayed in the y-axis.}
+#' \item{if \code{paramNameVar} is specified: }{
 #' \itemize{
-#' \item{vector with names of variable(s) (multiple possible) 
-#' of \code{data} with parameter value to represent.
+#' \item{character vector with names of variable(s) (multiple possible) 
+#' of \code{data} with values to represent in the plot area.
 #' }
 #' \item{function taking \code{data} as input and 
-#' returning a new variable (of length equal to number of rows in \code{data}
-#' ) with parameter value to represent}
+#' returning a new variable (of length equal to number of rows in \code{data}) 
+#' with parameter value to represent}
+#' }}
 #' }
-#' }
-#' \item{otherwise: }{vector with names of variable(s) (multiple possible) 
-#' of \code{data} with parameter value to represent. 
-#' If variables should be concatenated in the same line and not displayed as table: 
-#' they should be specified separated by '|', e.g 'SEX|AGE'.
-#' }
-#' }
-#' @param paramValueLab (optional) string with labels for \code{paramValueVar},
-#' only used if the variabless are displayed as table.
-#' @param paramNameVar (optional) string, variable of \code{data} with parameter name.
-#' If specified, \code{paramValueVar} should be an unique variable.
+#' @param paramValueLab (optional) Named character vector with
+#' labels for \code{paramValueVar}.
+#' @param paramNameVar (optional) Character vector of length 1 with
+#' variable of \code{data} with parameter name. This
+#' is displayed in the labels of the y-axis.
 #' @param paramGroupVar (optional) string, variable of \code{data} with grouping.
 #' If specified, the parameters will be grouped by this variable in the y-axis, and
 #' \code{paramValueVar} should be an unique variable.
-#' @param paramVarSep string with character(s) used to concatenate multiple 
-#' \code{paramNameVar} or \code{paramValueVar}, ' - ' by default.
+#' @param paramVarSep String (' - ' by default) 
+#' with character(s) used to concatenate multiple 
+#' variables for the same record in the plot area.
 #' @param table Logical, if TRUE (FALSE by default) the information
 #' contained in the variables: \code{paramValueVar} is displayed as a table. 
 #' Otherwise, the values of the different variables are concatenated in the same line.
@@ -148,11 +155,14 @@ subjectProfileTextPlot <- function(
 			)
 			dataPlot$variable <- factor(
 				unname(varsLabels[as.character(dataPlot$variable)]),
-				levels = rev(varsLabels[paramValueVar])
+				levels = varsLabels[paramValueVar]
 			)	
 	
 		}else{
 	
+			if(length(paramNameVar) > 1)
+				stop("'paramNameVar' should be of length 1.")
+			
 			# extract the value to display in the plot
 			data$value <- if(is.function(paramValueVar))
 				paramValueVar(data)	else	combineMultipleVars(paramValueVar)
@@ -160,8 +170,8 @@ subjectProfileTextPlot <- function(
 			dataPlot <- ddply(data, c(subjectVar, paramNameVar, paramGroupVar), function(x)
 				data.frame(value = toString(unique(x$value)), stringsAsFactors = FALSE)
 			)
-			colnames(dataPlot)[which(colnames(dataPlot) == paramNameVar)] <- "variable"
-			if(paramNameVar == subjectVar)	dataPlot[, subjectVar] <- dataPlot$variable
+			# store in different column (in case subject is 'paramNameVar')
+			dataPlot$variable <- dataPlot[, paramNameVar]
 			
 		}	
 		
@@ -180,7 +190,7 @@ subjectProfileTextPlot <- function(
 			paramValueVar = if(table)	paramValueVar	else	"value",
 			paramValueLab = if(table)	paramValueLab,
 			paramGroupVar = if(table || !is.null(paramNameVar))	paramGroupVar,
-			revert = !is.null(paramNameVar), 
+			revert = !table, 
 			formatReport = formatReport,
 			table = table, colWidth = colWidth
 		)

@@ -21,6 +21,11 @@ height of a line in inches, 0.2 by default.}
 \item{landscape}{Logical, if TRUE the created report is 
 in landscape format. FALSE by default, the report
 is created in portrait format.}
+
+\item{aspectRatio}{Numeric of length 1 (0.75 by default)
+with ratio between size of image in inches 
+(derived from specified \code{margin}, \code{landscape} and \code{heightLineIn})
+and real size for exported image.}
 }
 \value{
 numeric with maximum height for plot

@@ -32,30 +32,32 @@ subjectProfileTextPlot(
 \arguments{
 \item{data}{data.frame with data}
 
-\item{paramValueVar}{string, variable of \code{data}, either:
+\item{paramValueVar}{Character vector, either:
 \itemize{
-\item{if used in combination with \code{paramNameVar}: }{
+\item{vector with names of variable(s) (multiple are possible) 
+of \code{data} of interest.
+The values are displayed in the plot area and variable name in the labels
+of the y-axis.\cr
+Multiple variables can be concatenated in the same line by specifying them,
+as an unique string separated by a 'pipe', e.g 'SEX|AGE'. Variable
+label(s) are concatenated (with ', ') and displayed in the y-axis.}
+\item{if \code{paramNameVar} is specified: }{
 \itemize{
-\item{vector with names of variable(s) (multiple possible) 
-of \code{data} with parameter value to represent.
+\item{character vector with names of variable(s) (multiple possible) 
+of \code{data} with values to represent in the plot area.
 }
 \item{function taking \code{data} as input and 
-returning a new variable (of length equal to number of rows in \code{data}
-) with parameter value to represent}
-}
-}
-\item{otherwise: }{vector with names of variable(s) (multiple possible) 
-of \code{data} with parameter value to represent. 
-If variables should be concatenated in the same line and not displayed as table: 
-they should be specified separated by '|', e.g 'SEX|AGE'.
-}
+returning a new variable (of length equal to number of rows in \code{data}) 
+with parameter value to represent}
+}}
 }}
 
-\item{paramValueLab}{(optional) string with labels for \code{paramValueVar},
-only used if the variabless are displayed as table.}
+\item{paramValueLab}{(optional) Named character vector with
+labels for \code{paramValueVar}.}
 
-\item{paramNameVar}{(optional) string, variable of \code{data} with parameter name.
-If specified, \code{paramValueVar} should be an unique variable.}
+\item{paramNameVar}{(optional) Character vector of length 1 with
+variable of \code{data} with parameter name. This
+is displayed in the labels of the y-axis.}
 
 \item{paramGroupVar}{(optional) string, variable of \code{data} with grouping.
 If specified, the parameters will be grouped by this variable in the y-axis, and
@@ -95,8 +97,9 @@ in the text when the plots are combined (e.g. if the plot is empty).}
 \item{labelVars}{Named character vector with variable labels 
 (names are the variable code)}
 
-\item{paramVarSep}{string with character(s) used to concatenate multiple 
-\code{paramNameVar} or \code{paramValueVar}, ' - ' by default.}
+\item{paramVarSep}{String (' - ' by default) 
+with character(s) used to concatenate multiple 
+variables for the same record in the plot area.}
 
 \item{formatReport}{list with parameters used to specify the format of the report,
 e.g. output of the \code{\link{subjectProfileReportFormat}} function}
@@ -123,12 +126,16 @@ also of class \code{subjectProfileTextPlot}, with additional metaData attributes
 There are two ways to specify the variables of interest to include:
 \itemize{
 \item{by specifying column(s) of interest containing parameter values, passed
-to the \code{paramValueVar} parameter
+to the \code{paramValueVar} parameter.\cr
+In this case, variable value is displayed in the plot area,
+and variable name in the label of the y-axis.
 }
 \item{by specifying a combination of a variable containing the parameter name
 (\code{paramNameVar}), coupled with a variable containing the 
-parameter values (\code{paramValueVar})
-}
+parameter values (\code{paramValueVar}).\cr
+In this case, parameter values (if multiple) are concatenated 
+and displayed in the plot area for each parameter name,
+displayed in the label of the y-axis.}
 }
 }
 \author{
