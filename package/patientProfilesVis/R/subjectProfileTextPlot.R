@@ -103,12 +103,16 @@ subjectProfileTextPlot <- function(
 	
 			# in case variable should be concatenated
 			varsToConcatenate <- grep("|", paramValueVar, value = TRUE, fixed = TRUE)
-			if(length(varsToConcatenate) > 1){
+			if(length(varsToConcatenate) > 0){
 				varsToConcatenateList <- strsplit(varsToConcatenate, split = "|", fixed = TRUE)
 				data[, varsToConcatenate] <- lapply(varsToConcatenateList, combineMultipleVars)
-				if(!is.null(labelVars))
-					labelVars[varsToConcatenate] <- sapply(varsToConcatenateList, function(name)
-						toString(labelVars[name]))
+				varsToConcatenateLab <- sapply(varsToConcatenateList, function(vars)
+					toString(getLabelVar(var = vars, labelVars = labelVars, label = paramValueLab))
+				)
+				paramValueLab <- c(
+					paramValueLab,
+					setNames(varsToConcatenateLab, varsToConcatenate)
+				)
 			}
 			
 			# transform data from wide to long format
@@ -137,13 +141,15 @@ subjectProfileTextPlot <- function(
 			# use the labels for the names of the variables
 			# sort in revert order of specified parameters
 			# to have the variable sorted from top to bottom in ggplot2
-			dataPlot$variable <- if(!is.null(labelVars)){
-				varsLabels <- getLabelVar(paramValueVar, labelVars = labelVars)
-				factor(
-					unname(varsLabels[as.character(dataPlot$variable)]),
-					levels = rev(labelVars[paramValueVar])
-				)		
-			}else factor(dataPlot$variable, levels = rev(paramValueVar))		
+			varsLabels <- getLabelVar(
+				paramValueVar, 
+				labelVars = labelVars, 
+				label = paramValueLab
+			)
+			dataPlot$variable <- factor(
+				unname(varsLabels[as.character(dataPlot$variable)]),
+				levels = rev(varsLabels[paramValueVar])
+			)	
 	
 		}else{
 	
