@@ -3,7 +3,8 @@ original/
 /data/
 documentation/
 *.html
-/tests/
+tests
+!/package/patientProfilesVis/tests
 *.pdf
 *.tex
 *.tar.gz

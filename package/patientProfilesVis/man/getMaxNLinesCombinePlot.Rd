@@ -13,15 +13,14 @@ getMaxNLinesCombinePlot(
 )
 }
 \arguments{
-\item{heightLineIn}{height of a line in inches}
+\item{heightLineIn}{Numeric of length 1 with 
+height of a line in inches, 0.2 by default.}
 
-\item{margin}{margin in inches}
+\item{margin}{Numeric of length 1, with margin in inches.}
 
-\item{landscape}{logical, if TRUE the created report is in landscape format}
-
-\item{aspectRatio}{ratio between size of image in inches 
-(derived from specified margin, landscape and heightLineIn)
-and real size for exported image}
+\item{landscape}{Logical, if TRUE the created report is 
+in landscape format. FALSE by default, the report
+is created in portrait format.}
 }
 \value{
 numeric with maximum height for plot

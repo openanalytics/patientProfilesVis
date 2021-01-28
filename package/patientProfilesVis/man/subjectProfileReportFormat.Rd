@@ -2,8 +2,7 @@
 % Please edit documentation in R/miscellaneous.R
 \name{subjectProfileReportFormat}
 \alias{subjectProfileReportFormat}
-\title{Get list with format specification for subject profile report,
-setting default for entire workflow}
+\title{Get list with format specification for subject profile report.}
 \usage{
 subjectProfileReportFormat(
   heightLineIn = 0.2,
@@ -14,26 +13,30 @@ subjectProfileReportFormat(
 )
 }
 \arguments{
-\item{heightLineIn}{height of a line in inches}
+\item{heightLineIn}{Numeric of length 1 with 
+height of a line in inches, 0.2 by default.}
 
-\item{margin}{margin in inches}
+\item{margin}{Numeric of length 1, with margin in inches.}
 
-\item{landscape}{logical, if TRUE the created report is in landscape format}
+\item{landscape}{Logical, if TRUE the created report is 
+in landscape format. FALSE by default, the report
+is created in portrait format.}
 
-\item{aspectRatio}{ratio between size of image in inches 
-(derived from specified margin, landscape and heightLineIn)
-and real size for exported image}
-
-\item{yLabelWidth}{integer with approximate maximum width of parameters, 20 by default.
-If parameter is longer, it will be splitted between words in separated lines.}
+\item{yLabelWidth}{Integer of length 1 with approximate maximum number of
+characters in the y-label of the plot, 30 by default.
+If the label of the y-axis is longer than this number 
+of character, it will be splitted between words 
+in separated lines.}
 }
 \value{
-list with input parameters.
+List with parameters to set format
+of the subject profile report.
 If not specified, default are used.
 }
 \description{
-Get list with format specification for subject profile report,
-setting default for entire workflow
+This format is used to set default for the created subject profile report:
+line height, margin, report in landscape or portrait format,
+aspect ratio and width for the y-label.
 }
 \author{
 Laure Cougnaud

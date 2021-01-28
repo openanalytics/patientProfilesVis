@@ -16,7 +16,6 @@ getPathTemplate <- function(file){
 #' @inheritParams getNLinesLabel
 #' @inherit getNLinesLabel return
 #' @importFrom ggplot2 ggplot_build
-#' @export
 getNLinesYGgplot <- function(gg){
 	
 	nLinesPlot <- if(inherits(gg, "subjectProfileLinePlot")){
@@ -325,7 +324,6 @@ getWidthPlot <- function(
 #' grey color for vertical grid lines
 #' @return \code{\link{ggplot2}[theme]} object
 #' @author Laure Cougnaud
-#' @export
 subjectProfileTheme <- function(){
 	customTheme <- theme_bw() +
 		theme(panel.grid.major.y = element_line(colour = c("grey80", theme_bw()$panel.grid$colour)))
@@ -593,17 +591,28 @@ filterData <- function(
 	
 }
 
-#' Get list with format specification for subject profile report,
-#' setting default for entire workflow
-#' @param heightLineIn height of a line in inches
-#' @param margin margin in inches
-#' @param landscape logical, if TRUE the created report is in landscape format
-#' @param aspectRatio ratio between size of image in inches 
-#' (derived from specified margin, landscape and heightLineIn)
-#' and real size for exported image
-#' @param yLabelWidth integer with approximate maximum width of parameters, 20 by default.
-#' If parameter is longer, it will be splitted between words in separated lines.
-#' @return list with input parameters.
+#' Get list with format specification for subject profile report.
+#' 
+#' This format is used to set default for the created subject profile report:
+#' line height, margin, report in landscape or portrait format,
+#' aspect ratio and width for the y-label.
+#' @param heightLineIn Numeric of length 1 with 
+#' height of a line in inches, 0.2 by default.
+#' @param margin Numeric of length 1, with margin in inches.
+#' @param landscape Logical, if TRUE the created report is 
+#' in landscape format. FALSE by default, the report
+#' is created in portrait format.
+#' @param aspectRatio Numeric of length 1 (0.75 by default)
+#' with ratio between size of image in inches 
+#' (derived from specified \code{margin), \code{landscape} and \code{heightLineIn})
+#' and real size for exported image.
+#' @param yLabelWidth Integer of length 1 with approximate maximum number of
+#' characters in the y-label of the plot, 30 by default.
+#' If the label of the y-axis is longer than this number 
+#' of character, it will be splitted between words 
+#' in separated lines.
+#' @return List with parameters to set format
+#' of the subject profile report.
 #' If not specified, default are used.
 #' @author Laure Cougnaud
 #' @export
