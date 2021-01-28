@@ -624,7 +624,7 @@ filterData <- function(
 #' is created in portrait format.
 #' @param aspectRatio Numeric of length 1 (0.75 by default)
 #' with ratio between size of image in inches 
-#' (derived from specified \code{margin), \code{landscape} and \code{heightLineIn})
+#' (derived from specified \code{margin}, \code{landscape} and \code{heightLineIn})
 #' and real size for exported image.
 #' @param yLabelWidth Integer of length 1 with approximate maximum number of
 #' characters in the y-label of the plot, 30 by default.

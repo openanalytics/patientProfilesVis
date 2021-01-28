@@ -22,6 +22,11 @@ height of a line in inches, 0.2 by default.}
 in landscape format. FALSE by default, the report
 is created in portrait format.}
 
+\item{aspectRatio}{Numeric of length 1 (0.75 by default)
+with ratio between size of image in inches 
+(derived from specified \code{margin}, \code{landscape} and \code{heightLineIn})
+and real size for exported image.}
+
 \item{yLabelWidth}{Integer of length 1 with approximate maximum number of
 characters in the y-label of the plot, 30 by default.
 If the label of the y-axis is longer than this number 

@@ -106,7 +106,7 @@ test_that("parameter values are combined", {
 		
 })
 
-test_that("label for parameters are specified", {
+test_that("label(s) for parameter variable(s) are specified", {
 			
 	data <- data.frame(
 		SEX = "M", AGE = NA_character_,
@@ -131,5 +131,95 @@ test_that("label for parameters are specified", {
 			
 	yLabel <- layer_scales(gg, which(isGeomText))$y$range$range
 	expect_equal(yLabel, c("Weight (kg), Age (years), SEX"))
+			
+})
+
+test_that("variables for parameter name and value are specified", {
+			
+	# example with multiple records
+	# for the same label
+	data <- data.frame(
+		CAT = "A",
+		TERM = c("a", "b"),
+		END = c(NA_character_, "03/2020"),
+		START = c("01/2020", "02/2020"),
+		USUBJID = "1"
+	)
+			
+	plots <- subjectProfileTextPlot(
+		data = data,
+		paramValueVar = c("TERM", "START", "END"),
+		paramNameVar = "CAT"
+	)
+	
+	gg <- plots[["1"]][[1]]
+	
+	# extract data behind the text
+	isGeomText <- sapply(gg$layers, function(l) inherits(l$geom, "GeomText"))
+	ggDataText <- layer_data(gg, which(isGeomText))
+	ggDataText <- ggDataText[order(ggDataText$y), ]
+	
+	yValue <- as.character(ggDataText[, "label"])
+	expect_equal(yValue, c("a - 01/2020 - NA, b - 02/2020 - 03/2020"))
+	
+	yLabel <- layer_scales(gg, which(isGeomText))$y$range$range
+	expect_equal(yLabel, "A")
+	
+})
+
+test_that("variable for parameter name should be of length 1", {
+			
+	data <- data.frame(
+		CAT = "A",
+		TERM = c("a", "b"),
+		START = c("01/2020", "02/2020"),
+		USUBJID = "1"
+	)
+			
+	expect_error(
+		plots <- subjectProfileTextPlot(
+			data = data,
+			paramValueVar = "START",
+			paramNameVar = c("CAT", "TERM")
+		),
+		"'paramNameVar' should be of length 1"
+	)		
+})
+
+test_that("variable for parameter name and function for parameter value are specified", {
+			
+	# example with multiple records
+	# for the same label
+	data <- data.frame(
+		TERM = factor(c("a", "b"), levels = c("b", "a")),
+		END = c(NA_character_, "03/2020"),
+		START = c("01/2020", "02/2020"),
+		USUBJID = "1"
+	)
+			
+	paramValueVarFct <- function(data){
+		with(data, paste0("[", START, ", ", END, "]"))
+	}
+	plots <- subjectProfileTextPlot(
+		data = data,
+		paramNameVar = "TERM",
+		paramValueVar = paramValueVarFct
+	)
+			
+	gg <- plots[["1"]][[1]]
+			
+	# extract data behind the text
+	isGeomText <- sapply(gg$layers, function(l) inherits(l$geom, "GeomText"))
+	ggDataText <- layer_data(gg, which(isGeomText))
+	ggDataText <- ggDataText[order(ggDataText$y), ]
+			
+	yValue <- as.character(ggDataText[, "label"])
+	expect_equal(
+		rev(yValue), 
+		paramValueVarFct(data[order(data$TERM), ])
+	)
+			
+	yLabel <- layer_scales(gg, which(isGeomText))$y$range$range
+	expect_equal(rev(yLabel), levels(data$TERM))
 			
 })
