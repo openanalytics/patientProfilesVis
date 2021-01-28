@@ -1,6 +1,7 @@
 1.5.0
     o add unit tests
     o no import of subjectProfileTheme, getNLinesYGgplot
+    o subjectProfileTextPlot: few fixes
 1.4.3
     o change default palette for Windows support: u25C0 -> u25C4, u25B6 -> u25BA, u271A -> +, u2605 (star) -> u2666 (diamond), u25EF -> u25CB
 1.4.2
