@@ -10,7 +10,7 @@
 #' parameter values (\code{paramValueVar})
 #' }
 #' }
-#' @param paramValueVar string, variable of \code{data}, iither:
+#' @param paramValueVar string, variable of \code{data}, either:
 #' \itemize{
 #' \item{if used in combination with \code{paramNameVar}: }{
 #' \itemize{
@@ -75,6 +75,8 @@ subjectProfileTextPlot <- function(
 	# in case data is a tibble:
 	data <- as.data.frame(data)
 	
+	checkVar(var = subjectVar, data = data)
+	
 	# only keep records of interest
 	data <- filterData(
 		data = data, 
@@ -93,9 +95,10 @@ subjectProfileTextPlot <- function(
 		
 	}else{
 		
-		combineMultipleVars <- function(vars)
+		combineMultipleVars <- function(vars){
 			do.call(paste, c(as.list(data[, vars, drop = FALSE]), list(sep = paramVarSep)))
-	
+		}
+		
 		if(is.null(paramNameVar)){
 	
 			# in case variable should be concatenated
@@ -110,6 +113,13 @@ subjectProfileTextPlot <- function(
 			
 			# transform data from wide to long format
 			dataToTransform <- unique(data[, unique(c(subjectVar, paramValueVar)), drop = FALSE])
+			# to avoid warning in 'melt': 
+			# - 'attributes are not identical across measure variables; they will be dropped'
+			if(!is.null(var))
+				dataToTransform[, paramValueVar] <- lapply(
+					dataToTransform[, paramValueVar, drop = FALSE], 
+					as.character
+				)
 			dataPlot <- melt(
 				dataToTransform, 
 				id.vars = subjectVar, 
@@ -119,7 +129,7 @@ subjectProfileTextPlot <- function(
 			)
 			dataPlot <- unique(dataPlot)
 			
-			# in case multiple value for the same variable, concatenate them
+			# in case multiple value for the same variable or subject, concatenate them
 			dataPlot <- ddply(dataPlot, c(subjectVar, "variable"), function(x)
 				data.frame(value = paste(unique(x$value), collapse = paramVarSep), stringsAsFactors = FALSE)
 			)

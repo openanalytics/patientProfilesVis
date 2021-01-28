@@ -1,66 +1,82 @@
-context("Compare 'subjectProfileTextPlot' with previous version")
+context("Visualize subject profile as a text")
 
-library(glpgUtilityFct)
-data(SDTMDataPelican)
-data(labelVarsSDTMPelican)
+library(ggplot2)
 
-test_that("subjectProfileTextPlot - specification of parameter value only", {
+test_that("subject variable is not present in the data", {
 			
-	dmPlots <- subjectProfileTextPlot(
-		data = SDTMDataPelican$DM,
-		paramValueVar = c("SEX|AGE", "RACE|COUNTRY", "ARM"),
-		labelVars = labelVarsSDTMPelican
+	data <- data.frame(SEX = c("F", "M", "F"))
+	expect_error(
+		subjectProfileTextPlot(data = data, paramValueVar = "SEX"),
+		"Variable.*not available in the data"
 	)
 			
-	vdiffr::expect_doppelganger(
-		title = "paramValueVar", 
-		fig = dmPlots[[1]][[1]],
-		path = "subjectProfileTextPlot",
-		verbose = TRUE
+})
+
+test_that("subject variable order is retained", {
+			
+	data <- data.frame(
+		SEX = c("F", "M", "F"),
+		USUBJID = factor(c("3", "2", "1"), levels = c("2", "3", "1"))
+	)
+			
+	expect_silent(
+		plots <- subjectProfileTextPlot(data = data, paramValueVar = "SEX")
 	)
 	
-})
-
-test_that("subjectProfileTextPlot - specification of combination of parameter value and name", {
-			
-	mhPlots <- subjectProfileTextPlot(
-		data = SDTMDataPelican$MH,
-		paramNameVar = "MHTERM",
-		paramValueVar = c("MHCAT", "MHSTDTC", "MHENDTC"),
-		paramGroupVar = "MHCAT",
-		title = "Medical History: status",
-		labelVars = labelVarsSDTMPelican
-	)
-			
-	vdiffr::expect_doppelganger(
-		title = "paramValue/NameVar", 
-		fig = mhPlots[[1]][[1]],
-		path = "subjectProfileTextPlot",
-		verbose = TRUE
-	)
+	expect_named(plots, levels(data$USUBJID))
 			
 })
 
-test_that("subjectProfileTextPlot - specification of a function to format parameter", {
+test_that("parameter values are displayed", {
 			
-	paramValueVarFct <- function(data)
-		with(data, paste0(MHENRTPT, " (start = ", MHSTDTC, 
-			ifelse(MHENDTC != "", paste0(", end = ", MHENDTC, ")"), ")")
+	data <- data.frame(
+		SEX = c("F", "M", "F"),
+		AGE = c(40, 46, NA_real_),
+		ARM = factor(c("A", "B", "A")),
+		USUBJID = factor(c("3", "2", "1"), levels = c("2", "3", "1"))
+	)
+	paramValueVar <- c("SEX", "AGE", "ARM")
+	expect_silent(
+		plots <- subjectProfileTextPlot(
+			data = data,
+			paramValueVar = paramValueVar
 		)
 	)
-	mhPlotsMultipleVars <- subjectProfileTextPlot(
-		data = SDTMDataPelican$MH,
-		paramNameVar = "MHDECOD",
-		paramValueVar = paramValueVarFct,
-		title = "Medical History: status with dates",
-		labelVars = labelVarsSDTMPelican
-	)
+	expect_type(plots, "list")
+	expect_named(plots, levels(data$USUBJID))
+	
+	# test data is retained
+	for(subjID in names(plots)){
 		
-	vdiffr::expect_doppelganger(
-		title = "paramValueVarAsFunction", 
-		fig = mhPlotsMultipleVars[[1]][[1]],
-		path = "subjectProfileTextPlot",
-		verbose = TRUE
-	)
-			
+		# check that the sublist is a list of ggplot object
+		expect_type(plots[[!!subjID]], "list")
+		expect_length(plots[[!!subjID]], 1)
+		expect_s3_class(plots[[!!subjID]][[1]], c("subjectProfileTextPlot", "ggplot"))
+		
+		expect_equal(
+			object = {		
+				
+				gg <- plots[[!!subjID]][[1]]	
+				# extract data behind the text
+				isGeomText <- sapply(gg$layers, function(l) inherits(l$geom, "GeomText"))
+				ggDataText <- layer_data(gg, which(isGeomText))
+				ggDataText <- ggDataText[order(ggDataText$y), ]
+				yValue <- as.character(ggDataText[, "label"])
+				
+				# extract labels of the y-axis
+				yLabel <- layer_scales(gg, which(isGeomText))$y$range$range
+				
+				# variables are order from the bottom to the top in the data
+				# so use revert order
+				setNames(rev(yValue), rev(yLabel))
+				
+			},
+			expected = {
+				dataReference <- subset(data, USUBJID == !!subjID)[, paramValueVar]
+				setNames(as.character(paste(t(dataReference))), paramValueVar)
+			}
+		)		
+		
+	}
+		
 })

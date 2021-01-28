@@ -32,7 +32,7 @@ subjectProfileTextPlot(
 \arguments{
 \item{data}{data.frame with data}
 
-\item{paramValueVar}{string, variable of \code{data}, iither:
+\item{paramValueVar}{string, variable of \code{data}, either:
 \itemize{
 \item{if used in combination with \code{paramNameVar}: }{
 \itemize{
