@@ -11,13 +11,11 @@ getWidthPlot(
 )
 }
 \arguments{
-\item{margin}{margin in inches}
+\item{margin}{Numeric of length 1, with margin in inches.}
 
-\item{landscape}{logical, if TRUE the created report is in landscape format}
-
-\item{aspectRatio}{ratio between size of image in inches 
-(derived from specified margin, landscape and heightLineIn)
-and real size for exported image}
+\item{landscape}{Logical, if TRUE the created report is 
+in landscape format. FALSE by default, the report
+is created in portrait format.}
 }
 \value{
 width for the plot in inches
