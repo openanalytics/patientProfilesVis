@@ -1,3 +1,23 @@
+#' Check if specified variable(s) are present in the data.
+#' @param var Character vector with variable(s)
+#' of interest.
+#' @param data Data.frame with data.
+#' @return No returned value,
+#' an error message is triggered if some
+#' variable(s) are not available in the data.
+#' @author Laure Cougnaud
+checkVar <- function(var, data){
+
+	varNotInData <- setdiff(var, colnames(data))
+	if(length(varNotInData) > 0){
+		stop(paste("Variable(s):", 
+			toString(shQuote(var)),
+			"are not available in the data."
+		))
+	}
+	
+}
+
 #' get path of the any \code{file} template in the \code{CSRFigures} package
 #' @param file file name (with extension)
 #' @author Laure Cougnaud
