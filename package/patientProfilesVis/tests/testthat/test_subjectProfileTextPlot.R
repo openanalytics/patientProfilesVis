@@ -272,3 +272,41 @@ test_that("variable(s) are represented as a table", {
 	)
 	
 })
+
+test_that("parameters are grouped based on grouping variable(s)", {
+			
+	# example where data is first sorted based on multiple
+	# grouping variables (factor and character),
+	# then param name variable (for a2 vs a1)
+	data <- data.frame(
+		CAT1 = c("I", "I", "I", "II"),
+		CAT2 = factor(c("A", "A", "B", "A"), levels = c("B", "A")),
+		TERM = factor(c("a1", "a2", "b", "a3"), levels = c("a2", "a1", "a3", "b")),
+		START = c("01/2020", "02/2020", "01/2019", "03/2021"),
+		USUBJID = "1",
+		stringsAsFactors = FALSE
+	)
+			
+	plots <- subjectProfileTextPlot(
+		data = data,
+		paramNameVar = "TERM",
+		paramValueVar = "START",
+		paramGroupVar = c("CAT1", "CAT2")
+	)
+	
+	gg <- plots[["1"]][[1]]
+	
+	# extract data behind the text
+	isGeomText <- sapply(gg$layers, function(l) inherits(l$geom, "GeomText"))
+	ggDataText <- layer_data(gg, which(isGeomText))
+	ggDataText <- ggDataText[order(ggDataText$y), ]
+	
+	dataOrder <- data[with(data, order(CAT1, CAT2, TERM)), ]
+	
+	yValue <- as.character(ggDataText[, "label"])
+	expect_equal(rev(yValue), dataOrder$START)
+	
+	yLabel <- layer_scales(gg, which(isGeomText))$y$range$range
+	expect_equal(rev(yLabel), as.character(dataOrder$TERM))
+			
+})

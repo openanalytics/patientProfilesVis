@@ -38,9 +38,9 @@
 #' @param paramNameVar (optional) Character vector of length 1 with
 #' variable of \code{data} with parameter name. This
 #' is displayed in the labels of the y-axis.
-#' @param paramGroupVar (optional) string, variable of \code{data} with grouping.
-#' If specified, the parameters will be grouped by this variable in the y-axis, and
-#' \code{paramValueVar} should be an unique variable.
+#' @param paramGroupVar (optional) Character vector with variable(s) 
+#' of \code{data} based on which the data will be grouped and sorted 
+#' (in the y-axis) in the plot.
 #' @param paramVarSep String (' - ' by default) 
 #' with character(s) used to concatenate multiple 
 #' variables for the same record in the plot area.
