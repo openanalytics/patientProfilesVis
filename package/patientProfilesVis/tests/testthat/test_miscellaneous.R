@@ -24,6 +24,6 @@ test_that("default report format for subject profile is extracted", {
 	expect_equal(reportFormat$margin, 0.75)
 	expect_equal(reportFormat$landscape, FALSE)
 	expect_equal(reportFormat$aspectRatio, 0.5)
-	expect_equal(reportFormat$yLabelWidth, 20)
+	expect_equal(reportFormat$yLabelWidth, 30)
 			
 })
