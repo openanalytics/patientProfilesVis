@@ -76,38 +76,37 @@ pipeline {
                         }
                         stage('Check') {
                             steps {
-                                sh '''
-                                export TESTTHAT_DEFAULT_CHECK_REPORTER="junit"
-                                export TESTTHAT_OUTPUT_FILE="results.xml"
-                                ls patientProfilesVis_*.tar.gz && R CMD check patientProfilesVis_*.tar.gz --no-manual
-                                '''
+                                sh 'ls patientProfilesVis_*.tar.gz && R CMD check patientProfilesVis_*.tar.gz --no-manual'
                             }
-                            post {
-                                always {
-                                    junit "*.Rcheck/tests/results.xml"
-                                }
-                            }
-                        }
-                        stage('Coverage') {
-                           steps {
-                                sh 'R -q -e \'covr::to_cobertura(covr::package_coverage("package/patientProfilesVis"))\''
-                            }
-                           post {
-                              success {
-                                  cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'cobertura.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false
-                              }
-                           }
                         }
                         stage('Install') {
                             steps {
                                 sh 'R -q -e \'install.packages(list.files(".", "patientProfilesVis_.*.tar.gz"), repos = NULL) \''
                             }
                         }
+                        stage('Test and coverage') {
+                            steps {
+                              sh '''
+                                R -q -e \'
+                                pc <- covr::package_coverage("package/patientProfilesVis", code = "testthat::test_package(\\"patientProfilesVis\\", reporter = testthat::JunitReporter$new(file = file.path(Sys.getenv(\\"WORKSPACE\\"), \\"results.xml\\")))");
+                                covr::report(x = pc, file = paste0("testCoverage-", attr(pc, "package")$package, "-", attr(pc, "package")$version, ".html"))
+                                covr::to_cobertura(pc)
+                                \'
+                                zip -r testCoverage.zip lib/ testCoverage*.html
+                                '''
+                            }
+                            post {
+                                always {
+                                    junit 'results.xml'
+                                    cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'cobertura.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false
+                                }
+                            }
+                        }
                     }
                 }
                 stage('Archive artifacts') {
                     steps {
-                        archiveArtifacts artifacts: '*.tar.gz, *.pdf, **/00check.log, *.Rout, **/vdiffr.Rout.fail', fingerprint: true
+                        archiveArtifacts artifacts: '*.tar.gz, *.pdf, **/00check.log, *.Rout, **/vdiffr.Rout.fail, testCoverage.zip', fingerprint: true
                     }
                 }
             }
