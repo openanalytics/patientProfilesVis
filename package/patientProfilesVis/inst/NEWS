@@ -4,6 +4,7 @@
     o subjectProfileTextPlot:
       - fix ordering in case paramNameVar is a factor
       - param value lab is used even if not table
+      - table output: records sorted based on value var (especially for factor)
 1.4.3
     o change default palette for Windows support: u25C0 -> u25C4, u25B6 -> u25BA, u271A -> +, u2605 (star) -> u2666 (diamond), u25EF -> u25CB
 1.4.2

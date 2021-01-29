@@ -453,15 +453,10 @@ formatParamVarTextPlot <- function(data,
 				width = colWidth[i]
 			)
 		})
-		if(!is.null(paramGroupVar)){
-			groupVariable <- if(length(paramGroupVar) > 1){
-				interaction(data[, paramGroupVar])
-			}else{
-				if(!is.factor(data[, paramGroupVar]))
-					factor(data[, paramGroupVar])	else	data[, paramGroupVar]
-			}
-			data <- data[order(groupVariable), ]
-		}
+			
+		# convert to factor and combine vars (if multiple)
+		dataGroup <- data[, c(paramGroupVar, paramValueVar), drop = FALSE]
+		data <- data[do.call(order, dataGroup), ]
 		
 	}else{
 

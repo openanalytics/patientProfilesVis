@@ -59,9 +59,9 @@ labels for \code{paramValueVar}.}
 variable of \code{data} with parameter name. This
 is displayed in the labels of the y-axis.}
 
-\item{paramGroupVar}{(optional) string, variable of \code{data} with grouping.
-If specified, the parameters will be grouped by this variable in the y-axis, and
-\code{paramValueVar} should be an unique variable.}
+\item{paramGroupVar}{(optional) Character vector with variable(s) 
+of \code{data} based on which the data will be grouped and sorted 
+(in the y-axis) in the plot.}
 
 \item{subsetData}{Data.frame from which subset based on \code{subjectVar}/\code{subsetValue}
 should be extracted. If not specified, \code{data} is used.
