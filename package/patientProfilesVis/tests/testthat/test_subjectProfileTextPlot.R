@@ -265,9 +265,11 @@ test_that("variable(s) are represented as a table", {
 		dimnames = list(NULL, subset(ggDataLong, t == 1)$label) # header
 	)
 	
+	dataOrder <- data[with(data, order(CAT, TERM, START, END)), ]
+	
 	expect_equal(
 		object = as.data.frame(ggData),
-		expected = data[, paramValueVar],
+		expected = dataOrder[, paramValueVar],
 		check.attributes = FALSE
 	)
 	
@@ -309,4 +311,53 @@ test_that("parameters are grouped based on grouping variable(s)", {
 	yLabel <- layer_scales(gg, which(isGeomText))$y$range$range
 	expect_equal(rev(yLabel), as.character(dataOrder$TERM))
 			
+})
+
+test_that("parameters displayed as table are grouped based on grouping variable(s)", {
+
+	data <- data.frame(
+		CAT1 = c("I", "I", "I", "II"),
+		CAT2 = factor(c("A", "A", "B", "A"), levels = c("B", "A")),
+		TERM = factor(c("a1", "a2", "b", "a3"), levels = c("a2", "a1", "a3", "b")),
+		START = c("01/2020", "02/2020", "01/2019", "03/2021"),
+		USUBJID = "1",
+		stringsAsFactors = FALSE
+	)
+			
+	plots <- subjectProfileTextPlot(
+		data = data,
+		paramValueVar = c("TERM", "START"),
+		paramGroupVar = c("CAT1", "CAT2"),
+		table = TRUE
+	)
+	gg <- plots[["1"]][[1]]
+			
+	# extract table defined with: 'annotation_custom'
+	isGeomTable <- sapply(gg$layers, function(l) inherits(l$geom, "GeomCustomAnn"))
+			
+	# table is defined as gtable
+	gTable <- layer_grob(gg, which(isGeomTable))[[1]]
+	gTable <- gtable::gtable_filter(gTable, "fg")# filter background(=bg) elements
+	gTableLabels <- sapply(gTable$grobs, "[[", "label") # plot labels
+	gTableCoord <- gTable$layout[, c("t", "l")] # coordinates
+			
+	# format plot data
+	ggDataLong <- cbind.data.frame(gTableCoord, label = gTableLabels)
+	ggDataLong <- ggDataLong[with(ggDataLong, order(t, l)), ]
+	ggData <- matrix(
+		data = subset(ggDataLong, t != 1)$label, 
+		nrow = max(ggDataLong$t)-1, ncol = max(ggDataLong$l),
+		byrow = TRUE,
+		dimnames = list(NULL, subset(ggDataLong, t == 1)$label) # header
+	)
+	
+	dataOrder <- data[with(data, order(CAT1, CAT2, TERM, START)), ]
+	dataOrder <- as.matrix(dataOrder)
+	
+	expect_equal(
+		object = ggData,
+		expected = dataOrder[, c("TERM", "START")],
+		check.attributes = FALSE
+	)
+	
 })
