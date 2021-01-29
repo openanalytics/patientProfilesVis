@@ -1,6 +1,7 @@
 context("Visualize subject profile as a text")
 
 library(ggplot2)
+library(gtable)
 
 test_that("subject variable is not present in the data", {
 			
@@ -27,7 +28,7 @@ test_that("subject variable order is retained", {
 			
 })
 
-test_that("parameter values are displayed", {
+test_that("variable(s) of parameter value are specified as vector", {
 			
 	data <- data.frame(
 		SEX = c("F", "M", "F"),
@@ -81,7 +82,7 @@ test_that("parameter values are displayed", {
 		
 })
 
-test_that("parameter values are combined", {
+test_that("variable(s) of parameter value are combined", {
 			
 	data <- data.frame(
 		SEX = "M", AGE = NA_character_,
@@ -106,7 +107,7 @@ test_that("parameter values are combined", {
 		
 })
 
-test_that("label(s) for parameter variable(s) are specified", {
+test_that("label(s) for variable(s) of parameter value are specified", {
 			
 	data <- data.frame(
 		SEX = "M", AGE = NA_character_,
@@ -134,7 +135,7 @@ test_that("label(s) for parameter variable(s) are specified", {
 			
 })
 
-test_that("variables for parameter name and value are specified", {
+test_that("variable(s) of parameter name and value are specified", {
 			
 	# example with multiple records
 	# for the same label
@@ -186,7 +187,7 @@ test_that("variable for parameter name should be of length 1", {
 	)		
 })
 
-test_that("variable for parameter name and function for parameter value are specified", {
+test_that("variable(s) for parameter name and function for parameter value are specified", {
 			
 	# example with multiple records
 	# for the same label
@@ -222,4 +223,52 @@ test_that("variable for parameter name and function for parameter value are spec
 	yLabel <- layer_scales(gg, which(isGeomText))$y$range$range
 	expect_equal(rev(yLabel), levels(data$TERM))
 			
+})
+
+test_that("variable(s) are represented as a table", {
+			
+	# example with multiple records for the same subject
+	data <- data.frame(
+		CAT = "A",
+		TERM = factor(c("a", "b"), levels = c("b", "a")),
+		END = c(NA_character_, "03/2020"),
+		START = c("01/2020", "02/2020"),
+		USUBJID = "1"
+	)
+	
+	paramValueVar <- c("CAT", "TERM", "START", "END")
+	expect_silent(
+		plots <- subjectProfileTextPlot(
+			data = data,
+			paramValueVar = paramValueVar,
+			table = TRUE
+		)
+	)
+	gg <- plots[["1"]][[1]]
+	
+	# extract table defined with: 'annotation_custom'
+	isGeomTable <- sapply(gg$layers, function(l) inherits(l$geom, "GeomCustomAnn"))
+	
+	# table is defined as gtable
+	gTable <- layer_grob(gg, which(isGeomTable))[[1]]
+	gTable <- gtable::gtable_filter(gTable, "fg")# filter background(=bg) elements
+	gTableLabels <- sapply(gTable$grobs, "[[", "label") # plot labels
+	gTableCoord <- gTable$layout[, c("t", "l")] # coordinates
+	
+	# format plot data
+	ggDataLong <- cbind.data.frame(gTableCoord, label = gTableGrobsLabel)
+	ggDataLong <- ggDataLong[with(ggDataLong, order(t, l)), ]
+	ggData <- matrix(
+		data = subset(ggDataLong, t != 1)$label, 
+		nrow = max(ggDataLong$t)-1, ncol = max(ggDataLong$l),
+		byrow = TRUE,
+		dimnames = list(NULL, subset(ggDataLong, t == 1)$label) # header
+	)
+	
+	expect_equal(
+		object = as.data.frame(ggData),
+		expected = data[, paramValueVar],
+		check.attributes = FALSE
+	)
+	
 })

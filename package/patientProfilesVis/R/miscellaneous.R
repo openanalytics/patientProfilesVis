@@ -497,8 +497,10 @@ formatParamVarTextPlot <- function(data,
 #' @inheritParams getPageVar
 #' @return Numeric vector of \code{length(ncol(data))} with optimal widths.
 #' @importFrom stats median
+#' @importFrom plyr colwise
 #' @author Laure Cougnaud
-getOptimalColWidth <- function(data,
+getOptimalColWidth <- function(
+	data,
 	widthValue = ifelse(
 		formatReport$landscape,
 		240,
@@ -507,7 +509,10 @@ getOptimalColWidth <- function(data,
 	labels = NULL,
 	formatReport = subjectProfileReportFormat()){
 	
-	if(!is.null(labels))	data <- rbind.data.frame(labels, data)
+	if(!is.null(labels)){
+		data <- colwise(as.character)(data)
+		data <- rbind.data.frame(labels, data)
+	}
 
 	# determine minimum column size
 	nCharacWordMin <- apply(data, 2, function(x){
