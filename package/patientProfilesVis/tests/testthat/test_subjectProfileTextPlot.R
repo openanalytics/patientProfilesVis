@@ -256,7 +256,7 @@ test_that("variable(s) are represented as a table", {
 	gTableCoord <- gTable$layout[, c("t", "l")] # coordinates
 	
 	# format plot data
-	ggDataLong <- cbind.data.frame(gTableCoord, label = gTableGrobsLabel)
+	ggDataLong <- cbind.data.frame(gTableCoord, label = gTableLabels)
 	ggDataLong <- ggDataLong[with(ggDataLong, order(t, l)), ]
 	ggData <- matrix(
 		data = subset(ggDataLong, t != 1)$label, 
