@@ -38,7 +38,7 @@ formatTimeInterval(
 names of the variables in \code{data} used for symbol shape
 for \code{timeStartVar}/\code{timeEndVar}.}
 
-\item{subjectVar}{string, variable of \code{data} with subject ID}
+\item{subjectVar}{String, variable of data (and subset data) with subject ID.}
 
 \item{timeLim}{(optional) vector of length 2 with time limits (x-axis)
 If not specified, extracted from the minimum \code{timeStartVar} 

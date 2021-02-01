@@ -47,7 +47,7 @@ which modules of \code{timeAlign} should have subject-specific time limits
 }
 This is only used for the modules with which \code{timeAlign} is specified.}
 
-\item{subjectVar}{string, variable of \code{data} with subject ID}
+\item{subjectVar}{String, variable of data (and subset data) with subject ID.}
 
 \item{maxNLines}{maximum number of lines for a combined plot,
 to fit in the page height}

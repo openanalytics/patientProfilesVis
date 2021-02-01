@@ -536,22 +536,45 @@ getOptimalColWidth <- function(
 	
 }
 
-#' Filter a dataset for records of interest
-#' @param data data data.frame with data
-#' @param subsetData Data.frame from which subset based on \code{subjectVar}/\code{subsetValue}
-#' should be extracted. If not specified, \code{data} is used.
-#' Records from \code{data} are then mapped by the \code{subjectVar} variable.
-#' @param subsetVar variable of \code{data} used for subsetting
-#' @param subsetValue character vector with value(s) of interest to consider for 
-#' \code{subsetVar}
-#' @param subjectVar string, variable of \code{data} with subject ID
+#' Filter a dataset for records of interest.
+#' 
+#' Data is filtered based on the following workflow:
+#' \enumerate{
+#' \item{The subset dataset (of \code{data} if not specified)
+#' is filtered based on subject variable and value (if specified).
+#' }
+#' \item{If a external subset dataset is specified, only the subject IDs
+#' of this filtered dataset are considered.}
+#' \item{The \code{data} is filtered based on the selected subjects,
+#' from \code{subjectSubset} (if specified) or from step 2.}
+#' \item{The data is filtered based on a random selection of subjects, if
+#' \code{subjectSample} is specified.}
+#' }
+#' This filtering workflow is used for all subject profile visualization
+#' functions of the package.
+#' @param data Data.frame with data
+#' @param subsetData (optional) Data.frame with extra dataset to filter on.
+#' This dataset is filtered, and only records from \code{data} 
+#' with common subject IDs will be retained.\cr
+#' If not specified, \code{data} is used.
+#' @param subsetVar (optional) String with variable of subset data to filter on.
+#' \code{subsetValue} should be specified too.\cr
+#' If not specified, all records from the subset data are retained.
+#' @param subsetValue (optional) Character vector with value(s) of interest to
+#' retain in the filtered data.
+#' These values should be available in \code{subsetVar}.\cr
+#' Missing values in the subject variable are not retained 
+#' in the filtered data.
+#' @param subjectVar String, variable of data (and subset data) with subject ID.
 #' @param subjectSubset (optional) Character vector with subjects of interest 
-#' (available in \code{subjectVar} of \code{data}), NULL by default.
-#' @param subjectSample Integer with number of random subject(s) that should be considered,
+#' (available in \code{subjectVar}), NULL by default.
+#' @param subjectSample (optional) Integer of length 1
+#' with number of random subject(s) that should be considered,
 #' e.g. to check the created patient profiles for a subset of the data.
 #' By default, all specified subjects are considered (set to NULL).
-#' @param seed Integer with seed used to select random subjects 
-#' if \code{subjectSample} is specified.
+#' @param seed (optional) Integer of length 1 with seed used to select random subjects 
+#' if \code{subjectSample} is specified (123 by default).
+#' @example inst/examples/filterData-example.R
 #' @return possibly filtered dataset
 #' @author Laure Cougnaud
 #' @export
@@ -577,13 +600,15 @@ filterData <- function(
 				warning("Subset variable not used because not in the data.")
 			}else{
 				if(is.null(subsetValue)){
-					warning("Subset variable: ", subsetVar, 
-						"not used, because no value of interest is specified.")
+					warning("Subset variable: ", shQuote(subsetVar), 
+						" is not used, because no subset value is specified.")
 				}else{
 					subsetData <- subsetData[which(subsetData[, subsetVar] %in% subsetValue), ]
 				}
 			}
-		}
+		}else	if(!is.null(subsetValue))
+			warning("Subset value: ", shQuote(subsetValue), 
+					" is not used, because no subset variable is specified.")
 		return(subsetData)
 	}
 	

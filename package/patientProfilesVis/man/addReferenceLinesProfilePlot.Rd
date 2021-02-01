@@ -20,7 +20,7 @@ addReferenceLinesProfilePlot(
 \arguments{
 \item{gg}{\code{\link[ggplot2]{ggplot2}} object}
 
-\item{subjectVar}{string, variable of \code{data} with subject ID}
+\item{subjectVar}{String, variable of data (and subset data) with subject ID.}
 
 \item{refLines}{(optional) nested list with details for reference line(s).
 Each sublist contains:

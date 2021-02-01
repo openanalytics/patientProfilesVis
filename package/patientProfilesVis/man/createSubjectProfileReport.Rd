@@ -109,7 +109,7 @@ by default same as \code{bookmarkVar}}
 \item{subjectSortDecreasing}{Logical, if TRUE (FALSE by default)
 subjects are sorted based on decreasing order of \code{subjectSortVar}.}
 
-\item{subjectVar}{string, variable of \code{data} with subject ID}
+\item{subjectVar}{String, variable of data (and subset data) with subject ID.}
 
 \item{subjectSubset}{subjectSubset (optional) Character vector with subjects of interest 
 (available in \code{subjectVar}), NULL by default.}
@@ -123,12 +123,13 @@ If not specified, all subjects available in \code{subjectSubsetData} are conside
 \item{subjectSubsetValue}{Character vector with value(s) of \code{subjectSubsetVar}
 of interest to filter subjects on.}
 
-\item{subjectSample}{Integer with number of random subject(s) that should be considered,
+\item{subjectSample}{(optional) Integer of length 1
+with number of random subject(s) that should be considered,
 e.g. to check the created patient profiles for a subset of the data.
 By default, all specified subjects are considered (set to NULL).}
 
-\item{seed}{Integer with seed used to select random subjects 
-if \code{subjectSample} is specified.}
+\item{seed}{(optional) Integer of length 1 with seed used to select random subjects 
+if \code{subjectSample} is specified (123 by default).}
 
 \item{subset}{Character vector with subjects of interest 
 (among names of each list in \code{listPlots}).}
