@@ -39,7 +39,7 @@ subjectProfileEventPlot(
 )
 }
 \arguments{
-\item{data}{data.frame with data}
+\item{data}{Data.frame with data}
 
 \item{paramVar}{string, variable of \code{data} with parameter (used in the y-axis)}
 
@@ -103,9 +103,9 @@ These values should be available in \code{subsetVar}.\cr
 Missing values in the subject variable are not retained 
 in the filtered data.}
 
-\item{xLab}{string, label for the x-axis}
+\item{xLab}{String, label for the x-axis.}
 
-\item{yLab}{string, label for the y-axis}
+\item{yLab}{String, label for the y-axis.}
 
 \item{timeLim}{(optional) vector of length 2 with time limits (x-axis)
 If not specified, extracted from the minimum \code{timeStartVar} 
@@ -113,9 +113,11 @@ and maximum \code{timeEndVar} per subject.}
 
 \item{title}{string, title for the plot}
 
-\item{label}{string, label used in the plot.
-This label is used to report the name of the panel 
-in the text when the plots are combined (e.g. if the plot is empty).}
+\item{label}{String, label for the visualization.
+This label is used when the visualization is 
+included in the final patient profile report,
+in case this visualization is empty (no data available)
+for a specific subject.}
 
 \item{labelVars}{Named character vector with variable labels 
 (names are the variable code)}
@@ -123,8 +125,14 @@ in the text when the plots are combined (e.g. if the plot is empty).}
 \item{formatReport}{list with parameters used to specify the format of the report,
 e.g. output of the \code{\link{subjectProfileReportFormat}} function}
 
-\item{paging}{Logical, if TRUE (by default), the automatic 
-paging is enabled, otherwise only one page is used.}
+\item{paging}{Logical, if TRUE (by default), automatic 
+paging is enabled, so patient profiles module too big to fit
+in one page will span multiple pages.
+Please note that the size of the graphic window 
+(or report page) may need
+to be re-sized in order that the plot fits.
+\cr
+If FALSE, the entire plot is included in one single page.}
 }
 \value{
 list of (across subjects) of list (across modules) of \code{\link[ggplot2]{ggplot2} objects}, 

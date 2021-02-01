@@ -2,10 +2,7 @@
 % Please edit documentation in R/miscellaneous.R
 \name{formatParamVarTextPlot}
 \alias{formatParamVarTextPlot}
-\title{Format text variables for the \code{\link{subjectProfileTextPlot}} function, 
-wrap it across multiple lines if needed,
-and optionally sorted according to the levels
-of a grouping variable}
+\title{Format text variables for the subject profile text plotting function.}
 \usage{
 formatParamVarTextPlot(
   data,
@@ -46,9 +43,12 @@ e.g. output of the \code{\link{subjectProfileReportFormat}} function}
 are displayed as table (so are not concatenated).}
 
 \item{colWidth}{Numeric vector of \code{length(paramValueVar)}
-containing the approximate width of each parameter value column.
-Only used if parameter values are displayed as a table (\code{table} is TRUE).
-Note: columns can be slightly bigger if content larger than the specified width.
+containing the approximate width of each parameter value column
+in percentage for a table layout.\cr
+For example: \code{c(0.8, 0.2))} such as the first column
+takes 80\% of plot area, and the second column 20\%.\cr
+Note: columns can be slightly bigger if content is 
+larger than the specified width.
 If not specified, optimized widths are determined.}
 }
 \value{
@@ -56,10 +56,12 @@ If not specified, optimized widths are determined.}
 with additional attribute: \code{colWidth}.
 }
 \description{
-Format text variables for the \code{\link{subjectProfileTextPlot}} function, 
-wrap it across multiple lines if needed,
+Text variables are wrapped across multiple lines if needed,
 and optionally sorted according to the levels
-of a grouping variable
+of a grouping variable.
+}
+\seealso{
+\link{subjectProfileTextPlot}
 }
 \author{
 Laure Cougnaud

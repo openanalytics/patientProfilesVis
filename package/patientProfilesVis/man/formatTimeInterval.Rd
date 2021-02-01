@@ -24,7 +24,7 @@ formatTimeInterval(
 )
 }
 \arguments{
-\item{data}{data.frame with data}
+\item{data}{Data.frame with data}
 
 \item{timeStartVar}{string, variable of \code{data} with start of range}
 

@@ -30,7 +30,7 @@ subjectProfileTextPlot(
 )
 }
 \arguments{
-\item{data}{data.frame with data}
+\item{data}{Data.frame with data.}
 
 \item{paramValueVar}{Character vector, either:
 \itemize{
@@ -63,46 +63,15 @@ is displayed in the labels of the y-axis.}
 of \code{data} based on which the data will be grouped and sorted 
 (in the y-axis) in the plot.}
 
-\item{subsetData}{(optional) Data.frame with extra dataset to filter on.
-This dataset is filtered, and only records from \code{data} 
-with common subject IDs will be retained.\cr
-If not specified, \code{data} is used.}
+\item{xLab}{String, label for the x-axis.}
 
-\item{subsetVar}{(optional) String with variable of subset data to filter on.
-\code{subsetValue} should be specified too.\cr
-If not specified, all records from the subset data are retained.}
+\item{yLab}{String, label for the y-axis.}
 
-\item{subsetValue}{(optional) Character vector with value(s) of interest to
-retain in the filtered data.
-These values should be available in \code{subsetVar}.\cr
-Missing values in the subject variable are not retained 
-in the filtered data.}
-
-\item{subjectVar}{String, variable of data (and subset data) with subject ID.}
-
-\item{subjectSubset}{(optional) Character vector with subjects of interest 
-(available in \code{subjectVar}), NULL by default.}
-
-\item{subjectSample}{(optional) Integer of length 1
-with number of random subject(s) that should be considered,
-e.g. to check the created patient profiles for a subset of the data.
-By default, all specified subjects are considered (set to NULL).}
-
-\item{seed}{(optional) Integer of length 1 with seed used to select random subjects 
-if \code{subjectSample} is specified (123 by default).}
-
-\item{xLab}{string, label for the x-axis}
-
-\item{yLab}{string, label for the y-axis}
-
-\item{title}{string, title for the plot}
-
-\item{label}{string, label used in the plot.
-This label is used to report the name of the panel 
-in the text when the plots are combined (e.g. if the plot is empty).}
-
-\item{labelVars}{Named character vector with variable labels 
-(names are the variable code)}
+\item{label}{String, label for the visualization.
+This label is used when the visualization is 
+included in the final patient profile report,
+in case this visualization is empty (no data available)
+for a specific subject.}
 
 \item{paramVarSep}{String (' - ' by default) 
 with character(s) used to concatenate multiple 
@@ -111,17 +80,17 @@ variables for the same record in the plot area.}
 \item{formatReport}{list with parameters used to specify the format of the report,
 e.g. output of the \code{\link{subjectProfileReportFormat}} function}
 
-\item{paging}{Logical, if TRUE (by default), the automatic 
-paging is enabled, otherwise only one page is used.}
-
 \item{table}{Logical, if TRUE (FALSE by default) the information
 contained in the variables: \code{paramValueVar} is displayed as a table. 
 Otherwise, the values of the different variables are concatenated in the same line.}
 
 \item{colWidth}{Numeric vector of \code{length(paramValueVar)}
-containing the approximate width of each parameter value column.
-Only used if parameter values are displayed as a table (\code{table} is TRUE).
-Note: columns can be slightly bigger if content larger than the specified width.
+containing the approximate width of each parameter value column
+in percentage for a table layout.\cr
+For example: \code{c(0.8, 0.2))} such as the first column
+takes 80\% of plot area, and the second column 20\%.\cr
+Note: columns can be slightly bigger if content is 
+larger than the specified width.
 If not specified, optimized widths are determined.}
 }
 \value{
@@ -135,19 +104,28 @@ There are two ways to specify the variables of interest to include:
 \item{by specifying column(s) of interest containing parameter values, passed
 to the \code{paramValueVar} parameter.\cr
 In this case, variable value is displayed in the plot area,
-and variable name in the label of the y-axis.
+and variable name in the label of the y-axis, as:\cr
+variable 1 | value 1 - value 2 - ...\cr
+variable 2 | value 1 - value 2 - ...
 }
 \item{by specifying column(s) of interest containing parameter values,
 displayed as a \code{table}. \cr
 In this case, variable are displayed in columns
 in the plot area. Variable names are displayed 
-on top of table, and associated values below.}
+on top of table, and associated values below, as:\cr
+| variable 1      variable 2\cr
+| value 1         value 1
+| ...
+}
 \item{by specifying a combination of a variable containing the parameter name
 (\code{paramNameVar}), coupled with a variable containing the 
 parameter values (\code{paramValueVar}).\cr
 In this case, parameter values (if multiple) are concatenated 
 and displayed in the plot area for each parameter name,
-displayed in the label of the y-axis.}
+displayed in the label of the y-axis, as:\cr
+variable name 1 | variable value 1 - variable value 2 - ...\cr
+variable name 2 | variable value 1 - ...
+}
 }
 }
 \seealso{
