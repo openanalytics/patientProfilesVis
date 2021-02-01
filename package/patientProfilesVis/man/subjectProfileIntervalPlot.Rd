@@ -220,6 +220,13 @@ if specified}
 \item{the maximum range on the data obtained after imputation of missing values}
 }
 }
+\seealso{
+Other patient profiles plotting function: 
+\code{\link{subjectProfileEventPlot}()},
+\code{\link{subjectProfileLinePlot}()},
+\code{\link{subjectProfileTextPlot}()}
+}
 \author{
 Laure Cougnaud
 }
+\concept{patient profiles plotting function}

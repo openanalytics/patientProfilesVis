@@ -166,6 +166,13 @@ The entire list also contains attributes: '\code{label}',
 \description{
 Create spaghetti plot for subject profiles
 }
+\seealso{
+Other patient profiles plotting function: 
+\code{\link{subjectProfileEventPlot}()},
+\code{\link{subjectProfileIntervalPlot}()},
+\code{\link{subjectProfileTextPlot}()}
+}
 \author{
 Laure Cougnaud
 }
+\concept{patient profiles plotting function}

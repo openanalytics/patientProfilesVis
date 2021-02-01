@@ -137,6 +137,11 @@ to the \code{paramValueVar} parameter.\cr
 In this case, variable value is displayed in the plot area,
 and variable name in the label of the y-axis.
 }
+\item{by specifying column(s) of interest containing parameter values,
+displayed as a \code{table}. \cr
+In this case, variable are displayed in columns
+in the plot area. Variable names are displayed 
+on top of table, and associated values below.}
 \item{by specifying a combination of a variable containing the parameter name
 (\code{paramNameVar}), coupled with a variable containing the 
 parameter values (\code{paramValueVar}).\cr
@@ -145,6 +150,13 @@ and displayed in the plot area for each parameter name,
 displayed in the label of the y-axis.}
 }
 }
+\seealso{
+Other patient profiles plotting function: 
+\code{\link{subjectProfileEventPlot}()},
+\code{\link{subjectProfileIntervalPlot}()},
+\code{\link{subjectProfileLinePlot}()}
+}
 \author{
 Laure Cougnaud
 }
+\concept{patient profiles plotting function}

@@ -9,6 +9,7 @@
 #' also of class \code{subjectProfileEventPlot}, with additional metaData attributes containing
 #' '\code{label}', 'timeLim' and and 'timeTrans' (if specified).
 #' @author Laure Cougnaud
+#' @family patient profiles plotting function
 #' @import ggplot2
 #' @importFrom plyr dlply
 #' @importFrom stats reorder
