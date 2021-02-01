@@ -39,6 +39,7 @@
 #' The entire list also contains attributes: '\code{label}',
 #' 'timeLim' and 'timeTrans' (if specified).
 #' @author Laure Cougnaud
+#' @family patient profiles plotting function
 #' @import ggplot2
 #' @importFrom glpgStyle glpgColor
 #' @importFrom plyr dlply

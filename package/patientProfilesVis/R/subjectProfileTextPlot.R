@@ -7,6 +7,11 @@
 #' In this case, variable value is displayed in the plot area,
 #' and variable name in the label of the y-axis.
 #' }
+#' \item{by specifying column(s) of interest containing parameter values,
+#' displayed as a \code{table}. \cr
+#' In this case, variable are displayed in columns
+#' in the plot area. Variable names are displayed 
+#' on top of table, and associated values below.}
 #' \item{by specifying a combination of a variable containing the parameter name
 #' (\code{paramNameVar}), coupled with a variable containing the 
 #' parameter values (\code{paramValueVar}).\cr
@@ -53,6 +58,7 @@
 #' also of class \code{subjectProfileTextPlot}, with additional metaData attributes containing
 #' '\code{label}' and 'timeLim'.
 #' @author Laure Cougnaud
+#' @family patient profiles plotting function
 #' @import ggplot2
 #' @importFrom gridExtra tableGrob ttheme_minimal
 #' @importFrom plyr dlply ddply

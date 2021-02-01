@@ -43,6 +43,7 @@
 #'  with additional 'metaData' attributes containing
 #' '\code{label}', 'timeLim' \code{timeTrans} and \code{timeExpand} (if specified).
 #' @author Laure Cougnaud
+#' @family patient profiles plotting function
 #' @import ggplot2
 #' @importFrom plyr dlply
 #' @importFrom stats reorder

@@ -134,6 +134,13 @@ also of class \code{subjectProfileEventPlot}, with additional metaData attribute
 \description{
 Create plot of subject profiles for events
 }
+\seealso{
+Other patient profiles plotting function: 
+\code{\link{subjectProfileIntervalPlot}()},
+\code{\link{subjectProfileLinePlot}()},
+\code{\link{subjectProfileTextPlot}()}
+}
 \author{
 Laure Cougnaud
 }
+\concept{patient profiles plotting function}
