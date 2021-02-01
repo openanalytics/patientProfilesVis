@@ -9,15 +9,10 @@
 #' \code{timeStartVar} and \code{timeEndVar}, what should be the range of the segment?
 #' By default, a thousandth of the range of \code{timeLim}
 #' (if not specified the time range available in the data).
-#' @param xLab string, label for the x-axis
-#' @param yLab string, label for the y-axis
 #' @param colorVar string, variable of \code{data} with color.
 #' @param colorLab string, label for \code{colorVar}
 #' @param colorPalette named vector with color for \code{colorVar}
 #' @param title string, title for the plot
-#' @param label string, label used in the plot.
-#' This label is used to report the name of the panel 
-#' in the text when the plots are combined (e.g. if the plot is empty).
 #' @param paramVarSep string with character(s) used to concatenate multiple 
 #' \code{paramVar}, ' - ' by default.
 #' @param timeLabel string with general time label, used
@@ -33,6 +28,7 @@
 #' @param timeExpand Vector of range expansion constants for the time axis
 #' (see \code{expand} parameter of the \code{\link[ggplot2]{scale_x_continuous}} function).
 #' @param alpha Numeric with transparency, 1 by default.
+#' @inheritParams patientProfilesVis-common-args
 #' @inheritParams filterData
 #' @inheritParams glpgUtilityFct::formatVarForPlotLabel
 #' @inheritParams formatTimeInterval
@@ -357,7 +353,6 @@ subjectProfileIntervalPlot <- function(
 #' if specified}
 #' \item{the maximum range on the data obtained after imputation of missing values}
 #' }
-#' @param data data.frame with data
 #' @param timeStartVar string, variable of \code{data} with start of range
 #' @param timeStartLab String, label for \code{timeStartVar}.
 #' @param timeEndVar string, variable of \code{data} with end of range

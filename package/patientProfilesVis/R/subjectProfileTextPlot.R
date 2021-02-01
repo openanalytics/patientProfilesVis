@@ -5,19 +5,28 @@
 #' \item{by specifying column(s) of interest containing parameter values, passed
 #' to the \code{paramValueVar} parameter.\cr
 #' In this case, variable value is displayed in the plot area,
-#' and variable name in the label of the y-axis.
+#' and variable name in the label of the y-axis, as:\cr
+#' variable 1 | value 1 - value 2 - ...\cr
+#' variable 2 | value 1 - value 2 - ...
 #' }
 #' \item{by specifying column(s) of interest containing parameter values,
 #' displayed as a \code{table}. \cr
 #' In this case, variable are displayed in columns
 #' in the plot area. Variable names are displayed 
-#' on top of table, and associated values below.}
+#' on top of table, and associated values below, as:\cr
+#' | variable 1      variable 2\cr
+#' | value 1         value 1
+#' | ...
+#' }
 #' \item{by specifying a combination of a variable containing the parameter name
 #' (\code{paramNameVar}), coupled with a variable containing the 
 #' parameter values (\code{paramValueVar}).\cr
 #' In this case, parameter values (if multiple) are concatenated 
 #' and displayed in the plot area for each parameter name,
-#' displayed in the label of the y-axis.}
+#' displayed in the label of the y-axis, as:\cr
+#' variable name 1 | variable value 1 - variable value 2 - ...\cr
+#' variable name 2 | variable value 1 - ...
+#' }
 #' }
 #' @param paramValueVar Character vector, either:
 #' \itemize{
@@ -52,7 +61,7 @@
 #' @param table Logical, if TRUE (FALSE by default) the information
 #' contained in the variables: \code{paramValueVar} is displayed as a table. 
 #' Otherwise, the values of the different variables are concatenated in the same line.
-#' @inheritParams subjectProfileIntervalPlot
+#' @inheritParams patientProfilesVis-common-args
 #' @inheritParams formatParamVarTextPlot
 #' @return list of (across subjects) of list (across modules) of \code{\link[ggplot2]{ggplot2} objects}, 
 #' also of class \code{subjectProfileTextPlot}, with additional metaData attributes containing
@@ -122,10 +131,7 @@ subjectProfileTextPlot <- function(
 				varsToConcatenateLab <- sapply(varsToConcatenateList, function(vars)
 					toString(getLabelVar(var = vars, labelVars = labelVars, label = paramValueLab))
 				)
-				paramValueLab <- c(
-					paramValueLab,
-					setNames(varsToConcatenateLab, varsToConcatenate)
-				)
+				paramValueLab[varsToConcatenate] <- varsToConcatenateLab
 			}
 			
 			# transform data from wide to long format
@@ -240,8 +246,10 @@ subjectProfileTextPlot <- function(
 					dataTable, theme = themeTable, 
 					rows = NULL
 				)
-				if(!is.null(colWidth))
+				if(!is.null(colWidth)){
+					colWidth <- rep(colWidth, length.out = length(paramValueVar))
 					gtable$widths <- unit(colWidth/sum(colWidth), "npc")
+				}
 				gg <- ggplot() + annotation_custom(gtable)
 			
 			}else{
@@ -280,7 +288,11 @@ subjectProfileTextPlot <- function(
 			
 			# plot content: labels y-axis and text
 			if(table){
-				nLinesMax <- apply(dataSubjectPage[, paramValueVar], 1, function(text) max(countNLines(text)))
+				nLinesMax <- apply(
+					dataSubjectPage[, paramValueVar, drop = FALSE], 
+					1, 
+					function(text) max(countNLines(text))
+				)
 				nLinesHeader <- max(countNLines(colnames(dataTable)))
 				nLinesAll <- c(nLinesHeader, nLinesMax)
 				nLinesPlot <- sum(nLinesAll) + 0.8 * (length(nLinesAll) - 1)

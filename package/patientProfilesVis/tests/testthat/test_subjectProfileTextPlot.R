@@ -107,6 +107,29 @@ test_that("variable(s) of parameter value are combined", {
 		
 })
 
+test_that("variable(s) of parameter value are combined with specified separator", {
+			
+	data <- data.frame(
+		SEX = "M", AGE = NA_character_,
+		WEIGHT = 40, USUBJID = "1"
+	)
+	plots <- subjectProfileTextPlot(
+		data = data,
+		paramValueVar = "WEIGHT|AGE|SEX",
+		paramVarSep = " and "
+	)
+	gg <- plots[["1"]][[1]]
+			
+	# extract data behind the text
+	isGeomText <- sapply(gg$layers, function(l) inherits(l$geom, "GeomText"))
+	ggDataText <- layer_data(gg, which(isGeomText))
+	ggDataText <- ggDataText[order(ggDataText$y), ]
+			
+	yValue <- as.character(ggDataText[, "label"])
+	expect_equal(yValue, c("40 and NA and M"))
+			
+})
+
 test_that("label(s) for variable(s) of parameter value are specified", {
 			
 	data <- data.frame(
@@ -358,6 +381,197 @@ test_that("parameters displayed as table are grouped based on grouping variable(
 		object = ggData,
 		expected = dataOrder[, c("TERM", "START")],
 		check.attributes = FALSE
+	)
+	
+})
+
+test_that("label is specified for x variable", {
+			
+	data <- data.frame(ARM = "A", USUBJID = "1")
+	xLab <- "ARM: Planned treatment arm"
+	expect_identical(
+		object = {
+			plots <- subjectProfileTextPlot(
+				data = data,
+				paramValueVar = "ARM",
+				xLab = xLab
+			)
+			plots[[1]][[1]]$labels$x
+		}, 
+		expected = xLab
+	)
+			
+})
+
+test_that("label is specified for y variable", {
+			
+	data <- data.frame(ARM = "A", USUBJID = "1")
+	yLab <- "Demographic variable"
+	expect_identical(
+		object = {
+			plots <- subjectProfileTextPlot(
+				data = data,
+				paramValueVar = "ARM",
+				yLab = yLab
+			)
+			plots[[1]][[1]]$labels$y
+		}, 
+		expected = yLab
+	)
+			
+})
+
+test_that("title is specified", {
+			
+	data <- data.frame(ARM = "A", USUBJID = "1")
+	title <- "Demographic information"
+	expect_identical(
+		object = {
+			plots <- subjectProfileTextPlot(
+				data = data,
+				paramValueVar = "ARM",
+				title = title
+			)
+			plots[[1]][[1]]$labels$title
+		}, 
+		expected = title
+	)
+			
+})
+
+test_that("variable labels are specified", {
+			
+	data <- data.frame(
+		SEX = "F",
+		AGE = 40,
+		ARM = "A",
+		USUBJID = "1"
+	)
+	
+	# label specified for a subset of the variable(s)
+	labelVars <- c(AGE = "Age (years)", ARM = "Treatment")
+	expect_equal(
+		object = {
+			plots <- subjectProfileTextPlot(
+				data = data,
+				paramValueVar = c("SEX", "AGE", "ARM"),
+				labelVars = labelVars
+			)
+			gg <- plots[[1]][[1]]
+			isGeomText <- sapply(gg$layers, function(l) inherits(l$geom, "GeomText"))
+			yLabel <- layer_scales(gg, which(isGeomText))$y$range$range
+			rev(yLabel) # labels returned from bottom to the top of the plot
+		},
+		expected = c("SEX", "Age (years)", "Treatment")
+	)		
+	
+	# in case variables are combined
+	expect_equal(
+		object = {
+			plots <- subjectProfileTextPlot(
+				data = data,
+				paramValueVar = "SEX|AGE|ARM",
+				labelVars = labelVars
+			)
+			gg <- plots[[1]][[1]]
+			isGeomText <- sapply(gg$layers, function(l) 
+				inherits(l$geom, "GeomText"))
+			layer_scales(gg, which(isGeomText))$y$range$range
+		},
+		expected = c("SEX, Age (years), Treatment")
+	)
+			
+})
+
+test_that("label is specified", {
+			
+	data <- data.frame(ARM = "A", USUBJID = "1")
+	label <- "demographic information"
+	expect_identical(
+		object = {
+			plots <- subjectProfileTextPlot(
+				data = data,
+				paramValueVar = "ARM",
+				label = label
+			)
+			attr(plots, "metaData")$label
+		}, 
+		expected = label
+	)
+			
+})
+
+test_that("visualization spans multiple pages", {
+			
+	data <- data.frame(
+		AEDECOD = sample(LETTERS, 100, replace = TRUE), 
+		USUBJID = "1"
+	)
+	
+	expect_gte(
+		object = {
+			plots <- subjectProfileTextPlot(
+				data = data,
+				paramValueVar = "AEDECOD",
+				table = TRUE,
+				paging = TRUE
+			)
+			length(plots[[1]])
+		}, 
+		1
+	)
+	
+	expect_equal(
+		object = {
+			plots <- subjectProfileTextPlot(
+				data = data,
+				paramValueVar = "AEDECOD",
+				table = TRUE,
+				paging = FALSE
+			)
+			length(plots[[1]])
+		}, 
+		1
+	)
+			
+})
+
+test_that("column width is fixed for table", {
+			
+	data <- data.frame(
+		CAT = paste(as.character(seq_len(100)), collapse = " "),
+		TERM = paste(as.character(seq_len(40)), collapse = " "),
+		USUBJID = "1"
+	)
+	
+	paramValueVar <- c("CAT", "TERM")
+	colWidth <- c(0.9, 0.1)
+	expect_silent(
+		plots <- subjectProfileTextPlot(
+			data = data,
+			paramValueVar = paramValueVar,
+			table = TRUE, colWidth = colWidth
+		)
+	)
+	gg <- plots[["1"]][[1]]
+	
+	# extract table defined with: 'annotation_custom'
+	isGeomTable <- sapply(gg$layers, function(l) inherits(l$geom, "GeomCustomAnn"))
+
+	# table is defined as gtable
+	gTable <- layer_grob(gg, which(isGeomTable))[[1]]
+	gTable <- gtable::gtable_filter(gTable, "fg")# filter background(=bg) elements
+	gTableLabels <- sapply(gTable$grobs, "[[", "label") # plot labels
+	gTableLabels <- setdiff(gTableLabels, paramValueVar)
+	
+	# extract max number of characters per line for each column:
+	gTableLabelsByLine <- strsplit(gTableLabels, split = "\n")
+	gTableMaxNChar <- sapply(gTableLabelsByLine, function(x) max(nchar(x)))
+	
+	# check that column proportion in plot is as specified:
+	expect_equal(
+		round(gTableMaxNChar[2]/gTableMaxNChar[1], 1), 
+		round(colWidth[2]/colWidth[1], 1)
 	)
 	
 })

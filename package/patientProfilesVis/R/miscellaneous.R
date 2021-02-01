@@ -229,8 +229,14 @@ countNLines <- function(x){
 #' @param title logical, has the plot a title?
 #' @param xLab logical, has the plot a label for the x-axis?
 #' @param caption logical, has the plot a caption?
-#' @param paging Logical, if TRUE (by default), the automatic 
-#' paging is enabled, otherwise only one page is used.
+#' @param paging Logical, if TRUE (by default), automatic 
+#' paging is enabled, so patient profiles module too big to fit
+#' in one page will span multiple pages.
+#' Please note that the size of the graphic window 
+#' (or report page) may need
+#' to be re-sized in order that the plot fits.
+#' \cr
+#' If FALSE, the entire plot is included in one single page.
 #' @inheritParams formatParamVarTextPlot
 #' @return input \code{data} with additional column 'pagePlot'
 #' containing the page for the plot
@@ -253,7 +259,7 @@ getPageVar <- function(data, var,
 		
 		if(table){
 			
-			nLines <- apply(data[, var], 1, function(x) max(countNLines(x)))
+			nLines <- apply(data[, var, drop = FALSE], 1, function(x) max(countNLines(x)))
 			
 			# create a variable with grouping
 			data$pagePlot <- floor(cumsum(nLines)/maxNLines) + 1
@@ -394,25 +400,32 @@ getAesScaleManual <- function(lab, palette, type){
 
 
 
-#' Format text variables for the \code{\link{subjectProfileTextPlot}} function, 
-#' wrap it across multiple lines if needed,
+#' Format text variables for the subject profile text plotting function.
+#' 
+#' Text variables are wrapped across multiple lines if needed,
 #' and optionally sorted according to the levels
-#' of a grouping variable
+#' of a grouping variable.
 #' @param paramValueVar  string, variable of \code{data} containing the parameter value. 
 #' @param paramValueLab Character vector with labels for \code{paramValueVar}.
 #' @param table Logical, if TRUE the \code{paramValueVar} variables
 #' are displayed as table (so are not concatenated).
-#' @param colWidth Numeric vector of \code{length(paramValueVar)}
-#' containing the approximate width of each parameter value column.
-#' Only used if parameter values are displayed as a table (\code{table} is TRUE).
-#' Note: columns can be slightly bigger if content larger than the specified width.
-#' If not specified, optimized widths are determined.
+#' @param colWidth Numeric vector with approximate
+#' width of each parameter value column
+#' for a table layout.\cr
+#' For example in case two parameters are specified: 
+#' \code{c(0.8, 0.2))} such as the first column
+#' takes 80\% of plot area, and the second column 20\%.\cr
+#' Note: columns can be slightly bigger if their content is 
+#' larger than the specified width.
+#' If not specified, column width is optimized
+#' based on the max length of the character in each column.
 #' @inheritParams glpgUtilityFct::formatVarForPlotLabel
 #' @inheritParams getPageVar
 #' @inheritParams getOptimalColWidth
 #' @return \code{data} with reformatted \code{paramVar} and \code{paramValueVar} variables,
 #' with additional attribute: \code{colWidth}.
 #' @importFrom glpgUtilityFct formatVarForPlotLabel
+#' @seealso \link{subjectProfileTextPlot}
 #' @author Laure Cougnaud
 formatParamVarTextPlot <- function(data, 
 	paramVar = NULL, 

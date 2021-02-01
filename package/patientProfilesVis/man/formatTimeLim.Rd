@@ -13,7 +13,7 @@ formatTimeLim(
 )
 }
 \arguments{
-\item{data}{data.frame with data}
+\item{data}{Data.frame with data}
 
 \item{subjectVar}{String, variable of data (and subset data) with subject ID.}
 

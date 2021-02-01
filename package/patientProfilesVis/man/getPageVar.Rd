@@ -36,8 +36,14 @@ e.g. output of the \code{\link{subjectProfileReportFormat}} function}
 
 \item{caption}{logical, has the plot a caption?}
 
-\item{paging}{Logical, if TRUE (by default), the automatic 
-paging is enabled, otherwise only one page is used.}
+\item{paging}{Logical, if TRUE (by default), automatic 
+paging is enabled, so patient profiles module too big to fit
+in one page will span multiple pages.
+Please note that the size of the graphic window 
+(or report page) may need
+to be re-sized in order that the plot fits.
+\cr
+If FALSE, the entire plot is included in one single page.}
 
 \item{table}{Logical, if TRUE the \code{paramValueVar} variables
 are displayed as table (so are not concatenated).}
