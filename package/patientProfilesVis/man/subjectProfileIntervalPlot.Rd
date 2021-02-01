@@ -75,26 +75,33 @@ If specified, the parameters will be grouped by this(these) variable(s) in the y
 \item{timeLabel}{string with general time label, used
 in the footnote for the explanation of the arrow, 'time' by default.}
 
-\item{subjectVar}{string, variable of \code{data} with subject ID}
+\item{subjectVar}{String, variable of data (and subset data) with subject ID.}
 
 \item{subjectSubset}{(optional) Character vector with subjects of interest 
-(available in \code{subjectVar} of \code{data}), NULL by default.}
+(available in \code{subjectVar}), NULL by default.}
 
-\item{subjectSample}{Integer with number of random subject(s) that should be considered,
+\item{subjectSample}{(optional) Integer of length 1
+with number of random subject(s) that should be considered,
 e.g. to check the created patient profiles for a subset of the data.
 By default, all specified subjects are considered (set to NULL).}
 
-\item{seed}{Integer with seed used to select random subjects 
-if \code{subjectSample} is specified.}
+\item{seed}{(optional) Integer of length 1 with seed used to select random subjects 
+if \code{subjectSample} is specified (123 by default).}
 
-\item{subsetData}{Data.frame from which subset based on \code{subjectVar}/\code{subsetValue}
-should be extracted. If not specified, \code{data} is used.
-Records from \code{data} are then mapped by the \code{subjectVar} variable.}
+\item{subsetData}{(optional) Data.frame with extra dataset to filter on.
+This dataset is filtered, and only records from \code{data} 
+with common subject IDs will be retained.\cr
+If not specified, \code{data} is used.}
 
-\item{subsetVar}{variable of \code{data} used for subsetting}
+\item{subsetVar}{(optional) String with variable of subset data to filter on.
+\code{subsetValue} should be specified too.\cr
+If not specified, all records from the subset data are retained.}
 
-\item{subsetValue}{character vector with value(s) of interest to consider for 
-\code{subsetVar}}
+\item{subsetValue}{(optional) Character vector with value(s) of interest to
+retain in the filtered data.
+These values should be available in \code{subsetVar}.\cr
+Missing values in the subject variable are not retained 
+in the filtered data.}
 
 \item{timeImpType}{String with imputation type: 'minimal' (default),
 'data-based' or 'none'.}

@@ -15,7 +15,7 @@ formatTimeLim(
 \arguments{
 \item{data}{data.frame with data}
 
-\item{subjectVar}{string, variable of \code{data} with subject ID}
+\item{subjectVar}{String, variable of data (and subset data) with subject ID.}
 
 \item{timeStartVar}{string, variable of \code{data} with start of range}
 
