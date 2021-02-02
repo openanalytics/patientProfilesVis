@@ -89,3 +89,64 @@ test_that("parameter variables are correctly displayed for each subject", {
 	}
 			
 })
+
+test_that("multiple parameter variables are correctly combined and ordered", {
+		
+	# example where variables are specified as factor
+	# in this case variables are ordered based on factor levels
+	dataFactor <- data.frame(
+		CAT = factor(c("A", "A", "A", "B"), levels = c("B", "A")),
+		TEST = factor(c("a1", "a2", "a3", "b1"), levels = c("a2", "a3", "a1", "b1")),
+		DY = c(1, 2, 3, 4),
+		USUBJID = "1"
+	)
+	
+	# example with character vector
+	# in this case standard R ordering (alphabetical) is used
+	dataCharacter <- dataFactor
+	dataCharacter[, c("CAT", "TEST")] <- lapply(dataCharacter[, c("CAT", "TEST")], as.character)
+		
+	dataList <- list(data, data2)
+	
+	for(i in seq_along(dataList)){
+		
+		expect_equal(
+				
+			object = {
+	
+				plots <- subjectProfileEventPlot(
+					data = dataList[[!!i]],
+					paramVar = c("CAT", "TEST"),
+					timeVar = "DY"
+				)
+					
+				gg <- plots[[1]][[1]]
+				
+				# extract data behind the text
+				isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
+				ggDataPoint <- layer_data(gg, which(isGeomPoint))
+				ggDataPoint <- ggDataPoint[order(ggDataPoint$y), ]
+										
+				# extract labels of the y-axis
+				ggDataPoint$yLabel <- layer_scales(gg, which(isGeomPoint))$y$range$range
+				
+				# variables are order from the bottom to the top in the data
+				# so use revert order
+				ggDataPointOrder <- ggDataPoint[order(ggDataPoint$y, decreasing = TRUE), ]					
+										
+				ggDataPointOrder[, c("x", "yLabel")]
+			
+			}, expected = {
+				
+				data <- dataList[[!!i]]
+				dataReference <- data[with(data, order(CAT, TEST)), ]
+				dataReference$yLabel <- with(dataReference, paste(CAT, TEST, sep = " - "))
+			
+				dataReference[, c("DY", "yLabel")]
+			
+			},
+			check.attributes = FALSE
+		)
+	}
+	
+})

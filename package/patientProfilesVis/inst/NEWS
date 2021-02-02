@@ -7,6 +7,8 @@
       - table output: 
         - records sorted based on value var (especially for factor)
         - fix in case only one param value var is specified
+    o subjectProfileEventPlot:
+      - records sorted based on levels of param var if factor
     o getPageVar:
       - fix when only one var is specified
 1.4.3

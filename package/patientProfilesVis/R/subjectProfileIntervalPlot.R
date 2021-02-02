@@ -3,8 +3,6 @@
 #' If no start and/or end date is available and \code{timeStartShapeVar},
 #' \code{timeEndShapeVar} are not specified: specific arrows are created.
 #' @inherit formatTimeInterval details
-#' @param paramVar string, variable of \code{data} with parameter (used in the y-axis)
-#' @param paramLab string, label for \code{paramVar}
 #' @param rangeSimilarStartEnd numeric, if a record has the same
 #' \code{timeStartVar} and \code{timeEndVar}, what should be the range of the segment?
 #' By default, a thousandth of the range of \code{timeLim}
