@@ -151,6 +151,34 @@ test_that("multiple parameter variables are correctly combined and ordered", {
 	
 })
 
+test_that("variable(s) of parameters are combined with specified separator", {
+			
+	data <- data.frame(
+		CAT = c("A", "A", "A", "B"),
+		TEST = c("a1", "a2", "a3", "b1"), 
+		DY = c(1, 2, 3, 4),
+		USUBJID = "1"
+	)
+	plots <- subjectProfileEventPlot(
+		data = data,
+		paramVar = c("CAT", "TEST"),
+		paramVarSep = " and ",
+		timeVar = "DY"
+	)
+	gg <- plots[["1"]][[1]]
+			
+	# extract data behind the text
+	isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
+	yLabel <- layer_scales(gg, which(isGeomPoint))$y$range$range
+	yLabel <- rev(yLabel)
+	
+	dataReference <- data[with(data, order(CAT, TEST)), ]
+	dataReference$yLabel <- with(dataReference, paste(CAT, TEST, sep = " and "))
+	
+	expect_equal(yLabel, dataReference$yLabel)
+			
+})
+
 test_that("label(s) for parameter variable(s) are specified", {
 			
 	data <- data.frame(
