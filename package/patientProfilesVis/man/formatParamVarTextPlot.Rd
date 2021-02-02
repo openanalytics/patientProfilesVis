@@ -42,14 +42,16 @@ e.g. output of the \code{\link{subjectProfileReportFormat}} function}
 \item{table}{Logical, if TRUE the \code{paramValueVar} variables
 are displayed as table (so are not concatenated).}
 
-\item{colWidth}{Numeric vector of \code{length(paramValueVar)}
-containing the approximate width of each parameter value column
-in percentage for a table layout.\cr
-For example: \code{c(0.8, 0.2))} such as the first column
+\item{colWidth}{Numeric vector with approximate
+width of each parameter value column
+for a table layout.\cr
+For example in case two parameters are specified: 
+\code{c(0.8, 0.2))} such as the first column
 takes 80\% of plot area, and the second column 20\%.\cr
-Note: columns can be slightly bigger if content is 
+Note: columns can be slightly bigger if their content is 
 larger than the specified width.
-If not specified, optimized widths are determined.}
+If not specified, column width is optimized
+based on the max length of the character in each column.}
 }
 \value{
 \code{data} with reformatted \code{paramVar} and \code{paramValueVar} variables,
