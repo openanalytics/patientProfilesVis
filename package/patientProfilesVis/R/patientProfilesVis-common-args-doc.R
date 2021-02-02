@@ -9,6 +9,8 @@
 #' for a specific subject.
 #' @param paramVar Character vector with variable(s) of \code{data} 
 #' with parameters. Variable content is displayed in the y-axis.
-#' @param paramLab Named character vector, with label for \code{paramVar}.
+#' @param paramLab Named character vector, 
+#' with label for the parameter variable(s) (\code{paramVar}).\cr
+#' This is used to set the default title.
 #' @name patientProfilesVis-common-args
 NULL
