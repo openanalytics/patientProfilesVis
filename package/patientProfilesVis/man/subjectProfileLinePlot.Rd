@@ -47,7 +47,7 @@ subjectProfileLinePlot(
 
 \item{paramValueVar}{string, variable of \code{data} with parameter value to represent}
 
-\item{paramLab}{string, label for \code{paramVar}}
+\item{paramLab}{Named character vector, with label for \code{paramVar}.}
 
 \item{paramNameVar}{Character vector with variable(s) of \code{data} with parameter name.
 If multiple, they are concatenated with \code{paramVarSep}.}

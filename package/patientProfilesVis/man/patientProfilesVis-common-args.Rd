@@ -15,6 +15,11 @@ This label is used when the visualization is
 included in the final patient profile report,
 in case this visualization is empty (no data available)
 for a specific subject.}
+
+\item{paramVar}{Character vector with variable(s) of \code{data} 
+with parameters. Variable content is displayed in the y-axis.}
+
+\item{paramLab}{Named character vector, with label for \code{paramVar}.}
 }
 \description{
 Arguments used across the functions of the patientProfilesVis package.
