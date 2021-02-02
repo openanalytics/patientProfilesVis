@@ -3,7 +3,7 @@ context("Visualize subject profile as a text")
 library(ggplot2)
 library(gtable)
 
-test_that("subject variable is not present in the data", {
+test_that("error if subject variable is not present in the data", {
 			
 	data <- data.frame(SEX = c("F", "M", "F"))
 	expect_error(
