@@ -2,7 +2,7 @@ context("Visualize subject profile event")
 
 library(ggplot2)
 
-test_that("subject variable is not present in the data", {
+test_that("error if subject variable is not present in the data", {
 			
 	data <- data.frame(
 		LBTEST = c("A", "B", "C"),
