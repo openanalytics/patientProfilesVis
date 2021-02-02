@@ -1,4 +1,6 @@
 #' Create plot of subject profiles for events
+#' 
+#' 
 #' @param timeVar string, variable of \code{data} with time
 #' @param timeLab String, label for \code{timeVar}.
 #' @param shapeVar string, variable of \code{data} for shape of the points
@@ -47,11 +49,11 @@ subjectProfileEventPlot <- function(
 	checkVar(var = subjectVar, data = data)
 	
 	# concatenate variable(s) if multiple are specified
-	data[, "yVar"] <- if(length(paramVar) > 1){
-		apply(data[, paramVar], 1, paste, collapse = paramVarSep)
-	}else{
-		data[, paramVar]
-	}
+	dataParam <- data[, paramVar, drop = FALSE]
+	data[, "yVar"] <- do.call(
+		interaction, 
+		c(as.list(dataParam), list(sep = paramVarSep, drop = TRUE, lex.order = TRUE))
+	)
 	
 	# remove records without parameter or time variables
 	isYMissing <- is.na(data[, "yVar"]) | data[, "yVar"] == ""
@@ -90,8 +92,11 @@ subjectProfileEventPlot <- function(
 	
 	# format variable
 	data$yVar <- formatVarForPlotLabel(
-		data = data, paramVar = "yVar", paramGroupVar = paramGroupVar,
-		revert = TRUE, width = formatReport$yLabelWidth
+		data = data, 
+		paramVar = "yVar", 
+		paramGroupVar = paramGroupVar,
+		revert = TRUE, 
+		width = formatReport$yLabelWidth
 	)
 	
 	timeLim <- formatTimeLim(
