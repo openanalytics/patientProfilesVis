@@ -36,7 +36,7 @@ subjectProfileEventPlot <- function(
 	xLab = getLabelVar(timeVar, labelVars = labelVars),
 	yLab = "",
 	timeLim = NULL,
-	title = paramLab,
+	title = toString(getLabelVar(paramVar, labelVars = labelVars, label = paramLab)),
 	label = title,
 	labelVars = NULL,
 	formatReport = subjectProfileReportFormat(),

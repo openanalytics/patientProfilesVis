@@ -31,7 +31,7 @@ subjectProfileEventPlot(
   xLab = getLabelVar(timeVar, labelVars = labelVars),
   yLab = "",
   timeLim = NULL,
-  title = paramLab,
+  title = toString(getLabelVar(paramVar, labelVars = labelVars, label = paramLab)),
   label = title,
   labelVars = NULL,
   formatReport = subjectProfileReportFormat(),
@@ -44,7 +44,9 @@ subjectProfileEventPlot(
 \item{paramVar}{Character vector with variable(s) of \code{data} 
 with parameters. Variable content is displayed in the y-axis.}
 
-\item{paramLab}{Named character vector, with label for \code{paramVar}.}
+\item{paramLab}{Named character vector, 
+with label for the parameter variable(s) (\code{paramVar}).\cr
+This is used to set the default title.}
 
 \item{paramVarSep}{string with character(s) used to concatenate multiple 
 \code{paramVar}, ' - ' by default.}

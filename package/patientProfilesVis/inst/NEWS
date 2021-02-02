@@ -9,6 +9,7 @@
         - fix in case only one param value var is specified
     o subjectProfileEventPlot:
       - records sorted based on levels of param var if factor
+      - fix when paramVarLab not specified for all vars
     o getPageVar:
       - fix when only one var is specified
 1.4.3

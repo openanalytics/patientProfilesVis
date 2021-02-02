@@ -19,7 +19,9 @@ for a specific subject.}
 \item{paramVar}{Character vector with variable(s) of \code{data} 
 with parameters. Variable content is displayed in the y-axis.}
 
-\item{paramLab}{Named character vector, with label for \code{paramVar}.}
+\item{paramLab}{Named character vector, 
+with label for the parameter variable(s) (\code{paramVar}).\cr
+This is used to set the default title.}
 }
 \description{
 Arguments used across the functions of the patientProfilesVis package.

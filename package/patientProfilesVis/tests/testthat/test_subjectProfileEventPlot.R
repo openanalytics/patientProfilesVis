@@ -150,3 +150,34 @@ test_that("multiple parameter variables are correctly combined and ordered", {
 	}
 	
 })
+
+test_that("label(s) for parameter variable(s) are specified", {
+			
+	data <- data.frame(
+		CAT = "A", TEST = "a1",
+		DY = 1,
+		USUBJID = "1"
+	)
+		
+	expect_equal({
+		plots <- subjectProfileEventPlot(
+			data = data,
+			paramVar = c("CAT", "TEST"),
+			timeVar = "DY"
+		)
+		gg <- plots[[1]][[1]]
+		gg$labels$title
+	}, expected = "CAT, TEST")
+
+	expect_equal({
+		plots <- subjectProfileEventPlot(
+			data = data,
+			paramVar = c("CAT", "TEST"),
+			timeVar = "DY",
+			paramLab = c(TEST = "Laboratory parameter")
+		)
+		gg <- plots[[1]][[1]]
+		gg$labels$title
+	}, expected = "CAT, Laboratory parameter")
+			
+})

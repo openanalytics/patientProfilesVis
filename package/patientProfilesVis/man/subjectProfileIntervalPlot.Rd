@@ -60,7 +60,9 @@ with parameters. Variable content is displayed in the y-axis.}
 \item{paramVarSep}{string with character(s) used to concatenate multiple 
 \code{paramVar}, ' - ' by default.}
 
-\item{paramLab}{Named character vector, with label for \code{paramVar}.}
+\item{paramLab}{Named character vector, 
+with label for the parameter variable(s) (\code{paramVar}).\cr
+This is used to set the default title.}
 
 \item{paramGroupVar}{(optional) character vector with variable(s) of \code{data} with grouping.
 If specified, the parameters will be grouped by this(these) variable(s) in the y-axis.}
