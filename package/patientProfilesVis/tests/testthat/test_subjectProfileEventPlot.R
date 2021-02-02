@@ -106,7 +106,7 @@ test_that("multiple parameter variables are correctly combined and ordered", {
 	dataCharacter <- dataFactor
 	dataCharacter[, c("CAT", "TEST")] <- lapply(dataCharacter[, c("CAT", "TEST")], as.character)
 		
-	dataList <- list(data, data2)
+	dataList <- list(dataFactor, dataCharacter)
 	
 	for(i in seq_along(dataList)){
 		
