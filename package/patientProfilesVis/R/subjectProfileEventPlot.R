@@ -44,6 +44,8 @@ subjectProfileEventPlot <- function(
 	# in case data is a tibble:
 	data <- as.data.frame(data)
 	
+	checkVar(var = subjectVar, data = data)
+	
 	# concatenate variable(s) if multiple are specified
 	data[, "yVar"] <- if(length(paramVar) > 1){
 		apply(data[, paramVar], 1, paste, collapse = paramVarSep)

@@ -28,7 +28,7 @@ test_that("subject variable order is retained", {
 			
 })
 
-test_that("variable(s) of parameter value are specified as vector", {
+test_that("parameter values are correctly displayed by subject", {
 			
 	data <- data.frame(
 		SEX = c("F", "M", "F"),
