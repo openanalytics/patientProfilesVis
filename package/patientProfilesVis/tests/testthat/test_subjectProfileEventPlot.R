@@ -209,3 +209,44 @@ test_that("label(s) for parameter variable(s) are specified", {
 	}, expected = "CAT, Laboratory parameter")
 			
 })
+
+test_that("parameters are grouped based on grouping variable(s)", {
+			
+	# example where data is first sorted based on multiple
+	# grouping variables (factor and character),
+	# then param name variable (for a2 vs a1)
+	data <- data.frame(
+		CAT1 = factor(c("I", "I", "II", "II"), levels = c("II", "I")),
+		CAT2 = c("A", "A", "A", "B"), 
+		TEST = factor(c("a1", "a2", "a3", "b1"), levels = c("a2", "a3", "a1", "b1")),
+		DY = c(1, 2, 3, 4),
+		USUBJID = "1"
+	)
+			
+	plots <- subjectProfileEventPlot(
+		data = data,
+		paramVar = "TEST",
+		paramGroupVar = c("CAT1", "CAT2"),
+		timeVar = "DY"
+	)
+			
+	gg <- plots[["1"]][[1]]
+	
+	# extract data behind the point
+	isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
+	ggDataPoint <- layer_data(gg, which(isGeomPoint))
+	ggDataPoint <- ggDataPoint[order(ggDataPoint$y), ]
+	
+	# extract labels of the y-axis
+	ggDataPoint$yLabel <- layer_scales(gg, which(isGeomPoint))$y$range$range
+	
+	# variables are order from the bottom to the top in the data
+	# so use revert order
+	ggDataPointOrder <- ggDataPoint[order(ggDataPoint$y, decreasing = TRUE), ]					
+	yLabel <- ggDataPointOrder$yLabel
+	
+	dataOrder <- data[with(data, order(CAT1, CAT2, TEST)), ]
+			
+	expect_equal(yLabel, as.character(dataOrder$TEST))
+			
+})
