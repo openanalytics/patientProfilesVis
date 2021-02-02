@@ -103,7 +103,7 @@ test_that("variable(s) of parameter value are combined", {
 	expect_equal(yValue, c("40 - NA - M"))
 	
 	yLabel <- layer_scales(gg, which(isGeomText))$y$range$range
-	expect_equal(yLabel, c("WEIGHT|AGE|SEX"))
+	expect_equal(yLabel, c("WEIGHT, AGE, SEX"))
 		
 })
 
