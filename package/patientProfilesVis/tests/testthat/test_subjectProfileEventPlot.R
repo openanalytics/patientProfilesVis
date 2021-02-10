@@ -486,6 +486,19 @@ test_that("points are shaped based on a variable", {
 	isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
 	ggDataPoint <- layer_data(gg, which(isGeomPoint))
 	
+	# format reference data
+	dataReference <- data
+	# parameter as sorted from top to the bottom
+	dataReference$y <- with(dataReference, max(LBTEST)-LBTEST)+1
+	# missing levels are not displayed
+	dataReference$LBNRIND <- droplevels(dataReference$LBNRIND)
+	
+	ggDataPointWithInput <- merge(
+		x = ggDataPoint, by.x = c("x", "y"),
+		y = dataReference, by.y = c("LBDY", "y"),
+		all = TRUE
+	)
+	
 	# all data is represented
 	expect_equal(nrow(ggDataPointWithInput), nrow(data))
 	# color scale based on data
