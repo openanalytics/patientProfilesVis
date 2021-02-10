@@ -5,9 +5,13 @@
 #' for the colors and the filling of the points.
 #' @param timeVar string, variable of \code{data} with time
 #' @param timeLab String, label for \code{timeVar}.
-#' @param shapeVar string, variable of \code{data} for shape of the points
-#' @param shapeLab string, label for \code{shapeVar}
-#' @param shapePalette named vector with shape for \code{shapeVar}
+#' @param shapeVar String, variable of \code{data} for shape of the points.
+#' By default, same as \code{colorVar}.
+#' @param shapeLab String, label for \code{shapeVar}
+#' @param shapePalette Named character vector with shape palette
+#' for \code{shapeVar}.
+#' The variable should be named with the corresponding element
+#' in \code{shapeVar}.
 #' @inheritParams subjectProfileIntervalPlot
 #' @return list of (across subjects) of list (across modules) of \code{\link[ggplot2]{ggplot2} objects}, 
 #' also of class \code{subjectProfileEventPlot}, with additional metaData attributes containing

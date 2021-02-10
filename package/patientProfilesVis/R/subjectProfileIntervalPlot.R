@@ -12,7 +12,8 @@
 #' \code{paramVar}, ' - ' by default.
 #' @param timeLabel string with general time label, used
 #' in the footnote for the explanation of the arrow, 'time' by default.
-#' @param shapePalette Named vector with shape for \code{timeStartShapeVar}\code{timeEndShapeVar}.
+#' @param shapePalette Named vector with (combined) shape palette for 
+#' \code{timeStartShapeVar}\code{timeEndShapeVar}.
 #' @param shapeLab String with label for \code{timeStartShapeVar}\code{timeEndShapeVar}
 #' @param shapeSize Size for symbols (only used if \code{timeStartShapeVar}/\code{timeEndShapeVar} is specified).
 #' @param timeAlign Logical, if TRUE (by default)

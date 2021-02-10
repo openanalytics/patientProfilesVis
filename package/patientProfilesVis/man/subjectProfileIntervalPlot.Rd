@@ -160,7 +160,8 @@ for \code{timeStartVar}/\code{timeEndVar}.}
 names of the variables in \code{data} used for symbol shape
 for \code{timeStartVar}/\code{timeEndVar}.}
 
-\item{shapePalette}{Named vector with shape for \code{timeStartShapeVar}\code{timeEndShapeVar}.}
+\item{shapePalette}{Named vector with (combined) shape palette for 
+\code{timeStartShapeVar}\code{timeEndShapeVar}.}
 
 \item{shapeLab}{String with label for \code{timeStartShapeVar}\code{timeEndShapeVar}}
 

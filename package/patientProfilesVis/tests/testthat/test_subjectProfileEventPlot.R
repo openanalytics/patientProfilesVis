@@ -301,7 +301,7 @@ test_that("points are colored based on a variable", {
 	)
 	colorScale <- ggScales[[which(isColorAes)]]
 	colorScalePlot <- colorScale$palette(2)
-	expect_mapequal(colorScaleData, colorScalePlot)
+	expect_equal(colorScaleData, colorScalePlot)
 	
 })
 
@@ -334,6 +334,112 @@ test_that("points are colored with specified palette", {
 	)
 	colorScale <- ggScales[[which(isColorAes)]]
 	colorScalePlot <- colorScale$palette(3)
-	expect_mapequal(colorScalePlot, colorPalette)
+	expect_equal(colorScalePlot, colorPalette)
 			
+})
+
+test_that("symbols are based on the color variable by default if specified", {
+			
+	data <- data.frame(
+		LBTEST = seq(3),
+		LBDY = seq(3),
+		LBNRIND = factor(
+			c("High", "Normal", "High"), 
+			levels = c("Low", "Normal", "High")
+		),
+		USUBJID = "1"
+	)
+			
+	plots <- subjectProfileEventPlot(
+		data = data,
+		timeVar = "LBDY",
+		paramVar = "LBTEST",
+		colorVar = "LBNRIND"
+	)
+			
+	gg <- plots[["1"]][[1]]
+		
+	# extract data behind the point
+	isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
+	ggDataPoint <- layer_data(gg, which(isGeomPoint))
+	
+	shapes <- c(with(ggDataPoint, tapply(shape, colour, unique)))
+	expect_type(shapes, "character")
+	expect_length(shapes, 2)
+	expect_length(unique(shapes), 2)
+			
+})
+
+test_that("points are shaped based on a variable", {
+			
+	data <- data.frame(
+		LBTEST = seq(3),
+		LBDY = seq(3),
+		LBNRIND = factor(
+			c("High", "Normal", "High"), 
+			levels = c("Low", "Normal", "High")
+		),
+		USUBJID = "1"
+	)
+	
+	plots <- subjectProfileEventPlot(
+		data = data,
+		timeVar = "LBDY",
+		paramVar = "LBTEST",
+		shapeVar = "LBNRIND"
+	)
+	
+	gg <- plots[["1"]][[1]]
+	
+	# extract data behind the point
+	isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
+	ggDataPoint <- layer_data(gg, which(isGeomPoint))
+	
+	# all data is represented
+	expect_equal(nrow(ggDataPointWithInput), nrow(data))
+	# color scale based on data
+	shapeScaleData <- c(with(ggDataPointWithInput, tapply(shape, LBNRIND, unique)))
+	
+	# extract shape palette of the plot
+	ggScales <- gg$scales$scales
+	isShapeAes <- sapply(ggScales, function(x) 
+		all(x[["aesthetics"]] == "shape")
+	)
+	shapeScale <- ggScales[[which(isShapeAes)]]
+	shapeScalePlot <- shapeScale$palette(2)
+	expect_equal(shapeScalePlot, shapeScaleData)
+	
+})
+
+test_that("points are shaped with specified palette", {
+			
+	data <- data.frame(
+		LBTEST = seq(3),
+		LBDY = seq(3),
+		LBNRIND = factor(
+			c("High", "Normal", "High"), 
+			levels = c("Low", "Normal", "High")
+		),
+		USUBJID = "1"
+	)
+	
+	shapePalette <- c(Low = 25, Normal = 19, High = 24)
+	plots <- subjectProfileEventPlot(
+		data = data,
+		timeVar = "LBDY",
+		paramVar = "LBTEST",
+		shapeVar = "LBNRIND",
+		shapePalette = shapePalette
+	)
+	gg <- plots[["1"]][[1]]
+	
+	# extract color palette of the plot
+	ggScales <- gg$scales$scales
+	isShapeAes <- sapply(ggScales, function(x) 
+		all(x[["aesthetics"]] == "shape")
+	)
+	shapeScale <- ggScales[[which(isShapeAes)]]
+	shapeScalePlot <- shapeScale$palette(3)
+	expect_equal(shapeScalePlot, shapePalette)
+	
 })
