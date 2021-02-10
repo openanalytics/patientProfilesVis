@@ -338,6 +338,44 @@ test_that("points are colored with specified palette", {
 			
 })
 
+test_that("color label is specified", {
+			
+	data <- data.frame(
+		LBTEST = seq(3),
+		LBDY = seq(3),
+		LBNRIND = c("High", "Normal", "High"),
+		USUBJID = "1"
+	)
+	
+	colorLab <- "Reference indicator"
+	plots <- subjectProfileEventPlot(
+		data = data,
+		timeVar = "LBDY",
+		paramVar = "LBTEST",
+		colorVar = "LBNRIND",
+		colorLab = colorLab
+	)
+	
+	gg <- plots[["1"]][[1]]
+	ggScales <- gg$scales$scales
+	
+	# extract color scale
+	isColorAes <- sapply(ggScales, function(x) 
+		all(x[["aesthetics"]] == "colour")
+	)
+	colorScale <- ggScales[[which(isColorAes)]]
+	expect_equal(colorScale$name, colorLab)
+	
+	# extract shape scale
+	# by default, shape label also set to color label
+	isShapeAes <- sapply(ggScales, function(x) 
+		all(x[["aesthetics"]] == "shape")
+	)
+	shapeScale <- ggScales[[which(isShapeAes)]]
+	expect_equal(shapeScale$name, colorLab)
+	
+})
+
 test_that("symbols are based on the color variable by default if specified", {
 			
 	data <- data.frame(
@@ -441,5 +479,60 @@ test_that("points are shaped with specified palette", {
 	shapeScale <- ggScales[[which(isShapeAes)]]
 	shapeScalePlot <- shapeScale$palette(3)
 	expect_equal(shapeScalePlot, shapePalette)
+	
+})
+
+test_that("shape label is specified", {
+			
+	data <- data.frame(
+		LBTEST = seq(3),
+		LBDY = seq(3),
+		LBNRIND = c("High", "Normal", "High"),
+		USUBJID = "1"
+	)
+			
+	shapeLab <- "Reference indicator"
+	plots <- subjectProfileEventPlot(
+		data = data,
+		timeVar = "LBDY",
+		paramVar = "LBTEST",
+		shapeVar = "LBNRIND",
+		shapeLab = shapeLab
+	)
+			
+	gg <- plots[["1"]][[1]]
+	
+	# extract shape scale
+	ggScales <- gg$scales$scales
+	isShapeAes <- sapply(ggScales, function(x) 
+		all(x[["aesthetics"]] == "shape")
+	)
+	shapeScale <- ggScales[[which(isShapeAes)]]
+	expect_equal(shapeScale$name, shapeLab)
+			
+})
+
+test_that("points are set transparent", {
+			
+	data <- data.frame(
+		LBTEST = seq(3),
+		LBDY = seq(3),
+		USUBJID = "1"
+	)
+			
+	alpha <- 0.3
+	plots <- subjectProfileEventPlot(
+		data = data,
+		timeVar = "LBDY",
+		paramVar = "LBTEST",
+		alpha = alpha
+	)
+	gg <- plots[["1"]][[1]]
+	
+	# extract data behind the point
+	isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
+	ggDataPoint <- layer_data(gg, which(isGeomPoint))
+	
+	expect_setequal(ggDataPoint$alpha, alpha)
 	
 })

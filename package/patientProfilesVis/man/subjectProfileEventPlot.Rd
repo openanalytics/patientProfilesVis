@@ -14,7 +14,8 @@ subjectProfileEventPlot(
   colorLab = getLabelVar(colorVar, labelVars = labelVars),
   colorPalette = NULL,
   shapeVar = colorVar,
-  shapeLab = getLabelVar(shapeVar, labelVars = labelVars),
+  shapeLab = if (isTRUE(colorVar == shapeVar)) {     colorLab } else
+    getLabelVar(shapeVar, labelVars = labelVars),
   shapePalette = NULL,
   alpha = 1,
   timeVar,
