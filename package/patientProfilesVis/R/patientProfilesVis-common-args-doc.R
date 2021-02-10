@@ -8,14 +8,26 @@
 #' @param xLab String, label for the x-axis.
 #' @param yLab String, label for the y-axis.
 #' @param label String, label for the visualization.
-#' This label is used when the visualization is 
-#' included in the final patient profile report,
-#' in case this visualization is empty (no data available)
-#' for a specific subject.
+#' This label is stored as attributes of the output
+#' from the \code{subjectProfile[]Plot} functions.
+#' This label is displayed in the final profile
+#' report, in case no data is available for
+#' for a specific patient.
 #' @param paramVar Character vector with variable(s) of \code{data} 
 #' with parameters. Variable content is displayed in the y-axis.
 #' @param paramLab Named character vector, 
 #' with label for the parameter variable(s) (\code{paramVar}).\cr
 #' This is used to set the default title.
+#' @param timeLim (optional) Vector of length 2 with time limits (x-axis).
+#' If not specified, these are extracted from the minimum \code{timeStartVar} 
+#' and maximum \code{timeEndVar} per subject.\cr
+#' The time limits are stored as attributes of the plots,
+#' used to align the plots in the final report.
+#' @param timeTrans transformation for the time variable, 
+#' (see code{trans} parameter in \code{\link[ggplot2]{scale_x_continuous}}, and
+#' \code{\link[scales]{trans_new}}).
+#' For example, produced by the \code{\link{getTimeTrans}} function.
+#' @param timeExpand Vector of range expansion constants for the time axis
+#' (see \code{expand} parameter in \code{\link[ggplot2]{scale_x_continuous}}).
 #' @name patientProfilesVis-common-args
 NULL

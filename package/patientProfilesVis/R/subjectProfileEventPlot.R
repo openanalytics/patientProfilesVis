@@ -3,8 +3,12 @@
 #' @param colorVar String, variable of \code{data} with color.
 #' For the subject profile event plot, this variable is used
 #' for the colors and the filling of the points.
-#' @param timeVar string, variable of \code{data} with time
+#' @param timeVar String, variable of \code{data} with time.
+#' Records with missing time are not displayed in the plot.
 #' @param timeLab String, label for \code{timeVar}.
+#' This is used in the message
+#' indicating missing values for \code{timeVar},
+#' and for the default label of the x-axis.
 #' @param shapeVar String, variable of \code{data} for shape of the points.
 #' By default, same as \code{colorVar}.
 #' @param shapeLab String, label for \code{shapeVar}.
@@ -17,7 +21,7 @@
 #' @inheritParams subjectProfileIntervalPlot
 #' @return list of (across subjects) of list (across modules) of \code{\link[ggplot2]{ggplot2} objects}, 
 #' also of class \code{subjectProfileEventPlot}, with additional metaData attributes containing
-#' '\code{label}', 'timeLim' and and 'timeTrans' (if specified).
+#' '\code{label}', 'timeLim' and 'timeTrans' (if specified).
 #' @author Laure Cougnaud
 #' @family patient profiles plotting function
 #' @import ggplot2
@@ -44,7 +48,7 @@ subjectProfileEventPlot <- function(
 	subjectVar = "USUBJID", subjectSubset = NULL, 
 	subjectSample = NULL, seed = 123,
 	subsetData = NULL, subsetVar = NULL, subsetValue = NULL,
-	xLab = getLabelVar(timeVar, labelVars = labelVars),
+	xLab = timeLab,
 	yLab = "",
 	timeLim = NULL,
 	title = toString(getLabelVar(paramVar, labelVars = labelVars, label = paramLab)),
