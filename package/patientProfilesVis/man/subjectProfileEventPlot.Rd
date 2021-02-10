@@ -29,7 +29,7 @@ subjectProfileEventPlot(
   subsetData = NULL,
   subsetVar = NULL,
   subsetValue = NULL,
-  xLab = getLabelVar(timeVar, labelVars = labelVars),
+  xLab = timeLab,
   yLab = "",
   timeLim = NULL,
   title = toString(getLabelVar(paramVar, labelVars = labelVars, label = paramLab)),
@@ -68,7 +68,9 @@ in \code{colorVar}.}
 \item{shapeVar}{String, variable of \code{data} for shape of the points.
 By default, same as \code{colorVar}.}
 
-\item{shapeLab}{String, label for \code{shapeVar}}
+\item{shapeLab}{String, label for \code{shapeVar}.
+Set by default to \code{colorLab} if \code{colorVar}
+but not \code{shapeVar} is not specified.}
 
 \item{shapePalette}{Named character vector with shape palette
 for \code{shapeVar}.
@@ -77,9 +79,13 @@ in \code{shapeVar}.}
 
 \item{alpha}{Numeric with transparency, 1 by default.}
 
-\item{timeVar}{string, variable of \code{data} with time}
+\item{timeVar}{String, variable of \code{data} with time.
+Records with missing time are not displayed in the plot.}
 
-\item{timeLab}{String, label for \code{timeVar}.}
+\item{timeLab}{String, label for \code{timeVar}.
+This is used in the message
+indicating missing values for \code{timeVar},
+and for the default label of the x-axis.}
 
 \item{timeTrans}{ggplot2 transformation (see \code{\link[scales]{trans_new}}),
 e.g. produced by the \code{\link{getTimeTrans}} function.}

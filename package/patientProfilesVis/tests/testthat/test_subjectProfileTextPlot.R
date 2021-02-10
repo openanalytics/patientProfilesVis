@@ -3,6 +3,23 @@ context("Visualize subject profile as a text")
 library(ggplot2)
 library(gtable)
 
+test_that("subject variable is specified", {
+			
+	data <- data.frame(
+		SEX = c("F", "M", "F"),
+		SUBJID = factor(c("a", "b", "c"))
+	)
+			
+	plots <- subjectProfileTextPlot(
+		data = data, 
+		paramValueVar = "SEX",
+		subjectVar = "SUBJID"
+	)
+			
+	expect_named(plots, levels(data$SUBJID))
+			
+})
+
 test_that("error if subject variable is not present in the data", {
 			
 	data <- data.frame(SEX = c("F", "M", "F"))
@@ -385,37 +402,37 @@ test_that("parameters displayed as table are grouped based on grouping variable(
 	
 })
 
-test_that("label is specified for x variable", {
+test_that("label is specified for the x variable", {
 			
 	data <- data.frame(ARM = "A", USUBJID = "1")
 	xLab <- "ARM: Planned treatment arm"
+	
+	plots <- subjectProfileTextPlot(
+		data = data,
+		paramValueVar = "ARM",
+		xLab = xLab
+	)
+	
 	expect_identical(
-		object = {
-			plots <- subjectProfileTextPlot(
-				data = data,
-				paramValueVar = "ARM",
-				xLab = xLab
-			)
-			plots[[1]][[1]]$labels$x
-		}, 
+		object = plots[[1]][[1]]$labels$x, 
 		expected = xLab
 	)
 			
 })
 
-test_that("label is specified for y variable", {
+test_that("label is specified for the y variable", {
 			
 	data <- data.frame(ARM = "A", USUBJID = "1")
 	yLab <- "Demographic variable"
+	
+	plots <- subjectProfileTextPlot(
+		data = data,
+		paramValueVar = "ARM",
+		yLab = yLab
+	)
+	
 	expect_identical(
-		object = {
-			plots <- subjectProfileTextPlot(
-				data = data,
-				paramValueVar = "ARM",
-				yLab = yLab
-			)
-			plots[[1]][[1]]$labels$y
-		}, 
+		object = plots[[1]][[1]]$labels$y, 
 		expected = yLab
 	)
 			
@@ -425,15 +442,15 @@ test_that("title is specified", {
 			
 	data <- data.frame(ARM = "A", USUBJID = "1")
 	title <- "Demographic information"
+	
+	plots <- subjectProfileTextPlot(
+		data = data,
+		paramValueVar = "ARM",
+		title = title
+	)
+	
 	expect_identical(
-		object = {
-			plots <- subjectProfileTextPlot(
-				data = data,
-				paramValueVar = "ARM",
-				title = title
-			)
-			plots[[1]][[1]]$labels$title
-		}, 
+		object = plots[[1]][[1]]$labels$title, 
 		expected = title
 	)
 			

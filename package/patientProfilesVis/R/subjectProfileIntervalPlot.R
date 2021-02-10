@@ -19,10 +19,6 @@
 #' @param timeAlign Logical, if TRUE (by default)
 #' the different plots are horizontally aligned.
 #' If set to FALSE, each plot has its own time-limits.
-#' @param timeTrans ggplot2 transformation (see \code{\link[scales]{trans_new}}),
-#' e.g. produced by the \code{\link{getTimeTrans}} function.
-#' @param timeExpand Vector of range expansion constants for the time axis
-#' (see \code{expand} parameter of the \code{\link[ggplot2]{scale_x_continuous}} function).
 #' @param alpha Numeric with transparency, 1 by default.
 #' @inheritParams patientProfilesVis-common-args
 #' @inheritParams filterData
@@ -353,9 +349,6 @@ subjectProfileIntervalPlot <- function(
 #' @param timeStartLab String, label for \code{timeStartVar}.
 #' @param timeEndVar string, variable of \code{data} with end of range
 #' @param timeEndLab String, label for \code{timeEndVar}.
-#' @param timeLim (optional) vector of length 2 with time limits (x-axis)
-#' If not specified, extracted from the minimum \code{timeStartVar} 
-#' and maximum \code{timeEndVar} per subject.
 #' @param timeLimData data.frame with data used to extract time limits per subject
 #' @param timeLimStartVar string, variable of \code{timeLimData} with time start
 #' @param timeLimStartLab String, label for \code{timeLimeStartVar}.

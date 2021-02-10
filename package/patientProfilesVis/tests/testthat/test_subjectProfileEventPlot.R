@@ -1,6 +1,26 @@
 context("Visualize subject profile event")
 
 library(ggplot2)
+library(scales)
+
+test_that("subject variable is specified", {
+			
+	data <- data.frame(
+		LBTEST = c("A", "B", "C"),
+		LBDY = c(1, 2, 3),
+		SUBJID = factor(c("a", "b", "a"))
+	)
+	
+	plots <- subjectProfileEventPlot(
+		data = data, 
+		timeVar = "LBDY",
+		paramVar = "LBTEST",
+		subjectVar = "SUBJID"
+	)
+	
+	expect_named(plots, levels(data$SUBJID))
+			
+})
 
 test_that("error if subject variable is not present in the data", {
 			
@@ -38,7 +58,6 @@ test_that("subject variable order is retained", {
 	expect_named(plots, levels(data$USUBJID))
 		
 })
-
 
 test_that("parameter variables are correctly displayed for each subject", {
 			
@@ -87,6 +106,40 @@ test_that("parameter variables are correctly displayed for each subject", {
 		)		
 		
 	}
+			
+})
+
+test_that("missings in parameter variables are discarded", {
+			
+	data <- data.frame(
+		LBTEST = c(NA_real_, 1, 2),
+		LBDY = seq(3),
+		USUBJID = "1"
+	)
+	expect_message(
+		plots <- subjectProfileEventPlot(
+			data = data,
+			timeVar = "LBDY",
+			paramVar = "LBTEST"
+		),
+		"1 record(s) with missing LBTEST are not considered.",
+		fixed = TRUE
+	)
+	gg <- plots[["1"]][[1]]
+			
+	# extract data behind the point
+	isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
+	ggDataPoint <- layer_data(gg, which(isGeomPoint))
+	ggDataPoint$y <- as.numeric(ggDataPoint$y)
+	
+	dataReference <- data
+	dataReference$y <- with(dataReference, max(LBTEST, na.rm = TRUE)-LBTEST)+1
+			
+	expect_equal(
+		ggDataPoint[, c("x", "y")],
+		subset(dataReference, !is.na(LBTEST), select = c("LBDY", "y")),
+		check.attributes = FALSE
+	)
 			
 })
 
@@ -535,4 +588,262 @@ test_that("points are set transparent", {
 	
 	expect_setequal(ggDataPoint$alpha, alpha)
 	
+})
+
+test_that("missings in time variables are discarded", {
+			
+	data <- data.frame(
+		LBTEST = seq(3),
+		LBDY = c(4.5, NA_real_, NA_real_),
+		USUBJID = "1"
+	)
+	expect_message(
+		plots <- subjectProfileEventPlot(
+			data = data,
+			timeVar = "LBDY",
+			paramVar = "LBTEST"
+		),
+		"2 record(s) with missing LBDY are not considered.",
+		fixed = TRUE
+	)
+	gg <- plots[["1"]][[1]]
+	
+	# extract data behind the point
+	isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
+	ggDataPoint <- layer_data(gg, which(isGeomPoint))
+	ggDataPoint$y <- as.numeric(ggDataPoint$y)
+	
+	expect_equal(
+		ggDataPoint[, c("x", "y")],
+		subset(data, !is.na(LBDY), select = c("LBDY", "LBTEST")),
+		check.attributes = FALSE
+	)
+	
+})
+
+test_that("time label is specified", {
+			
+	data <- data.frame(
+		LBTEST = seq(3),
+		LBDY = seq(3),
+		USUBJID = "1"
+	)
+			
+	timeLab <- "Relative day of the study"
+	plots <- subjectProfileEventPlot(
+		data = data,
+		timeVar = "LBDY",
+		timeLab = timeLab,
+		paramVar = "LBTEST"
+	)
+			
+	gg <- plots[["1"]][[1]]
+	
+	# by default used as label for the x-axis
+	expect_equal(gg$labels$x, timeLab)
+
+})
+
+test_that("a transformation is applied on the time variable", {
+			
+	data <- data.frame(
+		LBTEST = seq(3),
+		LBDY = c(1, 10, 100),
+		USUBJID = "1"
+	)
+			
+	timeTrans <- scales::log10_trans()
+	plots <- subjectProfileEventPlot(
+		data = data,
+		timeVar = "LBDY",
+		timeTrans = timeTrans,
+		paramVar = "LBTEST"
+	)
+			
+	gg <- plots[["1"]][[1]]
+	
+	# extract x-scale
+	ggScales <- gg$scales$scales
+	isXAes <- sapply(ggScales, function(x) 
+		any("x" %in% x[["aesthetics"]])
+	)
+	xScale <- ggScales[[which(isXAes)]]
+			
+	expect_identical(xScale$trans, timeTrans)
+			
+})
+
+test_that("time axis is expanded", {
+			
+	data <- data.frame(
+		LBTEST = seq(3),
+		LBDY = c(1, 2, 3),
+		USUBJID = "1"
+	)
+			
+	timeExpand <- expansion(mult = 0, add = 3)
+	
+	plots <- subjectProfileEventPlot(
+		data = data,
+		timeVar = "LBDY",
+		timeExpand = timeExpand,
+		paramVar = "LBTEST"
+	)
+			
+	gg <- plots[["1"]][[1]]
+			
+	# extract x-scale
+	ggScales <- gg$scales$scales
+	isXAes <- sapply(ggScales, function(x) 
+		any("x" %in% x[["aesthetics"]])
+	)
+	xScale <- ggScales[[which(isXAes)]]
+			
+	expect_identical(xScale$expand, timeExpand)
+			
+})
+
+test_that("time limits are specified", {
+			
+	data <- data.frame(
+		LBTEST = seq(3),
+		LBDY = c(1, 2, 3),
+		USUBJID = "1"
+	)
+			
+	timeLim <- c(2, 3)
+	plots <- subjectProfileEventPlot(
+		data = data,
+		timeVar = "LBDY",
+		timeLim = timeLim,
+		paramVar = "LBTEST"
+	)
+			
+	gg <- plots[["1"]][[1]]
+			
+	expect_identical(gg$coordinates$limits$x, timeLim)
+	
+	expect_identical(attr(plots, "metaData")$timeLim, timeLim)
+			
+})
+
+test_that("label is specified for the x variable", {
+			
+	data <- data.frame(
+		LBTEST = seq(3),
+		LBDY = seq(3),
+		USUBJID = "1"
+	)
+			
+	xLab <- "Relative day of the study"
+	plots <- subjectProfileEventPlot(
+		data = data,
+		timeVar = "LBDY",
+		xLab = xLab,
+		paramVar = "LBTEST"
+	)
+			
+	gg <- plots[["1"]][[1]]
+			
+	expect_identical(gg$labels$x, xLab)
+			
+})
+
+test_that("label is specified for the y variable", {
+			
+	data <- data.frame(
+		LBTEST = seq(3),
+		LBDY = seq(3),
+		USUBJID = "1"
+	)
+			
+	yLab <- "Parameter of interest"
+	plots <- subjectProfileEventPlot(
+		data = data,
+		timeVar = "LBDY",
+		yLab = yLab,
+		paramVar = "LBTEST"
+	)
+			
+	gg <- plots[["1"]][[1]]
+			
+	expect_identical(gg$labels$y, yLab)
+			
+})
+
+test_that("title is specified", {
+			
+	data <- data.frame(
+		LBTEST = seq(3),
+		LBDY = seq(3),
+		USUBJID = "1"
+	)
+	title <- "Laboratory parameters"
+	
+	plots <- subjectProfileEventPlot(
+		data = data,
+		timeVar = "LBDY",
+		title = title,
+		paramVar = "LBTEST"
+	)
+			
+	gg <- plots[["1"]][[1]]
+	
+	expect_identical(
+		object = gg$labels$title, 
+		expected = title
+	)
+			
+})
+
+test_that("label is specified", {
+			
+	data <- data.frame(
+		LBTEST = seq(3),
+		LBDY = seq(3),
+		USUBJID = "1"
+	)
+	label <- "laboratory information"
+			
+	plots <- subjectProfileEventPlot(
+		data = data,
+		timeVar = "LBDY",
+		label = label,
+		paramVar = "LBTEST"
+	)
+						
+	expect_identical(
+		attr(plots, "metaData")$label,
+		expected = label
+	)
+			
+})
+
+test_that("variable labels are specified", {
+			
+	data <- data.frame(
+		LBTEST = seq(3),
+		LBDY = seq(3),
+		LBNRIND = c("High", "Normal", "High"),
+		USUBJID = "1"
+	)
+			
+	# label specified for a subset of the variable(s)
+	labelVars <- c(LBDY = "Relative time", LBTEST = "Parameter")
+	plots <- subjectProfileEventPlot(
+		data = data,
+		timeVar = "LBDY",
+		paramVar = "LBTEST",
+		colorVar = "LBNRIND",
+		labelVars = labelVars
+	)
+	
+	gg <- plots[["1"]][[1]]
+	
+	expect_identical(gg$labels$title, "Parameter")
+	expect_identical(unname(gg$labels$x), "Relative time" )
+	expect_identical(gg$labels$colour, "LBNRIND")
+	expect_identical(gg$labels$fill, "LBNRIND")
+	expect_identical(gg$labels$shape, "LBNRIND")
+			
 })
