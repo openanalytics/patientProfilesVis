@@ -7,7 +7,9 @@
 #' @param timeLab String, label for \code{timeVar}.
 #' @param shapeVar String, variable of \code{data} for shape of the points.
 #' By default, same as \code{colorVar}.
-#' @param shapeLab String, label for \code{shapeVar}
+#' @param shapeLab String, label for \code{shapeVar}.
+#' Set by default to \code{colorLab} if \code{colorVar}
+#' but not \code{shapeVar} is not specified.
 #' @param shapePalette Named character vector with shape palette
 #' for \code{shapeVar}.
 #' The variable should be named with the corresponding element
@@ -31,7 +33,10 @@ subjectProfileEventPlot <- function(
 	paramGroupVar = NULL,
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
 	colorPalette = NULL,
-	shapeVar = colorVar, shapeLab = getLabelVar(shapeVar, labelVars = labelVars),
+	shapeVar = colorVar, 
+	shapeLab = if(isTRUE(colorVar == shapeVar)){
+		colorLab
+	}else	getLabelVar(shapeVar, labelVars = labelVars),
 	shapePalette = NULL,
 	alpha = 1,
 	timeVar, timeLab = getLabelVar(timeVar, labelVars = labelVars),

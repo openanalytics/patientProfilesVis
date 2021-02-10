@@ -10,6 +10,7 @@
     o subjectProfileEventPlot:
       - records sorted based on levels of param var if factor
       - fix when paramVarLab not specified for all vars
+      - shape lab set to color lab if color but not shape var specified
     o getPageVar:
       - fix when only one var is specified
 1.4.3
