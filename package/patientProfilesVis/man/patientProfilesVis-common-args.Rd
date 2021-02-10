@@ -6,6 +6,14 @@
 \arguments{
 \item{data}{Data.frame with data.}
 
+\item{colorVar}{String, variable of \code{data} with color.}
+
+\item{colorLab}{String, label for \code{colorVar}.}
+
+\item{colorPalette}{Named vector with color palette.
+The variable should be named with the corresponding element
+in \code{colorVar}.}
+
 \item{xLab}{String, label for the x-axis.}
 
 \item{yLab}{String, label for the y-axis.}

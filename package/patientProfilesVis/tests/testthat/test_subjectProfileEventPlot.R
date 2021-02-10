@@ -250,3 +250,90 @@ test_that("parameters are grouped based on grouping variable(s)", {
 	expect_equal(yLabel, as.character(dataOrder$TEST))
 			
 })
+
+test_that("points are colored based on a variable", {
+			
+	data <- data.frame(
+		LBTEST = seq(3),
+		LBDY = seq(3),
+		LBNRIND = factor(
+			c("High", "Normal", "High"), 
+			levels = c("Low", "Normal", "High")
+		),
+		USUBJID = "1"
+	)
+	
+	plots <- subjectProfileEventPlot(
+		data = data,
+		timeVar = "LBDY",
+		paramVar = "LBTEST",
+		colorVar = "LBNRIND"
+	)
+	
+	gg <- plots[["1"]][[1]]
+	
+	# extract data behind the point
+	isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
+	ggDataPoint <- layer_data(gg, which(isGeomPoint))
+	
+	# format reference data
+	dataReference <- data
+	# parameter as sorted from top to the bottom
+	dataReference$y <- with(dataReference, max(LBTEST)-LBTEST)+1
+	# missing levels are not displayed
+	dataReference$LBNRIND <- droplevels(dataReference$LBNRIND)
+	
+	ggDataPointWithInput <- merge(
+		x = ggDataPoint, by.x = c("x", "y"),
+		y = dataReference, by.y = c("LBDY", "y"),
+		all = TRUE
+	)
+	
+	# all data is represented
+	expect_equal(nrow(ggDataPointWithInput), nrow(data))
+	# color scale based on data
+	colorScaleData <- c(with(ggDataPointWithInput, tapply(colour, LBNRIND, unique)))
+
+	# extract color palette of the plot
+	ggScales <- gg$scales$scales
+	isColorAes <- sapply(ggScales, function(x) 
+		all(x[["aesthetics"]] == "colour")
+	)
+	colorScale <- ggScales[[which(isColorAes)]]
+	colorScalePlot <- colorScale$palette(2)
+	expect_mapequal(colorScaleData, colorScalePlot)
+	
+})
+
+test_that("points are colored with specified palette", {
+			
+	data <- data.frame(
+		LBTEST = seq(3),
+		LBDY = seq(3),
+		LBNRIND = factor(
+			c("High", "Normal", "High"), 
+			levels = c("Low", "Normal", "High")
+		),
+		USUBJID = "1"
+	)
+			
+	colorPalette <- c(Low = "green", Normal = "blue", High = "red")
+	plots <- subjectProfileEventPlot(
+		data = data,
+		timeVar = "LBDY",
+		paramVar = "LBTEST",
+		colorVar = "LBNRIND",
+		colorPalette = colorPalette
+	)
+	gg <- plots[["1"]][[1]]
+
+	# extract color palette of the plot
+	ggScales <- gg$scales$scales
+	isColorAes <- sapply(ggScales, function(x) 
+		all(x[["aesthetics"]] == "colour")
+	)
+	colorScale <- ggScales[[which(isColorAes)]]
+	colorScalePlot <- colorScale$palette(3)
+	expect_mapequal(colorScalePlot, colorPalette)
+			
+})
