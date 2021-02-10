@@ -64,11 +64,15 @@ for the colors and the filling of the points.}
 The variable should be named with the corresponding element
 in \code{colorVar}.}
 
-\item{shapeVar}{string, variable of \code{data} for shape of the points}
+\item{shapeVar}{String, variable of \code{data} for shape of the points.
+By default, same as \code{colorVar}.}
 
-\item{shapeLab}{string, label for \code{shapeVar}}
+\item{shapeLab}{String, label for \code{shapeVar}}
 
-\item{shapePalette}{named vector with shape for \code{shapeVar}}
+\item{shapePalette}{Named character vector with shape palette
+for \code{shapeVar}.
+The variable should be named with the corresponding element
+in \code{shapeVar}.}
 
 \item{alpha}{Numeric with transparency, 1 by default.}
 
