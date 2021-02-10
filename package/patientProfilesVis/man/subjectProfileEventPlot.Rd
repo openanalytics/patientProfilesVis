@@ -54,11 +54,15 @@ This is used to set the default title.}
 \item{paramGroupVar}{(optional) character vector with variable(s) of \code{data} with grouping.
 If specified, the parameters will be grouped by this(these) variable(s) in the y-axis.}
 
-\item{colorVar}{string, variable of \code{data} with color.}
+\item{colorVar}{String, variable of \code{data} with color.
+For the subject profile event plot, this variable is used
+for the colors and the filling of the points.}
 
-\item{colorLab}{string, label for \code{colorVar}}
+\item{colorLab}{String, label for \code{colorVar}.}
 
-\item{colorPalette}{named vector with color for \code{colorVar}}
+\item{colorPalette}{Named vector with color palette.
+The variable should be named with the corresponding element
+in \code{colorVar}.}
 
 \item{shapeVar}{string, variable of \code{data} for shape of the points}
 

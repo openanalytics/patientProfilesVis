@@ -7,9 +7,6 @@
 #' \code{timeStartVar} and \code{timeEndVar}, what should be the range of the segment?
 #' By default, a thousandth of the range of \code{timeLim}
 #' (if not specified the time range available in the data).
-#' @param colorVar string, variable of \code{data} with color.
-#' @param colorLab string, label for \code{colorVar}
-#' @param colorPalette named vector with color for \code{colorVar}
 #' @param title string, title for the plot
 #' @param paramVarSep string with character(s) used to concatenate multiple 
 #' \code{paramVar}, ' - ' by default.

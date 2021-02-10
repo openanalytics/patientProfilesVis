@@ -142,11 +142,13 @@ By default, a thousandth of the range of \code{timeLim}
 
 \item{yLab}{String, label for the y-axis.}
 
-\item{colorVar}{string, variable of \code{data} with color.}
+\item{colorVar}{String, variable of \code{data} with color.}
 
-\item{colorLab}{string, label for \code{colorVar}}
+\item{colorLab}{String, label for \code{colorVar}.}
 
-\item{colorPalette}{named vector with color for \code{colorVar}}
+\item{colorPalette}{Named vector with color palette.
+The variable should be named with the corresponding element
+in \code{colorVar}.}
 
 \item{alpha}{Numeric with transparency, 1 by default.}
 

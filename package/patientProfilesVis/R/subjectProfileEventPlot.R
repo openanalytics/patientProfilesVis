@@ -1,6 +1,8 @@
 #' Create plot of subject profiles for events
 #' 
-#' 
+#' @param colorVar String, variable of \code{data} with color.
+#' For the subject profile event plot, this variable is used
+#' for the colors and the filling of the points.
 #' @param timeVar string, variable of \code{data} with time
 #' @param timeLab String, label for \code{timeVar}.
 #' @param shapeVar string, variable of \code{data} for shape of the points
