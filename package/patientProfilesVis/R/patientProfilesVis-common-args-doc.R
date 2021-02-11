@@ -13,6 +13,9 @@
 #' This label is displayed in the final profile
 #' report, in case no data is available for
 #' for a specific patient.
+#' @param timeVar String, variable of \code{data} with time,
+#' displayed in the x axis.\cr
+#' Records with missing time are not displayed in the plot.
 #' @param paramVar Character vector with variable(s) of \code{data} 
 #' with parameters. Variable content is displayed in the y-axis.
 #' @param paramLab Named character vector, 

@@ -68,10 +68,11 @@ of \code{data} based on which the data will be grouped and sorted
 \item{yLab}{String, label for the y-axis.}
 
 \item{label}{String, label for the visualization.
-This label is used when the visualization is 
-included in the final patient profile report,
-in case this visualization is empty (no data available)
-for a specific subject.}
+This label is stored as attributes of the output
+from the \code{subjectProfile[]Plot} functions.
+This label is displayed in the final profile
+report, in case no data is available for
+for a specific patient.}
 
 \item{paramVarSep}{String (' - ' by default) 
 with character(s) used to concatenate multiple 

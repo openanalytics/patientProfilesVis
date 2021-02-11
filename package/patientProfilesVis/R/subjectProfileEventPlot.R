@@ -3,8 +3,6 @@
 #' @param colorVar String, variable of \code{data} with color.
 #' For the subject profile event plot, this variable is used
 #' for the colors and the filling of the points.
-#' @param timeVar String, variable of \code{data} with time.
-#' Records with missing time are not displayed in the plot.
 #' @param timeLab String, label for \code{timeVar}.
 #' This is used in the message
 #' indicating missing values for \code{timeVar},

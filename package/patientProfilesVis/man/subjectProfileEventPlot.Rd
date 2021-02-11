@@ -79,19 +79,18 @@ in \code{shapeVar}.}
 
 \item{alpha}{Numeric with transparency, 1 by default.}
 
-\item{timeVar}{String, variable of \code{data} with time.
-Records with missing time are not displayed in the plot.}
-
 \item{timeLab}{String, label for \code{timeVar}.
 This is used in the message
 indicating missing values for \code{timeVar},
 and for the default label of the x-axis.}
 
-\item{timeTrans}{ggplot2 transformation (see \code{\link[scales]{trans_new}}),
-e.g. produced by the \code{\link{getTimeTrans}} function.}
+\item{timeTrans}{transformation for the time variable, 
+(see code{trans} parameter in \code{\link[ggplot2]{scale_x_continuous}}, and
+\code{\link[scales]{trans_new}}).
+For example, produced by the \code{\link{getTimeTrans}} function.}
 
 \item{timeExpand}{Vector of range expansion constants for the time axis
-(see \code{expand} parameter of the \code{\link[ggplot2]{scale_x_continuous}} function).}
+(see \code{expand} parameter in \code{\link[ggplot2]{scale_x_continuous}}).}
 
 \item{subjectVar}{String, variable of data (and subset data) with subject ID.}
 
@@ -125,17 +124,20 @@ in the filtered data.}
 
 \item{yLab}{String, label for the y-axis.}
 
-\item{timeLim}{(optional) vector of length 2 with time limits (x-axis)
-If not specified, extracted from the minimum \code{timeStartVar} 
-and maximum \code{timeEndVar} per subject.}
+\item{timeLim}{(optional) Vector of length 2 with time limits (x-axis).
+If not specified, these are extracted from the minimum \code{timeStartVar} 
+and maximum \code{timeEndVar} per subject.\cr
+The time limits are stored as attributes of the plots,
+used to align the plots in the final report.}
 
 \item{title}{string, title for the plot}
 
 \item{label}{String, label for the visualization.
-This label is used when the visualization is 
-included in the final patient profile report,
-in case this visualization is empty (no data available)
-for a specific subject.}
+This label is stored as attributes of the output
+from the \code{subjectProfile[]Plot} functions.
+This label is displayed in the final profile
+report, in case no data is available for
+for a specific patient.}
 
 \item{labelVars}{Named character vector with variable labels 
 (names are the variable code)}
@@ -155,7 +157,7 @@ If FALSE, the entire plot is included in one single page.}
 \value{
 list of (across subjects) of list (across modules) of \code{\link[ggplot2]{ggplot2} objects}, 
 also of class \code{subjectProfileEventPlot}, with additional metaData attributes containing
-'\code{label}', 'timeLim' and and 'timeTrans' (if specified).
+'\code{label}', 'timeLim' and 'timeTrans' (if specified).
 }
 \description{
 Create plot of subject profiles for events

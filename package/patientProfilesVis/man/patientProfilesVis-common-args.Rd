@@ -19,10 +19,15 @@ in \code{colorVar}.}
 \item{yLab}{String, label for the y-axis.}
 
 \item{label}{String, label for the visualization.
-This label is used when the visualization is 
-included in the final patient profile report,
-in case this visualization is empty (no data available)
-for a specific subject.}
+This label is stored as attributes of the output
+from the \code{subjectProfile[]Plot} functions.
+This label is displayed in the final profile
+report, in case no data is available for
+for a specific patient.}
+
+\item{timeVar}{String, variable of \code{data} with time,
+displayed in the x axis.\cr
+Records with missing time are not displayed in the plot.}
 
 \item{paramVar}{Character vector with variable(s) of \code{data} 
 with parameters. Variable content is displayed in the y-axis.}
@@ -30,6 +35,20 @@ with parameters. Variable content is displayed in the y-axis.}
 \item{paramLab}{Named character vector, 
 with label for the parameter variable(s) (\code{paramVar}).\cr
 This is used to set the default title.}
+
+\item{timeLim}{(optional) Vector of length 2 with time limits (x-axis).
+If not specified, these are extracted from the minimum \code{timeStartVar} 
+and maximum \code{timeEndVar} per subject.\cr
+The time limits are stored as attributes of the plots,
+used to align the plots in the final report.}
+
+\item{timeTrans}{transformation for the time variable, 
+(see code{trans} parameter in \code{\link[ggplot2]{scale_x_continuous}}, and
+\code{\link[scales]{trans_new}}).
+For example, produced by the \code{\link{getTimeTrans}} function.}
+
+\item{timeExpand}{Vector of range expansion constants for the time axis
+(see \code{expand} parameter in \code{\link[ggplot2]{scale_x_continuous}}).}
 }
 \description{
 Arguments used across the functions of the patientProfilesVis package.

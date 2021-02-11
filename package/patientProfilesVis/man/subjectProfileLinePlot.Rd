@@ -45,7 +45,9 @@ subjectProfileLinePlot(
 \arguments{
 \item{data}{Data.frame with data}
 
-\item{paramValueVar}{string, variable of \code{data} with parameter value to represent}
+\item{paramValueVar}{String, variable of \code{data} 
+with parameter value to represent.\cr
+Records with missing values are discarded.}
 
 \item{paramLab}{Named character vector, 
 with label for the parameter variable(s) (\code{paramVar}).\cr
@@ -81,13 +83,13 @@ represented by \code{paramValueRangeVar}.}
 \item{paramGroupVar}{(optional) character vector with variable(s) of \code{data} with grouping.
 If specified, the parameters will be grouped by this(these) variable(s) in the y-axis.}
 
-\item{timeVar}{string, variable of \code{data} with time}
-
-\item{timeTrans}{ggplot2 transformation (see \code{\link[scales]{trans_new}}),
-e.g. produced by the \code{\link{getTimeTrans}} function.}
+\item{timeTrans}{transformation for the time variable, 
+(see code{trans} parameter in \code{\link[ggplot2]{scale_x_continuous}}, and
+\code{\link[scales]{trans_new}}).
+For example, produced by the \code{\link{getTimeTrans}} function.}
 
 \item{timeExpand}{Vector of range expansion constants for the time axis
-(see \code{expand} parameter of the \code{\link[ggplot2]{scale_x_continuous}} function).}
+(see \code{expand} parameter in \code{\link[ggplot2]{scale_x_continuous}}).}
 
 \item{subjectVar}{String, variable of data (and subset data) with subject ID.}
 
@@ -121,17 +123,20 @@ in the filtered data.}
 
 \item{yLab}{String, label for the y-axis.}
 
-\item{timeLim}{(optional) vector of length 2 with time limits (x-axis)
-If not specified, extracted from the minimum \code{timeStartVar} 
-and maximum \code{timeEndVar} per subject.}
+\item{timeLim}{(optional) Vector of length 2 with time limits (x-axis).
+If not specified, these are extracted from the minimum \code{timeStartVar} 
+and maximum \code{timeEndVar} per subject.\cr
+The time limits are stored as attributes of the plots,
+used to align the plots in the final report.}
 
 \item{title}{string, title for the plot}
 
 \item{label}{String, label for the visualization.
-This label is used when the visualization is 
-included in the final patient profile report,
-in case this visualization is empty (no data available)
-for a specific subject.}
+This label is stored as attributes of the output
+from the \code{subjectProfile[]Plot} functions.
+This label is displayed in the final profile
+report, in case no data is available for
+for a specific patient.}
 
 \item{labelVars}{Named character vector with variable labels 
 (names are the variable code)}

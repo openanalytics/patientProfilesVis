@@ -1,6 +1,7 @@
 #' Create spaghetti plot for subject profiles
-#' @param timeVar string, variable of \code{data} with time
-#' @param paramValueVar string, variable of \code{data} with parameter value to represent
+#' @param paramValueVar String, variable of \code{data} 
+#' with parameter value to represent.\cr
+#' Records with missing values are discarded.
 #' @param paramNameVar Character vector with variable(s) of \code{data} with parameter name.
 #' If multiple, they are concatenated with \code{paramVarSep}.
 #' @param paramVarSep string with character(s) used to concatenate multiple 
@@ -77,12 +78,14 @@ subjectProfileLinePlot <- function(
 	# in case data is a tibble:
 	data <- as.data.frame(data)
 	
+	checkVar(var = subjectVar, data = data)
+	
 	# concatenate variable(s) if multiple are specified
-	data[, "paramFacetVar"] <- if(length(paramNameVar) > 1){
-		apply(data[, paramNameVar], 1, paste, collapse = paramVarSep)
-	}else{
-		data[, paramNameVar]
-	}
+	dataParam <- data[, paramNameVar]
+	data[, "paramFacetVar"] <- do.call(
+		interaction, 
+		c(as.list(dataParam), list(sep = paramVarSep, drop = TRUE, lex.order = TRUE))
+	)
 	
 	data[, "yVar"] <- data[, paramValueVar]
 	

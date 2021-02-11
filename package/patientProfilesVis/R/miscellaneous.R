@@ -18,6 +18,31 @@ checkVar <- function(var, data){
 	
 }
 
+#' 
+#' @param yVar 
+#' @param yLab 
+#' @inheritParams patientProfilesVis-common-args
+#' @return 
+#' @author Laure Cougnaud
+filterMissingInData <- function(data, timeVar, 
+	yVar = "yVar", yLab = yVar){
+	
+	# remove records without parameter or time variables
+	isYMissing <- is.na(data[, yVar]) | data[, "yVar"] == ""
+	if(any(isYMissing))
+		message(paste(sum(isYMissing), "record(s) with missing", 
+			toString(yLab), "are not considered.")
+		)
+	isTimeMissing <- is.na(data[, timeVar])
+	if(any(isTimeMissing))
+		message(paste(sum(isTimeMissing), "record(s) with missing", 
+			toString(timeLab), "are not considered.")
+		)
+	
+	return(data)
+	
+}
+
 #' get path of the any \code{file} template in the \code{CSRFigures} package
 #' @param file file name (with extension)
 #' @author Laure Cougnaud
