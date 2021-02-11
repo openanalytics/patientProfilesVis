@@ -40,10 +40,6 @@ for \code{timeStartVar}/\code{timeEndVar}.}
 
 \item{subjectVar}{String, variable of data (and subset data) with subject ID.}
 
-\item{timeLim}{(optional) vector of length 2 with time limits (x-axis)
-If not specified, extracted from the minimum \code{timeStartVar} 
-and maximum \code{timeEndVar} per subject.}
-
 \item{timeLimData}{data.frame with data used to extract time limits per subject}
 
 \item{timeLimStartVar}{string, variable of \code{timeLimData} with time start}

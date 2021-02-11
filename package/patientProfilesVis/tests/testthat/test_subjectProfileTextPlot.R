@@ -7,7 +7,7 @@ test_that("subject variable is specified", {
 			
 	data <- data.frame(
 		SEX = c("F", "M", "F"),
-		SUBJID = factor(c("a", "b", "c"))
+		SUBJID = factor(c("a", "b", "c"), levels = c("b", "a"))
 	)
 			
 	plots <- subjectProfileTextPlot(
@@ -16,6 +16,7 @@ test_that("subject variable is specified", {
 		subjectVar = "SUBJID"
 	)
 			
+	# plots are sorted based on factor levels:
 	expect_named(plots, levels(data$SUBJID))
 			
 })
@@ -27,21 +28,6 @@ test_that("error if subject variable is not present in the data", {
 		subjectProfileTextPlot(data = data, paramValueVar = "SEX"),
 		"Variable.*not available in the data"
 	)
-			
-})
-
-test_that("subject variable order is retained", {
-			
-	data <- data.frame(
-		SEX = c("F", "M", "F"),
-		USUBJID = factor(c("3", "2", "1"), levels = c("2", "3", "1"))
-	)
-			
-	expect_silent(
-		plots <- subjectProfileTextPlot(data = data, paramValueVar = "SEX")
-	)
-	
-	expect_named(plots, levels(data$USUBJID))
 			
 })
 
@@ -64,7 +50,7 @@ test_that("parameter values are correctly displayed by subject", {
 	expect_named(plots, levels(data$USUBJID))
 	
 	# test data is retained
-	for(subjID in names(plots)){
+	for(subjID in unique(data$USUBJID)){
 		
 		# check that the sublist is a list of ggplot object
 		expect_type(plots[[!!subjID]], "list")

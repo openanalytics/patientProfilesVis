@@ -109,9 +109,11 @@ in the filtered data.}
 \item{timeImpType}{String with imputation type: 'minimal' (default),
 'data-based' or 'none'.}
 
-\item{timeLim}{(optional) vector of length 2 with time limits (x-axis)
-If not specified, extracted from the minimum \code{timeStartVar} 
-and maximum \code{timeEndVar} per subject.}
+\item{timeLim}{(optional) Vector of length 2 with time limits (x-axis).
+If not specified, these are extracted from the minimum \code{timeStartVar} 
+and maximum \code{timeEndVar} per subject.\cr
+The time limits are stored as attributes of the plots,
+used to align the plots in the final report.}
 
 \item{timeLimData}{data.frame with data used to extract time limits per subject}
 
@@ -123,11 +125,13 @@ and maximum \code{timeEndVar} per subject.}
 
 \item{timeLimEndLab}{String, label for \code{timeLimEndVar}.}
 
-\item{timeTrans}{ggplot2 transformation (see \code{\link[scales]{trans_new}}),
-e.g. produced by the \code{\link{getTimeTrans}} function.}
+\item{timeTrans}{transformation for the time variable, 
+(see code{trans} parameter in \code{\link[ggplot2]{scale_x_continuous}}, and
+\code{\link[scales]{trans_new}}).
+For example, produced by the \code{\link{getTimeTrans}} function.}
 
 \item{timeExpand}{Vector of range expansion constants for the time axis
-(see \code{expand} parameter of the \code{\link[ggplot2]{scale_x_continuous}} function).}
+(see \code{expand} parameter in \code{\link[ggplot2]{scale_x_continuous}}).}
 
 \item{timeAlign}{Logical, if TRUE (by default)
 the different plots are horizontally aligned.
@@ -170,10 +174,11 @@ for \code{timeStartVar}/\code{timeEndVar}.}
 \item{title}{string, title for the plot}
 
 \item{label}{String, label for the visualization.
-This label is used when the visualization is 
-included in the final patient profile report,
-in case this visualization is empty (no data available)
-for a specific subject.}
+This label is stored as attributes of the output
+from the \code{subjectProfile[]Plot} functions.
+This label is displayed in the final profile
+report, in case no data is available for
+for a specific patient.}
 
 \item{labelVars}{Named character vector with variable labels 
 (names are the variable code)}
