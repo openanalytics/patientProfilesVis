@@ -81,7 +81,7 @@ subjectProfileLinePlot <- function(
 	checkVar(var = subjectVar, data = data)
 	
 	# concatenate variable(s) if multiple are specified
-	dataParam <- data[, paramNameVar]
+	dataParam <- data[, paramNameVar, drop = FALSE]
 	data[, "paramFacetVar"] <- do.call(
 		interaction, 
 		c(as.list(dataParam), list(sep = paramVarSep, drop = TRUE, lex.order = TRUE))
