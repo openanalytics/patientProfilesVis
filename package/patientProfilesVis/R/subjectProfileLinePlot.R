@@ -98,10 +98,9 @@ subjectProfileLinePlot <- function(
 	data[, "yVar"] <- data[, paramValueVar]
 	
 	# remove records without parameter variable
-	data <- filterMissingInData(
+	data <- filterMissingInVar(
 		data = data, 
-		timeVar = timeVar, timeLab = timeLab,
-		yVar = "yVar", yLab = paramLab
+		var = timeVar, varLab = timeLab
 	)
 	
 	# only keep records of interest

@@ -6,15 +6,15 @@ library(scales)
 test_that("subject variable is specified", {
 			
 	data <- data.frame(
-		LBTEST = c("A", "B", "C"),
-		LBDY = c(1, 2, 3),
+		TEST = c("A", "B", "C"),
+		DY = c(1, 2, 3),
 		SUBJID = factor(c("a", "b", "a"), levels = c("b", "a"))
 	)
 	
 	plots <- subjectProfileEventPlot(
 		data = data, 
-		timeVar = "LBDY",
-		paramVar = "LBTEST",
+		timeVar = "DY",
+		paramVar = "TEST",
 		subjectVar = "SUBJID"
 	)
 	
@@ -26,14 +26,14 @@ test_that("subject variable is specified", {
 test_that("error if subject variable is not present in the data", {
 			
 	data <- data.frame(
-		LBTEST = c("A", "B", "C"),
-		LBDY = c(1, 2, 3)
+		TEST = c("A", "B", "C"),
+		DY = c(1, 2, 3)
 	)
 	expect_error(
 		subjectProfileEventPlot(
 			data = data, 
-			timeVar = "LBDY",
-			paramVar = "LBTEST"
+			timeVar = "DY",
+			paramVar = "TEST"
 		),
 		"Variable.*not available in the data"
 	)
@@ -43,15 +43,15 @@ test_that("error if subject variable is not present in the data", {
 test_that("parameter variables are correctly displayed for each subject", {
 			
 	data <- data.frame(
-		LBTEST = factor(c("A", "B", "C"), levels = c("B", "C", "A")),
-		LBDY = c(1, 2, 3),
+		TEST = factor(c("A", "B", "C"), levels = c("B", "C", "A")),
+		DY = c(1, 2, 3),
 		USUBJID = factor(c("1", "2", "1"), levels = c("2", "1"))
 	)
 	
 	plots <- subjectProfileEventPlot(
 		data = data,
-		paramVar = "LBTEST",
-		timeVar = "LBDY"
+		paramVar = "TEST",
+		timeVar = "DY"
 	)
 	
 	# test data is retained
@@ -81,46 +81,12 @@ test_that("parameter variables are correctly displayed for each subject", {
 			},
 			expected = {
 				dataReference <- subset(data, USUBJID == !!subjID)
-				setNames(dataReference[, c("LBDY", "LBTEST")], c("x", "y"))
+				setNames(dataReference[, c("DY", "TEST")], c("x", "y"))
 			},
 			check.attributes = FALSE # (rownames differ)
 		)		
 		
 	}
-			
-})
-
-test_that("missings in parameter variables are discarded", {
-			
-	data <- data.frame(
-		LBTEST = c(NA_real_, 1, 2),
-		LBDY = seq(3),
-		USUBJID = "1"
-	)
-	expect_message(
-		plots <- subjectProfileEventPlot(
-			data = data,
-			timeVar = "LBDY",
-			paramVar = "LBTEST"
-		),
-		"1 record(s) with missing LBTEST are not considered.",
-		fixed = TRUE
-	)
-	gg <- plots[["1"]][[1]]
-			
-	# extract data behind the point
-	isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
-	ggDataPoint <- layer_data(gg, which(isGeomPoint))
-	ggDataPoint$y <- as.numeric(ggDataPoint$y)
-	
-	dataReference <- data
-	dataReference$y <- with(dataReference, max(LBTEST, na.rm = TRUE)-LBTEST)+1
-			
-	expect_equal(
-		ggDataPoint[, c("x", "y")],
-		subset(dataReference, !is.na(LBTEST), select = c("LBDY", "y")),
-		check.attributes = FALSE
-	)
 			
 })
 
@@ -288,9 +254,9 @@ test_that("parameters are grouped based on grouping variable(s)", {
 test_that("points are colored based on a variable", {
 			
 	data <- data.frame(
-		LBTEST = seq(3),
-		LBDY = seq(3),
-		LBNRIND = factor(
+		TEST = seq(3),
+		DY = seq(3),
+		RIND = factor(
 			c("High", "Normal", "High"), 
 			levels = c("Low", "Normal", "High")
 		),
@@ -299,9 +265,9 @@ test_that("points are colored based on a variable", {
 	
 	plots <- subjectProfileEventPlot(
 		data = data,
-		timeVar = "LBDY",
-		paramVar = "LBTEST",
-		colorVar = "LBNRIND"
+		timeVar = "DY",
+		paramVar = "TEST",
+		colorVar = "RIND"
 	)
 	
 	gg <- plots[["1"]][[1]]
@@ -313,20 +279,20 @@ test_that("points are colored based on a variable", {
 	# format reference data
 	dataReference <- data
 	# parameter as sorted from top to the bottom
-	dataReference$y <- with(dataReference, max(LBTEST)-LBTEST)+1
+	dataReference$y <- with(dataReference, max(TEST)-TEST)+1
 	# missing levels are not displayed
-	dataReference$LBNRIND <- droplevels(dataReference$LBNRIND)
+	dataReference$RIND <- droplevels(dataReference$RIND)
 	
 	ggDataPointWithInput <- merge(
 		x = ggDataPoint, by.x = c("x", "y"),
-		y = dataReference, by.y = c("LBDY", "y"),
+		y = dataReference, by.y = c("DY", "y"),
 		all = TRUE
 	)
 	
 	# all data is represented
 	expect_equal(nrow(ggDataPointWithInput), nrow(data))
 	# color scale based on data
-	colorScaleData <- c(with(ggDataPointWithInput, tapply(colour, LBNRIND, unique)))
+	colorScaleData <- c(with(ggDataPointWithInput, tapply(colour, RIND, unique)))
 
 	# extract color palette of the plot
 	ggScales <- gg$scales$scales
@@ -342,9 +308,9 @@ test_that("points are colored based on a variable", {
 test_that("points are colored with specified palette", {
 			
 	data <- data.frame(
-		LBTEST = seq(3),
-		LBDY = seq(3),
-		LBNRIND = factor(
+		TEST = seq(3),
+		DY = seq(3),
+		RIND = factor(
 			c("High", "Normal", "High"), 
 			levels = c("Low", "Normal", "High")
 		),
@@ -354,9 +320,9 @@ test_that("points are colored with specified palette", {
 	colorPalette <- c(Low = "green", Normal = "blue", High = "red")
 	plots <- subjectProfileEventPlot(
 		data = data,
-		timeVar = "LBDY",
-		paramVar = "LBTEST",
-		colorVar = "LBNRIND",
+		timeVar = "DY",
+		paramVar = "TEST",
+		colorVar = "RIND",
 		colorPalette = colorPalette
 	)
 	gg <- plots[["1"]][[1]]
@@ -375,18 +341,18 @@ test_that("points are colored with specified palette", {
 test_that("color label is specified", {
 			
 	data <- data.frame(
-		LBTEST = seq(3),
-		LBDY = seq(3),
-		LBNRIND = c("High", "Normal", "High"),
+		TEST = seq(3),
+		DY = seq(3),
+		RIND = c("High", "Normal", "High"),
 		USUBJID = "1"
 	)
 	
 	colorLab <- "Reference indicator"
 	plots <- subjectProfileEventPlot(
 		data = data,
-		timeVar = "LBDY",
-		paramVar = "LBTEST",
-		colorVar = "LBNRIND",
+		timeVar = "DY",
+		paramVar = "TEST",
+		colorVar = "RIND",
 		colorLab = colorLab
 	)
 	
@@ -413,9 +379,9 @@ test_that("color label is specified", {
 test_that("symbols are based on the color variable by default if specified", {
 			
 	data <- data.frame(
-		LBTEST = seq(3),
-		LBDY = seq(3),
-		LBNRIND = factor(
+		TEST = seq(3),
+		DY = seq(3),
+		RIND = factor(
 			c("High", "Normal", "High"), 
 			levels = c("Low", "Normal", "High")
 		),
@@ -424,9 +390,9 @@ test_that("symbols are based on the color variable by default if specified", {
 			
 	plots <- subjectProfileEventPlot(
 		data = data,
-		timeVar = "LBDY",
-		paramVar = "LBTEST",
-		colorVar = "LBNRIND"
+		timeVar = "DY",
+		paramVar = "TEST",
+		colorVar = "RIND"
 	)
 			
 	gg <- plots[["1"]][[1]]
@@ -445,9 +411,9 @@ test_that("symbols are based on the color variable by default if specified", {
 test_that("points are shaped based on a variable", {
 			
 	data <- data.frame(
-		LBTEST = seq(3),
-		LBDY = seq(3),
-		LBNRIND = factor(
+		TEST = seq(3),
+		DY = seq(3),
+		RIND = factor(
 			c("High", "Normal", "High"), 
 			levels = c("Low", "Normal", "High")
 		),
@@ -456,9 +422,9 @@ test_that("points are shaped based on a variable", {
 	
 	plots <- subjectProfileEventPlot(
 		data = data,
-		timeVar = "LBDY",
-		paramVar = "LBTEST",
-		shapeVar = "LBNRIND"
+		timeVar = "DY",
+		paramVar = "TEST",
+		shapeVar = "RIND"
 	)
 	
 	gg <- plots[["1"]][[1]]
@@ -470,20 +436,20 @@ test_that("points are shaped based on a variable", {
 	# format reference data
 	dataReference <- data
 	# parameter as sorted from top to the bottom
-	dataReference$y <- with(dataReference, max(LBTEST)-LBTEST)+1
+	dataReference$y <- with(dataReference, max(TEST)-TEST)+1
 	# missing levels are not displayed
-	dataReference$LBNRIND <- droplevels(dataReference$LBNRIND)
+	dataReference$RIND <- droplevels(dataReference$RIND)
 	
 	ggDataPointWithInput <- merge(
 		x = ggDataPoint, by.x = c("x", "y"),
-		y = dataReference, by.y = c("LBDY", "y"),
+		y = dataReference, by.y = c("DY", "y"),
 		all = TRUE
 	)
 	
 	# all data is represented
 	expect_equal(nrow(ggDataPointWithInput), nrow(data))
 	# color scale based on data
-	shapeScaleData <- c(with(ggDataPointWithInput, tapply(shape, LBNRIND, unique)))
+	shapeScaleData <- c(with(ggDataPointWithInput, tapply(shape, RIND, unique)))
 	
 	# extract shape palette of the plot
 	ggScales <- gg$scales$scales
@@ -499,9 +465,9 @@ test_that("points are shaped based on a variable", {
 test_that("points are shaped with specified palette", {
 			
 	data <- data.frame(
-		LBTEST = seq(3),
-		LBDY = seq(3),
-		LBNRIND = factor(
+		TEST = seq(3),
+		DY = seq(3),
+		RIND = factor(
 			c("High", "Normal", "High"), 
 			levels = c("Low", "Normal", "High")
 		),
@@ -511,9 +477,9 @@ test_that("points are shaped with specified palette", {
 	shapePalette <- c(Low = 25, Normal = 19, High = 24)
 	plots <- subjectProfileEventPlot(
 		data = data,
-		timeVar = "LBDY",
-		paramVar = "LBTEST",
-		shapeVar = "LBNRIND",
+		timeVar = "DY",
+		paramVar = "TEST",
+		shapeVar = "RIND",
 		shapePalette = shapePalette
 	)
 	gg <- plots[["1"]][[1]]
@@ -532,18 +498,18 @@ test_that("points are shaped with specified palette", {
 test_that("shape label is specified", {
 			
 	data <- data.frame(
-		LBTEST = seq(3),
-		LBDY = seq(3),
-		LBNRIND = c("High", "Normal", "High"),
+		TEST = seq(3),
+		DY = seq(3),
+		RIND = c("High", "Normal", "High"),
 		USUBJID = "1"
 	)
 			
 	shapeLab <- "Reference indicator"
 	plots <- subjectProfileEventPlot(
 		data = data,
-		timeVar = "LBDY",
-		paramVar = "LBTEST",
-		shapeVar = "LBNRIND",
+		timeVar = "DY",
+		paramVar = "TEST",
+		shapeVar = "RIND",
 		shapeLab = shapeLab
 	)
 			
@@ -562,16 +528,16 @@ test_that("shape label is specified", {
 test_that("points are set transparent", {
 			
 	data <- data.frame(
-		LBTEST = seq(3),
-		LBDY = seq(3),
+		TEST = seq(3),
+		DY = seq(3),
 		USUBJID = "1"
 	)
 			
 	alpha <- 0.3
 	plots <- subjectProfileEventPlot(
 		data = data,
-		timeVar = "LBDY",
-		paramVar = "LBTEST",
+		timeVar = "DY",
+		paramVar = "TEST",
 		alpha = alpha
 	)
 	gg <- plots[["1"]][[1]]
@@ -584,20 +550,20 @@ test_that("points are set transparent", {
 	
 })
 
-test_that("missings in time variables are discarded", {
+test_that("missings in time variable are discarded", {
 			
 	data <- data.frame(
-		LBTEST = seq(3),
-		LBDY = c(4.5, NA_real_, NA_real_),
+		TEST = seq(3),
+		DY = c(4.5, NA_real_, NA_real_),
 		USUBJID = "1"
 	)
 	expect_message(
 		plots <- subjectProfileEventPlot(
 			data = data,
-			timeVar = "LBDY",
-			paramVar = "LBTEST"
+			timeVar = "DY",
+			paramVar = "TEST"
 		),
-		"2 record(s) with missing LBDY are not considered.",
+		"2 record(s) with missing DY are not considered.",
 		fixed = TRUE
 	)
 	gg <- plots[["1"]][[1]]
@@ -609,7 +575,7 @@ test_that("missings in time variables are discarded", {
 	
 	expect_equal(
 		ggDataPoint[, c("x", "y")],
-		subset(data, !is.na(LBDY), select = c("LBDY", "LBTEST")),
+		subset(data, !is.na(DY), select = c("DY", "TEST")),
 		check.attributes = FALSE
 	)
 	
@@ -618,17 +584,17 @@ test_that("missings in time variables are discarded", {
 test_that("time label is specified", {
 			
 	data <- data.frame(
-		LBTEST = seq(3),
-		LBDY = seq(3),
+		TEST = seq(3),
+		DY = seq(3),
 		USUBJID = "1"
 	)
 			
 	timeLab <- "Relative day of the study"
 	plots <- subjectProfileEventPlot(
 		data = data,
-		timeVar = "LBDY",
+		timeVar = "DY",
 		timeLab = timeLab,
-		paramVar = "LBTEST"
+		paramVar = "TEST"
 	)
 			
 	gg <- plots[["1"]][[1]]
@@ -641,17 +607,17 @@ test_that("time label is specified", {
 test_that("a transformation is applied on the time variable", {
 			
 	data <- data.frame(
-		LBTEST = seq(3),
-		LBDY = c(1, 10, 100),
+		TEST = seq(3),
+		DY = c(1, 10, 100),
 		USUBJID = "1"
 	)
 			
 	timeTrans <- scales::log10_trans()
 	plots <- subjectProfileEventPlot(
 		data = data,
-		timeVar = "LBDY",
+		timeVar = "DY",
 		timeTrans = timeTrans,
-		paramVar = "LBTEST"
+		paramVar = "TEST"
 	)
 			
 	gg <- plots[["1"]][[1]]
@@ -670,8 +636,8 @@ test_that("a transformation is applied on the time variable", {
 test_that("time axis is expanded", {
 			
 	data <- data.frame(
-		LBTEST = seq(3),
-		LBDY = c(1, 2, 3),
+		TEST = seq(3),
+		DY = c(1, 2, 3),
 		USUBJID = "1"
 	)
 			
@@ -679,9 +645,9 @@ test_that("time axis is expanded", {
 	
 	plots <- subjectProfileEventPlot(
 		data = data,
-		timeVar = "LBDY",
+		timeVar = "DY",
 		timeExpand = timeExpand,
-		paramVar = "LBTEST"
+		paramVar = "TEST"
 	)
 			
 	gg <- plots[["1"]][[1]]
@@ -700,17 +666,17 @@ test_that("time axis is expanded", {
 test_that("time limits are specified", {
 			
 	data <- data.frame(
-		LBTEST = seq(3),
-		LBDY = c(1, 2, 3),
+		TEST = seq(3),
+		DY = c(1, 2, 3),
 		USUBJID = "1"
 	)
 			
 	timeLim <- c(2, 3)
 	plots <- subjectProfileEventPlot(
 		data = data,
-		timeVar = "LBDY",
+		timeVar = "DY",
 		timeLim = timeLim,
-		paramVar = "LBTEST"
+		paramVar = "TEST"
 	)
 			
 	gg <- plots[["1"]][[1]]
@@ -724,17 +690,17 @@ test_that("time limits are specified", {
 test_that("label is specified for the x variable", {
 			
 	data <- data.frame(
-		LBTEST = seq(3),
-		LBDY = seq(3),
+		TEST = seq(3),
+		DY = seq(3),
 		USUBJID = "1"
 	)
 			
 	xLab <- "Relative day of the study"
 	plots <- subjectProfileEventPlot(
 		data = data,
-		timeVar = "LBDY",
+		timeVar = "DY",
 		xLab = xLab,
-		paramVar = "LBTEST"
+		paramVar = "TEST"
 	)
 			
 	gg <- plots[["1"]][[1]]
@@ -746,17 +712,17 @@ test_that("label is specified for the x variable", {
 test_that("label is specified for the y variable", {
 			
 	data <- data.frame(
-		LBTEST = seq(3),
-		LBDY = seq(3),
+		TEST = seq(3),
+		DY = seq(3),
 		USUBJID = "1"
 	)
 			
 	yLab <- "Parameter of interest"
 	plots <- subjectProfileEventPlot(
 		data = data,
-		timeVar = "LBDY",
+		timeVar = "DY",
 		yLab = yLab,
-		paramVar = "LBTEST"
+		paramVar = "TEST"
 	)
 			
 	gg <- plots[["1"]][[1]]
@@ -768,17 +734,17 @@ test_that("label is specified for the y variable", {
 test_that("title is specified", {
 			
 	data <- data.frame(
-		LBTEST = seq(3),
-		LBDY = seq(3),
+		TEST = seq(3),
+		DY = seq(3),
 		USUBJID = "1"
 	)
 	title <- "Laboratory parameters"
 	
 	plots <- subjectProfileEventPlot(
 		data = data,
-		timeVar = "LBDY",
+		timeVar = "DY",
 		title = title,
-		paramVar = "LBTEST"
+		paramVar = "TEST"
 	)
 			
 	gg <- plots[["1"]][[1]]
@@ -793,17 +759,17 @@ test_that("title is specified", {
 test_that("label is specified", {
 			
 	data <- data.frame(
-		LBTEST = seq(3),
-		LBDY = seq(3),
+		TEST = seq(3),
+		DY = seq(3),
 		USUBJID = "1"
 	)
 	label <- "laboratory information"
 			
 	plots <- subjectProfileEventPlot(
 		data = data,
-		timeVar = "LBDY",
+		timeVar = "DY",
 		label = label,
-		paramVar = "LBTEST"
+		paramVar = "TEST"
 	)
 						
 	expect_identical(
@@ -816,19 +782,19 @@ test_that("label is specified", {
 test_that("variable labels are specified", {
 			
 	data <- data.frame(
-		LBTEST = seq(3),
-		LBDY = seq(3),
-		LBNRIND = c("High", "Normal", "High"),
+		TEST = seq(3),
+		DY = seq(3),
+		RIND = c("High", "Normal", "High"),
 		USUBJID = "1"
 	)
 			
 	# label specified for a subset of the variable(s)
-	labelVars <- c(LBDY = "Relative time", LBTEST = "Parameter")
+	labelVars <- c(DY = "Relative time", TEST = "Parameter")
 	plots <- subjectProfileEventPlot(
 		data = data,
-		timeVar = "LBDY",
-		paramVar = "LBTEST",
-		colorVar = "LBNRIND",
+		timeVar = "DY",
+		paramVar = "TEST",
+		colorVar = "RIND",
 		labelVars = labelVars
 	)
 	
@@ -836,8 +802,8 @@ test_that("variable labels are specified", {
 	
 	expect_identical(gg$labels$title, "Parameter")
 	expect_identical(unname(gg$labels$x), "Relative time" )
-	expect_identical(gg$labels$colour, "LBNRIND")
-	expect_identical(gg$labels$fill, "LBNRIND")
-	expect_identical(gg$labels$shape, "LBNRIND")
+	expect_identical(gg$labels$colour, "RIND")
+	expect_identical(gg$labels$fill, "RIND")
+	expect_identical(gg$labels$shape, "RIND")
 			
 })

@@ -230,6 +230,45 @@ test_that("label(s) for parameter variable(s) are specified", {
 			
 })
 
+test_that("parameters are grouped based on grouping variable(s)", {
+			
+	# example where data is first sorted based on multiple
+	# grouping variables (factor and character),
+	# then param name variable (for a2 vs a1)
+	data <- data.frame(
+		CAT1 = factor(c("I", "I", "II", "II"), levels = c("II", "I")),
+		CAT2 = c("A", "A", "A", "B"), 
+		TEST = factor(c("a1", "a2", "a3", "b1"), levels = c("a2", "a3", "a1", "b1")),
+		DY = c(1, 2, 3, 4),
+		AVAL = rnorm(4),
+		USUBJID = "1"
+	)
+			
+	plots <- subjectProfileLinePlot(
+		data = data,
+		paramNameVar = "TEST",
+		paramGroupVar = c("CAT1", "CAT2"),
+		paramValueVar = c("AVAL"),
+		timeVar = "DY"
+	)
+			
+	gg <- plots[["1"]][[1]]
+			
+	# extract labels for the different facets
+	ggGrob <- ggplotGrob(gg)
+	ggGrobFacets <- ggGrob$grobs[grep("^strip", ggGrob$layout$name)]
+	facetLabs <- sapply(ggGrobFacets, function(ggGrob) {
+		ggGrobFacetChild <- ggGrob$grobs[[1]]$children
+		ggGrobFacetTitle <- ggGrobFacetChild[[which(sapply(ggGrobFacetChild, inherits, "titleGrob"))]]
+		sapply(ggGrobFacetTitle$children, "[[", "label")	
+	})
+	facetLabs <- unname(facetLabs)
+		
+	dataReference <- data[with(data, order(CAT1, CAT2, TEST)), ]
+			
+	expect_equal(facetLabs, as.character(dataReference$TEST))
+			
+})
 
 #
 #library(glpgUtilityFct)
