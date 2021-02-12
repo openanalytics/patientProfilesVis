@@ -63,32 +63,39 @@ test_that("correct data are displayed for each subject", {
 	for(subjID in unique(data$USUBJID)){
 				
 		# check that the sublist is a list of ggplot object
-		expect_type(plots[[!!subjID]], "list")
-		expect_length(plots[[!!subjID]], 1)
-		expect_s3_class(plots[[!!subjID]][[1]], c("subjectProfileLinePlot", "ggplot"))
-				
-		expect_equal(
-			object = {		
-						
-				gg <- plots[[!!subjID]][[1]]
-				
-				# extract data behind the text
-				isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
-				ggDataPoint <- layer_data(gg, which(isGeomPoint))
-				ggDataPoint$PANEL <- as.character(ggDataPoint$PANEL)
-				ggDataPoint[, c("PANEL", "x", "y")]
+		expect_type(plots[[subjID]], "list")
+		expect_length(plots[[subjID]], 1)
+		expect_s3_class(plots[[subjID]][[1]], c("subjectProfileLinePlot", "ggplot"))
+			
+		for(aes in c("Point", "Line")){
+		
+			expect_equal(
+				object = {		
 							
-			},
-			expected = {
-				dataReference <- subset(data, USUBJID == !!subjID)
-				dataReference$PANEL <- as.character(as.numeric(dataReference$TEST))
-				test <- setNames(
-					dataReference[, c("PANEL", "DY", "AVAL")], 
-					c("PANEL", "x", "y")
-				)
-			},
-			check.attributes = FALSE # (rownames differ)
-		)		
+					gg <- plots[[subjID]][[1]]
+					
+					# extract data behind the aesthetic
+					geomAes <- paste0("Geom", aes)
+					isGeomAes <- sapply(gg$layers, function(l) inherits(l$geom, geomAes))
+					ggDataAes <- layer_data(gg, which(isGeomAes))
+					ggDataAes$PANEL <- as.character(ggDataAes$PANEL)
+					ggDataAes <- ggDataAes[, c("PANEL", "x", "y")]
+					a <- ggDataAes[do.call(order, ggDataAes), ]
+								
+				},
+				expected = {
+					dataReference <- subset(data, USUBJID == subjID)
+					dataReference$PANEL <- as.character(as.numeric(dataReference$TEST))
+					dataReference <- setNames(
+						dataReference[, c("PANEL", "DY", "AVAL")], 
+						c("PANEL", "x", "y")
+					)
+					b <- dataReference[do.call(order, dataReference), ]
+				},
+				check.attributes = FALSE # (rownames differ),
+			)
+			
+		}
 				
 	}
 			
@@ -128,7 +135,7 @@ test_that("multiple parameter variables are correctly combined and ordered", {
 							
 				gg <- plots[[1]][[1]]
 							
-				# extract data behind the text
+				# extract data behind the point
 				isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
 				ggDataPoint <- layer_data(gg, which(isGeomPoint))
 				ggDataPoint$PANEL <- as.character(ggDataPoint$PANEL)
@@ -148,6 +155,78 @@ test_that("multiple parameter variables are correctly combined and ordered", {
 		)
 		
 	}
+			
+})
+
+test_that("variable(s) of parameters are combined with specified separator", {
+			
+	data <- data.frame(
+		CAT = factor(c("A", "A", "A", "B"), levels = c("B", "A")),
+		TEST = factor(c("a1", "a2", "a3", "b1"), levels = c("a2", "a3", "a1", "b1")),
+		DY = c(1, 2, 3, 4),
+		USUBJID = "1",
+		AVAL = rnorm(4)
+	)
+	plots <- subjectProfileLinePlot(
+		data = data,
+		paramNameVar = c("CAT", "TEST"),
+		paramVarSep = " and ",
+		paramValueVar = "AVAL",
+		timeVar = "DY"
+	)
+	gg <- plots[["1"]][[1]]
+	
+	# extract labels for the different facets
+	ggGrob <- ggplotGrob(gg)
+	ggGrobFacets <- ggGrob$grobs[grep("^strip", ggGrob$layout$name)]
+	facetLabs <- sapply(ggGrobFacets, function(ggGrob) {
+		ggGrobFacetChild <- ggGrob$grobs[[1]]$children
+		ggGrobFacetTitle <- ggGrobFacetChild[[which(sapply(ggGrobFacetChild, inherits, "titleGrob"))]]
+		sapply(ggGrobFacetTitle$children, "[[", "label")	
+	})
+	facetLabs <- unname(facetLabs)
+	
+	# build parameter labels from data
+	dataReference <- data[with(data, order(CAT, TEST)), ]
+	dataReference$yLabel <- with(dataReference, paste(CAT, TEST, sep = " and "))
+	
+	expect_equal(facetLabs, dataReference$yLabel)
+	
+})
+
+
+
+test_that("label(s) for parameter variable(s) are specified", {
+			
+	data <- data.frame(
+		CAT = "A", TEST = "a1",
+		DY = 1,
+		USUBJID = "1",
+		AVAL = 1
+	)
+			
+	expect_equal({
+		plots <- subjectProfileLinePlot(
+			data = data,
+			paramNameVar = c("CAT", "TEST"),
+			paramValueVar = "AVAL",
+			timeVar = "DY",
+		)
+		gg <- plots[[1]][[1]]
+		gg$labels$title
+	}, expected = "AVAL")
+			
+	expect_equal({
+		plots <- subjectProfileLinePlot(
+			data = data,
+			paramNameVar = c("CAT", "TEST"),
+			paramValueVar = "AVAL",
+			timeVar = "DY",
+			paramLab = c("Laboratory parameter")
+		)
+		gg <- plots[[1]][[1]]
+		gg$labels$title
+	}, expected = "Laboratory parameter")
 			
 })
 

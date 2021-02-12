@@ -18,26 +18,35 @@ checkVar <- function(var, data){
 	
 }
 
-#' 
-#' @param yVar 
-#' @param yLab 
+#' Filter missing records in data in the time and y variables,
+#' with informative message.
+#' @param yVar String with variable to display in the y-axis.
+#' @param yLab Label for the y-variable.
 #' @inheritParams patientProfilesVis-common-args
-#' @return 
+#' @return Update data with filtered records +
+#' message in the console.
 #' @author Laure Cougnaud
-filterMissingInData <- function(data, timeVar, 
-	yVar = "yVar", yLab = yVar){
+filterMissingInData <- function(
+	data, 
+	timeVar, timeLab = getLabelVar(timeVar, labelVars = labelVars),
+	yVar, yLab = yVar,
+	labelVars = NULL){
 	
-	# remove records without parameter or time variables
-	isYMissing <- is.na(data[, yVar]) | data[, "yVar"] == ""
-	if(any(isYMissing))
-		message(paste(sum(isYMissing), "record(s) with missing", 
-			toString(yLab), "are not considered.")
-		)
-	isTimeMissing <- is.na(data[, timeVar])
-	if(any(isTimeMissing))
-		message(paste(sum(isTimeMissing), "record(s) with missing", 
-			toString(timeLab), "are not considered.")
-		)
+	if(!missing(yVar)){
+		isYMissing <- is.na(data[, yVar]) | data[, "yVar"] == ""
+		if(any(isYMissing))
+			message(paste(sum(isYMissing), "record(s) with missing", 
+				toString(yLab), "are not considered.")
+			)
+	}
+	
+	if(!missing(timeVar)){
+		isTimeMissing <- is.na(data[, timeVar])
+		if(any(isTimeMissing))
+			message(paste(sum(isTimeMissing), "record(s) with missing", 
+				toString(timeLab), "are not considered.")
+			)
+	}
 	
 	return(data)
 	
@@ -423,7 +432,35 @@ getAesScaleManual <- function(lab, palette, type){
 	
 }
 
-
+#' Get interaction variable between different variables.
+#' 
+#' This ensures that missing values in one of the variable(s) don't propagate,
+#' so the combined result will be: 'NA - a',
+#' and that the levels of the combined vector
+#' are sorted as the levels of the specified
+#' variables (levels of the first variable varying first).
+#' @param vars Character vector with variable(s) of interest. 
+#' @param varSep String with separator to which the variable(s)
+#' should be combined.
+#' @inheritParams patientProfilesVis-common-args
+#' @return Vector of length: \code{nrow(data)},
+#' with interaction vector.
+#' @author Laure Cougnaud
+interactionWithMissing <- function(data, vars, varSep = " - "){
+	
+	dataVar <- data[, vars, drop = FALSE]
+	dataVar[, colnames(dataVar)] <- lapply(dataVar, factor, exclude = NULL)
+	res <- do.call(
+		interaction, 
+		c(
+			as.list(dataVar), 
+			list(sep = varSep, drop = TRUE, lex.order = TRUE)
+		)
+	)
+	
+	return(res)
+	
+}
 
 #' Format text variables for the subject profile text plotting function.
 #' 

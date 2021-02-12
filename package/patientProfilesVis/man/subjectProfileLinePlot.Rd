@@ -20,6 +20,7 @@ subjectProfileLinePlot(
   shapePalette = NULL,
   paramGroupVar = NULL,
   timeVar,
+  timeLab = getLabelVar(timeVar, labelVars = labelVars),
   timeTrans = NULL,
   timeExpand = NULL,
   subjectVar = "USUBJID",
@@ -29,7 +30,7 @@ subjectProfileLinePlot(
   subsetData = NULL,
   subsetVar = NULL,
   subsetValue = NULL,
-  xLab = getLabelVar(timeVar, labelVars = labelVars),
+  xLab = timeLab,
   yLab = "",
   timeLim = NULL,
   title = paramLab,
@@ -50,7 +51,7 @@ with parameter value to represent.\cr
 Records with missing values are discarded.}
 
 \item{paramLab}{Named character vector, 
-with label for the parameter variable(s) (\code{paramVar}).\cr
+with label for the parameter variable(s) (\code{paramNameVar}).\cr
 This is used to set the default title.}
 
 \item{paramNameVar}{Character vector with variable(s) of \code{data} with parameter name.
@@ -82,6 +83,11 @@ represented by \code{paramValueRangeVar}.}
 
 \item{paramGroupVar}{(optional) character vector with variable(s) of \code{data} with grouping.
 If specified, the parameters will be grouped by this(these) variable(s) in the y-axis.}
+
+\item{timeLab}{String, label for \code{timeVar}.
+This is used in the message
+indicating missing values for \code{timeVar},
+and for the default label of the x-axis.}
 
 \item{timeTrans}{transformation for the time variable, 
 (see code{trans} parameter in \code{\link[ggplot2]{scale_x_continuous}}, and

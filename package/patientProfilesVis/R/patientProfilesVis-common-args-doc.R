@@ -16,6 +16,10 @@
 #' @param timeVar String, variable of \code{data} with time,
 #' displayed in the x axis.\cr
 #' Records with missing time are not displayed in the plot.
+#' @param timeLab String, label for \code{timeVar}.
+#' This is used in the message
+#' indicating missing values for \code{timeVar},
+#' and for the default label of the x-axis.
 #' @param paramVar Character vector with variable(s) of \code{data} 
 #' with parameters. Variable content is displayed in the y-axis.
 #' @param paramLab Named character vector, 
