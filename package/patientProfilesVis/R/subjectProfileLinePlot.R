@@ -4,6 +4,9 @@
 #' Records with missing values are discarded.
 #' @param paramNameVar Character vector with variable(s) of \code{data} with parameter name.
 #' If multiple, they are concatenated with \code{paramVarSep}.
+#' @param paramLab Named character vector, 
+#' with label for the parameter variable(s) (\code{paramNameVar}).\cr
+#' This is used to set the default title.
 #' @param paramVarSep string with character(s) used to concatenate multiple 
 #' \code{paramNameVar}, ' - ' by default.
 #' @param paramValueRangeVar character vector of length 2 containing 
@@ -57,11 +60,13 @@ subjectProfileLinePlot <- function(
 	shapeVar = colorVar, shapeLab = getLabelVar(shapeVar, labelVars = labelVars),
 	shapePalette = NULL,
 	paramGroupVar = NULL,
-	timeVar, timeTrans = NULL, timeExpand = NULL,
+	timeVar, 
+	timeLab = getLabelVar(timeVar, labelVars = labelVars),
+	timeTrans = NULL, timeExpand = NULL,
 	subjectVar = "USUBJID", subjectSubset = NULL,
 	subjectSample = NULL, seed = 123,
 	subsetData = NULL, subsetVar = NULL, subsetValue = NULL, 
-	xLab = getLabelVar(timeVar, labelVars = labelVars),
+	xLab = timeLab,
 	yLab = "",
 	timeLim = NULL,
 	title = paramLab,
@@ -78,19 +83,26 @@ subjectProfileLinePlot <- function(
 	# in case data is a tibble:
 	data <- as.data.frame(data)
 	
+	# check if specified variable(s) are available in the data
 	checkVar(var = subjectVar, data = data)
+	checkVar(var = paramNameVar, data = data)
+	checkVar(var = paramValueVar, data = data)
+	checkVar(var = paramGroupVar, data = data)
+	checkVar(var = timeVar, data = data)
+	checkVar(var = colorVar, data = data)
+	checkVar(var = shapeVar, data = data)
 	
 	# concatenate variable(s) if multiple are specified
-	dataParam <- data[, paramNameVar, drop = FALSE]
-	data[, "paramFacetVar"] <- do.call(
-		interaction, 
-		c(as.list(dataParam), list(sep = paramVarSep, drop = TRUE, lex.order = TRUE))
-	)
+	data[, "paramFacetVar"] <- interactionWithMissing(data = data, vars = paramNameVar, varSep = paramVarSep)
 	
 	data[, "yVar"] <- data[, paramValueVar]
 	
-	# remove records without parameter or time variables
-	data <- data[with(data, !is.na(yVar) & yVar != "" & !is.na(get(timeVar))), ]
+	# remove records without parameter variable
+	data <- filterMissingInData(
+		data = data, 
+		timeVar = timeVar, timeLab = timeLab,
+		yVar = "yVar", yLab = paramLab
+	)
 	
 	# only keep records of interest
 	data <- filterData(

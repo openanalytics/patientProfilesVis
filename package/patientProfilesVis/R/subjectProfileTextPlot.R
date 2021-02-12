@@ -97,7 +97,11 @@ subjectProfileTextPlot <- function(
 	# in case data is a tibble:
 	data <- as.data.frame(data)
 	
+	# check if specified variable(s) are available in the data
 	checkVar(var = subjectVar, data = data)
+	checkVar(var = paramNameVar, data = data)
+	checkVar(var = paramValueVar, data = data)
+	checkVar(var = paramGroupVar, data = data)
 	
 	# only keep records of interest
 	data <- filterData(

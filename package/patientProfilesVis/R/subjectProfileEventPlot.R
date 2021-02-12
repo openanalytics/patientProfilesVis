@@ -3,10 +3,6 @@
 #' @param colorVar String, variable of \code{data} with color.
 #' For the subject profile event plot, this variable is used
 #' for the colors and the filling of the points.
-#' @param timeLab String, label for \code{timeVar}.
-#' This is used in the message
-#' indicating missing values for \code{timeVar},
-#' and for the default label of the x-axis.
 #' @param shapeVar String, variable of \code{data} for shape of the points.
 #' By default, same as \code{colorVar}.
 #' @param shapeLab String, label for \code{shapeVar}.
@@ -59,27 +55,23 @@ subjectProfileEventPlot <- function(
 	# in case data is a tibble:
 	data <- as.data.frame(data)
 	
+	# check if specified variable(s) are available in the data
 	checkVar(var = subjectVar, data = data)
+	checkVar(var = paramVar, data = data)
+	checkVar(var = paramGroupVar, data = data)
+	checkVar(var = timeVar, data = data)
+	checkVar(var = colorVar, data = data)
+	checkVar(var = shapeVar, data = data)
 	
 	# concatenate variable(s) if multiple are specified
-	dataParam <- data[, paramVar, drop = FALSE]
-	data[, "yVar"] <- do.call(
-		interaction, 
-		c(as.list(dataParam), list(sep = paramVarSep, drop = TRUE, lex.order = TRUE))
-	)
+	data[, "yVar"] <- interactionWithMissing(data = data, vars = paramVar, varSep = paramVarSep)
 	
 	# remove records without parameter or time variables
-	isYMissing <- is.na(data[, "yVar"]) | data[, "yVar"] == ""
-	if(any(isYMissing))
-		message(paste(sum(isYMissing), "record(s) with missing", 
-			toString(paramLab), "are not considered.")
-		)
-	isTimeMissing <- is.na(data[, timeVar])
-	if(any(isTimeMissing))
-		message(paste(sum(isTimeMissing), "record(s) with missing", 
-			toString(timeLab), "are not considered.")
-		)
-	data <- data[!isYMissing & !isTimeMissing, ]
+	data <- filterMissingInData(
+		data = data, 
+		timeVar = timeVar, timeLab = timeLab,
+		yVar = "yVar", yLab = paramLab
+	)
 	
 	# only keep records of interest
 	data <- filterData(

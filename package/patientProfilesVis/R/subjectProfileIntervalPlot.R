@@ -10,8 +10,6 @@
 #' @param title string, title for the plot
 #' @param paramVarSep string with character(s) used to concatenate multiple 
 #' \code{paramVar}, ' - ' by default.
-#' @param timeLabel string with general time label, used
-#' in the footnote for the explanation of the arrow, 'time' by default.
 #' @param shapePalette Named vector with (combined) shape palette for 
 #' \code{timeStartShapeVar}\code{timeEndShapeVar}.
 #' @param shapeLab String with label for \code{timeStartShapeVar}\code{timeEndShapeVar}
@@ -44,7 +42,7 @@ subjectProfileIntervalPlot <- function(
 	paramGroupVar = NULL,
 	timeStartVar, timeStartLab = getLabelVar(timeStartVar, labelVars = labelVars),
 	timeEndVar, timeEndLab = getLabelVar(timeEndVar, labelVars = labelVars),
-	timeLabel = "time",
+	timeLabel = "time", timeLab = toString(c(timeStartLab, timeEndLab)),
 	subjectVar = "USUBJID", subjectSubset = NULL,
 	subjectSample = NULL, seed = 123,
 	subsetData = NULL, subsetVar = NULL, subsetValue = NULL, 
@@ -55,29 +53,39 @@ subjectProfileIntervalPlot <- function(
 	timeTrans = NULL, timeExpand = NULL,
 	timeAlign = TRUE,
 	rangeSimilarStartEnd = NULL,
-	xLab = paste(c(timeStartLab, timeEndLab), collapse = "/"),
+	xLab = timeLab,
 	yLab = "",
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
 	colorPalette = NULL,
 	alpha = 1,
 	timeStartShapeVar = NULL, timeEndShapeVar = NULL,
 	shapePalette = NULL, 
-	shapeLab = NULL,
+	shapeLab = toString(unique(getLabelVar(c(timeStartShapeVar, timeEndShapeVar), labelVars = labelVars))),
 	shapeSize = rel(3),
 	title = paramLab,
 	label = title,
 	labelVars = NULL,
 	formatReport = subjectProfileReportFormat(),
 	paging = TRUE){
-	
+
 	timeImpType <- match.arg(timeImpType)
-	
-	if(is.null(shapeLab))
-		shapeLab <- toString(unique(getLabelVar(c(timeStartShapeVar, timeEndShapeVar), labelVars = labelVars)))
+
+	if(timeLabel != "time"){
+		.Deprecated(old = "timeLabel", new = "timeLab")
+		timeLab <- timeLabel
+	}
 	
 	# in case data is a tibble:
 	data <- as.data.frame(data)
-		
+	
+	# check if specified variable(s) are available in the data
+	checkVar(var = subjectVar, data = data)
+	checkVar(var = paramVar, data = data)
+	checkVar(var = paramGroupVar, data = data)
+	checkVar(var = c(timeStartVar, timeEndVar), data = data)
+	checkVar(var = c(timeStartVar, timeEndVar), data = data)
+	checkVar(var = c(timeStartShapeVar, timeEndShapeVar), data = data)
+	
 	# fill missing start/end time and extract time limits
 	resMSED <- formatTimeInterval(
 		data = data, 
@@ -101,11 +109,13 @@ subjectProfileIntervalPlot <- function(
 	# 'segment' span entire plotting window
 	
 	# concatenate variable(s) if multiple are specified
-	data$yVar <- if(length(paramVar) > 1)
-		apply(data[, paramVar], 1, paste, collapse = paramVarSep)	else	data[, paramVar]
+	data[, "yVar"] <- interactionWithMissing(data = data, vars = paramVar, varSep = paramVarSep)
 
 	# remove records without parameter variable
-	data <- data[with(data, !is.na(yVar) & yVar != ""), ]
+	data <- filterMissingInData(
+		data = data, 
+		yVar = "yVar", yLab = paramLab
+	)
 	
 	# only keep records of interest
 	data <- filterData(
@@ -423,11 +433,11 @@ formatTimeInterval <- function(data,
 	# message for the user:
 	if(any(data$missingStartPlot | data$missingEndPlot)){
 		msg <- paste(c(
-			if(any(data$missingStartPlot))	paste(sum(data$missingStartPlot), "records with missing", timeStartLab),
-			if(any(data$missingEndPlot))	paste(sum(data$missingEndPlot), "records with missing", timeEndLab)
+			if(any(data$missingStartPlot))	paste(sum(data$missingStartPlot), "record(s) with missing", timeStartLab),
+			if(any(data$missingEndPlot))	paste(sum(data$missingEndPlot), "record(s) with missing", timeEndLab)
 		), collapse = " and ")
 		msg <- switch(timeImpType,
-			'none' = paste(msg, "are ignored for the visualization."),
+			'none' = paste(msg, "are not considered."),
 			paste0(msg, " are imputed with ", 
 				if(timeLimDataSpec)	paste(paste(c(timeLimStartLab, timeLimEndLab), collapse = "/"), " or "),
 				timeImpType, " imputation."

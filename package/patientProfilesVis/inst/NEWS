@@ -7,8 +7,9 @@
       - table output: 
         - records sorted based on value var (especially for factor)
         - fix in case only one param value var is specified
-    o subjectProfileEventPlot:
+    o subjectProfileEventPlot/subjectProfileLinePlot/subjectProfileIntervalPlot:
       - records sorted based on levels of param var if factor
+    o subjectProfileEventPlot:
       - fix when paramVarLab not specified for all vars
       - shape lab set to color lab if color but not shape var specified
       - x lab set to time lab by default
@@ -16,7 +17,7 @@
       - fix when only one var is specified
           o subjectProfileEventPlot:
     o subjectProfileLinePlot:
-      - records sorted based on levels of param name var if factor
+      - filter missing yVar with message
 1.4.3
     o change default palette for Windows support: u25C0 -> u25C4, u25B6 -> u25BA, u271A -> +, u2605 (star) -> u2666 (diamond), u25EF -> u25CB
 1.4.2

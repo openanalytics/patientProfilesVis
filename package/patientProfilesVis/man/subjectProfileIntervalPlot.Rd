@@ -15,6 +15,7 @@ subjectProfileIntervalPlot(
   timeEndVar,
   timeEndLab = getLabelVar(timeEndVar, labelVars = labelVars),
   timeLabel = "time",
+  timeLab = toString(c(timeStartLab, timeEndLab)),
   subjectVar = "USUBJID",
   subjectSubset = NULL,
   subjectSample = NULL,
@@ -33,7 +34,7 @@ subjectProfileIntervalPlot(
   timeExpand = NULL,
   timeAlign = TRUE,
   rangeSimilarStartEnd = NULL,
-  xLab = paste(c(timeStartLab, timeEndLab), collapse = "/"),
+  xLab = timeLab,
   yLab = "",
   colorVar = NULL,
   colorLab = getLabelVar(colorVar, labelVars = labelVars),
@@ -42,7 +43,8 @@ subjectProfileIntervalPlot(
   timeStartShapeVar = NULL,
   timeEndShapeVar = NULL,
   shapePalette = NULL,
-  shapeLab = NULL,
+  shapeLab = toString(unique(getLabelVar(c(timeStartShapeVar, timeEndShapeVar),
+    labelVars = labelVars))),
   shapeSize = rel(3),
   title = paramLab,
   label = title,
@@ -75,8 +77,10 @@ If specified, the parameters will be grouped by this(these) variable(s) in the y
 
 \item{timeEndLab}{String, label for \code{timeEndVar}.}
 
-\item{timeLabel}{string with general time label, used
-in the footnote for the explanation of the arrow, 'time' by default.}
+\item{timeLab}{String, label for \code{timeVar}.
+This is used in the message
+indicating missing values for \code{timeVar},
+and for the default label of the x-axis.}
 
 \item{subjectVar}{String, variable of data (and subset data) with subject ID.}
 
