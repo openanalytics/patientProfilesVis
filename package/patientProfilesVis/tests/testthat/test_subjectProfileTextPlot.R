@@ -7,7 +7,7 @@ test_that("subject variable is specified", {
 			
 	data <- data.frame(
 		SEX = c("F", "M", "F"),
-		SUBJID = factor(c("a", "b", "c"), levels = c("b", "a"))
+		SUBJID = factor(c("a", "b", "c"), levels = c("b", "a", "c"))
 	)
 			
 	plots <- subjectProfileTextPlot(
