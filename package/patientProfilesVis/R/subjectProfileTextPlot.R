@@ -99,9 +99,8 @@ subjectProfileTextPlot <- function(
 	
 	# check if specified variable(s) are available in the data
 	checkVar(var = subjectVar, data = data)
-	checkVar(var = paramNameVar, data = data)
-	checkVar(var = paramValueVar, data = data)
 	checkVar(var = paramGroupVar, data = data)
+	checkVar(var = paramNameVar, data = data)
 	
 	# only keep records of interest
 	data <- filterData(
@@ -122,6 +121,7 @@ subjectProfileTextPlot <- function(
 	}else{
 		
 		combineMultipleVars <- function(vars){
+			checkVar(var = vars, data = data)
 			do.call(paste, c(as.list(data[, vars, drop = FALSE]), list(sep = paramVarSep)))
 		}
 		
@@ -130,6 +130,7 @@ subjectProfileTextPlot <- function(
 			# in case variable should be concatenated
 			varsToConcatenate <- grep("|", paramValueVar, value = TRUE, fixed = TRUE)
 			if(length(varsToConcatenate) > 0){
+				
 				varsToConcatenateList <- strsplit(varsToConcatenate, split = "|", fixed = TRUE)
 				data[, varsToConcatenate] <- lapply(varsToConcatenateList, combineMultipleVars)
 				varsToConcatenateLab <- sapply(varsToConcatenateList, function(vars)
