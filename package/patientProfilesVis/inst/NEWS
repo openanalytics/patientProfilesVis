@@ -9,6 +9,7 @@
         - fix in case only one param value var is specified
     o subjectProfileEventPlot/subjectProfileLinePlot/subjectProfileIntervalPlot:
       - records sorted based on levels of param var if factor
+      - missing values in paramVar or paramNameVar are not filtered
     o subjectProfileEventPlot:
       - fix when paramVarLab not specified for all vars
       - shape lab set to color lab if color but not shape var specified
@@ -16,8 +17,6 @@
     o getPageVar:
       - fix when only one var is specified
           o subjectProfileEventPlot:
-    o subjectProfileLinePlot:
-      - filter missing yVar with message
 1.4.3
     o change default palette for Windows support: u25C0 -> u25C4, u25B6 -> u25BA, u271A -> +, u2605 (star) -> u2666 (diamond), u25EF -> u25CB
 1.4.2

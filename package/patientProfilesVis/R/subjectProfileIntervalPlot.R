@@ -110,12 +110,6 @@ subjectProfileIntervalPlot <- function(
 	
 	# concatenate variable(s) if multiple are specified
 	data[, "yVar"] <- interactionWithMissing(data = data, vars = paramVar, varSep = paramVarSep)
-
-	# remove records without parameter variable
-	data <- filterMissingInData(
-		data = data, 
-		yVar = "yVar", yLab = paramLab
-	)
 	
 	# only keep records of interest
 	data <- filterData(

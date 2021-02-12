@@ -67,10 +67,9 @@ subjectProfileEventPlot <- function(
 	data[, "yVar"] <- interactionWithMissing(data = data, vars = paramVar, varSep = paramVarSep)
 	
 	# remove records without parameter or time variables
-	data <- filterMissingInData(
+	data <- filterMissingInVar(
 		data = data, 
-		timeVar = timeVar, timeLab = timeLab,
-		yVar = "yVar", yLab = paramLab
+		var = timeVar, varLab = timeLab
 	)
 	
 	# only keep records of interest

@@ -20,32 +20,23 @@ checkVar <- function(var, data){
 
 #' Filter missing records in data in the time and y variables,
 #' with informative message.
-#' @param yVar String with variable to display in the y-axis.
-#' @param yLab Label for the y-variable.
+#' @param var String with variable of interest.
+#' @param yLab Label for the variable.
 #' @inheritParams patientProfilesVis-common-args
 #' @return Update data with filtered records +
 #' message in the console.
 #' @author Laure Cougnaud
-filterMissingInData <- function(
+filterMissingInVar <- function(
 	data, 
-	timeVar, timeLab = getLabelVar(timeVar, labelVars = labelVars),
-	yVar, yLab = yVar,
+	var, varLab = getLabelVar(var, labelVars = labelVars),
 	labelVars = NULL){
-	
-	if(!missing(yVar)){
-		isYMissing <- is.na(data[, yVar]) | data[, "yVar"] == ""
-		if(any(isYMissing))
-			message(paste(sum(isYMissing), "record(s) with missing", 
-				toString(yLab), "are not considered.")
-			)
-	}
-	
-	if(!missing(timeVar)){
-		isTimeMissing <- is.na(data[, timeVar])
-		if(any(isTimeMissing))
-			message(paste(sum(isTimeMissing), "record(s) with missing", 
-				toString(timeLab), "are not considered.")
-			)
+
+	isVarMissing <- is.na(data[, var])
+	if(any(isVarMissing)){
+		message(paste(sum(isVarMissing), "record(s) with missing", 
+			toString(varLab), "are not considered.")
+		)
+		data <- data[!isVarMissing, ]
 	}
 	
 	return(data)
