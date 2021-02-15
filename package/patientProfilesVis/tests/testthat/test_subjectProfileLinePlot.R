@@ -265,8 +265,9 @@ test_that("parameters are grouped based on grouping variable(s)", {
 	facetLabs <- unname(facetLabs)
 		
 	dataReference <- data[with(data, order(CAT1, CAT2, TEST)), ]
+	dataReference$TEST <- as.character(dataReference$TEST)
 			
-	expect_equal(facetLabs, as.character(dataReference$TEST))
+	expect_equal(facetLabs, dataReference$TEST)
 			
 })
 

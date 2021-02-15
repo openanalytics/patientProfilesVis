@@ -10,6 +10,8 @@
 #' @param title string, title for the plot
 #' @param paramVarSep string with character(s) used to concatenate multiple 
 #' \code{paramVar}, ' - ' by default.
+#' @param colorVar String, variable of \code{data} with color,
+#' used both for the point(s) and segment(s).
 #' @param shapePalette Named vector with (combined) shape palette for 
 #' \code{timeStartShapeVar}\code{timeEndShapeVar}.
 #' @param shapeLab String with label for \code{timeStartShapeVar}\code{timeEndShapeVar}
