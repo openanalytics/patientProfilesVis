@@ -270,6 +270,118 @@ test_that("parameters are grouped based on grouping variable(s)", {
 			
 })
 
+test_that("reference range is correctly displayed", {
+	
+	# Parameter A: reference range outside data range
+	# Parameter B: reference range inside data range
+	# Parameter C: missing reference range
+	data <- data.frame(
+		TEST = c("A", "A", "B", "B", "C", "C"),
+		DY = seq(6),
+		USUBJID = "1",
+		AVAL = c(1, 2, 3, 4, 5, 6),
+		LOW = c(0, 0, 3.5, 3.5, NA_real_, NA_real_),
+		HIGH = c(4, 4, 4, 4, NA_real_, NA_real_)
+	)
+	
+	# error if only one variable is specified:
+	expect_error(
+		plots <- subjectProfileLinePlot(
+			data = data,
+			timeVar = "DY",
+			paramNameVar = "TEST",
+			paramValueVar = "AVAL",
+			paramValueRangeVar = c("LOW")
+		),
+		"'paramValueRangeVar' should be of length 2."
+	)
+	
+	# error if some variable(s) are not in the data
+	expect_error(
+		subjectProfileLinePlot(
+			data = data,
+			timeVar = "DY",
+			paramNameVar = "TEST",
+			paramValueVar = "AVAL",
+			paramValueRangeVar = c("LOW", "HIGH2")
+		),
+		"'HIGH2' are not available in the data"
+	)
+	
+	# correct specification
+	expect_silent(
+		plots <- subjectProfileLinePlot(
+			data = data,
+			timeVar = "DY",
+			paramNameVar = "TEST",
+			paramValueVar = "AVAL",
+			paramValueRangeVar = c("LOW", "HIGH")
+		)
+	)
+	gg <- plots[[1]][[1]]
+	
+	isGeomRibbon <- sapply(gg$layers, function(l) inherits(l$geom, "GeomRibbon"))
+	ggDataRibbon <- layer_data(gg, which(isGeomRibbon))
+	ggDataRibbon$PANEL <- as.character(ggDataRibbon$PANEL)
+	
+	dataRefRibbon <- subset(data, !is.na(LOW) & !is.na(HIGH))
+	dataRefRibbon$PANEL <- as.character(as.numeric(as.factor(dataRefRibbon$TEST)))
+	expect_equal(
+		ggDataRibbon[, c("PANEL", "x", "ymin", "ymax")],
+		dataRefRibbon[, c("PANEL", "DY", "LOW", "HIGH")], 
+		check.attributes = FALSE # colnames differ
+	)
+	
+	expect_setequal(ggDataRibbon$colour, NA)
+	expect_false(any(is.na(ggDataRibbon$fill)))
+	
+})
+
+test_that("limits for the y-axis is restricted to observations range", {
+			
+	# Parameter A: reference range outside data range
+	# Parameter B: reference range inside data range
+	# Parameter C: missing reference range
+	data <- data.frame(
+		TEST = c("A", "A", "B", "B", "C", "C"),
+		DY = seq(6),
+		USUBJID = "1",
+		AVAL = c(1, 2, 3, 4, 5, 6),
+		LOW = c(0, 0, 3.5, 3.5, NA_real_, NA_real_),
+		HIGH = c(4, 4, 4, 4, NA_real_, NA_real_)
+	)
+			
+	expect_silent(
+		plots <- subjectProfileLinePlot(
+			data = data,
+			timeVar = "DY",
+			paramNameVar = "TEST",
+			paramValueVar = "AVAL",
+			paramValueRangeVar = c("LOW", "HIGH"),
+			yLimFrom = c("value")
+		)
+	)
+	gg <- plots[[1]][[1]]
+			
+	isGeomRibbon <- sapply(gg$layers, function(l) inherits(l$geom, "GeomRibbon"))
+	ggDataRibbon <- layer_data(gg, which(isGeomRibbon))
+	ggDataRibbon$PANEL <- as.character(ggDataRibbon$PANEL)
+			
+	dataRefRibbon <- data.frame(
+		PANEL = c("1", "1", "2", "2"),
+		x = c(1, 2, 3, 4),
+		ymin = c(1, 1, 3.5, 3.5),
+		ymax = c(2, 2, 4, 4),
+		stringsAsFactors = FALSE
+	)
+	expect_equal(
+		ggDataRibbon[, c("PANEL", "x", "ymin", "ymax")],
+		dataRefRibbon, 
+		check.attributes = FALSE # colnames differ
+	)
+			
+})
+
 test_that("points are colored based on a variable", {
 			
 	data <- data.frame(

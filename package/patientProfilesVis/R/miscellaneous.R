@@ -11,7 +11,7 @@ checkVar <- function(var, data){
 	varNotInData <- setdiff(var, colnames(data))
 	if(length(varNotInData) > 0){
 		stop(paste("Variable(s):", 
-			toString(shQuote(var)),
+			toString(shQuote(varNotInData)),
 			"are not available in the data."
 		))
 	}
