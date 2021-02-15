@@ -38,7 +38,7 @@
 subjectProfileIntervalPlot <- function(
 	data,
 	paramVar, paramVarSep = " - ",
-	paramLab = toString(getLabelVar(paramVar, labelVars = labelVars)),
+	paramLab = getLabelVar(paramVar, labelVars = labelVars),
 	paramGroupVar = NULL,
 	timeStartVar, timeStartLab = getLabelVar(timeStartVar, labelVars = labelVars),
 	timeEndVar, timeEndLab = getLabelVar(timeEndVar, labelVars = labelVars),
@@ -62,7 +62,7 @@ subjectProfileIntervalPlot <- function(
 	shapePalette = NULL, 
 	shapeLab = toString(unique(getLabelVar(c(timeStartShapeVar, timeEndShapeVar), labelVars = labelVars))),
 	shapeSize = rel(3),
-	title = paramLab,
+	title = toString(getLabelVar(paramVar, labelVars = labelVars, label = paramLab)),
 	label = title,
 	labelVars = NULL,
 	formatReport = subjectProfileReportFormat(),

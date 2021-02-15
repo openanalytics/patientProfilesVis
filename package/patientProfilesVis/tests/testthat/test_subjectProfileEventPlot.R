@@ -202,7 +202,7 @@ test_that("label(s) for parameter variable(s) are specified", {
 			data = data,
 			paramVar = c("CAT", "TEST"),
 			timeVar = "DY",
-			paramLab = c("Laboratory parameter")
+			paramLab = c(TEST = "Laboratory parameter")
 		)
 		gg <- plots[[1]][[1]]
 		gg$labels$title

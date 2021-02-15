@@ -7,7 +7,7 @@
 subjectProfileLinePlot(
   data,
   paramValueVar,
-  paramLab = toString(getLabelVar(paramValueVar, labelVars = labelVars)),
+  paramLab = getLabelVar(paramValueVar, labelVars = labelVars),
   paramNameVar = NULL,
   paramVarSep = " - ",
   paramValueRangeVar = NULL,
@@ -33,7 +33,7 @@ subjectProfileLinePlot(
   xLab = timeLab,
   yLab = "",
   timeLim = NULL,
-  title = paramLab,
+  title = toString(getLabelVar(paramVar, labelVars = labelVars, label = paramLab)),
   label = title,
   labelVars = NULL,
   formatReport = subjectProfileReportFormat(),
