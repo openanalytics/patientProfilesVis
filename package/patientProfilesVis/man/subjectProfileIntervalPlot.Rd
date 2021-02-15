@@ -69,11 +69,13 @@ This is used to set the default title.}
 \item{paramGroupVar}{(optional) character vector with variable(s) of \code{data} with grouping.
 If specified, the parameters will be grouped by this(these) variable(s) in the y-axis.}
 
-\item{timeStartVar}{string, variable of \code{data} with start of range}
+\item{timeStartVar}{String, variable of \code{data} 
+with start of time interval.}
 
 \item{timeStartLab}{String, label for \code{timeStartVar}.}
 
-\item{timeEndVar}{string, variable of \code{data} with end of range}
+\item{timeEndVar}{String, variable of \code{data} 
+with end of time interval.}
 
 \item{timeEndLab}{String, label for \code{timeEndVar}.}
 
@@ -150,7 +152,8 @@ By default, a thousandth of the range of \code{timeLim}
 
 \item{yLab}{String, label for the y-axis.}
 
-\item{colorVar}{String, variable of \code{data} with color.}
+\item{colorVar}{String, variable of \code{data} with color,
+used both for the point(s) and segment(s).}
 
 \item{colorLab}{String, label for \code{colorVar}.}
 
@@ -160,13 +163,11 @@ in \code{colorVar}.}
 
 \item{alpha}{Numeric with transparency, 1 by default.}
 
-\item{timeStartShapeVar}{(optional) string with
-names of the variables in \code{data} used for symbol shape
-for \code{timeStartVar}/\code{timeEndVar}.}
+\item{timeStartShapeVar}{(optional) String, variable of \code{data} 
+used for the shape of the symbol displayed at the start of the time interval.}
 
-\item{timeEndShapeVar}{(optional) string with
-names of the variables in \code{data} used for symbol shape
-for \code{timeStartVar}/\code{timeEndVar}.}
+\item{timeEndShapeVar}{String, variable of \code{data} 
+used for the shape of the symbol displayed at the end of the time interval.}
 
 \item{shapePalette}{Named vector with (combined) shape palette for 
 \code{timeStartShapeVar}\code{timeEndShapeVar}.}

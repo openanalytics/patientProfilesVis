@@ -26,17 +26,21 @@ formatTimeInterval(
 \arguments{
 \item{data}{Data.frame with data}
 
-\item{timeStartVar}{string, variable of \code{data} with start of range}
+\item{timeStartVar}{String, variable of \code{data} 
+with start of time interval.}
 
 \item{timeStartLab}{String, label for \code{timeStartVar}.}
 
-\item{timeEndVar}{string, variable of \code{data} with end of range}
+\item{timeEndVar}{String, variable of \code{data} 
+with end of time interval.}
 
 \item{timeEndLab}{String, label for \code{timeEndVar}.}
 
-\item{timeStartShapeVar, timeEndShapeVar}{(optional) string with
-names of the variables in \code{data} used for symbol shape
-for \code{timeStartVar}/\code{timeEndVar}.}
+\item{timeStartShapeVar}{(optional) String, variable of \code{data} 
+used for the shape of the symbol displayed at the start of the time interval.}
+
+\item{timeEndShapeVar}{String, variable of \code{data} 
+used for the shape of the symbol displayed at the end of the time interval.}
 
 \item{subjectVar}{String, variable of data (and subset data) with subject ID.}
 
@@ -55,6 +59,11 @@ for \code{timeStartVar}/\code{timeEndVar}.}
 
 \item{labelVars}{Named character vector with variable labels 
 (names are the variable code)}
+
+\item{timeLab}{String, label for \code{timeVar}.
+This is used in the message
+indicating missing values for \code{timeVar},
+and for the default label of the x-axis.}
 }
 \value{
 list with:
