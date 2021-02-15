@@ -270,6 +270,334 @@ test_that("parameters are grouped based on grouping variable(s)", {
 			
 })
 
+test_that("points are colored based on a variable", {
+			
+	data <- data.frame(
+		TEST = c("A", "A", "B"),
+		DY = seq(3),
+		RIND = factor(
+			c("High", "Normal", "High"), 
+			levels = c("Low", "Normal", "High")
+		),
+		AVAL = rnorm(3),
+		USUBJID = "1"
+	)
+			
+	plots <- subjectProfileLinePlot(
+		data = data,
+		timeVar = "DY",
+		paramNameVar = "TEST",
+		paramValueVar = "AVAL",
+		colorVar = "RIND"
+	)
+			
+	gg <- plots[["1"]][[1]]
+	
+	## point
+			
+	# extract data behind the point
+	isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
+	ggDataPoint <- layer_data(gg, which(isGeomPoint))
+	ggDataPoint$PANEL <- as.character(ggDataPoint$PANEL)
+	
+	# format reference data
+	dataReference <- data
+	dataReference$PANEL <- as.character(as.numeric(as.factor(dataReference$TEST)))
+	# missing levels are not displayed
+	dataReference$RIND <- droplevels(dataReference$RIND)
+	
+	ggDataPointWithInput <- merge(
+		x = ggDataPoint, by.x = c("PANEL", "x", "y"),
+		y = dataReference, by.y = c("PANEL", "DY", "AVAL"),
+		all = TRUE
+	)
+	
+	# all data is represented
+	expect_equal(nrow(ggDataPointWithInput), nrow(data))
+	# color scale based on data
+	colorScaleData <- c(with(ggDataPointWithInput, tapply(colour, RIND, unique)))
+	
+	# extract color palette of the plot
+	ggScales <- gg$scales$scales
+	isColorAes <- sapply(ggScales, function(x) 
+		all(x[["aesthetics"]] == "colour")
+	)
+	colorScale <- ggScales[[which(isColorAes)]]
+	colorScalePlot <- colorScale$palette(2)
+	
+	expect_equal(colorScaleData, colorScalePlot)
+	
+	## line: colour only used for the points, not the line
+	
+	# extract data behind the line
+	isGeomLine <- sapply(gg$layers, function(l) inherits(l$geom, "GeomLine"))
+	ggDataLine <- layer_data(gg, which(isGeomLine))
+	expect_setequal(ggDataLine$colour, "black")
+	
+})
+
+test_that("points are colored with specified palette", {
+			
+	data <- data.frame(
+		TEST = seq(3),
+		DY = seq(3),
+		RIND = factor(
+			c("High", "Normal", "High"), 
+			levels = c("Low", "Normal", "High")
+		),
+		AVAL = rnorm(3),
+		USUBJID = "1"
+	)
+			
+	colorPalette <- c(Low = "green", Normal = "blue", High = "red")
+	plots <- subjectProfileLinePlot(
+		data = data,
+		timeVar = "DY",
+		paramNameVar = "TEST",
+		paramValueVar = "AVAL",
+		colorVar = "RIND", colorPalette = colorPalette
+	)
+			
+	gg <- plots[["1"]][[1]]
+			
+	# extract color palette of the plot
+	ggScales <- gg$scales$scales
+	isColorAes <- sapply(ggScales, function(x) 
+		all(x[["aesthetics"]] == "colour")
+	)
+	colorScale <- ggScales[[which(isColorAes)]]
+	colorScalePlot <- colorScale$palette(3)
+	expect_equal(colorScalePlot, colorPalette)
+			
+})
+
+test_that("color label is specified", {
+			
+	data <- data.frame(
+		TEST = seq(3),
+		DY = seq(3),
+		RIND = c("High", "Normal", "High"),
+		AVAL = rnorm(3),
+		USUBJID = "1"
+	)
+	
+	colorLab <- "Reference indicator"
+	plots <- subjectProfileLinePlot(
+		data = data,
+		timeVar = "DY",
+		paramNameVar = "TEST",
+		paramValueVar = "AVAL",
+		colorVar = "RIND",
+		colorLab = colorLab
+	)
+	
+	gg <- plots[["1"]][[1]]
+	ggScales <- gg$scales$scales
+	
+	# extract color scale
+	isColorAes <- sapply(ggScales, function(x) 
+		all(x[["aesthetics"]] == "colour")
+	)
+	colorScale <- ggScales[[which(isColorAes)]]
+	expect_equal(colorScale$name, colorLab)
+	
+	# extract shape scale
+	# by default, shape label also set to color label
+	isShapeAes <- sapply(ggScales, function(x) 
+		all(x[["aesthetics"]] == "shape")
+	)
+	shapeScale <- ggScales[[which(isShapeAes)]]
+	expect_equal(shapeScale$name, colorLab)
+	
+})
+
+test_that("symbols are based on the color variable by default if specified", {
+			
+	data <- data.frame(
+		TEST = seq(3),
+		DY = seq(3),
+		RIND = factor(
+			c("High", "Normal", "High"), 
+			levels = c("Low", "Normal", "High")
+		),
+		AVAL = rnorm(3),
+		USUBJID = "1"
+	)
+
+	plots <- subjectProfileLinePlot(
+		data = data,
+		timeVar = "DY",
+		paramNameVar = "TEST",
+		paramValueVar = "AVAL",
+		colorVar = "RIND"
+	)
+	
+	gg <- plots[["1"]][[1]]
+	
+	# extract data behind the point
+	isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
+	ggDataPoint <- layer_data(gg, which(isGeomPoint))
+	
+	shapes <- c(with(ggDataPoint, tapply(shape, colour, unique)))
+	expect_type(shapes, "character")
+	expect_length(shapes, 2)
+	expect_length(unique(shapes), 2)
+	
+})
+
+test_that("points are shaped based on a variable", {
+			
+	data <- data.frame(
+		TEST = seq(3),
+		DY = seq(3),
+		RIND = factor(
+			c("High", "Normal", "High"), 
+			levels = c("Low", "Normal", "High")
+		),
+		AVAL = rnorm(3),
+		USUBJID = "1"
+	)
+			
+	plots <- subjectProfileLinePlot(
+		data = data,
+		timeVar = "DY",
+		paramNameVar = "TEST",
+		paramValueVar = "AVAL",
+		shapeVar = "RIND"
+	)
+			
+	gg <- plots[["1"]][[1]]
+			
+	# extract data behind the point
+	isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
+	ggDataPoint <- layer_data(gg, which(isGeomPoint))
+			
+	# format reference data
+	dataReference <- data
+	dataReference$PANEL <- as.character(dataReference$TEST)
+	# missing levels are not displayed
+	dataReference$RIND <- droplevels(dataReference$RIND)
+			
+	ggDataPointWithInput <- merge(
+		x = ggDataPoint, by.x = c("PANEL", "x", "y"),
+		y = dataReference, by.y = c("PANEL", "DY", "AVAL"),
+		all = TRUE
+	)
+			
+	# all data is represented
+	expect_equal(nrow(ggDataPointWithInput), nrow(data))
+	# shape scale based on data
+	shapeScaleData <- c(with(ggDataPointWithInput, tapply(shape, RIND, unique)))
+			
+	# extract shape palette of the plot
+	ggScales <- gg$scales$scales
+	isShapeAes <- sapply(ggScales, function(x) 
+		all(x[["aesthetics"]] == "shape")
+	)
+	shapeScale <- ggScales[[which(isShapeAes)]]
+	shapeScalePlot <- shapeScale$palette(2)
+	expect_equal(shapeScalePlot, shapeScaleData)
+			
+})
+
+test_that("points are shaped with specified palette", {
+			
+	data <- data.frame(
+		TEST = seq(3),
+		DY = seq(3),
+		RIND = factor(
+			c("High", "Normal", "High"), 
+			levels = c("Low", "Normal", "High")
+		),
+		AVAL = rnorm(3),
+		USUBJID = "1"
+	)
+			
+	shapePalette <- c(Low = 25, Normal = 19, High = 24)
+	plots <- subjectProfileLinePlot(
+		data = data,
+		timeVar = "DY",
+		paramNameVar = "TEST",
+		paramValueVar = "AVAL",
+		shapeVar = "RIND",
+		shapePalette = shapePalette
+	)
+	gg <- plots[["1"]][[1]]
+	
+	# extract color palette of the plot
+	ggScales <- gg$scales$scales
+	isShapeAes <- sapply(ggScales, function(x) 
+		all(x[["aesthetics"]] == "shape")
+	)
+	shapeScale <- ggScales[[which(isShapeAes)]]
+	shapeScalePlot <- shapeScale$palette(3)
+	expect_equal(shapeScalePlot, shapePalette)
+	
+})
+
+test_that("shape label is specified", {
+			
+	data <- data.frame(
+		TEST = seq(3),
+		DY = seq(3),
+		RIND = factor(
+			c("High", "Normal", "High"), 
+			levels = c("Low", "Normal", "High")
+		),
+		AVAL = rnorm(3),
+		USUBJID = "1"
+	)
+			
+	shapeLab <- "Reference indicator"
+	plots <- subjectProfileLinePlot(
+		data = data,
+		timeVar = "DY",
+		paramNameVar = "TEST",
+		paramValueVar = "AVAL",
+		shapeVar = "RIND",
+		shapeLab = shapeLab
+	)
+			
+	gg <- plots[["1"]][[1]]
+			
+	# extract shape scale
+	ggScales <- gg$scales$scales
+	isShapeAes <- sapply(ggScales, function(x) 
+		all(x[["aesthetics"]] == "shape")
+	)
+	shapeScale <- ggScales[[which(isShapeAes)]]
+	expect_equal(shapeScale$name, shapeLab)
+	
+})
+
+test_that("points are set transparent", {
+			
+	data <- data.frame(
+		TEST = seq(3),
+		DY = seq(3),
+		USUBJID = "1",
+		AVAL = rnorm(3)
+	)
+	
+	alpha <- 0.3
+	plots <- subjectProfileLinePlot(
+		data = data,
+		timeVar = "DY",
+		paramNameVar = "TEST",
+		paramValueVar = "AVAL",
+		alpha = alpha
+	)
+	gg <- plots[["1"]][[1]]
+	
+	# extract data behind the point
+	isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
+	ggDataPoint <- layer_data(gg, which(isGeomPoint))
+	
+	expect_setequal(ggDataPoint$alpha, alpha)
+	
+})
+
+
 #
 #library(glpgUtilityFct)
 #library(ggplot2)
