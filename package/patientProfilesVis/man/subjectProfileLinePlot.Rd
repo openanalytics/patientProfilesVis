@@ -12,6 +12,7 @@ subjectProfileLinePlot(
   paramVarSep = " - ",
   paramValueRangeVar = NULL,
   colorValueRange = unname(glpgColor("extra")["lightGreen"]),
+  yLimFrom = c("all", "value"),
   colorVar = NULL,
   colorLab = getLabelVar(colorVar, labelVars = labelVars),
   colorPalette = NULL,
@@ -40,8 +41,7 @@ subjectProfileLinePlot(
   formatReport = subjectProfileReportFormat(),
   paging = TRUE,
   alpha = 1,
-  shapeSize = rel(1),
-  yLimFrom = c("all", "value")
+  shapeSize = rel(1)
 )
 }
 \arguments{
@@ -68,8 +68,19 @@ Range can differ per parameter and even per time point.
 This range is represented as a ribbon in the plot background.
 e.g. to represent the reference range of the variable.}
 
-\item{colorValueRange}{String with color for the ribbon
-represented by \code{paramValueRangeVar}.}
+\item{colorValueRange}{String with color for the filling of 
+the ribbon represented by \code{paramValueRangeVar}.}
+
+\item{yLimFrom}{String with specification on the limits of the y-axis, either:
+\itemize{
+\item{'all' (by default): }{for each parameter (\code{paramNameVar}), 
+the y-axis range contains the minimum/maximum value of 
+the reference range (\code{paramValueRangeVar}) or data}
+\item{'value': }{for each parameter (\code{paramNameVar}), 
+the y-axis minimum/maximum value is restricted to the data range only.
+Please note that the ribbon visualizing the reference range is also restricted
+to the data range if wider.}
+}}
 
 \item{colorVar}{String, variable of \code{data} with color.
 This variable is used
@@ -168,17 +179,6 @@ If FALSE, the entire plot is included in one single page.}
 
 \item{shapeSize}{Size for the symbols, any integer or 
 object supported by \code{size} in \code{\link[ggplot2]{geom_point}}.}
-
-\item{yLimFrom}{String with specification on the limits of the y-axis, either:
-\itemize{
-\item{'all' (by default): }{for each parameter (\code{paramNameVar}), 
-the y-axis range contains the minimum/maximum value of 
-the reference range (\code{paramValueRangeVar}) or data}
-\item{'value': }{for each parameter (\code{paramNameVar}), 
-the y-axis minimum/maximum value is restricted to the data range only.
-Please note that the ribbon visualizing the reference range is also restricted
-to the data range if wider.}
-}}
 }
 \value{
 List of (across subjects) of list (across modules) 

@@ -15,8 +15,8 @@
 #' Range can differ per parameter and even per time point.
 #' This range is represented as a ribbon in the plot background.
 #' e.g. to represent the reference range of the variable.
-#' @param colorValueRange String with color for the ribbon
-#' represented by \code{paramValueRangeVar}.
+#' @param colorValueRange String with color for the filling of 
+#' the ribbon represented by \code{paramValueRangeVar}.
 #' @param colorVar String, variable of \code{data} with color.
 #' This variable is used
 #' for the colors and the filling of the points.
@@ -46,13 +46,13 @@
 #' @importFrom glpgStyle glpgColor
 #' @importFrom plyr dlply
 #' @importFrom glpgUtilityFct getLabelVar formatVarForPlotLabel
-#' @importFrom utils packageVersion
 #' @export
 subjectProfileLinePlot <- function(
 	data,
 	paramValueVar, paramLab = getLabelVar(paramValueVar, labelVars = labelVars),
 	paramNameVar = NULL, paramVarSep = " - ",
 	paramValueRangeVar = NULL, colorValueRange = unname(glpgColor("extra")["lightGreen"]),
+	yLimFrom = c("all", "value"),
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
 	colorPalette = NULL,
 	shapeVar = colorVar, 
@@ -75,8 +75,7 @@ subjectProfileLinePlot <- function(
 	labelVars = NULL,
 	formatReport = subjectProfileReportFormat(),
 	paging = TRUE,
-	alpha = 1, shapeSize = rel(1),
-	yLimFrom = c("all", "value")
+	alpha = 1, shapeSize = rel(1)
 ){
 	
 	yLimFrom <- match.arg(yLimFrom)
@@ -262,15 +261,9 @@ subjectProfileLinePlot <- function(
 					strip.placement = "outside", 
 					strip.background = element_rect(color = NA, fill = NA)
 				)
-				if(packageVersion("ggplot2") >= "3.0.0"){
-					argsTheme <- c(argsTheme, 
-						list(strip.text.y.left = element_text(angle = 0, size = 8, hjust = 1))
-					)
-				}else{
-					argsTheme <- c(argsTheme, 
-						list(strip.text.y = element_text(angle = 180, size = 8, hjust = 1))
-					)
-				}
+				argsTheme <- c(argsTheme, 
+					list(strip.text.y.left = element_text(angle = 0, size = 8, hjust = 1))
+				)
 				gg <- gg + do.call(theme, argsTheme)
 			
 				# count number of lines each facet will take
