@@ -61,9 +61,10 @@ If multiple, they are concatenated with \code{paramVarSep}.}
 \item{paramVarSep}{string with character(s) used to concatenate multiple 
 \code{paramNameVar}, ' - ' by default.}
 
-\item{paramValueRangeVar}{character vector of length 2 containing 
+\item{paramValueRangeVar}{Character vector of length 2 containing 
 variables of \code{data} with minimum and maximum value 
-for \code{paramValueVar}.
+for \code{paramValueVar}, typically reference range indicators.\cr
+Range can differ per parameter and even per time point.
 This range is represented as a ribbon in the plot background.
 e.g. to represent the reference range of the variable.}
 

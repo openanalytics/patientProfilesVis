@@ -808,12 +808,45 @@ The reference range measurement is represented via these parameters.
 
 ```
 
-### Axis range based on the observations or reference range
+### Reference range
 
-By default, the range of the y-axis spans the reference range or the
-range of the observations is smaller.
+#### Display reference range indicators
 
-If the range of the y-axis should only contain the data range, so shouldn't be extended
+A reference range can be visualized if two variables
+containing the low and upper limit of the range are specified
+via `paramValueRangeVar`:
+
+```{r exampleLineModule-paramValueRangeVar}
+
+	# create plot
+	lbLineRefRangePlots <- subjectProfileLinePlot(
+		data = dataLB,
+		paramNameVar = "LBTEST", 
+		paramValueVar = "LBSTRESN",
+		paramGroupVar = "LBSCAT",
+		paramValueRangeVar = c("LBSTNRLO", "LBSTNRHI"),
+		timeVar = "LBDY",
+		title = "Laboratory test measurements: actual value",
+		labelVars = labelVarsSDTMPelican
+	)
+	
+```
+
+```{r exampleLineModule-paramValueRangeVar-value-include, echo = FALSE, fig.height = attributes(lbLineRefRangePlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with the 'subjectProfileLinePlot' function with a reference range for patient:", names(lbLineRefRangePlots)[1])}
+
+	print(lbLineRefRangePlots[[1]][[1]])
+
+```
+
+#### Range of the y-axis based on the observations or the reference range
+
+By default, for each parameter, the range of the y-axis 
+is extended to the reference range in case the 
+range of the associated observations is smaller 
+than the specified reference range.
+
+If the range of the y-axis should only contain the data range, 
+so shouldn't be extended
 to cover the reference range, the `yLimFrom` parameter should be set on:
 'value'.
 

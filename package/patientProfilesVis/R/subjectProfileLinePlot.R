@@ -9,9 +9,10 @@
 #' This is used to set the default title.
 #' @param paramVarSep string with character(s) used to concatenate multiple 
 #' \code{paramNameVar}, ' - ' by default.
-#' @param paramValueRangeVar character vector of length 2 containing 
+#' @param paramValueRangeVar Character vector of length 2 containing 
 #' variables of \code{data} with minimum and maximum value 
-#' for \code{paramValueVar}.
+#' for \code{paramValueVar}, typically reference range indicators.\cr
+#' Range can differ per parameter and even per time point.
 #' This range is represented as a ribbon in the plot background.
 #' e.g. to represent the reference range of the variable.
 #' @param colorValueRange String with color for the ribbon
@@ -80,6 +81,9 @@ subjectProfileLinePlot <- function(
 	
 	yLimFrom <- match.arg(yLimFrom)
 	
+	if(!is.null(paramValueRangeVar) && length(paramValueRangeVar) != 2)
+		stop("'paramValueRangeVar' should be of length 2.")
+		
 	# in case data is a tibble:
 	data <- as.data.frame(data)
 	
@@ -87,6 +91,7 @@ subjectProfileLinePlot <- function(
 	checkVar(var = subjectVar, data = data)
 	checkVar(var = paramNameVar, data = data)
 	checkVar(var = paramValueVar, data = data)
+	checkVar(var = paramValueRangeVar, data = data)
 	checkVar(var = paramGroupVar, data = data)
 	checkVar(var = timeVar, data = data)
 	checkVar(var = colorVar, data = data)
@@ -142,7 +147,12 @@ subjectProfileLinePlot <- function(
 		data <- ddply(data, c(subjectVar, "paramFacetVar"), function(x){
 					
 			# extract data range
-			valueRange <- range(x[, paramValueVar], na.rm = TRUE)
+			xValue <- x[, paramValueVar]
+			if(all(is.na(xValue))){
+				valueRange <- c(NA_real_, NA_real_)	
+			}else{
+				valueRange <- range(xValue, na.rm = TRUE)
+			}
 			
 			# replace reference range by value range
 			xMinRV <- x[, paramValueRangeVar[1]]
@@ -189,18 +199,24 @@ subjectProfileLinePlot <- function(
 			
 			# range of the variable
 			if(!is.null(paramValueRangeVar)){
-				if(length(paramValueRangeVar) != 2)
-					stop(paste("The range of the parameter ('paramValueRangeVar' parameter)",
-						"should be specified by two variables in the dataset."))
-				# use geom_ribbon instead of geom_rect in case different intervals for different time points
-				gg <- gg + 
-					geom_ribbon(
-						mapping = aes_string(
-							x = timeVar, 
-							ymin = paramValueRangeVar[1], ymax = paramValueRangeVar[2]
-						),
-						fill = colorValueRange, alpha = 0.1
-					)
+				dataRibbon <- dataSubjectPage[!(
+					is.na(dataSubjectPage[, paramValueRangeVar[1]]) &
+					is.na(dataSubjectPage[, paramValueRangeVar[2]])
+				), ]
+				if(length(dataRibbon) > 0){
+					# use geom_ribbon instead of geom_rect in case different intervals for different time points
+					gg <- gg + 
+						geom_ribbon(
+							mapping = aes_string(
+								x = timeVar, 
+								ymin = paramValueRangeVar[1], 
+								ymax = paramValueRangeVar[2]
+							),
+							data = dataRibbon,
+							fill = colorValueRange, 
+							alpha = 0.1
+						)
+				}
 			}
 			
 			# line
