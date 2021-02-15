@@ -275,13 +275,14 @@ test_that("reference range is correctly displayed", {
 	# Parameter A: reference range outside data range
 	# Parameter B: reference range inside data range
 	# Parameter C: missing reference range
+	# Parameter D: missing y-values
 	data <- data.frame(
-		TEST = c("A", "A", "B", "B", "C", "C"),
-		DY = seq(6),
+		TEST = c("A", "A", "B", "B", "C", "C", "D"),
+		DY = seq(7),
 		USUBJID = "1",
-		AVAL = c(1, 2, 3, 4, 5, 6),
-		LOW = c(0, 0, 3.5, 3.5, NA_real_, NA_real_),
-		HIGH = c(4, 4, 4, 4, NA_real_, NA_real_)
+		AVAL = c(1, 2, 3, 4, 5, 7, NA_real_),
+		LOW = c(0, 0, 3.5, 3.5, NA_real_, NA_real_, NA_real_),
+		HIGH = c(4, 4, 4, 4, NA_real_, NA_real_, NA_real_)
 	)
 	
 	# error if only one variable is specified:
@@ -342,13 +343,14 @@ test_that("limits for the y-axis is restricted to observations range", {
 	# Parameter A: reference range outside data range
 	# Parameter B: reference range inside data range
 	# Parameter C: missing reference range
+	# Parameter D: missing y-values
 	data <- data.frame(
-		TEST = c("A", "A", "B", "B", "C", "C"),
-		DY = seq(6),
+		TEST = c("A", "A", "B", "B", "C", "C", "D"),
+		DY = seq(7),
 		USUBJID = "1",
-		AVAL = c(1, 2, 3, 4, 5, 6),
-		LOW = c(0, 0, 3.5, 3.5, NA_real_, NA_real_),
-		HIGH = c(4, 4, 4, 4, NA_real_, NA_real_)
+		AVAL = c(1, 2, 3, 4, 5, 7, NA_real_),
+		LOW = c(0, 0, 3.5, 3.5, NA_real_, NA_real_, NA_real_),
+		HIGH = c(4, 4, 4, 4, NA_real_, NA_real_, NA_real_)
 	)
 			
 	expect_silent(
