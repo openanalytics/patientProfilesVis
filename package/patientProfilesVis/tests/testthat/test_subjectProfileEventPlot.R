@@ -803,6 +803,7 @@ test_that("variable labels are specified", {
 	expect_identical(gg$labels$title, "Parameter")
 	expect_identical(unname(gg$labels$x), "DY")
 
+	ggScales <- gg$scales$scales
 	for(aes in c("colour", "fill", "shape")){
 		
 		expect_equal({
