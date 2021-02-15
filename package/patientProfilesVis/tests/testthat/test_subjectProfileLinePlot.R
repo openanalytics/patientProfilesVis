@@ -597,6 +597,264 @@ test_that("points are set transparent", {
 	
 })
 
+test_that("time label is specified", {
+	
+	data <- data.frame(
+		TEST = seq(3),
+		DY = seq(3),
+		USUBJID = "1",
+		AVAL = rnorm(3)
+	)
+	
+	timeLab <- "Relative day of the study"
+	plots <- subjectProfileLinePlot(
+		data = data,
+		timeVar = "DY",
+		timeLab = timeLab,
+		paramNameVar = "TEST",
+		paramValueVar = "AVAL"
+	)
+	
+	gg <- plots[["1"]][[1]]
+	
+	# by default used as label for the x-axis
+	expect_equal(gg$labels$x, timeLab)
+	
+})
+
+test_that("a transformation is applied on the time variable", {
+			
+	data <- data.frame(
+		TEST = seq(3),
+		DY = c(1, 10, 100),
+		USUBJID = "1",
+		AVAL = rnorm(3)
+	)
+			
+	timeTrans <- scales::log10_trans()
+	plots <- subjectProfileLinePlot(
+		data = data,
+		timeVar = "DY",
+		timeTrans = timeTrans,
+		paramNameVar = "TEST",
+		paramValueVar = "AVAL"
+	)
+			
+	gg <- plots[["1"]][[1]]
+			
+	# extract x-scale
+	ggScales <- gg$scales$scales
+	isXAes <- sapply(ggScales, function(x) 
+		any("x" %in% x[["aesthetics"]])
+	)
+	xScale <- ggScales[[which(isXAes)]]
+			
+	expect_identical(xScale$trans, timeTrans)
+			
+})
+
+test_that("time axis is expanded", {
+			
+	data <- data.frame(
+		TEST = seq(3),
+		DY = c(1, 2, 3),
+		USUBJID = "1",
+		AVAL = rnorm(3)
+	)
+			
+	timeExpand <- expansion(mult = 0, add = 3)
+			
+	plots <- subjectProfileLinePlot(
+		data = data,
+		timeVar = "DY",
+		timeExpand = timeExpand,
+		paramNameVar = "TEST",
+		paramValueVar = "AVAL"
+	)
+	
+	gg <- plots[["1"]][[1]]
+	
+	# extract x-scale
+	ggScales <- gg$scales$scales
+	isXAes <- sapply(ggScales, function(x) 
+		any("x" %in% x[["aesthetics"]])
+	)
+	xScale <- ggScales[[which(isXAes)]]
+	
+	expect_identical(xScale$expand, timeExpand)
+	
+})
+
+test_that("time limits are specified", {
+			
+	data <- data.frame(
+		TEST = seq(3),
+		DY = c(1, 2, 3),
+		USUBJID = "1",
+		AVAL = rnorm(3)
+	)
+			
+	timeLim <- c(2, 3)
+	plots <- subjectProfileLinePlot(
+		data = data,
+		timeVar = "DY",
+		timeLim = timeLim,
+		paramNameVar = "TEST",
+		paramValueVar = "AVAL"
+	)
+			
+	gg <- plots[["1"]][[1]]
+			
+	expect_identical(gg$coordinates$limits$x, timeLim)
+	
+	expect_identical(attr(plots, "metaData")$timeLim, timeLim)
+		
+})
+
+test_that("label is specified for the x variable", {
+			
+	data <- data.frame(
+		TEST = seq(3),
+		DY = seq(3),
+		USUBJID = "1",
+		AVAL = rnorm(3)
+	)
+			
+	xLab <- "Relative day of the study"
+	plots <- subjectProfileLinePlot(
+		data = data,
+		timeVar = "DY",
+		xLab = xLab,
+		paramNameVar = "TEST",
+		paramValueVar = "AVAL"
+	)
+			
+	gg <- plots[["1"]][[1]]
+	
+	expect_identical(gg$labels$x, xLab)
+	
+})
+
+test_that("label is specified for the y variable", {
+			
+	data <- data.frame(
+		TEST = seq(3),
+		DY = seq(3),
+		USUBJID = "1",
+		AVAL = rnorm(3)
+	)
+	
+	yLab <- "Parameter of interest"
+	plots <- subjectProfileLinePlot(
+		data = data,
+		timeVar = "DY",
+		yLab = yLab,
+		paramNameVar = "TEST",
+		paramValueVar = "AVAL"
+	)
+	
+	gg <- plots[["1"]][[1]]
+	
+	expect_identical(gg$labels$y, yLab)
+	
+})
+
+test_that("title is specified", {
+			
+	data <- data.frame(
+		TEST = seq(3),
+		DY = seq(3),
+		USUBJID = "1",
+		AVAL = rnorm(3)
+	)
+	title <- "Laboratory parameters"
+	
+	plots <- subjectProfileLinePlot(
+		data = data,
+		timeVar = "DY",
+		title = title,
+		paramNameVar = "TEST",
+		paramValueVar = "AVAL"
+	)
+	
+	gg <- plots[["1"]][[1]]
+	
+	expect_identical(
+		object = gg$labels$title, 
+		expected = title
+	)
+	
+})
+
+test_that("label is specified", {
+			
+	data <- data.frame(
+		TEST = seq(3),
+		DY = seq(3),
+		USUBJID = "1",
+		AVAL = rnorm(3)
+	)
+	label <- "laboratory information"
+	
+	plots <- subjectProfileLinePlot(
+		data = data,
+		timeVar = "DY",
+		label = label,
+		paramNameVar = "TEST",
+		paramValueVar = "AVAL"
+	)
+	
+	expect_identical(
+		attr(plots, "metaData")$label,
+		expected = label
+	)
+	
+})
+
+test_that("variable labels are specified", {
+			
+	data <- data.frame(
+		TEST = seq(3),
+		DY = seq(3),
+		RIND = c("High", "Normal", "High"),
+		USUBJID = "1",
+		AVAL = rnorm(3)
+	)
+	
+	# label specified for a subset of the variable(s)
+	labelVars <- c(DY = "Relative time", RIND = "Reference range")
+	plots <- subjectProfileLinePlot(
+		data = data,
+		timeVar = "DY",
+		paramNameVar = "TEST",
+		paramValueVar = "AVAL",
+		colorVar = "RIND",
+		labelVars = labelVars
+	)
+	
+	gg <- plots[["1"]][[1]]
+	
+	expect_identical(gg$labels$title, "AVAL")
+	expect_identical(unname(gg$labels$x), "Relative time")
+	
+	ggScales <- gg$scales$scales
+	
+	for(aes in c("colour", "fill", "shape")){
+	
+		expect_equal({
+					
+			isAes <- sapply(ggScales, function(x) 
+				all(x[["aesthetics"]] == !!aes)
+			)
+			aesScale <- ggScales[[which(isAes)]]
+			unname(aesScale$name)
+			
+		}, expected = "Reference range")
+	
+	}
+	
+})
+
 
 #
 #library(glpgUtilityFct)
