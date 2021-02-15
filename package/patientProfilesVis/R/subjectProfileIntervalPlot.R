@@ -85,7 +85,6 @@ subjectProfileIntervalPlot <- function(
 	checkVar(var = paramVar, data = data)
 	checkVar(var = paramGroupVar, data = data)
 	checkVar(var = c(timeStartVar, timeEndVar), data = data)
-	checkVar(var = c(timeStartVar, timeEndVar), data = data)
 	checkVar(var = c(timeStartShapeVar, timeEndShapeVar), data = data)
 	
 	# fill missing start/end time and extract time limits
@@ -351,9 +350,19 @@ subjectProfileIntervalPlot <- function(
 #' if specified}
 #' \item{the maximum range on the data obtained after imputation of missing values}
 #' }
-#' @param timeStartVar string, variable of \code{data} with start of range
+#' @param timeStartVar String, variable of \code{data} 
+#' with start of time interval.
+#' @param timeEndVar String, variable of \code{data} 
+#' with end of time interval.
+#' @param timeStartShapeVar (optional) String, variable of \code{data} 
+#' used for the shape of the symbol displayed at the start of the time interval.
+#' @param timeEndShapeVar String, variable of \code{data} 
+#' used for the shape of the symbol displayed at the end of the time interval.
+#' @param timeLab String, label for \code{timeVar}.
+#' This is used in the message
+#' indicating missing values for \code{timeVar},
+#' and for the default label of the x-axis.
 #' @param timeStartLab String, label for \code{timeStartVar}.
-#' @param timeEndVar string, variable of \code{data} with end of range
 #' @param timeEndLab String, label for \code{timeEndVar}.
 #' @param timeLimData data.frame with data used to extract time limits per subject
 #' @param timeLimStartVar string, variable of \code{timeLimData} with time start
@@ -364,9 +373,6 @@ subjectProfileIntervalPlot <- function(
 #' 'data-based' or 'none'.
 #' @param labelVars Named character vector with variable labels 
 #' (names are the variable code)
-#' @param timeStartShapeVar,timeEndShapeVar (optional) string with
-#' names of the variables in \code{data} used for symbol shape
-#' for \code{timeStartVar}/\code{timeEndVar}.
 #' @inheritParams filterData
 #' @return list with:
 #' \itemize{

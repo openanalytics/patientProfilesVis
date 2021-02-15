@@ -17,9 +17,11 @@ formatTimeLim(
 
 \item{subjectVar}{String, variable of data (and subset data) with subject ID.}
 
-\item{timeStartVar}{string, variable of \code{data} with start of range}
+\item{timeStartVar}{String, variable of \code{data} 
+with start of time interval.}
 
-\item{timeEndVar}{string, variable of \code{data} with end of range}
+\item{timeEndVar}{String, variable of \code{data} 
+with end of time interval.}
 
 \item{timeLim}{(optional) Vector of length 2 with time limits (x-axis).
 If not specified, these are extracted from the minimum \code{timeStartVar} 
