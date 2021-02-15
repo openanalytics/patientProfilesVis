@@ -26,7 +26,7 @@
 #' @export
 subjectProfileEventPlot <- function(
 	data,
-	paramVar, paramLab = toString(getLabelVar(paramVar, labelVars = labelVars)),
+	paramVar, paramLab = getLabelVar(paramVar, labelVars = labelVars),
 	paramVarSep = " - ",
 	paramGroupVar = NULL,
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),

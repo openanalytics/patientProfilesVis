@@ -52,7 +52,7 @@
 #' @export
 subjectProfileLinePlot <- function(
 	data,
-	paramValueVar, paramLab = toString(getLabelVar(paramValueVar, labelVars = labelVars)),
+	paramValueVar, paramLab = getLabelVar(paramValueVar, labelVars = labelVars),
 	paramNameVar = NULL, paramVarSep = " - ",
 	paramValueRangeVar = NULL, colorValueRange = unname(glpgColor("extra")["lightGreen"]),
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
@@ -69,7 +69,7 @@ subjectProfileLinePlot <- function(
 	xLab = timeLab,
 	yLab = "",
 	timeLim = NULL,
-	title = paramLab,
+	title = toString(getLabelVar(paramVar, labelVars = labelVars, label = paramLab)),
 	label = title,
 	labelVars = NULL,
 	formatReport = subjectProfileReportFormat(),
