@@ -270,7 +270,7 @@ test_that("parameters are grouped based on grouping variable(s)", {
 			
 })
 
-test_that("reference range is correctly displayed", {
+test_that("a reference range is correctly displayed", {
 	
 	# Parameter A: reference range outside data range
 	# Parameter B: reference range inside data range
@@ -382,6 +382,39 @@ test_that("limits for the y-axis is restricted to observations range", {
 		check.attributes = FALSE # colnames differ
 	)
 			
+})
+
+test_that("a custom color is specified for the reference range", {
+			
+	data <- data.frame(
+		TEST = c("A", "A"),
+		DY = seq(2),
+		USUBJID = "1",
+		AVAL = c(1, 2),
+		LOW = c(0, 0),
+		HIGH = c(4, 4)
+	)
+			
+	colorValueRange <- "orange"
+	expect_silent(
+		plots <- subjectProfileLinePlot(
+			data = data,
+			timeVar = "DY",
+			paramNameVar = "TEST",
+			paramValueVar = "AVAL",
+			paramValueRangeVar = c("LOW", "HIGH"),
+			colorValueRange = colorValueRange
+		)
+	)
+	
+	gg <- plots[[1]][[1]]
+	
+	isGeomRibbon <- sapply(gg$layers, function(l) inherits(l$geom, "GeomRibbon"))
+	ggDataRibbon <- layer_data(gg, which(isGeomRibbon))
+
+	expect_setequal(ggDataRibbon$fill, "orange")
+	expect_setequal(ggDataRibbon$colour, NA)
+	
 })
 
 test_that("points are colored based on a variable", {
