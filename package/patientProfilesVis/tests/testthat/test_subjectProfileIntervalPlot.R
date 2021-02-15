@@ -463,6 +463,38 @@ test_that("color label is specified", {
 			
 })
 
+test_that("points are set transparent", {
+			
+	data <- data.frame(
+		TEST = c(1, 1, 2),
+		START = c(1, 3, 5),
+		END = c(2, 4, 6),
+		RIND = c("High", "Normal", "High"),
+		USUBJID = "1"
+	)
+			
+	alpha <- 0.3
+	plots <- subjectProfileIntervalPlot(
+		data = data,
+		timeStartVar = "START",
+		timeEndVar = "END",
+		paramVar = "TEST",
+		alpha = alpha
+	)
+	gg <- plots[["1"]][[1]]
+			
+	# extract data behind the point
+	isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
+	ggDataPoint <- lapply(which(isPointAes), function(i){
+		layer_data(gg, i)
+	})
+	ggDataPoint <- do.call(rbind, ggDataPoint)
+	
+	expect_setequal(ggDataPoint$alpha, alpha)
+			
+})
+
+
 #context("Compare 'subjectProfileIntervalPlot' with previous version")
 #
 #library(glpgUtilityFct)
