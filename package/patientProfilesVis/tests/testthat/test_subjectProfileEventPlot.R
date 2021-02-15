@@ -789,7 +789,7 @@ test_that("variable labels are specified", {
 	)
 			
 	# label specified for a subset of the variable(s)
-	labelVars <- c(DY = "Relative time", TEST = "Parameter")
+	labelVars <- c(TEST = "Parameter", RIND = "Reference range")
 	plots <- subjectProfileEventPlot(
 		data = data,
 		timeVar = "DY",
@@ -801,9 +801,20 @@ test_that("variable labels are specified", {
 	gg <- plots[["1"]][[1]]
 	
 	expect_identical(gg$labels$title, "Parameter")
-	expect_identical(unname(gg$labels$x), "Relative time" )
-	expect_identical(gg$labels$colour, "RIND")
-	expect_identical(gg$labels$fill, "RIND")
-	expect_identical(gg$labels$shape, "RIND")
+	expect_identical(unname(gg$labels$x), "DY")
+
+	for(aes in c("colour", "fill", "shape")){
+		
+		expect_equal({
+					
+			isAes <- sapply(ggScales, function(x) 
+				all(x[["aesthetics"]] == !!aes)
+			)
+			aesScale <- ggScales[[which(isAes)]]
+			unname(aesScale$name)
+					
+		}, expected = "Reference range")
+		
+	}
 			
 })
