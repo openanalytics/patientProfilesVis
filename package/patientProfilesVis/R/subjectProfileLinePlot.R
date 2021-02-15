@@ -16,12 +16,9 @@
 #' e.g. to represent the reference range of the variable.
 #' @param colorValueRange String with color for the ribbon
 #' represented by \code{paramValueRangeVar}.
-#' @param colorVar string, variable of \code{data} with color, used for the points only.
-#' @param colorLab string, label for \code{colorVar}
-#' @param colorPalette named vector with color for \code{colorVar}
-#' @param shapeVar string, variable of \code{data} with shape, used for the points only.
-#' @param shapeLab string, label for \code{shapeVar}
-#' @param shapePalette named vector with shape for \code{shapeVar}
+#' @param colorVar String, variable of \code{data} with color.
+#' This variable is used
+#' for the colors and the filling of the points.
 #' @param yLimFrom String with specification on the limits of the y-axis, either:
 #' \itemize{
 #' \item{'all' (by default): }{for each parameter (\code{paramNameVar}), 
@@ -57,7 +54,10 @@ subjectProfileLinePlot <- function(
 	paramValueRangeVar = NULL, colorValueRange = unname(glpgColor("extra")["lightGreen"]),
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
 	colorPalette = NULL,
-	shapeVar = colorVar, shapeLab = getLabelVar(shapeVar, labelVars = labelVars),
+	shapeVar = colorVar, 
+	shapeLab = if(isTRUE(colorVar == shapeVar)){
+		colorLab
+	}else	getLabelVar(shapeVar, labelVars = labelVars),
 	shapePalette = NULL,
 	paramGroupVar = NULL,
 	timeVar, 
@@ -69,7 +69,7 @@ subjectProfileLinePlot <- function(
 	xLab = timeLab,
 	yLab = "",
 	timeLim = NULL,
-	title = toString(getLabelVar(paramVar, labelVars = labelVars, label = paramLab)),
+	title = toString(getLabelVar(paramValueVar, labelVars = labelVars, label = paramLab)),
 	label = title,
 	labelVars = NULL,
 	formatReport = subjectProfileReportFormat(),

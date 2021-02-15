@@ -12,8 +12,9 @@
       - missing values in paramVar or paramNameVar are not filtered
     o subjectProfileEventPlot:
       - fix when paramVarLab not specified for all vars
-      - shape lab set to color lab if color but not shape var specified
       - x lab set to time lab by default
+    o subjectProfileEvent/subjectProfileLinePlot:
+      - shape lab set to color lab if color but not shape var specified
     o getPageVar:
       - fix when only one var is specified
           o subjectProfileEventPlot:

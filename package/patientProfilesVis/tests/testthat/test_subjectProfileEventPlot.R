@@ -448,7 +448,7 @@ test_that("points are shaped based on a variable", {
 	
 	# all data is represented
 	expect_equal(nrow(ggDataPointWithInput), nrow(data))
-	# color scale based on data
+	# shape scale based on data
 	shapeScaleData <- c(with(ggDataPointWithInput, tapply(shape, RIND, unique)))
 	
 	# extract shape palette of the plot

@@ -1,17 +1,8 @@
 #' Create plot of subject profiles for events
 #' 
 #' @param colorVar String, variable of \code{data} with color.
-#' For the subject profile event plot, this variable is used
+#' This variable is used
 #' for the colors and the filling of the points.
-#' @param shapeVar String, variable of \code{data} for shape of the points.
-#' By default, same as \code{colorVar}.
-#' @param shapeLab String, label for \code{shapeVar}.
-#' Set by default to \code{colorLab} if \code{colorVar}
-#' but not \code{shapeVar} is not specified.
-#' @param shapePalette Named character vector with shape palette
-#' for \code{shapeVar}.
-#' The variable should be named with the corresponding element
-#' in \code{shapeVar}.
 #' @inheritParams subjectProfileIntervalPlot
 #' @return list of (across subjects) of list (across modules) of \code{\link[ggplot2]{ggplot2} objects}, 
 #' also of class \code{subjectProfileEventPlot}, with additional metaData attributes containing

@@ -16,7 +16,8 @@ subjectProfileLinePlot(
   colorLab = getLabelVar(colorVar, labelVars = labelVars),
   colorPalette = NULL,
   shapeVar = colorVar,
-  shapeLab = getLabelVar(shapeVar, labelVars = labelVars),
+  shapeLab = if (isTRUE(colorVar == shapeVar)) {     colorLab } else
+    getLabelVar(shapeVar, labelVars = labelVars),
   shapePalette = NULL,
   paramGroupVar = NULL,
   timeVar,
@@ -33,7 +34,7 @@ subjectProfileLinePlot(
   xLab = timeLab,
   yLab = "",
   timeLim = NULL,
-  title = toString(getLabelVar(paramVar, labelVars = labelVars, label = paramLab)),
+  title = toString(getLabelVar(paramValueVar, labelVars = labelVars, label = paramLab)),
   label = title,
   labelVars = NULL,
   formatReport = subjectProfileReportFormat(),
@@ -69,17 +70,20 @@ e.g. to represent the reference range of the variable.}
 \item{colorValueRange}{String with color for the ribbon
 represented by \code{paramValueRangeVar}.}
 
-\item{colorVar}{string, variable of \code{data} with color, used for the points only.}
+\item{colorVar}{String, variable of \code{data} with color.
+This variable is used
+for the colors and the filling of the points.}
 
-\item{colorLab}{string, label for \code{colorVar}}
+\item{colorLab}{String, label for \code{colorVar}.}
 
-\item{colorPalette}{named vector with color for \code{colorVar}}
+\item{colorPalette}{Named vector with color palette.
+The variable should be named with the corresponding element
+in \code{colorVar}.}
 
-\item{shapeVar}{string, variable of \code{data} with shape, used for the points only.}
+\item{shapeLab}{String with label for \code{timeStartShapeVar}\code{timeEndShapeVar}}
 
-\item{shapeLab}{string, label for \code{shapeVar}}
-
-\item{shapePalette}{named vector with shape for \code{shapeVar}}
+\item{shapePalette}{Named vector with (combined) shape palette for 
+\code{timeStartShapeVar}\code{timeEndShapeVar}.}
 
 \item{paramGroupVar}{(optional) character vector with variable(s) of \code{data} with grouping.
 If specified, the parameters will be grouped by this(these) variable(s) in the y-axis.}
