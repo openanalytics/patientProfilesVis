@@ -684,6 +684,33 @@ test_that("shape label is specified", {
 	
 })
 
+test_that("symbols are set to a specific size", {
+			
+	data <- data.frame(
+		TEST = seq(3),
+		DY = seq(3),
+		RIND = c("High", "Normal", "High"),
+		AVAL = rnorm(3),
+		USUBJID = "1"
+	)
+	
+	shapeSize <- 10
+	plots <- subjectProfileLinePlot(
+		data = data,
+		timeVar = "DY",
+		paramNameVar = "TEST",
+		paramValueVar = "AVAL",
+		shapeSize = shapeSize
+	)
+	gg <- plots[["1"]][[1]]
+	
+	# extract data behind the point
+	isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
+	ggDataPoint <- layer_data(gg, which(isGeomPoint))
+	expect_setequal(ggDataPoint$size, shapeSize)
+	
+})
+
 test_that("points are set transparent", {
 			
 	data <- data.frame(
