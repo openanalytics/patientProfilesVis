@@ -122,7 +122,7 @@ test_that("multiple parameter variables are correctly combined and ordered", {
 					
 				gg <- plots[[1]][[1]]
 				
-				# extract data behind the text
+				# extract data behind the point
 				isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
 				ggDataPoint <- layer_data(gg, which(isGeomPoint))
 				ggDataPoint <- ggDataPoint[order(ggDataPoint$y), ]
@@ -167,7 +167,7 @@ test_that("variable(s) of parameters are combined with specified separator", {
 	)
 	gg <- plots[["1"]][[1]]
 			
-	# extract data behind the text
+	# extract data behind the point
 	isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
 	yLabel <- layer_scales(gg, which(isGeomPoint))$y$range$range
 	yLabel <- rev(yLabel)
@@ -232,22 +232,15 @@ test_that("parameters are grouped based on grouping variable(s)", {
 			
 	gg <- plots[["1"]][[1]]
 	
-	# extract data behind the point
-	isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
-	ggDataPoint <- layer_data(gg, which(isGeomPoint))
-	ggDataPoint <- ggDataPoint[order(ggDataPoint$y), ]
-	
 	# extract labels of the y-axis
-	ggDataPoint$yLabel <- layer_scales(gg, which(isGeomPoint))$y$range$range
+	yLabel <- layer_scales(gg, which(isGeomPoint))$y$range$range
+	# labels are indicated from the bottom to the top of the plot
+	yLabel <- rev(yLabel)
 	
-	# variables are order from the bottom to the top in the data
-	# so use revert order
-	ggDataPointOrder <- ggDataPoint[order(ggDataPoint$y, decreasing = TRUE), ]					
-	yLabel <- ggDataPointOrder$yLabel
-	
-	dataOrder <- data[with(data, order(CAT1, CAT2, TEST)), ]
+	dataReference <- data[with(data, order(CAT1, CAT2, TEST)), ]
+	dataReference$TEST <- as.character(dataReference$TEST)
 			
-	expect_equal(yLabel, as.character(dataOrder$TEST))
+	expect_equal(yLabel, dataReference$TEST)
 			
 })
 

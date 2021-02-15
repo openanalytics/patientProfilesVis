@@ -132,6 +132,337 @@ test_that("parameter values are correctly displayed by subject", {
 	
 })
 
+test_that("multiple parameter variables are correctly combined and ordered", {
+			
+	# example where variables are specified as factor
+	# in this case variables are ordered based on factor levels
+	dataFactor <- data.frame(
+		CAT = factor(c("A", "A", "A", "B"), levels = c("B", "A")),
+		TEST = factor(c("a1", "a2", "a3", "b1"), levels = c("a2", "a3", "a1", "b1")),
+		START = 1:4,
+		END = 2:5,
+		USUBJID = "1"
+	)
+			
+	# example with character vector
+	# in this case standard R ordering (alphabetical) is used
+	dataCharacter <- dataFactor
+	dataCharacter[, c("CAT", "TEST")] <- lapply(dataCharacter[, c("CAT", "TEST")], as.character)
+			
+	dataList <- list(dataFactor, dataCharacter)
+			
+	for(i in seq_along(dataList)){
+		
+		expect_equal(
+				
+			object = {
+		
+				plots <- subjectProfileIntervalPlot(
+					data = dataList[[i]],
+					paramVar = c("CAT", "TEST"),
+					timeStartVar = "START",
+					timeEndVar = "END"
+				)
+						
+				gg <- plots[[1]][[1]]
+						
+				# extract data behind the point
+				isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
+				ggDataPoint <- lapply(which(isGeomPoint), function(i){
+					layer_data(gg, i)
+				})
+				ggDataPoint <- do.call(rbind, ggDataPoint)
+				
+				# extract labels of the y-axis
+				yLabel <- layer_scales(gg, 1)$y$range$range
+				ggDataPoint$yLabel <- yLabel[
+					as.numeric(as.factor(ggDataPoint$y))
+				]
+				ggDataPoint <- ggDataPoint[with(ggDataPoint, order(y, decreasing = TRUE)), ]
+				ggDataPoint <- ggDataPoint[, c("x", "yLabel")]
+				
+			}, expected = {
+						
+				# extract input data
+				dataReference <- dataList[[i]]
+				dataReference <- reshape2::melt(
+					dataReference, 
+					id.vars = c("CAT", "TEST"), 
+					measure.vars = c("START", "END")
+				)
+				
+				dataReference <- dataReference[with(dataReference, order(CAT, TEST)), ]
+				dataReference$yLabel <- with(dataReference, paste(CAT, TEST, sep = " - "))
+				
+				dataReference <- dataReference[, c("value", "yLabel")]
+							
+			},
+			check.attributes = FALSE
+		)
+	}
+	
+})
+
+test_that("variable(s) of parameters are combined with specified separator", {
+			
+	data <- data.frame(
+		CAT = c("A", "A", "A", "B"),
+		TEST = c("a1", "a2", "a3", "b1"), 
+		START = 1:4,
+		END = 2:5,
+		USUBJID = "1"
+	)
+	plots <- subjectProfileIntervalPlot(
+		data = data,
+		paramVar = c("CAT", "TEST"),
+		paramVarSep = " and ",
+		timeStartVar = "START",
+		timeEndVar = "END"
+	)
+			
+	gg <- plots[["1"]][[1]]
+			
+	# extract data behind the point
+	yLabel <- layer_scales(gg, 1)$y$range$range
+	yLabel <- rev(yLabel)
+	
+	dataReference <- data[with(data, order(CAT, TEST)), ]
+	dataReference$yLabel <- with(dataReference, paste(CAT, TEST, sep = " and "))
+	
+	expect_equal(yLabel, dataReference$yLabel)
+	
+})
+
+test_that("label(s) for parameter variable(s) are specified", {
+			
+	data <- data.frame(
+		CAT = "A", TEST = "a1",
+		START = 1:4,
+		END = 2:5,
+		USUBJID = "1",
+		AVAL = 1
+	)
+			
+	expect_equal({
+		plots <- subjectProfileIntervalPlot(
+			data = data,
+			paramVar = c("CAT", "TEST"),
+			timeStartVar = "START",
+			timeEndVar = "END"
+		)
+		gg <- plots[[1]][[1]]
+		gg$labels$title
+	}, expected = "CAT, TEST")
+		
+	expect_equal({
+		plots <- subjectProfileIntervalPlot(
+			data = data,
+			paramVar = c("CAT", "TEST"),
+			timeStartVar = "START",
+			timeEndVar = "END",
+			paramLab = c(TEST = "Laboratory parameter")
+		)
+		gg <- plots[[1]][[1]]
+		gg$labels$title
+	}, expected = "CAT, Laboratory parameter")
+	
+})
+
+test_that("parameters are grouped based on grouping variable(s)", {
+			
+	# example where data is first sorted based on multiple
+	# grouping variables (factor and character),
+	# then param name variable (for a2 vs a1)
+	data <- data.frame(
+		CAT1 = factor(c("I", "I", "II", "II"), levels = c("II", "I")),
+		CAT2 = c("A", "A", "A", "B"), 
+		TEST = factor(c("a1", "a2", "a3", "b1"), levels = c("a2", "a3", "a1", "b1")),
+		START = 1:4, END = 2:5,
+		USUBJID = "1"
+	)
+	
+	plots <- subjectProfileIntervalPlot(
+		data = data,
+		paramVar = "TEST",
+		paramGroupVar = c("CAT1", "CAT2"),
+		timeStartVar = "START",
+		timeEndVar = "END"
+	)
+	
+	gg <- plots[["1"]][[1]]
+	
+	# extract labels of the y-axis
+	yLabel <- layer_scales(gg, 1)$y$range$range
+	# labels are indicated from the bottom to the top of the plot
+	yLabel <- rev(yLabel)
+	
+	dataReference <- data[with(data, order(CAT1, CAT2, TEST)), ]
+	dataReference$TEST <- as.character(dataReference$TEST)
+	
+	expect_equal(yLabel, dataReference$TEST)
+	
+})
+
+test_that("points are colored based on a variable", {
+			
+	data <- data.frame(
+		TEST = c(1, 1, 2),
+		START = c(1, 3, 5),
+		END = c(2, 4, 6),
+		RIND = factor(
+			c("High", "Normal", "High"), 
+			levels = c("Low", "Normal", "High")
+		),
+		USUBJID = "1"
+	)
+			
+	plots <- subjectProfileIntervalPlot(
+		data = data,
+		timeStartVar = "START",
+		timeEndVar = "END",
+		paramVar = "TEST",
+		colorVar = "RIND"
+	)
+			
+	gg <- plots[["1"]][[1]]
+	
+	## extract color palette of the plot
+	ggScales <- gg$scales$scales
+	isColorAes <- sapply(ggScales, function(x) 
+		all(x[["aesthetics"]] == "colour")
+	)
+	colorScale <- ggScales[[which(isColorAes)]]
+	colorScalePlot <- colorScale$palette(2)
+		
+	## point
+	
+	# extract data behind the point
+	isPointAes <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
+	ggDataPoint <- lapply(which(isPointAes), function(i){
+		layer_data(gg, i)
+	})
+	ggDataPoint <- do.call(rbind, ggDataPoint)
+	ggDataPoint$y <- as.numeric(as.factor(ggDataPoint$y))
+	
+	# format reference data
+	dataReferencePoint <- reshape2::melt(
+		data, 
+		id.vars = c("TEST", "RIND"), 
+		measure.vars = c("START", "END")
+	)
+	
+	# parameter as sorted from top to the bottom
+	dataReferencePoint$y <- with(dataReferencePoint, max(TEST)-TEST)+1
+	# missing levels are not displayed
+	dataReferencePoint$RIND <- droplevels(dataReferencePoint$RIND)
+	
+	ggDataPointWithInput <- merge(
+		x = ggDataPoint, by.x = c("x", "y"),
+		y = dataReferencePoint, by.y = c("value", "y"),
+		all = TRUE
+	)
+			
+	# all data is represented
+	expect_equal(nrow(ggDataPointWithInput), nrow(dataReferencePoint))
+	# color scale based on data
+	colorScalePointData <- c(with(ggDataPointWithInput, tapply(colour, RIND, unique)))
+
+	expect_equal(colorScalePointData, colorScalePlot)
+	
+	## segment
+	
+	# extract data behind the point
+	isSegmentAes <- sapply(gg$layers, function(l) inherits(l$geom, "GeomSegment"))
+	ggDataSegment <- layer_data(gg, which(isSegmentAes))
+
+	dataReferenceSegment <- data
+	# parameter as sorted from top to the bottom
+	dataReferenceSegment$y <- with(dataReferenceSegment, max(TEST)-TEST)+1
+	# missing levels are not displayed
+	dataReferenceSegment$RIND <- droplevels(dataReferenceSegment$RIND)
+	
+	ggDataSegmentWithInput <- merge(
+		x = ggDataSegment, by.x = c("x", "xend", "y"),
+		y = dataReferenceSegment, by.y = c("START", "END", "y"),
+		all = TRUE
+	)
+	
+	# all data is represented
+	expect_equal(nrow(ggDataSegmentWithInput), nrow(dataReferenceSegment))
+	# color scale based on data
+	colorScaleSegmentData <- c(with(ggDataSegmentWithInput, tapply(colour, RIND, unique)))
+	
+	expect_equal(colorScaleSegmentData, colorScalePlot)
+	
+})
+
+test_that("points are colored with specified palette", {
+			
+	data <- data.frame(
+		TEST = c(1, 1, 2),
+		START = c(1, 3, 5),
+		END = c(2, 4, 6),
+		RIND = factor(
+			c("High", "Normal", "High"), 
+			levels = c("Low", "Normal", "High")
+		),
+		USUBJID = "1"
+	)
+			
+	colorPalette <- c(Low = "green", Normal = "blue", High = "red")
+	plots <- subjectProfileIntervalPlot(
+		data = data,
+		timeStartVar = "START",
+		timeEndVar = "END",
+		paramVar = "TEST",
+		colorVar = "RIND",
+		colorPalette = colorPalette
+	)
+	gg <- plots[["1"]][[1]]
+			
+	# extract color palette of the plot
+	ggScales <- gg$scales$scales
+	isColorAes <- sapply(ggScales, function(x) 
+		all(x[["aesthetics"]] == "colour")
+	)
+	colorScale <- ggScales[[which(isColorAes)]]
+	colorScalePlot <- colorScale$palette(3)
+	expect_equal(colorScalePlot, colorPalette)
+			
+})
+
+test_that("color label is specified", {
+			
+	data <- data.frame(
+		TEST = c(1, 1, 2),
+		START = c(1, 3, 5),
+		END = c(2, 4, 6),
+		RIND = c("High", "Normal", "High"),
+		USUBJID = "1"
+	)
+			
+	colorLab <- "Reference indicator"
+	plots <- subjectProfileIntervalPlot(
+		data = data,
+		timeStartVar = "START",
+		timeEndVar = "END",
+		paramVar = "TEST",
+		colorVar = "RIND",
+		colorLab = colorLab
+	)
+			
+	gg <- plots[["1"]][[1]]
+	ggScales <- gg$scales$scales
+			
+	# extract color scale
+	isColorAes <- sapply(ggScales, function(x) 
+		all(x[["aesthetics"]] == "colour")
+	)
+	colorScale <- ggScales[[which(isColorAes)]]
+	expect_equal(colorScale$name, colorLab)
+			
+})
+
 #context("Compare 'subjectProfileIntervalPlot' with previous version")
 #
 #library(glpgUtilityFct)

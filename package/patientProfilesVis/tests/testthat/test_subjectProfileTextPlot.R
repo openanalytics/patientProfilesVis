@@ -329,13 +329,16 @@ test_that("parameters are grouped based on grouping variable(s)", {
 	ggDataText <- layer_data(gg, which(isGeomText))
 	ggDataText <- ggDataText[order(ggDataText$y), ]
 	
-	dataOrder <- data[with(data, order(CAT1, CAT2, TERM)), ]
+	dataReference <- data[with(data, order(CAT1, CAT2, TERM)), ]
+	dataReference$TERM <- as.character(dataReference$TERM)
 	
 	yValue <- as.character(ggDataText[, "label"])
-	expect_equal(rev(yValue), dataOrder$START)
+	expect_equal(rev(yValue), dataReference$START)
 	
 	yLabel <- layer_scales(gg, which(isGeomText))$y$range$range
-	expect_equal(rev(yLabel), as.character(dataOrder$TERM))
+	# labels are indicated from the bottom to the top of the plot
+	yLabel <- rev(yLabel)
+	expect_equal(yLabel, dataReference$TERM)
 			
 })
 
