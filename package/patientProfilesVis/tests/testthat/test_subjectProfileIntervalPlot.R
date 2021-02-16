@@ -485,7 +485,7 @@ test_that("points are set transparent", {
 			
 	# extract data behind the point
 	isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
-	ggDataPoint <- lapply(which(isPointAes), function(i){
+	ggDataPoint <- lapply(which(isGeomPoint), function(i){
 		layer_data(gg, i)
 	})
 	ggDataPoint <- do.call(rbind, ggDataPoint)

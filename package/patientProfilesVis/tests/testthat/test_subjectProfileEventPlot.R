@@ -232,6 +232,8 @@ test_that("parameters are grouped based on grouping variable(s)", {
 			
 	gg <- plots[["1"]][[1]]
 	
+	isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
+	
 	# extract labels of the y-axis
 	yLabel <- layer_scales(gg, which(isGeomPoint))$y$range$range
 	# labels are indicated from the bottom to the top of the plot
