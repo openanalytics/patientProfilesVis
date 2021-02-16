@@ -13,9 +13,17 @@ data(SDTMDataPelican)
 # and corresponding labels
 data(labelVarsSDTMPelican)
 
-if (Sys.getenv("TESTTHAT_OUTPUT_FILE") != "")
-	options(testthat.output_file = Sys.getenv("TESTTHAT_OUTPUT_FILE", stdout()))
+reporters <- testthat::MultiReporter$new(
+	reporters = list(
+		# default check
+		CheckReporter$new(), 
+		# Reporter for Jenkins
+		JunitReporter$new(file = file.path(getwd(), "results.xml"))
+	)
+)
+
 test_check(
-		"patientProfilesVis",
-		reporter = Sys.getenv("TESTTHAT_DEFAULT_CHECK_REPORTER", "check"))
+	"patientProfilesVis",
+	reporter = reporters
+)
 

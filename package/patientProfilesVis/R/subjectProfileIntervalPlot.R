@@ -46,7 +46,7 @@ subjectProfileIntervalPlot <- function(
 	subjectVar = "USUBJID", subjectSubset = NULL,
 	subjectSample = NULL, seed = 123,
 	subsetData = NULL, subsetVar = NULL, subsetValue = NULL, 
-	timeImpType = c("minimal", "data-by-subject", "none"),
+	timeImpType = c("minimal", "data-based", "none"),
 	timeLim = NULL, timeLimData = NULL, 
 	timeLimStartVar = NULL, timeLimStartLab = getLabelVar(timeLimStartVar, labelVars = labelVars),
 	timeLimEndVar = NULL, timeLimEndLab = getLabelVar(timeLimEndVar, labelVars = labelVars),
@@ -346,7 +346,7 @@ subjectProfileIntervalPlot <- function(
 #' they are taken across subjects. If all time are missings, the range is set to 0 and Inf}
 #' \item{'none': }{no imputation is done}
 #' }}}
-#' The symbols displaedy at the start and end of the interval are:
+#' The symbols displayed at the start and end of the interval are:
 #' \itemize{
 #' \item{by default: }{
 #' \itemize{
@@ -385,13 +385,19 @@ subjectProfileIntervalPlot <- function(
 #' and for the default label of the x-axis.
 #' @param timeStartLab String, label for \code{timeStartVar}.
 #' @param timeEndLab String, label for \code{timeEndVar}.
-#' @param timeLimData data.frame with data used to extract time limits per subject
-#' @param timeLimStartVar string, variable of \code{timeLimData} with time start
+#' @param timeLimData Data.frame with data used to impute time
+#' in case some time records are missing in \code{data}, 
+#' see section: 'Time interval representation'.
+#' @param timeLimStartVar String, variable of \code{timeLimData} with 
+#' start of the time interval.
 #' @param timeLimStartLab String, label for \code{timeLimeStartVar}.
-#' @param timeLimEndVar string, variable of \code{timeLimData} with time end
+#' @param timeLimEndVar String, variable of \code{timeLimData} with 
+#' end of the time interval.
 #' @param timeLimEndLab String, label for \code{timeLimEndVar}.
 #' @param timeImpType String with imputation type: 'minimal' (default),
-#' 'data-based' or 'none', see section: 'Time interval representation'.
+#' 'data-based' or 'none', see section: 'Time interval representation'.\cr
+#' This imputation type is not used if a dataset used to impute time is 
+#' specified.
 #' @param labelVars Named character vector with variable labels 
 #' (names are the variable code)
 #' @inheritParams filterData
@@ -481,11 +487,12 @@ formatTimeInterval <- function(data,
 	# variables used for the symbols	
 	data <- ddply(data, subjectVar, function(x){
 				
-		subject <- unique(x[, subjectVar])
+		subject <- unique(as.character(x[, subjectVar]))
 		
 		# 1) extract limits from specified 'timeLimeData'
 		if(!is.null(timeLimData)){
-			xTimeData <- subset(timeLimData, get(subjectVar) == subject)[, c(timeLimStartVar, timeLimEndVar)]
+			xTimeData <- timeLimData[which(timeLimData[, subjectVar] == subject), ]
+			xTimeData <- xTimeData[, c(timeLimStartVar, timeLimEndVar)]
 			if(all(is.na(xTimeData))){
 				xTimeData <- timeLimData[, c(timeLimStartVar, timeLimEndVar)]
 			}
