@@ -2,7 +2,7 @@
 % Please edit documentation in R/subjectProfileTextPlot.R
 \name{subjectProfileTextPlot}
 \alias{subjectProfileTextPlot}
-\title{Create plot of subject profiles for events.}
+\title{Visualize text-information in subject profiles.}
 \usage{
 subjectProfileTextPlot(
   data,

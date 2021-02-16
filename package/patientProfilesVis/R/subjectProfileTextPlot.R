@@ -1,4 +1,4 @@
-#' Create plot of subject profiles for events.
+#' Visualize text-information in subject profiles.
 #' 
 #' There are two ways to specify the variables of interest to include:
 #' \itemize{

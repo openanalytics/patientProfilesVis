@@ -2,7 +2,8 @@
 % Please edit documentation in R/subjectProfileEventPlot.R
 \name{subjectProfileEventPlot}
 \alias{subjectProfileEventPlot}
-\title{Create plot of subject profiles for events}
+\title{Visualize events in subject profiles, so
+event with a single time.}
 \usage{
 subjectProfileEventPlot(
   data,
@@ -153,7 +154,8 @@ also of class \code{subjectProfileEventPlot}, with additional metaData attribute
 '\code{label}', 'timeLim' and 'timeTrans' (if specified).
 }
 \description{
-Create plot of subject profiles for events
+Visualize events in subject profiles, so
+event with a single time.
 }
 \seealso{
 Other patient profiles plotting function: 

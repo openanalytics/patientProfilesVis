@@ -1,4 +1,5 @@
-#' Create spaghetti plot for subject profiles
+#' Visualize subject profiles of the evolution of 
+#' continuous parameters versus time (spaghetti plot).
 #' @param paramValueVar String, variable of \code{data} 
 #' with parameter value to represent.\cr
 #' Records with missing values are discarded.

@@ -1,4 +1,5 @@
-#' Create plot of subject profiles with segments for range of parameters.
+#' Visualize time interval in subject profiles,
+#' so event with a start and end time.
 #' @inheritSection formatTimeInterval Time interval representation
 #' @param rangeSimilarStartEnd numeric, if a record has the same
 #' \code{timeStartVar} and \code{timeEndVar}, what should be the range of the segment?

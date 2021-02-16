@@ -1,5 +1,5 @@
-#' Create plot of subject profiles for events
-#' 
+#' Visualize events in subject profiles, so
+#' event with a single time.
 #' @param colorVar String, variable of \code{data} with color.
 #' This variable is used
 #' for the colors and the filling of the points.

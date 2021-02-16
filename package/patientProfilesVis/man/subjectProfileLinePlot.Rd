@@ -2,7 +2,8 @@
 % Please edit documentation in R/subjectProfileLinePlot.R
 \name{subjectProfileLinePlot}
 \alias{subjectProfileLinePlot}
-\title{Create spaghetti plot for subject profiles}
+\title{Visualize subject profiles of the evolution of 
+continuous parameters versus time (spaghetti plot).}
 \usage{
 subjectProfileLinePlot(
   data,
@@ -190,7 +191,8 @@ The entire list also contains attributes: '\code{label}',
 'timeLim' and 'timeTrans' (if specified).
 }
 \description{
-Create spaghetti plot for subject profiles
+Visualize subject profiles of the evolution of 
+continuous parameters versus time (spaghetti plot).
 }
 \seealso{
 Other patient profiles plotting function: 
