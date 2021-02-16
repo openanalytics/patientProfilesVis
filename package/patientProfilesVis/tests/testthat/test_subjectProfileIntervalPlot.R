@@ -23,7 +23,7 @@ test_that("subject variable is specified", {
 	)
 			
 	# plots are sorted based on factor levels:
-	expect_named(plots, levels(data$SUBJID)[-1])
+	expect_named(plots, levels(data$SUBJID))
 			
 })
 
