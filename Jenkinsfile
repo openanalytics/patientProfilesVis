@@ -88,7 +88,7 @@ pipeline {
                             steps {
                               sh '''
                                 R -q -e \'
-                                pc <- covr::package_coverage("package/patientProfilesVis", code = "testthat::test_package(\\"patientProfilesVis\\", reporter = testthat::JunitReporter$new(file = file.path(Sys.getenv(\\"WORKSPACE\\"), \\"results.xml\\")))");
+                                pc <- covr::package_coverage("package/patientProfilesVis", code = "testthat::test_package(\\"patientProfilesVis\\", stop_on_failure = FALSE, reporter = testthat::JunitReporter$new(file = file.path(Sys.getenv(\\"WORKSPACE\\"), \\"results.xml\\")))");
                                 covr::report(x = pc, file = paste0("testCoverage-", attr(pc, "package")$package, "-", attr(pc, "package")$version, ".html"))
                                 covr::to_cobertura(pc)
                                 \'
