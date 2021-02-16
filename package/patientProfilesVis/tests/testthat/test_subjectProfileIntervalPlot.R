@@ -463,6 +463,151 @@ test_that("color label is specified", {
 			
 })
 
+test_that("missing time values are not imputed", {
+	
+	data <- data.frame(
+		TEST = c(1, 1, 2, 2),
+		START = c(1, NA_real_, 5, NA_real_),
+		END = c(NA_real_, 4, 6, NA_real_),
+		USUBJID = "1"
+	)
+			
+	expect_message(
+		plots <- subjectProfileIntervalPlot(
+			data = data,
+			timeStartVar = "START",
+			timeEndVar = "END",
+			paramVar = "TEST",
+			timeImpType = "none"
+		),
+		"2 record(s) with missing START and 2 record(s) with missing END are not considered.",
+		fixed = TRUE
+	)
+	
+	gg <- plots[[1]][[1]]
+	
+	# extract data behind the point
+	isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
+	ggDataPoint <- lapply(which(isGeomPoint), function(i){
+		layer_data(gg, i)
+	})
+	ggDataPoint <- do.call(rbind, ggDataPoint)
+	ggDataPoint$y <- as.numeric(as.factor(ggDataPoint$y))
+	# filter records with missing time
+	ggDataPoint <- subset(ggDataPoint, !is.na(x))
+	ggDataPoint <- ggDataPoint[do.call(order, ggDataPoint[, c("x", "y")]), ]
+	
+	# format reference data
+	dataReferencePoint <- reshape2::melt(
+		data, 
+		id.vars = "TEST", 
+		measure.vars = c("START", "END")
+	)
+	# parameter as sorted from top to the bottom
+	dataReferencePoint$y <- with(dataReferencePoint, max(TEST)-TEST)+1
+	dataReferencePoint <- dataReferencePoint[, c("value", "y")]
+	# filter records with missing time
+	dataReferencePoint <- subset(dataReferencePoint, !is.na(value))
+	dataReferencePoint <- dataReferencePoint[do.call(order, dataReferencePoint), ]
+	
+	expect_equal(
+		ggDataPoint[, c("x", "y")],
+		dataReferencePoint[, c("value", "y")],
+		check.attributes = FALSE
+	)
+	
+	# and corresponding symbol is labelled: 'Complete'
+	ggScales <- gg$scales$scales
+	isShapeAes <- sapply(ggScales, function(x) 
+		all(x[["aesthetics"]] == "shape")
+	)
+	shapeScale <- ggScales[[which(isShapeAes)]]
+	shapeScalePlot <- shapeScale$palette(1)
+	expect_setequal(ggDataPoint$shape, shapeScalePlot["Complete"])
+			
+})
+
+test_that("missing time values are imputed with 'minimal' imputation", {
+			
+	data <- data.frame(
+		TEST = c(1, 1, 2, 3),
+		START = c(1, NA_real_, 5, NA_real_),
+		END = c(NA_real_, 4, 6, NA_real_),
+		USUBJID = "1"
+	)
+			
+	expect_message(
+		plots <- subjectProfileIntervalPlot(
+			data = data,
+			timeStartVar = "START",
+			timeEndVar = "END",
+			paramVar = "TEST",
+			timeImpType = "minimal"
+		),
+		"2 record(s) with missing START and 2 record(s) with missing END are imputed with minimal imputation.",
+		fixed = TRUE
+	)
+			
+	gg <- plots[[1]][[1]]
+		
+	### check that all records are displayed
+	
+	## extract data behind the point
+	
+	isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
+	ggDataPoint <- lapply(which(isGeomPoint), function(i){
+		layer_data(gg, i)
+	})
+	ggDataPoint <- do.call(rbind, ggDataPoint)
+	ggDataPoint$y <- as.numeric(as.factor(ggDataPoint$y))
+	# filter records with missing start/end time
+	# as they will be displayed at corresponding end/start
+	ggDataPoint <- subset(ggDataPoint, !is.na(x) & !is.na(shape))
+	ggDataPoint <- ggDataPoint[do.call(order, ggDataPoint[, c("x", "y")]), ]
+			
+	# add status
+	ggScales <- gg$scales$scales
+	isShapeAes <- sapply(ggScales, function(x) 
+		all(x[["aesthetics"]] == "shape")
+	)
+	shapeScale <- ggScales[[which(isShapeAes)]]
+	shapeScalePlot <- shapeScale$palette(1)
+	ggDataPoint$status <- names(shapeScalePlot)[match(ggDataPoint$shape, shapeScalePlot)]
+			
+	## format reference data
+	data$id <- seq_len(nrow(data))
+	dataReferencePoint <- reshape2::melt(
+		data, 
+		id.vars = c("id", "TEST"),
+		measure.vars = c("START", "END")
+	)
+	# parameter as sorted from top to the bottom
+	dataReferencePoint$y <- with(dataReferencePoint, max(TEST)-TEST)+1
+	# filter records with missing start/end time
+	# as they will be displayed at corresponding end/start
+	dataReferencePoint <- subset(dataReferencePoint, !is.na(value))
+	dataReferencePoint <- dataReferencePoint[do.call(order, dataReferencePoint[, c("value", "y")]), ]
+			
+	dataReferencePoint <- plyr::ddply(dataReferencePoint, "id", function(x){
+		status <- if(all(c("START", "END") %in% x$variable)){
+			"Complete"
+		}else	c(START = "Missing end", END = "Missing start")[x$variable]
+		cbind.data.frame(x, status = status, stringsAsFactors = FALSE)
+	})
+	
+	expect_equal(
+		ggDataPoint[, c("x", "y", "status")],
+		dataReferencePoint[, c("value", "y", "status")],
+		check.attributes = FALSE
+	)
+	
+	### check that record with all start/end time missing still displayed in axis
+	yLabel <- layer_scales(gg, 1)$y$range$range
+	expect_true("3" %in% yLabel)
+			
+})
+
+
 test_that("points are set transparent", {
 			
 	data <- data.frame(
@@ -493,6 +638,7 @@ test_that("points are set transparent", {
 	expect_setequal(ggDataPoint$alpha, alpha)
 			
 })
+
 
 
 #context("Compare 'subjectProfileIntervalPlot' with previous version")

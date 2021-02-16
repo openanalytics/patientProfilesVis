@@ -41,6 +41,11 @@ for a specific patient.}
 displayed in the x axis.\cr
 Records with missing time are not displayed in the plot.}
 
+\item{timeLab}{String, label for \code{timeVar}.
+This is used in the message
+indicating missing values for \code{timeVar},
+and for the default label of the x-axis.}
+
 \item{paramVar}{Character vector with variable(s) of \code{data} 
 with parameters. Variable content is displayed in the y-axis.}
 

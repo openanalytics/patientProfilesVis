@@ -40,7 +40,7 @@ subjectProfileEventPlot(
 )
 }
 \arguments{
-\item{data}{Data.frame with data}
+\item{data}{Data.frame with data.}
 
 \item{paramVar}{Character vector with variable(s) of \code{data} 
 with parameters. Variable content is displayed in the y-axis.}
