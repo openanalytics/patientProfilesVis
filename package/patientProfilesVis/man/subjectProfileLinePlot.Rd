@@ -45,7 +45,7 @@ subjectProfileLinePlot(
 )
 }
 \arguments{
-\item{data}{Data.frame with data}
+\item{data}{Data.frame with data.}
 
 \item{paramValueVar}{String, variable of \code{data} 
 with parameter value to represent.\cr

@@ -17,6 +17,7 @@
       - shape lab set to color lab if color but not shape var specified
     o subjectProfileLinePlot:
       - remove warning if ref var are missing
+      - no symbols: 'Missing start'/'Missing end' in case of no time imputation
     o getPageVar:
       - fix when only one var is specified
           o subjectProfileEventPlot:

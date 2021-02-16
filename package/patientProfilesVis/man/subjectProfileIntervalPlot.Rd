@@ -54,7 +54,7 @@ subjectProfileIntervalPlot(
 )
 }
 \arguments{
-\item{data}{Data.frame with data}
+\item{data}{Data.frame with data.}
 
 \item{paramVar}{Character vector with variable(s) of \code{data} 
 with parameters. Variable content is displayed in the y-axis.}
@@ -164,10 +164,16 @@ in \code{colorVar}.}
 \item{alpha}{Numeric with transparency, 1 by default.}
 
 \item{timeStartShapeVar}{(optional) String, variable of \code{data} 
-used for the shape of the symbol displayed at the start of the time interval.}
+used for the shape of the symbol displayed 
+at the start of the time interval.\cr
+If not specified, default shape palette is used,
+see section 'Missing values'.}
 
 \item{timeEndShapeVar}{String, variable of \code{data} 
-used for the shape of the symbol displayed at the end of the time interval.}
+used for the shape of the symbol 
+displayed at the end of the time interval.
+If not specified, default shape palette is used,
+see section 'Missing values'.}
 
 \item{shapePalette}{Named vector with (combined) shape palette for 
 \code{timeStartShapeVar}\code{timeEndShapeVar}.}
@@ -208,26 +214,31 @@ also of class \code{subjectProfileIntervalPlot}.
 '\code{label}', 'timeLim' \code{timeTrans} and \code{timeExpand} (if specified).
 }
 \description{
-If no start and/or end date is available and \code{timeStartShapeVar},
-\code{timeEndShapeVar} are not specified: specific arrows are created.
+Create plot of subject profiles with segments for range of parameters.
 }
-\details{
-In case of missing values for the time start or end variables, they are replaced by:
+\section{Time interval representation}{
+
+In case the start or the end of the time interval contain missing values:
 \itemize{
-\item{in case \code{timeLimData}, \code{timeLimStartVar} and \code{timeLimEndVar} are specified: }{
- the minimum/maximum values in the variables: \code{timeLimStartVar}/\code{timeLimEndVar} 
-respectively are considered
- in the data: \code{timeLimData}
-for the specific subject (if available). If there are missing for a specific subject,
-they are taken across subjects.}
+\item{if a dataset (\code{timeLimData}), start (\code{timeLimStartVar})
+and end (\code{timeLimEndVar}) variables are specified: }{
+\enumerate{
+\item{for each subject: }{
+\itemize{
+\item{the minimum and maximum time values across these specified time variables are extracted}
+\item{missing start values are replaced by the minimum time}
+\item{missing start values are replaced by the maximum time}
+}}
+\item{if all values are missing for this subject, they are taken across subjects}
+}}
 \item{otherwise, depending on the imputation type (\code{timeImpType}): }{
 \itemize{
 \item{'minimal' (by default): }{
 \itemize{
-\item{if start end and time are missing: }{no imputation is done, only the label is displayed}
-\item{if start time is missing and end time is not missing: }{
+\item{if the start and the end of the interval are missing: }{no imputation is done, only the label is displayed}
+\item{if the start time is missing and the end time is not missing: }{
 start time is imputed with end time, and status is set to 'Missing start'}
-\item{if end time is missing and start time is not missing: }{
+\item{if the end time is missing and the start time is not missing: }{
 end time is imputed with start time, and status is set to 'Missing end'}
 }}
 \item{'data-based' (default in version < 1.0.0): }{
@@ -236,6 +247,18 @@ for the specific subject (if available). If there are missing for a specific sub
 they are taken across subjects. If all time are missings, the range is set to 0 and Inf}
 \item{'none': }{no imputation is done}
 }}}
+The symbols displaedy at the start and end of the interval are:
+\itemize{
+\item{by default: }{
+\itemize{
+\item{a filled square labelled 'Complete' if the time is not missing}
+\item{a filled left-directed arrow in case of missing start time}
+\item{a filled right-directed arrow in case of missing end time}
+}}
+\item{if the variable(s) used for the shape of the start or end 
+of the interval are specified (via \code{timeStartShapeVar}/\code{timeEndShapeVar}): }{
+labels are based on these variables, and a standard shape palette is used}
+}
 The time limits are the same across subjects, and set to:
 \itemize{
 \item{\code{timeLim} if specified}
@@ -244,6 +267,7 @@ if specified}
 \item{the maximum range on the data obtained after imputation of missing values}
 }
 }
+
 \seealso{
 Other patient profiles plotting function: 
 \code{\link{subjectProfileEventPlot}()},
