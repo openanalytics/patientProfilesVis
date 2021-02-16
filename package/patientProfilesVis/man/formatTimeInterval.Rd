@@ -40,13 +40,13 @@ with end of time interval.}
 used for the shape of the symbol displayed 
 at the start of the time interval.\cr
 If not specified, default shape palette is used,
-see section 'Missing values'.}
+see section 'Time interval representation'.}
 
 \item{timeEndShapeVar}{String, variable of \code{data} 
 used for the shape of the symbol 
 displayed at the end of the time interval.
 If not specified, default shape palette is used,
-see section 'Missing values'.}
+see section 'Time interval representation'.}
 
 \item{subjectVar}{String, variable of data (and subset data) with subject ID.}
 
@@ -61,7 +61,7 @@ see section 'Missing values'.}
 \item{timeLimEndLab}{String, label for \code{timeLimEndVar}.}
 
 \item{timeImpType}{String with imputation type: 'minimal' (default),
-'data-based' or 'none'.}
+'data-based' or 'none', see section: 'Time interval representation'.}
 
 \item{labelVars}{Named character vector with variable labels 
 (names are the variable code)}

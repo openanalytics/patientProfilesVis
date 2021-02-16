@@ -2,7 +2,8 @@
 % Please edit documentation in R/subjectProfileIntervalPlot.R
 \name{subjectProfileIntervalPlot}
 \alias{subjectProfileIntervalPlot}
-\title{Create plot of subject profiles with segments for range of parameters.}
+\title{Visualize time interval in subject profiles,
+so event with a start and end time.}
 \usage{
 subjectProfileIntervalPlot(
   data,
@@ -113,7 +114,7 @@ Missing values in the subject variable are not retained
 in the filtered data.}
 
 \item{timeImpType}{String with imputation type: 'minimal' (default),
-'data-based' or 'none'.}
+'data-based' or 'none', see section: 'Time interval representation'.}
 
 \item{timeLim}{(optional) Vector of length 2 with time limits (x-axis).
 If not specified, these are extracted from the minimum \code{timeStartVar} 
@@ -167,13 +168,13 @@ in \code{colorVar}.}
 used for the shape of the symbol displayed 
 at the start of the time interval.\cr
 If not specified, default shape palette is used,
-see section 'Missing values'.}
+see section 'Time interval representation'.}
 
 \item{timeEndShapeVar}{String, variable of \code{data} 
 used for the shape of the symbol 
 displayed at the end of the time interval.
 If not specified, default shape palette is used,
-see section 'Missing values'.}
+see section 'Time interval representation'.}
 
 \item{shapePalette}{Named vector with (combined) shape palette for 
 \code{timeStartShapeVar}\code{timeEndShapeVar}.}
@@ -214,7 +215,8 @@ also of class \code{subjectProfileIntervalPlot}.
 '\code{label}', 'timeLim' \code{timeTrans} and \code{timeExpand} (if specified).
 }
 \description{
-Create plot of subject profiles with segments for range of parameters.
+Visualize time interval in subject profiles,
+so event with a start and end time.
 }
 \section{Time interval representation}{
 
