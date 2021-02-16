@@ -50,18 +50,24 @@ see section 'Time interval representation'.}
 
 \item{subjectVar}{String, variable of data (and subset data) with subject ID.}
 
-\item{timeLimData}{data.frame with data used to extract time limits per subject}
+\item{timeLimData}{Data.frame with data used to impute time
+in case some time records are missing in \code{data}, 
+see section: 'Time interval representation'.}
 
-\item{timeLimStartVar}{string, variable of \code{timeLimData} with time start}
+\item{timeLimStartVar}{String, variable of \code{timeLimData} with 
+start of the time interval.}
 
 \item{timeLimStartLab}{String, label for \code{timeLimeStartVar}.}
 
-\item{timeLimEndVar}{string, variable of \code{timeLimData} with time end}
+\item{timeLimEndVar}{String, variable of \code{timeLimData} with 
+end of the time interval.}
 
 \item{timeLimEndLab}{String, label for \code{timeLimEndVar}.}
 
 \item{timeImpType}{String with imputation type: 'minimal' (default),
-'data-based' or 'none', see section: 'Time interval representation'.}
+'data-based' or 'none', see section: 'Time interval representation'.\cr
+This imputation type is not used if a dataset used to impute time is 
+specified.}
 
 \item{labelVars}{Named character vector with variable labels 
 (names are the variable code)}
@@ -127,7 +133,7 @@ for the specific subject (if available). If there are missing for a specific sub
 they are taken across subjects. If all time are missings, the range is set to 0 and Inf}
 \item{'none': }{no imputation is done}
 }}}
-The symbols displaedy at the start and end of the interval are:
+The symbols displayed at the start and end of the interval are:
 \itemize{
 \item{by default: }{
 \itemize{
