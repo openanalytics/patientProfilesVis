@@ -816,7 +816,8 @@ test_that("missing time values are imputed based on an external dataset", {
 			paramVar = "TEST",
 			timeLimData = timeLimData
 		),
-		"start/end variable(s) are not specified"
+		"start/end variable(s) are not specified",
+		fixed = TRUE
 	)
 	
 })
