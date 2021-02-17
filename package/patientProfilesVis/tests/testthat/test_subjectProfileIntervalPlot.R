@@ -600,14 +600,16 @@ test_that("missing time values are imputed with 'minimal' imputation", {
 
 test_that("missing time values are imputed based on data records", {
 			
-	# TEST 1: missing start, missing end
-	# TEST 2: complete interval
-	# TEST 3: missing start and end date		
+	# USUBJID 1: 
+	# - TEST 1: missing start, missing end -> imputed by TEST 2
+	# - TEST 2: complete interval
+	# USUBJID 2: 
+	# - TEST 1: missing start and end date -> imputed by data of subject 1	
 	data <- data.frame(
 		TEST = c(1, 1, 2, 3),
-		START = c(1, NA_real_, 5, NA_real_),
-		END = c(NA_real_, 4, 6, NA_real_),
-		USUBJID = "1"
+		START = c(1, NA_real_, 0, NA_real_),
+		END = c(NA_real_, 4, 7, NA_real_),
+		USUBJID = c("1", "1", "1", "2")
 	)
 			
 	expect_message(
@@ -622,56 +624,68 @@ test_that("missing time values are imputed based on data records", {
 		fixed = TRUE
 	)
 			
-	gg <- plots[[1]][[1]]
-			
-	### check that all records are displayed
+	## check that all records are displayed
 	
-	## extract data behind the point
+	# extract data behind the point
+	extractGGData <- function(gg){
+		
+		isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
+		ggDataPoint <- lapply(which(isGeomPoint), function(i){
+			layer_data(gg, i)
+		})
+		ggDataPoint <- do.call(rbind, ggDataPoint)
+		ggDataPoint$y <- as.numeric(as.factor(ggDataPoint$y))
+		
+		# add status
+		ggScales <- gg$scales$scales
+		isShapeAes <- sapply(ggScales, function(x) 
+			all(x[["aesthetics"]] == "shape")
+		)
+		shapeScale <- ggScales[[which(isShapeAes)]]
+		shapeScalePlot <- shapeScale$palette(1)
+		ggDataPoint$status <- names(shapeScalePlot)[match(ggDataPoint$shape, shapeScalePlot)]
+		
+		ggDataPoint <- ggDataPoint[do.call(order, ggDataPoint[, c("y", "x")]), c("x", "y", "status")]
+		
+		return(ggDataPoint)
+		
+	}
 	
-	isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
-	ggDataPoint <- lapply(which(isGeomPoint), function(i){
-		layer_data(gg, i)
-	})
-	ggDataPoint <- do.call(rbind, ggDataPoint)
-	ggDataPoint$y <- as.numeric(as.factor(ggDataPoint$y))
-	
-	# add status
-	ggScales <- gg$scales$scales
-	isShapeAes <- sapply(ggScales, function(x) 
-		all(x[["aesthetics"]] == "shape")
-	)
-	shapeScale <- ggScales[[which(isShapeAes)]]
-	shapeScalePlot <- shapeScale$palette(1)
-	ggDataPoint$status <- names(shapeScalePlot)[match(ggDataPoint$shape, shapeScalePlot)]
-	
-	ggDataPoint <- ggDataPoint[do.call(order, ggDataPoint[, c("y", "x")]), c("x", "y", "status")]
-	
-	# reference data
-	dataReference <- data.frame(
-		x = c(1, 6, 5, 6, 1, 6, 1, 4),
-		y = c(1, 1, 2, 2, 3, 3, 3, 3),
+	# subject 1: records imputed by subject-specific data
+	ggDataPointSubj1 <- extractGGData(gg = plots[["1"]][[1]])
+	dataReferenceSubj1 <- data.frame(
+		x = c(1, 7, 0, 4, 0, 7),
+		y = c(2, 2, 2, 2, 1, 1),
 		status = c(
-			# TEST 3
-			"Missing start", "Missing end", 
+			# TEST 1: complete/missing end
+			"Complete", "Missing end", 
+			# TEST 1: missing start/complete
+			"Missing start", "Complete",
 			# TEST 2
-			"Complete", "Complete", 
-			# TEST 1
-			"Complete", "Missing end",
-			"Missing start", "Complete"
+			"Complete", "Complete"
 		),
 		stringsAsFactors = FALSE
 	)
-	dataReference <- dataReference[do.call(order, dataReference[, c("y", "x")]), ]
-	
+	dataReferenceSubj1 <- dataReferenceSubj1[do.call(order, dataReferenceSubj1[, c("y", "x")]), ]
 	expect_equal(
-		ggDataPoint,
-		dataReference,
+		ggDataPointSubj1,
+		dataReferenceSubj1,
 		check.attributes = FALSE # row.names differ
 	)
 	
-	### check that record with all start/end time missing still displayed in axis
-	yLabel <- layer_scales(gg, 1)$y$range$range
-	expect_equal(yLabel, c("3", "2", "1"))
+	# subject 2: records imputed data of other subjects
+	ggDataPointSubj2 <- extractGGData(gg = plots[["2"]][[1]])
+	dataReferenceSubj2 <- data.frame(
+		x = c(0, 7),
+		y = c(1, 1),
+		status = c("Missing start", "Missing end"),
+		stringsAsFactors = FALSE
+	)
+	expect_equal(
+		ggDataPointSubj2,
+		dataReferenceSubj2,
+		check.attributes = FALSE # row.names differ
+	)
 	
 })
 
@@ -743,7 +757,6 @@ test_that("missing time values are imputed based on an external dataset", {
 		status = c("Complete", "Complete", "Complete", "Missing end"),
 		stringsAsFactors = FALSE
 	)
-	
 	expect_equal(
 		ggDataPointSubj1,
 		dataReferenceSubj1,
@@ -778,6 +791,34 @@ test_that("missing time values are imputed based on an external dataset", {
 		check.attributes = FALSE # row.names differ
 	)
 			
+})
+
+test_that("missing time values are imputed based on an external dataset", {
+			
+	data <- data.frame(
+		TEST = "1",
+		START = 1,
+		END = 4,
+		USUBJID = "1"
+	)
+
+	timeLimData <- data.frame(
+		USUBJID = c("1", "2"),
+		START_VISIT = c(-1, 0),
+		END_VISIT = c(8, 10)
+	)
+			
+	expect_warning(
+		plots <- subjectProfileIntervalPlot(
+			data = data,
+			timeStartVar = "START",
+			timeEndVar = "END",
+			paramVar = "TEST",
+			timeLimData = timeLimData
+		),
+		"start/end variable(s) are not specified"
+	)
+	
 })
 		
 test_that("points are set transparent", {
