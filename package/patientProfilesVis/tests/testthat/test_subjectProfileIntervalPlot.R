@@ -1114,6 +1114,195 @@ test_that("label is specified", {
 			
 })
 
+test_that("points at the start or end of the interval are shaped based on a variable", {
+			
+	data <- data.frame(
+		TEST = seq(2),
+		START = c(1, -10),
+		END = c(2, 0),
+		START_STATUS = c("Just started", "Long ago"),
+		END_STATUS = c("Ongoing", "Just finished"),
+		USUBJID = "1",
+		stringsAsFactors = FALSE
+	)
+	
+	shapeVars <- list(timeStartShapeVar = "START_STATUS", timeEndShapeVar = "END_STATUS")
+	for(varName in names(shapeVars)){
+			
+		args <- list(
+			data = data,
+			timeStartVar = "START",
+			timeEndVar = "END",
+			paramVar = "TEST"
+		)
+		args <- c(args, shapeVars[varName])
+
+		plots <- do.call(subjectProfileIntervalPlot, args)
+		gg <- plots[["1"]][[1]]	
+		
+		# extract data behind the point
+		isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
+		ggDataPoint <- lapply(which(isGeomPoint), function(i){
+			layer_data(gg, i)
+		})
+		ggDataPoint <- do.call(rbind, ggDataPoint)
+		ggDataPoint$y <- as.numeric(as.factor(ggDataPoint$y))
+		
+		# format reference data
+		shapeVar <- shapeVars[[varName]]
+		dataReference <- data
+		# parameter as sorted from top to the bottom
+		dataReferencePoint <- reshape2::melt(
+			dataReference, 
+			id.vars = c("TEST", shapeVar),
+			measure.vars = sub("_STATUS$", "", shapeVar)
+		)	
+		dataReferencePoint$y <- with(dataReference, max(TEST)-TEST)+1
+		
+		ggDataPointWithInput <- merge(
+			x = dataReferencePoint, by.x = c("value", "y"),
+			y = ggDataPoint, by.y = c("x", "y"),
+			all.x = TRUE
+		)
+		
+		# check that all data is in the plot
+		expect_setequal(!is.na(ggDataPointWithInput$shape), TRUE)
+		
+		# check that symbols are correctly set
+		ggScales <- gg$scales$scales
+		isShapeAes <- sapply(ggScales, function(x) 
+			all(x[["aesthetics"]] == "shape")
+		)
+		shapeScale <- ggScales[[which(isShapeAes)]]
+		shapeScalePlot <- shapeScale$palette(1)
+		ggDataPointWithInput$shapeLabel <- names(shapeScalePlot)[match(ggDataPointWithInput$shape, shapeScalePlot)]
+		expect_equal(ggDataPointWithInput$shapeLabel, ggDataPointWithInput[[shapeVar]])
+		
+	}
+	
+})
+
+test_that("points are shaped with specified palette", {
+			
+	data <- data.frame(
+		TEST = seq(2),
+		START = c(1, -10),
+		END = c(2, 0),
+		START_STATUS = c("Just started", "Long ago"),
+		END_STATUS = c("Ongoing", "Just finished"),
+		USUBJID = "1",
+		stringsAsFactors = FALSE
+	)
+			
+	shapePalette <- c(
+		`Just started` = 'diamond', `Long ago` = 'cross', 
+		`Ongoing` = 'square', `Just finished` = 'triangle'
+	)
+	
+	shapeVars <- list(timeStartShapeVar = "START_STATUS", timeEndShapeVar = "END_STATUS")
+	for(varName in names(shapeVars)){
+		
+		args <- list(
+			data = data,
+			timeStartVar = "START",
+			timeEndVar = "END",
+			paramVar = "TEST",
+			shapePalette = shapePalette
+		)
+		args <- c(args, shapeVars[varName])
+		
+		plots <- do.call(subjectProfileIntervalPlot, args)
+		gg <- plots[["1"]][[1]]	
+		
+		# extract shape palette of the plot
+		ggScales <- gg$scales$scales
+		isShapeAes <- sapply(ggScales, function(x) 
+			all(x[["aesthetics"]] == "shape")
+		)
+		shapeScale <- ggScales[[which(isShapeAes)]]
+		shapeScalePlot <- shapeScale$palette(1)
+		
+		# check that shape palette contains the correct symbols
+		# for the specified labels
+		expect_equal(
+			shapeScalePlot[names(shapePalette)],
+			shapePalette
+		)
+		
+	}
+})
+
+test_that("shape label is specified", {
+			
+	data <- data.frame(
+		TEST = seq(2),
+		START = c(1, -10),
+		END = c(2, 0),
+		START_STATUS = c("Just started", "Long ago"),
+		END_STATUS = c("Ongoing", "Just finished"),
+		USUBJID = "1",
+		stringsAsFactors = FALSE
+	)
+			
+	shapeLab <- "Time status"
+	plots <- subjectProfileIntervalPlot(
+		data = data,
+		timeStartVar = "START",
+		timeEndVar = "END",
+		timeStartShapeVar = "START_STATUS", 
+		timeEndShapeVar = "END_STATUS",
+		paramVar = "TEST",
+		shapeLab = shapeLab
+	)
+			
+	gg <- plots[["1"]][[1]]
+			
+	# extract shape scale
+	ggScales <- gg$scales$scales
+	isShapeAes <- sapply(ggScales, function(x) 
+		all(x[["aesthetics"]] == "shape")
+	)
+	shapeScale <- ggScales[[which(isShapeAes)]]
+	expect_equal(shapeScale$name, shapeLab)
+		
+})
+
+test_that("symbols are set to a specific size", {
+			
+	data <- data.frame(
+		TEST = seq(2),
+		START = c(1, -10),
+		END = c(2, 0),
+		START_STATUS = c("Just started", "Long ago"),
+		END_STATUS = c("Ongoing", "Just finished"),
+		USUBJID = "1",
+		stringsAsFactors = FALSE
+	)
+			
+	shapeSize <- 10
+	plots <- subjectProfileIntervalPlot(
+		data = data,
+		timeStartVar = "START",
+		timeEndVar = "END",
+		timeStartShapeVar = "START_STATUS", 
+		timeEndShapeVar = "END_STATUS",
+		paramVar = "TEST",
+		shapeSize = shapeSize,
+		shapeLab = shapeLab
+	)
+	gg <- plots[["1"]][[1]]
+			
+	# extract data behind the point
+	isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
+	ggDataPoint <- lapply(which(isGeomPoint), function(i){
+		layer_data(gg, i)
+	})
+	ggDataPoint <- do.call(rbind, ggDataPoint)
+	expect_setequal(ggDataPoint$size, shapeSize)
+			
+})
+
+
 #context("Compare 'subjectProfileIntervalPlot' with previous version")
 #
 #library(glpgUtilityFct)
