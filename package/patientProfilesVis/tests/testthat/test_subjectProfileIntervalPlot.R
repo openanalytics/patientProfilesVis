@@ -1299,8 +1299,7 @@ test_that("symbols are set to a specific size", {
 		timeStartShapeVar = "START_STATUS", 
 		timeEndShapeVar = "END_STATUS",
 		paramVar = "TEST",
-		shapeSize = shapeSize,
-		shapeLab = shapeLab
+		shapeSize = shapeSize
 	)
 	gg <- plots[["1"]][[1]]
 			
