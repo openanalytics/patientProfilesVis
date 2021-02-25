@@ -79,7 +79,7 @@ indicating missing values for \code{timeVar},
 and for the default label of the x-axis.}
 
 \item{timeTrans}{transformation for the time variable, 
-(see code{trans} parameter in \code{\link[ggplot2]{scale_x_continuous}}, and
+(see \code{trans} parameter in \code{\link[ggplot2]{scale_x_continuous}}, and
 \code{\link[scales]{trans_new}}).
 For example, produced by the \code{\link{getTimeTrans}} function.}
 
