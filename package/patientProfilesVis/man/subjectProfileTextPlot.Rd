@@ -69,10 +69,10 @@ of \code{data} based on which the data will be grouped and sorted
 
 \item{label}{String, label for the visualization.
 This label is stored as attributes of the output
-from the \code{subjectProfile[]Plot} functions.
+from the \code{subjectProfile[]Plot} function.\cr
 This label is displayed in the final profile
 report, in case no data is available for
-for a specific patient.}
+for a specific patient, as: 'No [label] available.'}
 
 \item{paramVarSep}{String (' - ' by default) 
 with character(s) used to concatenate multiple 
