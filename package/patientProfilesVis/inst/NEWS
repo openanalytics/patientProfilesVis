@@ -19,6 +19,7 @@
       - remove warning if ref var are missing
     o subjectProfileIntervalPlot
       - correct typo: 'data-by-subject' -> 'data-based'
+      - remove rangeSimilarStartEnd parameter (not used)
     o getPageVar:
       - fix when only one var is specified
 1.4.3
