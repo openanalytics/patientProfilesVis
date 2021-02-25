@@ -1,10 +1,6 @@
 #' Visualize time interval in subject profiles,
 #' so event with a start and end time.
 #' @inheritSection formatTimeInterval Time interval representation
-#' @param rangeSimilarStartEnd numeric, if a record has the same
-#' \code{timeStartVar} and \code{timeEndVar}, what should be the range of the segment?
-#' By default, a thousandth of the range of \code{timeLim}
-#' (if not specified the time range available in the data).
 #' @param title string, title for the plot
 #' @param paramVarSep string with character(s) used to concatenate multiple 
 #' \code{paramVar}, ' - ' by default.
@@ -54,7 +50,6 @@ subjectProfileIntervalPlot <- function(
 	timeLimEndVar = NULL, timeLimEndLab = getLabelVar(timeLimEndVar, labelVars = labelVars),
 	timeTrans = NULL, timeExpand = NULL,
 	timeAlign = TRUE,
-	rangeSimilarStartEnd = NULL,
 	xLab = timeLab,
 	yLab = "",
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
