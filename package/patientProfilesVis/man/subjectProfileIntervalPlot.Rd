@@ -34,7 +34,6 @@ subjectProfileIntervalPlot(
   timeTrans = NULL,
   timeExpand = NULL,
   timeAlign = TRUE,
-  rangeSimilarStartEnd = NULL,
   xLab = timeLab,
   yLab = "",
   colorVar = NULL,
@@ -148,12 +147,9 @@ For example, produced by the \code{\link{getTimeTrans}} function.}
 
 \item{timeAlign}{Logical, if TRUE (by default)
 the different plots are horizontally aligned.
-If set to FALSE, each plot has its own time-limits.}
-
-\item{rangeSimilarStartEnd}{numeric, if a record has the same
-\code{timeStartVar} and \code{timeEndVar}, what should be the range of the segment?
-By default, a thousandth of the range of \code{timeLim}
-(if not specified the time range available in the data).}
+If set to FALSE, each plot has its own time-limits.\cr
+If set to FALSE, this is not compatible with 
+the specification of \code{timeLim}.}
 
 \item{xLab}{String, label for the x-axis.}
 
@@ -193,10 +189,10 @@ see section 'Time interval representation'.}
 
 \item{label}{String, label for the visualization.
 This label is stored as attributes of the output
-from the \code{subjectProfile[]Plot} functions.
+from the \code{subjectProfile[]Plot} function.\cr
 This label is displayed in the final profile
 report, in case no data is available for
-for a specific patient.}
+for a specific patient, as: 'No [label] available.'}
 
 \item{labelVars}{Named character vector with variable labels 
 (names are the variable code)}

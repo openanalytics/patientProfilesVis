@@ -1015,7 +1015,104 @@ test_that("time axis alignment and specification of time limits is not compatibl
 			
 })
 
+test_that("label is specified for the x variable", {
+			
+	data <- data.frame(
+		TEST = seq(3),
+		START = seq(3),
+		END = seq(3),
+		USUBJID = "1"
+	)
+			
+	xLab <- "Relative day of the study"
+	plots <- subjectProfileIntervalPlot(
+		data = data,
+		paramVar = "TEST",
+		timeStartVar = "START",
+		timeEndVar = "END",
+		xLab = xLab
+	)
+	gg <- plots[["1"]][[1]]
+			
+	expect_identical(gg$labels$x, xLab)
+			
+})
 
+test_that("label is specified for the y variable", {
+			
+	data <- data.frame(
+		TEST = seq(3),
+		START = seq(3),
+		END = seq(3),
+		USUBJID = "1"
+	)
+			
+	yLab <- "Parameter of interest"
+	plots <- subjectProfileIntervalPlot(
+		data = data,
+		paramVar = "TEST",
+		timeStartVar = "START",
+		timeEndVar = "END",
+		yLab = yLab
+	)
+			
+	gg <- plots[["1"]][[1]]
+			
+	expect_identical(gg$labels$y, yLab)
+			
+})
+
+test_that("title is specified", {
+			
+	data <- data.frame(
+		TEST = seq(3),
+		START = seq(3),
+		END = seq(3),
+		USUBJID = "1"
+	)
+	title <- "Laboratory parameters"
+			
+	plots <- subjectProfileIntervalPlot(
+		data = data,
+		timeStartVar = "START",
+		timeEndVar = "END",
+		paramVar = "TEST",
+		title = title
+	)
+			
+	gg <- plots[["1"]][[1]]
+			
+	expect_identical(
+		object = gg$labels$title, 
+		expected = title
+	)
+			
+})
+
+test_that("label is specified", {
+			
+	data <- data.frame(
+		TEST = seq(3),
+		START = seq(3),
+		END = seq(3),
+		USUBJID = "1"
+	)
+	label <- "laboratory information"
+			
+	plots <- subjectProfileIntervalPlot(
+		data = data,
+		timeStartVar = "START",
+		timeEndVar = "END",
+		paramVar = "TEST",
+		label = label
+	)
+			
+	expect_identical(
+		attr(plots, "metaData")$label,
+		expected = label
+	)
+			
+})
 
 #context("Compare 'subjectProfileIntervalPlot' with previous version")
 #

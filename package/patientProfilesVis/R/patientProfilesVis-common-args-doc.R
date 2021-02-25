@@ -18,10 +18,10 @@
 #' @param yLab String, label for the y-axis.
 #' @param label String, label for the visualization.
 #' This label is stored as attributes of the output
-#' from the \code{subjectProfile[]Plot} functions.
+#' from the \code{subjectProfile[]Plot} function.\cr
 #' This label is displayed in the final profile
 #' report, in case no data is available for
-#' for a specific patient.
+#' for a specific patient, as: 'No [label] available.'
 #' @param timeVar String, variable of \code{data} with time,
 #' displayed in the x axis.\cr
 #' Records with missing time are not displayed in the plot.
