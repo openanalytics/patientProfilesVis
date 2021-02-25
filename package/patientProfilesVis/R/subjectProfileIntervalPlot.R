@@ -16,7 +16,9 @@
 #' @param shapeSize Size for symbols (only used if \code{timeStartShapeVar}/\code{timeEndShapeVar} is specified).
 #' @param timeAlign Logical, if TRUE (by default)
 #' the different plots are horizontally aligned.
-#' If set to FALSE, each plot has its own time-limits.
+#' If set to FALSE, each plot has its own time-limits.\cr
+#' If set to FALSE, this is not compatible with 
+#' the specification of \code{timeLim}.
 #' @param alpha Numeric with transparency, 1 by default.
 #' @inheritParams patientProfilesVis-common-args
 #' @inheritParams filterData
@@ -85,6 +87,12 @@ subjectProfileIntervalPlot <- function(
 	checkVar(var = c(timeStartVar, timeEndVar), data = data)
 	checkVar(var = c(timeStartShapeVar, timeEndShapeVar), data = data)
 	
+	if(!is.null(timeLim) & !timeAlign)
+		warning(paste(
+			"Time limits are not set as the visualizations shouldn't not be aligned across subjects.",
+			"You might want to set 'timeAlign' to TRUE."
+		))
+		
 	# fill missing start/end time and extract time limits
 	resMSED <- formatTimeInterval(
 		data = data, 

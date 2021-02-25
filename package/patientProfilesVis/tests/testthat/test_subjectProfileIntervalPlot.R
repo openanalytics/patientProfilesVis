@@ -793,7 +793,7 @@ test_that("missing time values are imputed based on an external dataset", {
 			
 })
 
-test_that("missing time values are imputed based on an external dataset", {
+test_that("warning in case external dataset but not time variables are specified", {
 			
 	data <- data.frame(
 		TEST = "1",
@@ -850,6 +850,168 @@ test_that("points are set transparent", {
 	ggDataPoint <- do.call(rbind, ggDataPoint)
 	
 	expect_setequal(ggDataPoint$alpha, alpha)
+			
+})
+
+
+test_that("a transformation is applied on the time variable", {
+			
+	data <- data.frame(
+		TEST = seq(3),
+		START = c(1, 10, 100),
+		END = c(1, 10, 100) + 5,
+		USUBJID = "1"
+	)
+	
+	timeTrans <- scales::log10_trans()
+	plots <- subjectProfileIntervalPlot(
+		data = data,
+		timeStartVar = "START",
+		timeEndVar = "END",
+		timeTrans = timeTrans,
+		paramVar = "TEST"
+	)
+			
+	gg <- plots[["1"]][[1]]
+			
+	# extract x-scale
+	ggScales <- gg$scales$scales
+	isXAes <- sapply(ggScales, function(x) 
+		any("x" %in% x[["aesthetics"]])
+	)
+	xScale <- ggScales[[which(isXAes)]]
+		
+	expect_identical(xScale$trans, timeTrans)
+			
+})
+
+test_that("time axis is expanded", {
+			
+	data <- data.frame(
+		TEST = seq(3),
+		START = c(1, 3, 5),
+		END = c(2, 4, 6),
+		USUBJID = "1"
+	)
+			
+	timeExpand <- expansion(mult = 0, add = 3)
+	plots <- subjectProfileIntervalPlot(
+		data = data,
+		timeStartVar = "START",
+		timeEndVar = "END",
+		timeExpand = timeExpand,
+		paramVar = "TEST"
+	)
+			
+	gg <- plots[["1"]][[1]]
+			
+	# extract x-scale
+	ggScales <- gg$scales$scales
+	isXAes <- sapply(ggScales, function(x) 
+		any("x" %in% x[["aesthetics"]])
+	)
+	xScale <- ggScales[[which(isXAes)]]
+			
+	expect_identical(xScale$expand, timeExpand)
+			
+})
+
+test_that("time limits are specified", {
+			
+	data <- data.frame(
+		TEST = seq(3),
+		START = c(1, 3, 5),
+		END = c(2, 4, 6),
+		USUBJID = "1"
+	)
+			
+	timeLim <- c(0, 10)
+	plots <- subjectProfileIntervalPlot(
+		data = data,
+		timeStartVar = "START",
+		timeEndVar = "END",
+		timeLim = timeLim,
+		paramVar = "TEST"
+	)
+	gg <- plots[["1"]][[1]]
+			
+	expect_identical(gg$coordinates$limits$x, timeLim)
+			
+	expect_identical(attr(plots, "metaData")$timeLim, timeLim)
+			
+})
+
+test_that("visualizations are not aligned in the time axis", {
+			
+	data <- data.frame(
+		TEST = c("A", "B", "A", "B"),
+		START = c(1, 3, 5, 7),
+		END = c(2, 4, 6, 8),
+		USUBJID = c("1", "1", "2", "2")
+	)
+			
+	expect_silent(
+		plots <- subjectProfileIntervalPlot(
+			data = data,
+			paramVar = "TEST",
+			timeStartVar = "START",
+			timeEndVar = "END",
+			timeAlign = FALSE
+		)
+	)
+	expect_null(plots[["1"]]$coordinates$limits$x)
+	expect_null(plots[["2"]]$coordinates$limits$x)
+			
+})
+
+test_that("visualizations are aligned in the time axis", {
+			
+	data <- data.frame(
+		TEST = c("A", "B", "A", "B"),
+		START = c(1, 3, 5, 7),
+		END = c(2, 4, 6, 8),
+		USUBJID = c("1", "1", "2", "2")
+	)
+			
+	timeLim <- c(0, 10)
+	expect_silent(
+		plots <- subjectProfileIntervalPlot(
+			data = data,
+			paramVar = "TEST",
+			timeStartVar = "START",
+			timeEndVar = "END",
+			timeLim = timeLim,
+			timeAlign = TRUE
+		)
+	)
+	expect_equal(plots[["1"]][[1]]$coordinates$limits$x, timeLim)
+	expect_equal(plots[["2"]][[1]]$coordinates$limits$x, timeLim)
+			
+})
+
+
+test_that("time axis alignment and specification of time limits is not compatible", {
+			
+	data <- data.frame(
+		TEST = c("A", "B", "A", "B"),
+		START = c(1, 3, 5, 7),
+		END = c(2, 4, 6, 8),
+		USUBJID = c("1", "1", "2", "2")
+	)
+			
+	expect_warning(
+		plots <- subjectProfileIntervalPlot(
+			data = data,
+			paramVar = "TEST",
+			timeStartVar = "START",
+			timeEndVar = "END",
+			timeLim = c(0, 10),
+			timeAlign = FALSE
+		),
+		"Time limits are not set"
+	)
+	expect_null(plots[["1"]][[1]]$coordinates$limits$x)
+	expect_null(plots[["2"]][[1]]$coordinates$limits$x)
 			
 })
 

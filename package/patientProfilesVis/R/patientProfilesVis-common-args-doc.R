@@ -40,7 +40,7 @@
 #' The time limits are stored as attributes of the plots,
 #' used to align the plots in the final report.
 #' @param timeTrans transformation for the time variable, 
-#' (see code{trans} parameter in \code{\link[ggplot2]{scale_x_continuous}}, and
+#' (see \code{trans} parameter in \code{\link[ggplot2]{scale_x_continuous}}, and
 #' \code{\link[scales]{trans_new}}).
 #' For example, produced by the \code{\link{getTimeTrans}} function.
 #' @param timeExpand Vector of range expansion constants for the time axis
