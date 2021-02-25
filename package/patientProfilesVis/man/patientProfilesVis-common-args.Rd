@@ -37,6 +37,8 @@ This label is displayed in the final profile
 report, in case no data is available for
 for a specific patient, as: 'No [label] available.'}
 
+\item{title}{String, title for the plot.}
+
 \item{timeVar}{String, variable of \code{data} with time,
 displayed in the x axis.\cr
 Records with missing time are not displayed in the plot.}

@@ -33,6 +33,7 @@
 #' }
 #' @param shapeSize Size for the symbols, any integer or 
 #' object supported by \code{size} in \code{\link[ggplot2]{geom_point}}.
+#' @param title String with title, label of the parameter value variable by default.
 #' @inheritParams subjectProfileIntervalPlot
 #' @return List of (across subjects) of list (across modules) 
 #' of \code{\link[ggplot2]{ggplot2} objects}, 
@@ -69,7 +70,7 @@ subjectProfileLinePlot <- function(
 	subjectSample = NULL, seed = 123,
 	subsetData = NULL, subsetVar = NULL, subsetValue = NULL, 
 	xLab = timeLab,
-	yLab = "",
+	yLab = NULL,
 	timeLim = NULL,
 	title = toString(getLabelVar(paramValueVar, labelVars = labelVars, label = paramLab)),
 	label = title,
@@ -244,10 +245,18 @@ subjectProfileLinePlot <- function(
 				gg <- gg + geom_point(alpha = alpha, size = shapeSize)
 			}
 			
+			if(!is.null(title))
+				gg <- gg + ggtitle(title)
+			
+			if(!is.null(xLab))
+				gg <- gg + xlab(xLab)
+			
+			if(!is.null(yLab))
+				gg <- gg + ylab(yLab)
+			
 			# general
 			gg <- gg + 
 				subjectProfileTheme() +
-				labs(title = title, x = xLab, y = yLab) +
 				theme(axis.text.y = element_text(size = 7))
 			
 			if(!is.null(paramNameVar)){

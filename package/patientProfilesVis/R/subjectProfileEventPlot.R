@@ -3,6 +3,7 @@
 #' @param colorVar String, variable of \code{data} with color.
 #' This variable is used
 #' for the colors and the filling of the points.
+#' @param title String with title, label of the parameter variable by default.
 #' @inheritParams subjectProfileIntervalPlot
 #' @return list of (across subjects) of list (across modules) of \code{\link[ggplot2]{ggplot2} objects}, 
 #' also of class \code{subjectProfileEventPlot}, with additional metaData attributes containing
@@ -34,7 +35,7 @@ subjectProfileEventPlot <- function(
 	subjectSample = NULL, seed = 123,
 	subsetData = NULL, subsetVar = NULL, subsetValue = NULL,
 	xLab = timeLab,
-	yLab = "",
+	yLab = NULL,
 	timeLim = NULL,
 	title = toString(getLabelVar(paramVar, labelVars = labelVars, label = paramLab)),
 	label = title,
@@ -129,9 +130,17 @@ subjectProfileEventPlot <- function(
 					size = 3, alpha = alpha
 				) +
 				scale_y_discrete(drop = TRUE) +
-				subjectProfileTheme() +
-				labs(title = title, x = xLab, y = yLab)
+				subjectProfileTheme()
+		
+			if(!is.null(title))
+				gg <- gg + ggtitle(title)
 			
+			if(!is.null(xLab))
+				gg <- gg + xlab(xLab)
+			
+			if(!is.null(yLab))
+				gg <- gg + ylab(yLab)
+				
 			# color palette and name for color legend
 			if(!is.null(colorVar)){
 				gg <- gg + 

@@ -35,7 +35,7 @@ subjectProfileIntervalPlot(
   timeExpand = NULL,
   timeAlign = TRUE,
   xLab = timeLab,
-  yLab = "",
+  yLab = NULL,
   colorVar = NULL,
   colorLab = getLabelVar(colorVar, labelVars = labelVars),
   colorPalette = NULL,
@@ -72,12 +72,14 @@ If specified, the parameters will be grouped by this(these) variable(s) in the y
 \item{timeStartVar}{String, variable of \code{data} 
 with start of time interval.}
 
-\item{timeStartLab}{String, label for \code{timeStartVar}.}
+\item{timeStartLab}{String, label for \code{timeStartVar},
+displayed in a message and in the plot caption.}
 
 \item{timeEndVar}{String, variable of \code{data} 
 with end of time interval.}
 
-\item{timeEndLab}{String, label for \code{timeEndVar}.}
+\item{timeEndLab}{String, label for \code{timeEndVar},
+displayed in a message and in the plot caption.}
 
 \item{timeLab}{String, label for \code{timeVar}.
 This is used in the message
@@ -130,12 +132,14 @@ see section: 'Time interval representation'.}
 \item{timeLimStartVar}{String, variable of \code{timeLimData} with 
 start of the time interval.}
 
-\item{timeLimStartLab}{String, label for \code{timeLimeStartVar}.}
+\item{timeLimStartLab}{String, label for \code{timeLimeStartVar},
+displayed in a message and in the plot caption.}
 
 \item{timeLimEndVar}{String, variable of \code{timeLimData} with 
 end of the time interval.}
 
-\item{timeLimEndLab}{String, label for \code{timeLimEndVar}.}
+\item{timeLimEndLab}{String, label for \code{timeLimEndVar},
+displayed in a message and in the plot caption.}
 
 \item{timeTrans}{transformation for the time variable, 
 (see \code{trans} parameter in \code{\link[ggplot2]{scale_x_continuous}}, and
@@ -185,7 +189,7 @@ see section 'Time interval representation'.}
 
 \item{shapeSize}{Size for symbols (only used if \code{timeStartShapeVar}/\code{timeEndShapeVar} is specified).}
 
-\item{title}{string, title for the plot}
+\item{title}{String with title, label of the parameter variable by default.}
 
 \item{label}{String, label for the visualization.
 This label is stored as attributes of the output

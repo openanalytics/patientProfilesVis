@@ -1,7 +1,6 @@
 #' Visualize time interval in subject profiles,
 #' so event with a start and end time.
 #' @inheritSection formatTimeInterval Time interval representation
-#' @param title string, title for the plot
 #' @param paramVarSep string with character(s) used to concatenate multiple 
 #' \code{paramVar}, ' - ' by default.
 #' @param colorVar String, variable of \code{data} with color,
@@ -16,6 +15,7 @@
 #' If set to FALSE, this is not compatible with 
 #' the specification of \code{timeLim}.
 #' @param alpha Numeric with transparency, 1 by default.
+#' @param title String with title, label of the parameter variable by default.
 #' @inheritParams patientProfilesVis-common-args
 #' @inheritParams filterData
 #' @inheritParams glpgUtilityFct::formatVarForPlotLabel
@@ -51,7 +51,7 @@ subjectProfileIntervalPlot <- function(
 	timeTrans = NULL, timeExpand = NULL,
 	timeAlign = TRUE,
 	xLab = timeLab,
-	yLab = "",
+	yLab = NULL,
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
 	colorPalette = NULL,
 	alpha = 1,
@@ -227,11 +227,20 @@ subjectProfileIntervalPlot <- function(
 			
 			gg <- gg +
 				scale_y_discrete(drop = TRUE) +
-				subjectProfileTheme() +
-				labs(title = title, 
-					x = xLab, y = yLab,
-					caption = caption
-				) + theme(plot.caption = element_text(hjust = 0.5))
+				subjectProfileTheme()
+		
+			if(!is.null(title))
+				gg <- gg + ggtitle(title)
+			
+			if(!is.null(xLab))
+				gg <- gg + xlab(xLab)
+			
+			if(!is.null(yLab))
+				gg <- gg + ylab(yLab)
+			
+			if(!is.null(caption))
+				gg <- gg + labs(caption = caption) + 
+					theme(plot.caption = element_text(hjust = 0.5))
 		
 			# color palette and name for color legend
 			if(!is.null(colorVar)){
@@ -386,17 +395,21 @@ subjectProfileIntervalPlot <- function(
 #' This is used in the message
 #' indicating missing values for \code{timeVar},
 #' and for the default label of the x-axis.
-#' @param timeStartLab String, label for \code{timeStartVar}.
-#' @param timeEndLab String, label for \code{timeEndVar}.
+#' @param timeStartLab String, label for \code{timeStartVar},
+#' displayed in a message and in the plot caption.
+#' @param timeEndLab String, label for \code{timeEndVar},
+#' displayed in a message and in the plot caption.
 #' @param timeLimData Data.frame with data used to impute time
 #' in case some time records are missing in \code{data}, 
 #' see section: 'Time interval representation'.
 #' @param timeLimStartVar String, variable of \code{timeLimData} with 
 #' start of the time interval.
-#' @param timeLimStartLab String, label for \code{timeLimeStartVar}.
+#' @param timeLimStartLab String, label for \code{timeLimeStartVar},
+#' displayed in a message and in the plot caption.
 #' @param timeLimEndVar String, variable of \code{timeLimData} with 
 #' end of the time interval.
-#' @param timeLimEndLab String, label for \code{timeLimEndVar}.
+#' @param timeLimEndLab String, label for \code{timeLimEndVar},
+#' displayed in a message and in the plot caption.
 #' @param timeImpType String with imputation type: 'minimal' (default),
 #' 'data-based' or 'none', see section: 'Time interval representation'.\cr
 #' This imputation type is not used if a dataset used to impute time is 
@@ -482,10 +495,36 @@ formatTimeInterval <- function(data,
 	data$timeStartStatus <- ifelse(data$missingStartPlot, "Missing start", "Complete")
 	data$timeEndStatus <- ifelse(data$missingEndPlot, "Missing end", "Complete")
 	
-	if(timeImpType == "minimal"){
-		caption <- paste("Records with missing", timeStartLab, "or", 
-			timeEndLab, "are only displayed with labels.")
-	}else	caption <- NULL
+	# create caption
+	caption <- NULL
+	if(!is.null(timeLimData))
+		caption <- paste0("Records with missing ", timeStartLab, "/", 
+			timeEndLab, " are displayed at the ", timeLimStartLab, "/", 
+			timeLimEndLab, " if available.")
+	switch(timeImpType,
+		`data-based` = {
+			caption <- paste(c(caption, 
+				paste0(
+					"Records with missing ", timeStartLab, "/", timeEndLab, " are displayed ", 
+					"at the respective minimum/maximum value across parameters by subject if available, ",
+					"across subjects otherwise."
+				)
+			), collapse = "\n")
+		},
+		`minimal`= {
+			caption <- paste(c(caption, 
+				paste0(
+					 "Records with missing ", timeStartLab, " are displayed at ",
+					"their respective ", timeEndLab, ". Records with missing ",
+					timeEndLab, " are displayed at their respective ", timeStartLab, 
+					". Only the label is displayed for records with missing ", 
+					timeStartLab, " and ", timeEndLab, "."
+				)
+			), collapse = "\n")
+		}
+	)
+	if(timeImpType == "none" && is.null(timeLimData))
+		caption <- NULL
 	
 	# variables used for the symbols	
 	data <- ddply(data, subjectVar, function(x){

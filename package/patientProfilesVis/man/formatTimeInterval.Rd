@@ -29,12 +29,14 @@ formatTimeInterval(
 \item{timeStartVar}{String, variable of \code{data} 
 with start of time interval.}
 
-\item{timeStartLab}{String, label for \code{timeStartVar}.}
+\item{timeStartLab}{String, label for \code{timeStartVar},
+displayed in a message and in the plot caption.}
 
 \item{timeEndVar}{String, variable of \code{data} 
 with end of time interval.}
 
-\item{timeEndLab}{String, label for \code{timeEndVar}.}
+\item{timeEndLab}{String, label for \code{timeEndVar},
+displayed in a message and in the plot caption.}
 
 \item{timeStartShapeVar}{(optional) String, variable of \code{data} 
 used for the shape of the symbol displayed 
@@ -57,12 +59,14 @@ see section: 'Time interval representation'.}
 \item{timeLimStartVar}{String, variable of \code{timeLimData} with 
 start of the time interval.}
 
-\item{timeLimStartLab}{String, label for \code{timeLimeStartVar}.}
+\item{timeLimStartLab}{String, label for \code{timeLimeStartVar},
+displayed in a message and in the plot caption.}
 
 \item{timeLimEndVar}{String, variable of \code{timeLimData} with 
 end of the time interval.}
 
-\item{timeLimEndLab}{String, label for \code{timeLimEndVar}.}
+\item{timeLimEndLab}{String, label for \code{timeLimEndVar},
+displayed in a message and in the plot caption.}
 
 \item{timeImpType}{String with imputation type: 'minimal' (default),
 'data-based' or 'none', see section: 'Time interval representation'.\cr

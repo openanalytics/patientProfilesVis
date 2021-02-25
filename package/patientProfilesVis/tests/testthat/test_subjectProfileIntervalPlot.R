@@ -524,6 +524,9 @@ test_that("missing time values are not imputed", {
 	### check that record with all start/end time missing still displayed in axis
 	yLabel <- layer_scales(gg, 1)$y$range$range
 	expect_equal(yLabel, c("3", "2", "1"))
+	
+	## no caption for imputation
+	expect_null(gg$labels$caption)
 			
 })
 
@@ -595,6 +598,9 @@ test_that("missing time values are imputed with 'minimal' imputation", {
 	### check that record with all start/end time missing still displayed in axis
 	yLabel <- layer_scales(gg, 1)$y$range$range
 	expect_equal(yLabel, c("3", "2", "1"))
+
+	## caption with information
+	expect_false(is.null(gg$labels$caption))
 			
 })
 
@@ -686,6 +692,9 @@ test_that("missing time values are imputed based on data records", {
 		dataReferenceSubj2,
 		check.attributes = FALSE # row.names differ
 	)
+	
+	## caption with information
+	expect_false(is.null(gg$labels$caption))
 	
 })
 
@@ -790,6 +799,9 @@ test_that("missing time values are imputed based on an external dataset", {
 		dataReferenceSubj3,
 		check.attributes = FALSE # row.names differ
 	)
+	
+	## caption with information
+	expect_false(is.null(plots[["1"]][[1]]$labels$caption))
 			
 })
 
@@ -1300,6 +1312,72 @@ test_that("symbols are set to a specific size", {
 	ggDataPoint <- do.call(rbind, ggDataPoint)
 	expect_setequal(ggDataPoint$size, shapeSize)
 			
+})
+
+test_that("variable labels are specified", {
+			
+	data <- data.frame(
+		TEST = seq(3),
+		START = seq(3),
+		START_STATUS = c("Just started", "Long ago", "Started"),
+		END_STATUS = c("Ongoing", "Just finished", "Finished"),
+		END = seq(3),
+		NRIND = c("High", "Normal", "High"),
+		USUBJID = "1"
+	)
+	timeLimData <- data.frame(
+		USUBJID = "1",
+		START_VISIT = 0,
+		END_VISIT = 10
+	)
+			
+	labelVars <- c(
+		START =  "Start relative day",
+		END = "End relative day",
+		START_STATUS = "Start status",
+		END_STATUS = "End status",
+		START_VISIT = "First visit",
+		END_VISIT = "End visit",
+		TEST = "Parameter",
+		NRIND = "Reference indicator"
+	)
+	plots <- subjectProfileIntervalPlot(
+		data = data,
+		timeStartVar = "START",
+		timeEndVar = "END",
+		timeStartShapeVar = "START_STATUS", 
+		timeEndShapeVar = "END_STATUS",
+		timeLimData = timeLimData,
+		timeLimStartVar = "START_VISIT",
+		timeLimEndVar = "END_VISIT",
+		colorVar = "NRIND",
+		paramVar = "TEST",
+		labelVars = labelVars
+	)
+	gg <- plots[["1"]][[1]]
+			
+	expect_identical(gg$labels$title, "Parameter")
+	expect_identical(gg$labels$x, "Start relative day, End relative day")
+	
+	expect_match(gg$labels$caption, "First visit")
+	expect_match(gg$labels$caption, "End visit")
+	
+	ggScales <- gg$scales$scales
+	
+	# title for shape legend
+	isShapeAes <- sapply(ggScales, function(x) 
+		all(x[["aesthetics"]] == "shape")
+	)
+	shapeScale <- ggScales[[which(isShapeAes)]]
+	expect_equal(shapeScale$name, "Start status, End status")
+	
+	# title for color legend
+	isColorAes <- sapply(ggScales, function(x) 
+		all(x[["aesthetics"]] == "colour")
+	)
+	colorScale <- ggScales[[which(isColorAes)]]
+	expect_equal(unname(colorScale$name), "Reference indicator")
+	
 })
 
 
