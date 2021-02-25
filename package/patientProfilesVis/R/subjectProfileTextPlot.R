@@ -61,6 +61,7 @@
 #' @param table Logical, if TRUE (FALSE by default) the information
 #' contained in the variables: \code{paramValueVar} is displayed as a table. 
 #' Otherwise, the values of the different variables are concatenated in the same line.
+#' @param title String with title, 'Subject information' by default.
 #' @inheritParams patientProfilesVis-common-args
 #' @inheritParams formatParamVarTextPlot
 #' @return list of (across subjects) of list (across modules) of \code{\link[ggplot2]{ggplot2} objects}, 
@@ -83,8 +84,8 @@ subjectProfileTextPlot <- function(
 	subsetData = NULL, subsetVar = NULL, subsetValue = NULL, 
 	subjectVar = "USUBJID", subjectSubset = NULL,
 	subjectSample = NULL, seed = 123,
-	xLab = "",
-	yLab = "",
+	xLab = NULL,
+	yLab = NULL,
 	title = "Subject information",
 	label = title,
 	labelVars = NULL,
@@ -220,7 +221,7 @@ subjectProfileTextPlot <- function(
 			typeVar = "y",
 			formatReport = formatReport,
 			title = !is.null(title),
-			xLab = !is.null(xLab) && xLab != "",
+			xLab = !is.null(xLab),
 			caption = FALSE,
 			paging = paging, 
 			table = table
@@ -279,10 +280,18 @@ subjectProfileTextPlot <- function(
 					axis.ticks = element_blank(),
 					axis.text.x = element_blank(),
 					axis.ticks.x = element_blank()
-				) +
-				labs(title = title, x = xLab, y = yLab)
+				)
+		
+			if(!is.null(title))
+				gg <- gg + ggtitle(title)
+		
+			if(!is.null(xLab))
+				gg <- gg + xlab(xLab)
+		
+			if(!is.null(yLab))
+				gg <- gg + ylab(yLab)
 			
-			if(xLab == ""){
+			if(is.null(xLab) | xLab == ""){
 				marDefault <- theme_bw()$plot.margin
 				marNew <- margin(t = marDefault[1], r = marDefault[2], 
 					b = 0, l = marDefault[4], unit = "pt")

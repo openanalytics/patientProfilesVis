@@ -17,8 +17,8 @@ subjectProfileTextPlot(
   subjectSubset = NULL,
   subjectSample = NULL,
   seed = 123,
-  xLab = "",
-  yLab = "",
+  xLab = NULL,
+  yLab = NULL,
   title = "Subject information",
   label = title,
   labelVars = NULL,
@@ -66,6 +66,8 @@ of \code{data} based on which the data will be grouped and sorted
 \item{xLab}{String, label for the x-axis.}
 
 \item{yLab}{String, label for the y-axis.}
+
+\item{title}{String with title, 'Subject information' by default.}
 
 \item{label}{String, label for the visualization.
 This label is stored as attributes of the output

@@ -111,9 +111,8 @@ getNLinesYGgplot <- function(gg){
 #' and title (\code{legendTitle})
 #' @param gg \code{\link[ggplot2]{ggplot2}} object
 #' @param values Vector with unique legend values
-#' @param data Data.frame with data
 #' @param var Character vector with variable in legend.
-#' @param title Vector with legend title
+#' @inheritParams patientProfilesVis-common-args
 #' @return integer with (approximated) number of lines
 #' @author Laure Cougnaud
 #' @importFrom ggplot2 ggplot_gtable ggplot_build

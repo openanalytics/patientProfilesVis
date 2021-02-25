@@ -14,11 +14,11 @@ getNLinesLegend(gg, values, data, var, title)
 
 \item{values}{Vector with unique legend values}
 
-\item{data}{Data.frame with data}
+\item{data}{Data.frame with data.}
 
 \item{var}{Character vector with variable in legend.}
 
-\item{title}{Vector with legend title}
+\item{title}{String, title for the plot.}
 }
 \value{
 integer with (approximated) number of lines

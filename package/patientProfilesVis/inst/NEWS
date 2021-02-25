@@ -20,6 +20,7 @@
     o subjectProfileIntervalPlot
       - correct typo: 'data-by-subject' -> 'data-based'
       - remove rangeSimilarStartEnd parameter (not used)
+      - add info on imputation in the caption
     o getPageVar:
       - fix when only one var is specified
 1.4.3

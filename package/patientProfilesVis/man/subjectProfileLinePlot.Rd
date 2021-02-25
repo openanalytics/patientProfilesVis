@@ -34,7 +34,7 @@ subjectProfileLinePlot(
   subsetVar = NULL,
   subsetValue = NULL,
   xLab = timeLab,
-  yLab = "",
+  yLab = NULL,
   timeLim = NULL,
   title = toString(getLabelVar(paramValueVar, labelVars = labelVars, label = paramLab)),
   label = title,
@@ -152,7 +152,7 @@ and maximum \code{timeEndVar} per subject.\cr
 The time limits are stored as attributes of the plots,
 used to align the plots in the final report.}
 
-\item{title}{string, title for the plot}
+\item{title}{String with title, label of the parameter value variable by default.}
 
 \item{label}{String, label for the visualization.
 This label is stored as attributes of the output
