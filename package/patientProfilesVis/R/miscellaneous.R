@@ -380,7 +380,13 @@ subjectProfileTheme <- function(){
 	return(customTheme)
 }
 
-#' Convert aesthetic variable to factor, converting the empty values ('') to NA
+#' Convert aesthetic variable for patient profile visualization.
+#' 
+#' This converts the empty values ('') to NA.
+#' The variable is then converted as a factor.\cr
+#' Missing values are also included in the 
+#' levels of the factor, to ensure that missing values
+#' are displayed in the legend of the plot.
 #' @param data data.frame with data
 #' @param var variable of \code{data} with aesthetic
 #' @return updated factor \code{var} variable
