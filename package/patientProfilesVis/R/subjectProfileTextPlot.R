@@ -291,7 +291,7 @@ subjectProfileTextPlot <- function(
 			if(!is.null(yLab))
 				gg <- gg + ylab(yLab)
 			
-			if(is.null(xLab) | xLab == ""){
+			if(is.null(xLab) || xLab == ""){
 				marDefault <- theme_bw()$plot.margin
 				marNew <- margin(t = marDefault[1], r = marDefault[2], 
 					b = 0, l = marDefault[4], unit = "pt")
