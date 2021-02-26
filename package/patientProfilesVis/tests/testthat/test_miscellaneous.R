@@ -90,3 +90,22 @@ test_that("parameter character variable(s) are order alphabetically when combine
 	expect_identical(res, resReference)
 			
 })
+
+test_that("a variable is formatted to be used as an aesthetic in a plot", {
+			
+	data <- data.frame(
+		TEST = c("A", "B", "A", "", NA_character_),
+		stringsAsFactors = FALSE
+	)
+	expect_message(
+		varAes <- convertAesVar(data = data, var = "TEST"),
+		"Empty records .* converted to NA."
+	)
+	expect_is(varAes, "factor")
+	expect_equal(
+		as.character(varAes),
+		c("A", "B", "A", NA_character_, NA_character_)
+	)
+	expect_equal(levels(varAes), c("A", "B", NA_character_))
+			
+})
