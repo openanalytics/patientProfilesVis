@@ -694,7 +694,7 @@ test_that("missing time values are imputed based on data records", {
 	)
 	
 	## caption with information
-	expect_false(is.null(gg$labels$caption))
+	expect_false(is.null(plots[["1"]][[1]]$labels$caption))
 	
 })
 
