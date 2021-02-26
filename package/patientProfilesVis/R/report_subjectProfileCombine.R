@@ -1,7 +1,22 @@
 #' Combine subject profile plots.
-#' @param listPlots list of subject profiles (modules/subjectsID)
-#' @return a list of \code{subjectProfilePlot} object, containing the combined
-#' profile plots for each subject.
+#' 
+#' Visualizations of different modules are combined
+#' by subject.
+#' The plots are aligned in the time axis (if requested).
+#' If the plots should be aligned:
+#' \itemize{
+#' \item{the same time limits are set for all plots}
+#' \item{the time axis is transformed if any of the
+#' plot was created with a time transformation}
+#' \item{the time axis is expanded for all plots 
+#' if any of the plot was created with a time axis expanded}
+#' }
+#' If some plots are missing for a specific subject,
+#' an empty plot is created, containing information
+#' as a text based on the \code{label} with which the plot was created.
+#' @return a list of \code{subjectProfile[X]Plot} object, 
+#' containing the combined
+#' profile plots across modules for each subject.
 #' @importFrom cowplot ggdraw draw_label
 #' @inheritParams prepareSubjectProfile
 #' @inheritParams combineVerticallyGGplot
@@ -328,10 +343,13 @@ getXLimSubjectProfilePlots <- function(
 		
 	}else{
 		
-		modTimeVariant <- names(which(sapply(listPlots, isSubjectProfileTimeVariant, empty = FALSE)))
-		
 		if(is.null(names(listPlots)))
 			stop("'listPlots' should be named if time alignment is required.")
+		
+		if(any(duplicated(names(listPlots))))
+			stop("'listPlots' should be have unique names if time alignment is required.")
+		
+		modTimeVariant <- names(which(sapply(listPlots, isSubjectProfileTimeVariant, empty = FALSE)))
 		
 		if(length(timeAlign) == 1 && timeAlign == "all"){
 			

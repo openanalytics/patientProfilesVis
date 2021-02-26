@@ -46,5 +46,11 @@
 #' For example, produced by the \code{\link{getTimeTrans}} function.
 #' @param timeExpand Vector of range expansion constants for the time axis
 #' (see \code{expand} parameter in \code{\link[ggplot2]{scale_x_continuous}}).
+#' @param listPlots Named list of subject profiles.
+#' Each sublist contains subject profiles as returned
+#' by the \code{subjectProfile[X]Plot} function, 
+#' so nested by subject and page.
+#' The names of the list should be unique, and
+#' are used 
 #' @name patientProfilesVis-common-args
 NULL

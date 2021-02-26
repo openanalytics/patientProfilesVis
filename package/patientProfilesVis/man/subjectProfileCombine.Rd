@@ -22,7 +22,7 @@ subjectProfileCombine(
 )
 }
 \arguments{
-\item{listPlots}{list of subject profiles (modules/subjectsID)}
+\item{listPlots}{list of list of \code{subjectProfile[X]Plot} plots}
 
 \item{timeLim}{time limits, as returned by the
 \code{\link{getXLimSubjectProfilePlots}} function.}
@@ -85,11 +85,25 @@ the package \code{parallel} is required.}
 export a subject profile report by subject.}
 }
 \value{
-a list of \code{subjectProfilePlot} object, containing the combined
-profile plots for each subject.
+a list of \code{subjectProfile[X]Plot} object, 
+containing the combined
+profile plots across modules for each subject.
 }
 \description{
-Combine subject profile plots.
+Visualizations of different modules are combined
+by subject.
+The plots are aligned in the time axis (if requested).
+If the plots should be aligned:
+\itemize{
+\item{the same time limits are set for all plots}
+\item{the time axis is transformed if any of the
+plot was created with a time transformation}
+\item{the time axis is expanded for all plots 
+if any of the plot was created with a time axis expanded}
+}
+If some plots are missing for a specific subject,
+an empty plot is created, containing information
+as a text based on the \code{label} with which the plot was created.
 }
 \author{
 Laure Cougnaud

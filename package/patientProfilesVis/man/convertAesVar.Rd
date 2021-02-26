@@ -2,7 +2,7 @@
 % Please edit documentation in R/miscellaneous.R
 \name{convertAesVar}
 \alias{convertAesVar}
-\title{Convert aesthetic variable to factor, converting the empty values ('') to NA}
+\title{Convert aesthetic variable for patient profile visualization.}
 \usage{
 convertAesVar(data, var)
 }
@@ -15,7 +15,11 @@ convertAesVar(data, var)
 updated factor \code{var} variable
 }
 \description{
-Convert aesthetic variable to factor, converting the empty values ('') to NA
+This converts the empty values ('') to NA.
+The variable is then converted as a factor.\cr
+Missing values are also included in the 
+levels of the factor, to ensure that missing values
+are displayed in the legend of the plot.
 }
 \author{
 Laure Cougnaud
