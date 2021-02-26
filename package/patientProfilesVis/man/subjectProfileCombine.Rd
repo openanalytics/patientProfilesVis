@@ -56,11 +56,11 @@ to fit in the page height}
 Each sublist contains:
 \itemize{
 \item{(required) 'label': }{string with label for the reference line}
-\item{(required) 'time': }{time(x) coordinate for the reference line,
-'dotted' by default}
+\item{(required) 'time': }{unique time (x) coordinate for the reference line}
 \item{(optional) 'color': }{color for the reference line,
 'black' by default}
-\item{(optional) 'linetype': }{linetype for the reference line}
+\item{(optional) 'linetype': }{linetype for the reference line,
+'dotted' by default}
 }}
 
 \item{refLinesData}{data.frame with data from which the reference line(s) should be extracted}
