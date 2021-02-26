@@ -18,7 +18,9 @@ addReferenceLinesProfilePlot(
 )
 }
 \arguments{
-\item{gg}{\code{\link[ggplot2]{ggplot2}} object}
+\item{gg}{\code{\link[ggplot2]{ggplot2}} with
+a subject profile plot for a specific subject (and page)
+(subset of the output of the \code{subjectProfile[X]Plot})}
 
 \item{subjectVar}{String, variable of data (and subset data) with subject ID.}
 
@@ -26,11 +28,11 @@ addReferenceLinesProfilePlot(
 Each sublist contains:
 \itemize{
 \item{(required) 'label': }{string with label for the reference line}
-\item{(required) 'time': }{time(x) coordinate for the reference line,
-'dotted' by default}
+\item{(required) 'time': }{unique time (x) coordinate for the reference line}
 \item{(optional) 'color': }{color for the reference line,
 'black' by default}
-\item{(optional) 'linetype': }{linetype for the reference line}
+\item{(optional) 'linetype': }{linetype for the reference line,
+'dotted' by default}
 }}
 
 \item{refLinesData}{data.frame with data from which the reference line(s) should be extracted}
@@ -43,14 +45,23 @@ Each sublist contains:
 
 \item{refLinesLinetype}{vector of length 1 with default linetype for reference line(s)}
 
-\item{timeLim}{vector of length 2 with time limits}
+\item{timeLim}{vector of length 2 with time limits.
+This is used to set the limits to the plot
+containing the reference lines labels (if requested).}
 
 \item{addLabel}{logical, if TRUE (FALSE by default) add the label of the reference line(s) at the bottom of the plot}
 }
 \value{
-if \code{addLabel} is TRUE, list with:
-'gg': \code{\link[ggplot2]{ggplot2}} and 'ggRefLines': \code{\link[ggplot2]{ggplot2}} with labels,
-\code{\link[ggplot2]{ggplot2}} otherwise
+If \code{addLabel} is:
+\itemize{ 
+\item{\code{TRUE}: }{list with:
+\itemize{
+\item{'gg': }{\code{\link[ggplot2]{ggplot2}} plot with reference lines}
+\item{'ggRefLines': }{\code{\link[ggplot2]{ggplot2}} plot containing only 
+the labels at the specified position}
+}}
+\item{\code{FALSE}: }{\code{\link[ggplot2]{ggplot2}} plot with reference lines}
+}
 }
 \description{
 Add reference lines to a profile plot
