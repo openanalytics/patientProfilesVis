@@ -2,9 +2,9 @@
 % Please edit documentation in R/report_subjectProfileCombine.R
 \name{checkTimeTrans}
 \alias{checkTimeTrans}
-\title{Check if some of the modules are time transformed,
+\title{Check if the subject profiles are time transformed,
 and if some of the plots to align (with specified \code{timeLim})
-don't have/have different alignment options.}
+have compatible time transformation alignments.}
 \usage{
 checkTimeTrans(listPlots, timeLim = NULL)
 }
@@ -18,9 +18,9 @@ List of time transformation for each module
 (named by \code{listPlots})
 }
 \description{
-Check if some of the modules are time transformed,
+Check if the subject profiles are time transformed,
 and if some of the plots to align (with specified \code{timeLim})
-don't have/have different alignment options.
+have compatible time transformation alignments.
 }
 \author{
 Laure Cougnaud
