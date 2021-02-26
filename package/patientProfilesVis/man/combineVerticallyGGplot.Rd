@@ -14,8 +14,6 @@ combineVerticallyGGplot(
 )
 }
 \arguments{
-\item{listPlots}{a list of subject profile (subject/modules)}
-
 \item{maxNLines}{maximum number of lines for a combined plot,
 to fit in the page height}
 
@@ -35,11 +33,14 @@ In this case, the \code{shiny} package should be available.}
 export a subject profile report by subject.}
 }
 \value{
-a list of list of \code{\link[ggplot2]{ggplot}} object (subject/page)
+a list (by subject) of list (by page)
+of \code{\link[ggplot2]{ggplot}} object
 }
 \description{
 If the different modules for a subject don't fit in the page, there
 are automatically split in multiple pages.
+The margins are extracted across plots to ensure that plots will
+be probably aligned.
 }
 \author{
 Laure Cougnaud
