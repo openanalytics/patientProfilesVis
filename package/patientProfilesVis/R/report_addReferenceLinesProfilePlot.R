@@ -1,14 +1,16 @@
 #' Add reference lines to a profile plot
-#' @param gg \code{\link[ggplot2]{ggplot2}} object
+#' @param gg \code{\link[ggplot2]{ggplot2}} with
+#' a subject profile plot for a specific subject (and page)
+#' (subset of the output of the \code{subjectProfile[X]Plot})
 #' @param refLines (optional) nested list with details for reference line(s).
 #' Each sublist contains:
 #' \itemize{
 #' \item{(required) 'label': }{string with label for the reference line}
-#' \item{(required) 'time': }{time(x) coordinate for the reference line,
-#' 'dotted' by default}
+#' \item{(required) 'time': }{unique time (x) coordinate for the reference line}
 #' \item{(optional) 'color': }{color for the reference line,
 #' 'black' by default}
-#' \item{(optional) 'linetype': }{linetype for the reference line}
+#' \item{(optional) 'linetype': }{linetype for the reference line,
+#' 'dotted' by default}
 #' }
 #' @param refLinesData data.frame with data from which the reference line(s) should be extracted
 #' @param refLinesTimeVar string, variable of \code{refLinesData} with time for reference line(s)
@@ -16,11 +18,21 @@
 #' @param refLinesColor vector of length 1 with default color for reference line(s)
 #' @param refLinesLinetype vector of length 1 with default linetype for reference line(s)
 #' @param addLabel logical, if TRUE (FALSE by default) add the label of the reference line(s) at the bottom of the plot
-#' @param timeLim vector of length 2 with time limits
+#' @param timeLim vector of length 2 with time limits.
+#' This is used to set the limits to the plot
+#' containing the reference lines labels (if requested).
 #' @inheritParams subjectProfileIntervalPlot
-#' @return if \code{addLabel} is TRUE, list with:
-#' 'gg': \code{\link[ggplot2]{ggplot2}} and 'ggRefLines': \code{\link[ggplot2]{ggplot2}} with labels,
-#' \code{\link[ggplot2]{ggplot2}} otherwise
+#' @return 
+#' If \code{addLabel} is:
+#' \itemize{ 
+#' \item{\code{TRUE}: }{list with:
+#' \itemize{
+#' \item{'gg': }{\code{\link[ggplot2]{ggplot2}} plot with reference lines}
+#' \item{'ggRefLines': }{\code{\link[ggplot2]{ggplot2}} plot containing only 
+#' the labels at the specified position}
+#' }}
+#' \item{\code{FALSE}: }{\code{\link[ggplot2]{ggplot2}} plot with reference lines}
+#' }
 #' @author Laure Cougnaud
 #' @import ggplot2
 #' @importFrom stats setNames
@@ -41,8 +53,16 @@ addReferenceLinesProfilePlot <- function(
 	
 	if(refLinesVect){
 		
-		refLinesLabels <- sapply(refLines, function(x) x$label)
-		refLinesTime <- sapply(refLines, function(x) x$time)
+		refLinesLabels <- sapply(refLines, function(x){
+			if(!"label" %in% names(x))
+				stop("Label should be specified for the reference line(s).")
+			x$label
+		})
+		refLinesTime <- sapply(refLines, function(x){
+			if(!"time" %in% names(x))
+				stop("Time position should be specified for the reference line(s).")
+			x$time
+		})
 		refLinesColor <- sapply(refLines, function(x) 
 			ifelse("color" %in% names(x), x$color, refLinesColor)
 		)
@@ -52,15 +72,18 @@ addReferenceLinesProfilePlot <- function(
 		
 	}else if(refLinesFromData){
 		
-		subjectIDPlot <- attr(gg, "metaData")$subjectID
-		if(is.null(subjectIDPlot))
+		subjectIDPlot <- as.character(attr(gg, "metaData")$subjectID)
+		if(is.null(subjectIDPlot)){
 			warning("No reference lines are added to the plot with subject ID, because no 'subjectID' available.")
-		
-		refLinesInfo <- subset(refLinesData, 
-			get(subjectVar) == subjectIDPlot &
-				!is.na(get(refLinesLabelVar)) &
-				!is.na(get(refLinesTimeVar))
+			return(gg)
+		}
+			
+		idxSel <- which(
+			refLinesData[, subjectVar] == subjectIDPlot &
+			!is.na(refLinesData[, refLinesLabelVar]) &
+			!is.na(refLinesData[, refLinesTimeVar])
 		)
+		refLinesInfo <- refLinesData[idxSel, ]
 		refLinesLabels <- refLinesInfo[, refLinesLabelVar]
 		refLinesTime <- refLinesInfo[, refLinesTimeVar]
 		
@@ -86,6 +109,8 @@ addReferenceLinesProfilePlot <- function(
 		
 		# add label at the bottom of the plot
 		res <- if(addLabel){
+					
+			refLinesLabels <- as.character(refLinesLabels)		
 					
 			# extract number of lines for label
 			nLinesRefLines <- max(nchar(refLinesLabels))/2
