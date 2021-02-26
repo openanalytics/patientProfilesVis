@@ -514,10 +514,10 @@ formatTimeInterval <- function(data,
 		`minimal`= {
 			caption <- paste(c(caption, 
 				paste0(
-					 "Records with missing ", timeStartLab, " are displayed at ",
-					"their respective ", timeEndLab, ". Records with missing ",
-					timeEndLab, " are displayed at their respective ", timeStartLab, 
-					". Only the label is displayed for records with missing ", 
+					 "Records with missing ", timeStartLab, " (or ", timeEndLab,
+					") are displayed at their respective ", timeEndLab, 
+					" (or ", timeStartLab, ").\n",
+					"Only the label is displayed for records with missing ", 
 					timeStartLab, " and ", timeEndLab, "."
 				)
 			), collapse = "\n")
