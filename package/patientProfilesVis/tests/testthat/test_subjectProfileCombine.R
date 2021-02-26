@@ -26,7 +26,7 @@ test_that("subject profile with empty element is displayed as plot", {
 	expect_named(listPlotsSubj, c("1", "2"))
 			
 	ggMissingModule <- listPlotsSubj[["2"]][[1]]
-	expect_is(ggMissingModuleg, "ggplot")
+	expect_is(ggMissingModule, "ggplot")
 			
 	# two panels are created for this subject
 	expect_length(ggMissingModule$layers, 2)
