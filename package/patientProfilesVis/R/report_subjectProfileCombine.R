@@ -17,7 +17,6 @@
 #' @return a list of \code{subjectProfile[X]Plot} object, 
 #' containing the combined
 #' profile plots across modules for each subject.
-#' @importFrom cowplot ggdraw draw_label
 #' @inheritParams prepareSubjectProfile
 #' @inheritParams combineVerticallyGGplot
 #' @inheritParams getXLimSubjectProfilePlots
@@ -293,34 +292,41 @@ prepareSubjectProfile <- function(
 	
 }
 
-#' Get limits for a list of plots.
+#' Get the limits to set for the subject profile plots,
+#' depending on the alignment policy set.
 #' 
 #' These limits are extracted from specified \code{timeLim} for each
 #' module (stored in the \code{attributes()$metaData$timeLim}), 
 #' and if empty for all modules: from the maximal range
 #' of the x-coordinates across all plots.
 #' @param listPlots list of list of \code{subjectProfile[X]Plot} plots
-#' @param timeAlign Character vector with time alignment, either:
+#' @param timeAlign Character vector with time alignment across modules/subjects, either:
 #' \itemize{
 #' \item{'all' (by default): }{all plots have the same time limits}
-#' \item{'none': }{each of the plot has its own time limits}
+#' \item{'none': }{each of the plot (module*subject) has its own time limits}
 #' \item{character vector with names of the modules which
 #' should have the same time limits
 #' (should correspond to the names of \code{listPlots})}
 #' }
-#' @param timeAlignPerSubject Character vector specifying
-#' which modules of \code{timeAlign} should have subject-specific time limits
+#' @param timeAlignPerSubject Character vector, specifying if the plots
+#' should be aligned (or not) across subjects
 #' \itemize{
-#' \item{'none' (by default): }{these modules have the same time limit across subjects}
-#' \item{'all': }{these modules have different time limits per subject}
+#' \item{'none' (by default): }{all modules have the same time limit across subjects}
+#' \item{'all': }{all modules have different time limits per subject}
 #' \item{character vector with subset of these modules which should have
 #'  different time limits per subject
 #' (should correspond to the names of \code{listPlots})}
 #' }
 #' This is only used for the modules with which \code{timeAlign} is specified.
-#' @return Time limits, as a numeric vector of length 2,
-#' or a list with time limits for each module,
-#' or nested list with time limits for each module and subject.
+#' @return Time limits, as a numeric vector of length 2.
+#' If time limits should be set by module, named list
+#' with time limits by module.
+#' If time limits should be set by module and subject, nested list
+#' with time limits 1) by module 2) by subject.\cr
+#' The names of the list contains the module/subject name extracted
+#' from the names of \code{listPlots}.\cr
+#' The time limits are only returned if they will need to be explicitly set
+#' for a plot. Otherwise, NULL is returned.
 #' @importFrom ggplot2 ggplot_build
 #' @author Laure Cougnaud
 getXLimSubjectProfilePlots <- function(
@@ -359,12 +365,12 @@ getXLimSubjectProfilePlots <- function(
 			
 			alignModulesNA <- setdiff(timeAlign, names(listPlots))
 			if(length(alignModulesNA > 0)){
-				warning(paste("Modules to align:", toString(alignModulesNA), "are not available",
+				warning(paste("Module(s) to align:", toString(alignModulesNA), "are not available",
 					"in the names of the list of plots."))
 			}
 			alignModuleNotTV <- setdiff(timeAlign, modTimeVariant)
 			if(length(alignModuleNotTV) > 0){
-				warning(paste("Modules to align:", toString(alignModuleNotTV), "are not",
+				warning(paste("Module(s) to align:", toString(alignModuleNotTV), "are not",
 					"time variant, so these won't be aligned."))
 			}
 			
@@ -387,8 +393,8 @@ getXLimSubjectProfilePlots <- function(
 			alignPerSubjectModNA <- setdiff(alignPerSubjectMod, alignMod)
 			if(!(length(timeAlignPerSubject) == 1 && timeAlignPerSubject == "all") &
 				length(alignPerSubjectModNA) > 0){
-				warning(paste("Modules:", toString(alignPerSubjectModNA),
-					"are specified to be aligned per subject, but are not specified/available among",
+				warning(paste("Module(s):", toString(alignPerSubjectModNA),
+					"should be aligned per subject, but are not specified/available among",
 					"the modules to align, so these are ignored."))
 			}
 			alignPerSubjectMod <- intersect(alignPerSubjectMod, alignMod)

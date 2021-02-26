@@ -24,7 +24,6 @@
 #' @author Laure Cougnaud
 #' @import ggplot2
 #' @importFrom stats setNames
-#' @importFrom cowplot plot_grid
 addReferenceLinesProfilePlot <- function(
 	gg, 
 	subjectVar = "USUBJID",
