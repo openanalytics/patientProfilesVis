@@ -27,20 +27,20 @@ subjectProfileCombine(
 \item{timeLim}{time limits, as returned by the
 \code{\link{getXLimSubjectProfilePlots}} function.}
 
-\item{timeAlign}{Character vector with time alignment, either:
+\item{timeAlign}{Character vector with time alignment across modules/subjects, either:
 \itemize{
 \item{'all' (by default): }{all plots have the same time limits}
-\item{'none': }{each of the plot has its own time limits}
+\item{'none': }{each of the plot (module*subject) has its own time limits}
 \item{character vector with names of the modules which
 should have the same time limits
 (should correspond to the names of \code{listPlots})}
 }}
 
-\item{timeAlignPerSubject}{Character vector specifying
-which modules of \code{timeAlign} should have subject-specific time limits
+\item{timeAlignPerSubject}{Character vector, specifying if the plots
+should be aligned (or not) across subjects
 \itemize{
-\item{'none' (by default): }{these modules have the same time limit across subjects}
-\item{'all': }{these modules have different time limits per subject}
+\item{'none' (by default): }{all modules have the same time limit across subjects}
+\item{'all': }{all modules have different time limits per subject}
 \item{character vector with subset of these modules which should have
  different time limits per subject
 (should correspond to the names of \code{listPlots})}
