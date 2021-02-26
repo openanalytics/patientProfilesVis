@@ -2,7 +2,8 @@
 % Please edit documentation in R/report_subjectProfileCombine.R
 \name{getXLimSubjectProfilePlots}
 \alias{getXLimSubjectProfilePlots}
-\title{Get limits for a list of plots.}
+\title{Get the limits to set for the subject profile plots,
+depending on the alignment policy set.}
 \usage{
 getXLimSubjectProfilePlots(
   listPlots,
@@ -13,20 +14,20 @@ getXLimSubjectProfilePlots(
 \arguments{
 \item{listPlots}{list of list of \code{subjectProfile[X]Plot} plots}
 
-\item{timeAlign}{Character vector with time alignment, either:
+\item{timeAlign}{Character vector with time alignment across modules/subjects, either:
 \itemize{
 \item{'all' (by default): }{all plots have the same time limits}
-\item{'none': }{each of the plot has its own time limits}
+\item{'none': }{each of the plot (module*subject) has its own time limits}
 \item{character vector with names of the modules which
 should have the same time limits
 (should correspond to the names of \code{listPlots})}
 }}
 
-\item{timeAlignPerSubject}{Character vector specifying
-which modules of \code{timeAlign} should have subject-specific time limits
+\item{timeAlignPerSubject}{Character vector, specifying if the plots
+should be aligned (or not) across subjects
 \itemize{
-\item{'none' (by default): }{these modules have the same time limit across subjects}
-\item{'all': }{these modules have different time limits per subject}
+\item{'none' (by default): }{all modules have the same time limit across subjects}
+\item{'all': }{all modules have different time limits per subject}
 \item{character vector with subset of these modules which should have
  different time limits per subject
 (should correspond to the names of \code{listPlots})}
@@ -34,9 +35,15 @@ which modules of \code{timeAlign} should have subject-specific time limits
 This is only used for the modules with which \code{timeAlign} is specified.}
 }
 \value{
-Time limits, as a numeric vector of length 2,
-or a list with time limits for each module,
-or nested list with time limits for each module and subject.
+Time limits, as a numeric vector of length 2.
+If time limits should be set by module, named list
+with time limits by module.
+If time limits should be set by module and subject, nested list
+with time limits 1) by module 2) by subject.\cr
+The names of the list contains the module/subject name extracted
+from the names of \code{listPlots}.\cr
+The time limits are only returned if they will need to be explicitly set
+for a plot. Otherwise, NULL is returned.
 }
 \description{
 These limits are extracted from specified \code{timeLim} for each
