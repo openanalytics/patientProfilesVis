@@ -109,3 +109,4 @@ test_that("a variable is formatted to be used as an aesthetic in a plot", {
 	expect_equal(levels(varAes), c("A", "B", NA_character_))
 			
 })
+

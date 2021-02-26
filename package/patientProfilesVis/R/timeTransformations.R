@@ -7,8 +7,10 @@
 #' otherwise linear scale}
 #' }
 #' @param scale Numeric vector of length 1 (1 by default)
-#' with size of the linear region around 0, in case 
-#' \code{type} is: 'asinh'.
+#' with size of the linear region around 0, only used if in case 
+#' \code{type} is: 'asinh'.\cr
+#' If specified, the time variable is first scaled with: \code{x/scale},
+#' then transformed.
 #' @param n Integer of length 1 with number of breaks, 10 by default.
 #' @param formatFct function formatting the time axis breaks,
 #' (\code{\link{prettyNum}} by default),
@@ -26,6 +28,9 @@ getTimeTrans <- function(
 	n = 10){
 
 	type <- match.arg(type)
+	
+	if(scale != 1 & type == "asinh-neg")
+		warning("Scale is not available for asinh-neg transformation, scale is set to 1.")
 
 	transf <- switch(type,
 		'asinh' = {

@@ -21,8 +21,10 @@ otherwise linear scale}
 }}
 
 \item{scale}{Numeric vector of length 1 (1 by default)
-with size of the linear region around 0, in case 
-\code{type} is: 'asinh'.}
+with size of the linear region around 0, only used if in case 
+\code{type} is: 'asinh'.\cr
+If specified, the time variable is first scaled with: \code{x/scale},
+then transformed.}
 
 \item{formatFct}{function formatting the time axis breaks,
 (\code{\link{prettyNum}} by default),
