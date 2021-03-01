@@ -87,6 +87,83 @@ test_that("reference lines are set from specified dataset", {
 	
 })
 
+test_that("failure if reference line dataset doesn't contain the subject variablee", {
+			
+	data <- data.frame(
+		TEST = seq(3),
+		DY = c(1, 2, 3),
+		USUBJID = "1"
+	) 		
+	plots <- subjectProfileEventPlot(
+		data = data,
+		timeVar = "DY",
+		paramVar = "TEST"
+	)
+	dataVS <- data.frame(
+		DY = c(0, 10),
+		visitName = c("First Visit", "Last Visit")
+	)
+	
+	expect_error(
+		gg <- patientProfilesVis:::addReferenceLinesProfilePlot(
+			gg = plots[["1"]][[1]],
+			refLinesData = dataVS,
+			refLinesTimeVar = "DY",
+			refLinesLabelVar = "visitName",
+			subjectVar = "USUBJID"
+		)
+	)
+			
+})
+
+test_that("reference lines are set from specified dataset with custom subject variable", {
+			
+	data <- data.frame(
+		TEST = seq(3),
+		DY = c(1, 2, 3),
+		USUBJID = "1"
+	) 		
+	plots <- subjectProfileEventPlot(
+		data = data,
+		timeVar = "DY",
+		paramVar = "TEST"
+	)
+	
+	# specification of subject variable
+	expect_equal(
+		# custom subject variable
+		object = {
+			dataVS <- data.frame(
+				DY = c(0, 10),
+				visitName = c("First Visit", "Last Visit"),
+				SUBJID = "1"
+			)
+			patientProfilesVis:::addReferenceLinesProfilePlot(
+				gg = plots[["1"]][[1]],
+				refLinesData = dataVS,
+				refLinesTimeVar = "DY",
+				refLinesLabelVar = "visitName",
+				subjectVar = "SUBJID"
+			)
+		}, 
+		# default subject variable
+		expected = {
+			dataVS <- data.frame(
+				DY = c(0, 10),
+				visitName = c("First Visit", "Last Visit"),
+				USUBJID = "1"
+			)
+			patientProfilesVis:::addReferenceLinesProfilePlot(
+				gg = plots[["1"]][[1]],
+				refLinesData = dataVS,
+				refLinesTimeVar = "DY",
+				refLinesLabelVar = "visitName"
+			)
+		}
+	)
+			
+})
+
 test_that("reference lines are set with labels from specified list", {
 			
 	data <- data.frame(
