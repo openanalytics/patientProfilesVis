@@ -52,8 +52,14 @@
 #' @inheritParams subjectProfileIntervalPlot
 #' @inheritParams subjectProfileExport
 #' @return The path(s) of the report(s) is returned invisibly, and the
-#' the report is created at the location
-#' specified by \code{outputFile}.
+#' report is created at the location
+#' specified by \code{outputFile}.\cr
+#' If the report is created by subject, 
+#' the name of the exported subject profile is built as:
+#' \code{[filename]-[subjectID].pdf}, with [filename] extracted from
+#' \code{outputFile}.
+#' Space and platform-specific file separator are replaced by
+#' a dash in the filename.\cr
 #' If no patient profiles are available in the input,
 #' nothing is returned and a warning is triggered.
 #' @author Laure Cougnaud
