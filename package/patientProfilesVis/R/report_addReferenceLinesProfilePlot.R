@@ -72,11 +72,12 @@ addReferenceLinesProfilePlot <- function(
 		
 	}else if(refLinesFromData){
 		
-		subjectIDPlot <- as.character(attr(gg, "metaData")$subjectID)
+		subjectIDPlot <- attr(gg, "metaData")$subjectID
 		if(is.null(subjectIDPlot)){
 			warning("No reference lines are added to the plot with subject ID, because no 'subjectID' available.")
 			return(gg)
 		}
+		subjectIDPlot <- as.character(subjectIDPlot)
 			
 		idxSel <- which(
 			refLinesData[, subjectVar] == subjectIDPlot &
