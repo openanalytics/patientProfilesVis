@@ -238,3 +238,38 @@ test_that("reference lines are set with custom color/linetype", {
 
 })
 
+test_that("warning if subject ID missing in case of reference lines from specified dataset", {
+			
+	data <- data.frame(
+		TEST = seq(3),
+		DY = c(1, 2, 3),
+		USUBJID = "1"
+	)
+			
+	plots <- subjectProfileEventPlot(
+		data = data,
+		timeVar = "DY",
+		paramVar = "TEST"
+	)
+	gg <- plots[["1"]][[1]]
+	attr(gg, "metaData") <- NULL
+			
+	dataVS <- data.frame(
+		DY = c(0, 10),
+		visitName = c("First Visit", "Last Visit"),
+		USUBJID = "1"
+	)
+	expect_warning(
+		ggRefLine <- patientProfilesVis:::addReferenceLinesProfilePlot(
+			gg = gg,
+			refLinesData = dataVS,
+			refLinesTimeVar = "DY",
+			refLinesLabelVar = "visitName"
+		),
+		"no reference lines",
+		ignore.case = TRUE
+	)
+	expect_identical(ggRefLine, gg)
+		
+})
+
