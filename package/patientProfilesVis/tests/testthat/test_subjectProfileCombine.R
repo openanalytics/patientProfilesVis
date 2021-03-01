@@ -1,6 +1,7 @@
 context("Subject profiles are combined")
 
 library(ggplot2)
+library(shiny)
 
 test_that("subject profile with empty element is displayed as plot", {
 			
@@ -169,7 +170,6 @@ test_that("progress information is displayed", {
 		paramVar = "TEST",
 		timeVar = "DY"
 	)
-	
 	listPlots <- list(A = listPlots)
 			
 	expect_silent(
@@ -180,4 +180,59 @@ test_that("progress information is displayed", {
 		subjectProfileCombine(listPlots, verbose = TRUE)
 	)
 
+})
+
+test_that("warning is triggered within a shiny app without progress widget", {
+			
+	data <- data.frame(
+		TEST = "1",
+		DY = c(1, 10),
+		USUBJID = "1"
+	)
+	listPlots <- subjectProfileEventPlot(
+		data = data,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)
+	listPlots <- list(A = listPlots)
+	
+	server <- function(id) {
+		shiny::moduleServer(id, function(input, output, session) {
+			output$test <- shiny::renderPlot(
+				subjectProfileCombine(listPlots, shiny = TRUE)
+			)
+		})
+	}
+	expect_warning(
+		shiny::testServer(server, output$test),
+		"progress",
+		ignore.case = TRUE
+	)
+	
+})
+	
+test_that("execution within a shiny app run without errors", {
+				
+	data <- data.frame(
+		TEST = "1",
+		DY = c(1, 10),
+		USUBJID = "1"
+	)
+	listPlots <- subjectProfileEventPlot(
+		data = data,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)
+	listPlots <- list(A = listPlots)
+	
+	server <- function(id) {
+		shiny::moduleServer(id, function(input, output, session) {
+			output$test <- shiny::renderPlot(
+				shiny::withProgress(subjectProfileCombine(listPlots, shiny = TRUE))
+			)
+		})
+	}
+	# nice to have: check the progress message directlt
+	expect_silent(shiny::testServer(server, output$test))
+			
 })
