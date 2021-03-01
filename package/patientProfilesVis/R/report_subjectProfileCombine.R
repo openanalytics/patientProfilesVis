@@ -19,7 +19,7 @@
 #' profile plots across modules for each subject.
 #' @inheritParams prepareSubjectProfile
 #' @inheritParams combineVerticallyGGplot
-#' @inheritParams getXLimSubjectProfilePlots
+#' @inheritParams getTimeLimSubjectProfilePlots
 #' @author Laure Cougnaud
 #' @export
 subjectProfileCombine <- function(
@@ -43,7 +43,7 @@ subjectProfileCombine <- function(
 		msgProgress <- "Get limits x-axis."
 		if(verbose)	message(msgProgress)
 		if(shiny)	shiny::incProgress(0, detail = msgProgress)
-		timeLim <- getXLimSubjectProfilePlots(
+		timeLim <- getTimeLimSubjectProfilePlots(
 			listPlots, 
 			timeAlign = timeAlign, 
 			timeAlignPerSubject = timeAlignPerSubject
@@ -144,7 +144,7 @@ subjectProfileCombine <- function(
 
 #' prepare list of subject profile (s) to be combined with the \code{\link{combineVerticallyGGplot}} 
 #' @param timeLim time limits, as returned by the
-#' \code{\link{getXLimSubjectProfilePlots}} function.
+#' \code{\link{getTimeLimSubjectProfilePlots}} function.
 #' @param timeTrans Time transformation, or list of such transformation
 #' named by module. If NULL, no transformation are done.
 #' @param ... list of subject profiles (across modules)
@@ -329,7 +329,7 @@ prepareSubjectProfile <- function(
 #' for a plot. Otherwise, NULL is returned.
 #' @importFrom ggplot2 ggplot_build
 #' @author Laure Cougnaud
-getXLimSubjectProfilePlots <- function(
+getTimeLimSubjectProfilePlots <- function(
 	listPlots, 
 	timeAlign = "all", timeAlignPerSubject = "none"){
 	

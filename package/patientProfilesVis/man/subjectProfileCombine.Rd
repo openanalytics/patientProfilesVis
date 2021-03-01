@@ -25,7 +25,7 @@ subjectProfileCombine(
 \item{listPlots}{list of list of \code{subjectProfile[X]Plot} plots}
 
 \item{timeLim}{time limits, as returned by the
-\code{\link{getXLimSubjectProfilePlots}} function.}
+\code{\link{getTimeLimSubjectProfilePlots}} function.}
 
 \item{timeAlign}{Character vector with time alignment across modules/subjects, either:
 \itemize{

@@ -3,23 +3,19 @@
 \name{getNLinesSubjectProfile}
 \alias{getNLinesSubjectProfile}
 \title{Get approximately the number of 'lines' in the vertical direction
-of a \code{\link[ggplot2]{ggplot2}} plot.
-This is extracted from the presence of labels in the y-axis,
-labels and title in the x-axis, general title and number of lines
-in the legend.
-Can be used to specify plot-specific height during the export.}
+of a subject profile.}
 \usage{
 getNLinesSubjectProfile(gg)
 }
 \arguments{
-\item{gg}{\code{\link[ggplot2]{ggplot2}} object}
+\item{gg}{\code{\link[ggplot2]{ggplot2}} object,
+subset of the output of the \code{subjectProfile[X]Plot} 
+function, for a particular subject/module/page.}
 }
 \value{
 integer with (approximated) number of lines
 }
 \description{
-Get approximately the number of 'lines' in the vertical direction
-of a \code{\link[ggplot2]{ggplot2}} plot.
 This is extracted from the presence of labels in the y-axis,
 labels and title in the x-axis, general title and number of lines
 in the legend.

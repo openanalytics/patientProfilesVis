@@ -23,7 +23,7 @@ prepareSubjectProfile(
 \item{labels}{string with labels for the plots}
 
 \item{timeLim}{time limits, as returned by the
-\code{\link{getXLimSubjectProfilePlots}} function.}
+\code{\link{getTimeLimSubjectProfilePlots}} function.}
 
 \item{refLines}{(optional) nested list with details for reference line(s).
 Each sublist contains:
