@@ -1,4 +1,40 @@
-context("Create of subject profile report")
+context("Create subject profile report")
+
+test_that("report is created with custom file name", {
+			
+	dataA <- data.frame(
+		TEST = "1",
+		DY = c(1, 2),
+		USUBJID = "1"
+	)
+	listPlotsA <- subjectProfileEventPlot(
+		data = dataA,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)			
+			
+	dataB <- data.frame(
+		TEST = "1",
+		DY = c(3, 4),
+		USUBJID = c("1", "2")
+	)
+	listPlotsB <- subjectProfileEventPlot(
+		data = dataB,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)
+	listPlots <- list(A = listPlotsA, B = listPlotsB)	
+			
+	reportFile <- tempfile(pattern = "report", fileext = ".pdf")
+	expect_silent(
+		createSubjectProfileReport(
+			listPlots = listPlots,
+			outputFile = reportFile
+		)
+	)
+	expect_true(file.exists(reportFile))
+			
+})
 
 test_that("report is created without errors in case of unicode symbols", {
 			
@@ -109,4 +145,58 @@ test_that("a Rmd document can be rendered after creation of patient profiles", {
 	# Error in gsub(inline.code, "\\1", input[idx]) : invalid 'pattern' argument
 	expect_silent(rmarkdown::render(rmdFile, quiet = TRUE))
 	
+})
+
+
+test_that("report is created per subject", {
+			
+	dataA <- data.frame(
+		TEST = "1",
+		DY = c(1, 2),
+		USUBJID = "subject-I",
+		stringsAsFactors = FALSE
+	)
+			
+	listPlotsA <- subjectProfileEventPlot(
+		data = dataA,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)			
+			
+	dataB <- data.frame(
+		TEST = "1",
+		DY = c(3, 4),
+		USUBJID = c("subject-II", "subject-I"),
+		stringsAsFactors = FALSE
+	)
+	listPlotsB <- subjectProfileEventPlot(
+		data = dataB,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)
+	listPlots <- list(A = listPlotsA, B = listPlotsB)	
+			
+	reportFile <- tempfile(pattern = "report", fileext = ".pdf")
+	expect_silent(
+		paths <- createSubjectProfileReport(
+			listPlots = listPlots,
+			outputFile = reportFile,
+			reportPerSubject = TRUE
+		)
+	)
+	
+	# check that output paths for each subject
+	subjectIDs <- unique(c(dataA$USUBJID, dataB$USUBJID))
+	expect_length(paths, length(subjectIDs))
+	
+	for(i in seq_along(subjectIDs)){
+		expect_match(paths[i], paste0(subjectIDs[[i]], "\\.pdf$"))
+	}
+	
+	# and that the files exist
+	expect_true(all(file.exists(paths)))
+	
+	# report across subjects doesn't exist
+	expect_false(file.exists(reportFile))
+			
 })
