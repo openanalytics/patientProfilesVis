@@ -135,3 +135,49 @@ test_that("message if only a set plots to align has time axis expanded", {
 	# to add: check that second module is time expanded in the output
 			
 })
+
+test_that("subject profiles are combined in a parallel framework", {
+			
+	data <- data.frame(
+		TEST = "1",
+		DY = c(1, 10),
+		USUBJID = "1"
+	)
+	listPlots <- subjectProfileEventPlot(
+		data = dataA,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)
+	listPlots <- replicate(10, listPlots, simplify = FALSE)	
+	names(listPlots) <- as.character(seq_len(10))
+	
+	expect_silent(
+		subjectProfileCombine(listPlots, nCores = 2)
+	)
+			
+})
+
+test_that("progress information is displayed", {
+
+	data <- data.frame(
+		TEST = "1",
+		DY = c(1, 10),
+		USUBJID = "1"
+	)
+	listPlots <- subjectProfileEventPlot(
+		data = dataA,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)
+	
+	listPlots <- list(A = listPlots)
+			
+	expect_silent(
+		subjectProfileCombine(listPlots, verbose = FALSE)
+	)
+	
+	expect_message(
+		subjectProfileCombine(listPlots, verbose = TRUE)
+	)
+
+})
