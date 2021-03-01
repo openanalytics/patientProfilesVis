@@ -24,7 +24,7 @@ test_that("get time limits when plots are aligned across modules and subject", {
 	)
 	listPlots <- list(A = listPlotsA, B = listPlotsB)	
 			
-	timeLim <- patientProfilesVis:::getXLimSubjectProfilePlots(
+	timeLim <- patientProfilesVis:::getTimeLimSubjectProfilePlots(
 		listPlots = listPlots,
 		timeAlign = "all", timeAlignPerSubject = "none"
 	)
@@ -60,7 +60,7 @@ test_that("get time limits when plots are not aligned", {
 	)
 	listPlots <- list(A = listPlotsA, B = listPlotsB)	
 			
-	timeLim <- patientProfilesVis:::getXLimSubjectProfilePlots(
+	timeLim <- patientProfilesVis:::getTimeLimSubjectProfilePlots(
 		listPlots = listPlots,
 		timeAlign = "none"
 	)
@@ -103,7 +103,7 @@ test_that("get time limits when only a set of modules are aligned", {
 	)
 	listPlots <- list(A = listPlotsA, B = listPlotsB, C = listPlotsC)	
 			
-	timeLim <- patientProfilesVis:::getXLimSubjectProfilePlots(
+	timeLim <- patientProfilesVis:::getTimeLimSubjectProfilePlots(
 		listPlots = listPlots,
 		timeAlign = c("A", "B")
 	)
@@ -139,7 +139,7 @@ test_that("get time limits when all modules are aligned per subject", {
 	)
 	listPlots <- list(A = listPlotsA, B = listPlotsB)	
 			
-	timeLim <- patientProfilesVis:::getXLimSubjectProfilePlots(
+	timeLim <- patientProfilesVis:::getTimeLimSubjectProfilePlots(
 		listPlots = listPlots,
 		timeAlign = "all",
 		timeAlignPerSubject = "all"
@@ -190,7 +190,7 @@ test_that("get time limits for a set of modules aligned across subjects, and a s
 	)
 	listPlots <- list(A = listPlotsA, B = listPlotsB, C = listPlotsC)	
 			
-	timeLim <- patientProfilesVis:::getXLimSubjectProfilePlots(
+	timeLim <- patientProfilesVis:::getTimeLimSubjectProfilePlots(
 		listPlots = listPlots,
 		timeAlign = "all",
 		timeAlignPerSubject = c("A", "B")
@@ -244,7 +244,7 @@ test_that("get time limits for module aligned across subjects, modules aligned p
 	)
 	listPlots <- list(A = listPlotsA, B = listPlotsB, C = listPlotsC)	
 			
-	timeLim <- patientProfilesVis:::getXLimSubjectProfilePlots(
+	timeLim <- patientProfilesVis:::getTimeLimSubjectProfilePlots(
 		listPlots = listPlots,
 		timeAlign = c("A", "B"),
 		timeAlignPerSubject = "B"
@@ -276,7 +276,7 @@ test_that("list of plots should be named in case plots are aligned", {
 	)
 	
 	expect_error(
-		timeLim <- patientProfilesVis:::getXLimSubjectProfilePlots(
+		timeLim <- patientProfilesVis:::getTimeLimSubjectProfilePlots(
 			listPlots = list(listPlots),
 			timeAlign = "all"
 		),
@@ -300,7 +300,7 @@ test_that("list of plots should have unique names in case plots are aligned", {
 	)
 			
 	expect_error(
-		timeLim <- patientProfilesVis:::getXLimSubjectProfilePlots(
+		timeLim <- patientProfilesVis:::getTimeLimSubjectProfilePlots(
 			listPlots = list(A = listPlots, A = listPlots),
 			timeAlign = "all"
 		),
