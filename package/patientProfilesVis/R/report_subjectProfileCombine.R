@@ -200,7 +200,7 @@ prepareSubjectProfile <- function(
 		nLinesPlot <- unlist(lapply(listPlotsInit, function(x) 
 			sapply(x, function(y){
 				nLines <- attributes(y)$metaData$nLines
-				if(is.null(nLines))	nLines <- getNLinesYGgplot(y)
+				if(is.null(nLines))	nLines <- getNLinesSubjectProfile(y)
 				nLines 
 			})
 		))
