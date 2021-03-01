@@ -145,7 +145,7 @@ test_that("subject profiles are combined in a parallel framework", {
 		USUBJID = "1"
 	)
 	listPlots <- subjectProfileEventPlot(
-		data = dataA,
+		data = data,
 		paramVar = "TEST",
 		timeVar = "DY"
 	)
@@ -166,7 +166,7 @@ test_that("progress information is displayed", {
 		USUBJID = "1"
 	)
 	listPlots <- subjectProfileEventPlot(
-		data = dataA,
+		data = data,
 		paramVar = "TEST",
 		timeVar = "DY"
 	)
