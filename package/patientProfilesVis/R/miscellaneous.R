@@ -52,16 +52,21 @@ getPathTemplate <- function(file){
 }
 
 #' Get approximately the number of 'lines' in the vertical direction
-#' of a \code{\link[ggplot2]{ggplot2}} plot.
+#' of a subject profile.
+#' 
 #' This is extracted from the presence of labels in the y-axis,
 #' labels and title in the x-axis, general title and number of lines
 #' in the legend.
 #' Can be used to specify plot-specific height during the export.
+#' @param gg \code{\link[ggplot2]{ggplot2}} object,
+#' subset of the output of the \code{subjectProfile[X]Plot} 
+#' function, for a particular subject/module/page.
 #' @author Laure Cougnaud
 #' @inheritParams getNLinesLabel
 #' @inherit getNLinesLabel return
 #' @importFrom ggplot2 ggplot_build
-getNLinesYGgplot <- function(gg){
+#' @export
+getNLinesSubjectProfile <- function(gg){
 	
 	nLinesPlot <- if(inherits(gg, "subjectProfileLinePlot")){
 				

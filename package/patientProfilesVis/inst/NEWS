@@ -1,6 +1,6 @@
 1.5.0
     o add unit tests
-    o no import of subjectProfileTheme, getNLinesYGgplot
+    o no import of subjectProfileTheme
     o subjectProfileTextPlot:
       - fix ordering in case paramNameVar is a factor
       - param value lab is used even if not table
@@ -23,6 +23,7 @@
       - add info on imputation in the caption
     o getPageVar:
       - fix when only one var is specified
+    o getNLinesYGgplot -> getNLinesSubjectProfile
 1.4.3
     o change default palette for Windows support: u25C0 -> u25C4, u25B6 -> u25BA, u271A -> +, u2605 (star) -> u2666 (diamond), u25EF -> u25CB
 1.4.2
