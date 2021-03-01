@@ -1,5 +1,7 @@
 context("Create subject profile report")
 
+library(pdftools)
+
 test_that("report is created with custom file name", {
 			
 	dataA <- data.frame(
@@ -198,5 +200,56 @@ test_that("report is created per subject", {
 	
 	# report across subjects doesn't exist
 	expect_false(file.exists(reportFile))
+			
+})
+
+test_that("report is created with bookmark", {
+			
+	dataA <- data.frame(
+		TEST = "1",
+		DY = c(1, 2),
+		USUBJID = "subject-I"
+	)
+	listPlotsA <- subjectProfileEventPlot(
+		data = dataA,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)			
+			
+	dataB <- data.frame(
+		TEST = "1",
+		DY = c(3, 4),
+		USUBJID =  c("subject-II", "subject-I")
+	)
+	listPlotsB <- subjectProfileEventPlot(
+		data = dataB,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)
+	listPlots <- list(A = listPlotsA, B = listPlotsB)	
+	
+	bookmarkData <- data.frame(
+		USUBJID = c("subject-I", "subject-II"),
+		SEX = c("Male", "Female"),
+		AGE = c("25 years", "58 years")
+	)
+	bookmarkVars <- c("SEX", "AGE")
+			
+	reportFile <- tempfile(pattern = "report", fileext = ".pdf")
+	expect_silent(
+		createSubjectProfileReport(
+			listPlots = listPlots,
+			outputFile = reportFile,
+			bookmarkData = bookmarkData,
+			bookmarkVar = bookmarkVars
+		)
+	)
+	expect_true(file.exists(reportFile))
+	
+	# check that there is an index based on SEX and AGE in the Table of Content
+	tocCntList <- pdftools::pdf_toc(reportFile)
+	tocCnt <- unlist(tocCntList, recursive = TRUE)
+	expect_true(any(grepl("Index based on SEX", tocCnt)))
+	expect_true(any(grepl("Index based on AGE", tocCnt)))
 			
 })
