@@ -683,4 +683,48 @@ test_that("report is created for a set of specified subject", {
 	expect_setequal(reportSubjects, c("subject-A", "subject-C"))	
 	
 })
+
+test_that("profile figures are exported", {
+	
+	dataA <- data.frame(
+		TEST = "1",
+		DY = c(1, 2),
+		USUBJID = "subject-I"
+	)
+	listPlotsA <- subjectProfileEventPlot(
+		data = dataA,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)			
+			
+	dataB <- data.frame(
+		TEST = "1",
+		DY = c(3, 4),
+		USUBJID =  c("subject-II", "subject-I")
+	)
+	listPlotsB <- subjectProfileEventPlot(
+		data = dataB,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)
+	listPlots <- list(A = listPlotsA, B = listPlotsB)	
+			
+	reportFile <- tempfile(pattern = "report", fileext = ".pdf")
+	expect_silent(
+		paths <- createSubjectProfileReport(
+			listPlots = listPlots,
+			outputFile = reportFile,
+			exportFigures = TRUE
+		)
+	)
+	
+	# does the figure dir exist?
+	figDir <- file.path(dirname(reportFile), "figures")
+	expect_true(dir.exists(figDir))
+	
+	# do the figure files exist?
+	figFiles <- list.files(figDir)
+	expect_setequal(figFiles, c("subject-I-1.pdf", "subject-II-1.pdf"))
+	
+})
 			

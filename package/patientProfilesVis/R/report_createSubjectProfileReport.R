@@ -357,8 +357,10 @@ sortSubjects <- function(
 #' @param listPlotsSubject List of plots for each subject 
 #' @param outputFile string, path to the output report
 #' @param index Index, output from \code{\link{defineIndex}}
-#' @param exportFigures logical, if TRUE (FALSE by default) the figures are also exported
-#' in png format in a 'figures' folder
+#' @param exportFigures Logical, if TRUE (FALSE by default) the 
+#' subject profile figures are also exported
+#' in pdf format in a 'figures' folder.\cr
+#' Figures are named as \code{[subjectID]-[page].pdf}
 #' @return No returned value, the plots are exported to \code{outputDir}
 #' @inheritParams defineIndex
 #' @inheritParams subjectProfileCombine 
