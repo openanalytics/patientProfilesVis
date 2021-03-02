@@ -157,7 +157,10 @@ combineVerticallyGGplot <- function(
 			}
 			gg
 			
-			attributes(gg) <- c(attributes(gg), list(nLinesPlot = sum(nLinesPatientPage)))
+			attr(gg, 'metaData') <- c(
+				attr(gg, 'metaData'), 
+				list(nLines = sum(nLinesPatientPage))
+			)
 			
 			gg
 			

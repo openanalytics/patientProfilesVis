@@ -85,9 +85,13 @@ the package \code{parallel} is required.}
 export a subject profile report by subject.}
 }
 \value{
-a list of \code{subjectProfile[X]Plot} object, 
+a nested list of \code{\link[ggplot2]{ggplot}} object, 
 containing the combined
-profile plots across modules for each subject.
+profile plots across modules for each subject/page.\cr
+Each plot object contains in the associated attribute:
+\code{metaData} containing: \code{nLines}: an estimation
+of the number of 'lines' each plot occupies 
+(e.g. to set height of the exported figure).
 }
 \description{
 Visualizations of different modules are combined

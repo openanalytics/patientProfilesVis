@@ -65,7 +65,8 @@
 #' @inheritParams patientProfilesVis-common-args
 #' @inheritParams formatParamVarTextPlot
 #' @return list of (across subjects) of list (across modules) of \code{\link[ggplot2]{ggplot2} objects}, 
-#' also of class \code{subjectProfileTextPlot}, with additional metaData attributes containing
+#' also of class \code{subjectProfileTextPlot}, with additional \code{metaData} 
+#' attributes containing
 #' '\code{label}' and 'timeLim'.
 #' @author Laure Cougnaud
 #' @family patient profiles plotting function
