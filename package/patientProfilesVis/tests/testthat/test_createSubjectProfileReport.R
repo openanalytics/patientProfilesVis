@@ -591,7 +591,7 @@ test_that("report is created for a subset of the subjects based on a dataset, sp
 			
 })
 
-test_that("data is created for a random sample of subjects", {
+test_that("report is created for a random sample of subjects", {
 			
 	dataA <- data.frame(
 		TEST = "1",
@@ -641,7 +641,7 @@ test_that("data is created for a random sample of subjects", {
 })
 
 
-test_that("data is created for a set of specified subject", {
+test_that("report is created for a set of specified subject", {
 			
 	dataA <- data.frame(
 		TEST = "1",
