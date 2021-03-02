@@ -58,7 +58,7 @@ subjectProfileEventPlot <- function(
 	# concatenate variable(s) if multiple are specified
 	data[, "yVar"] <- interactionWithMissing(data = data, vars = paramVar, varSep = paramVarSep)
 	
-	# remove records without parameter or time variables
+	# remove records with missing time
 	data <- filterMissingInVar(
 		data = data, 
 		var = timeVar, varLab = timeLab

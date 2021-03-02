@@ -1,6 +1,6 @@
 1.5.0
     o add unit tests
-    o no import of subjectProfileTheme
+    o no export of subjectProfileTheme
     o subjectProfileTextPlot:
       - fix ordering in case paramNameVar is a factor
       - param value lab is used even if not table
