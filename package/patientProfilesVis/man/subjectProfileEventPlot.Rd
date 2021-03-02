@@ -31,7 +31,7 @@ subjectProfileEventPlot(
   subsetVar = NULL,
   subsetValue = NULL,
   xLab = timeLab,
-  yLab = NULL,
+  yLab = "",
   timeLim = NULL,
   title = toString(getLabelVar(paramVar, labelVars = labelVars, label = paramLab)),
   label = title,
