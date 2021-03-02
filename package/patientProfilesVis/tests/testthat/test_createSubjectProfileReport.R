@@ -493,3 +493,194 @@ test_that("profiles are exported separately based on an increasing variable", {
 	)
 			
 })
+
+test_that("report is created for a subset of the subjects based on a dataset", {
+			
+	dataA <- data.frame(
+		TEST = "1",
+		DY = c(1, 2),
+		USUBJID = c("subject-A", "subject-F")
+	)
+	listPlotsA <- subjectProfileEventPlot(
+		data = dataA,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)			
+			
+	dataB <- data.frame(
+		TEST = "1",
+		DY = seq.int(4),
+		USUBJID =  c("subject-B", "subject-A", "subject-C", "subject-D")
+	)
+	listPlotsB <- subjectProfileEventPlot(
+		data = dataB,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)
+	listPlots <- list(A = listPlotsA, B = listPlotsB)	
+			
+	subjectSubsetData <- data.frame(
+		USUBJID = c("subject-A", "subject-C")
+	)
+			
+	reportFile <- tempfile(pattern = "report", fileext = ".pdf")
+	expect_silent(
+		paths <- createSubjectProfileReport(
+			listPlots = listPlots,
+			outputFile = reportFile,
+			subjectSubsetData = subjectSubsetData
+		)
+	)
+	
+	reportCnt <- pdftools::pdf_data(reportFile)
+	reportCntTxt <- sapply(reportCnt, function(x) paste(x[["text"]], collapse = " "))
+	reportCntTxtWithSubj <- grep("subject-\\w", reportCntTxt, value = TRUE)
+	reportSubjects <- gsub(".+ (subject\\-\\w) .+", "\\1", reportCntTxtWithSubj)
+	
+	expect_setequal(reportSubjects, c("subject-A", "subject-C"))
+	
+})
+
+test_that("report is created for a subset of the subjects based on a dataset, specified variable and value", {
+			
+	dataA <- data.frame(
+		TEST = "1",
+		DY = c(1, 2),
+		USUBJID = c("subject-A", "subject-F")
+	)
+	listPlotsA <- subjectProfileEventPlot(
+		data = dataA,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)			
+	
+	dataB <- data.frame(
+		TEST = "1",
+		DY = seq.int(4),
+		USUBJID =  c("subject-B", "subject-A", "subject-C", "subject-D")
+	)
+	listPlotsB <- subjectProfileEventPlot(
+		data = dataB,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)
+	listPlots <- list(A = listPlotsA, B = listPlotsB)	
+	
+	subjectSubsetData <- data.frame(
+		USUBJID = c("subject-A", "subject-C", "subject-B", "subject-F"),
+		TRT = c(NA_character_, "A", "B", "B")
+	)
+	
+	reportFile <- tempfile(pattern = "report", fileext = ".pdf")
+	expect_silent(
+		paths <- createSubjectProfileReport(
+			listPlots = listPlots,
+			outputFile = reportFile,
+			subjectSubsetData = subjectSubsetData,
+			subjectSubsetVar = "TRT",
+			subjectSubsetValue = "B"
+		)
+	)
+	
+	reportCnt <- pdftools::pdf_data(reportFile)
+	reportCntTxt <- sapply(reportCnt, function(x) paste(x[["text"]], collapse = " "))
+	reportCntTxtWithSubj <- grep("subject-\\w", reportCntTxt, value = TRUE)
+	reportSubjects <- gsub(".+ (subject\\-\\w) .+", "\\1", reportCntTxtWithSubj)
+	
+	expect_setequal(reportSubjects, c("subject-F", "subject-B"))
+			
+})
+
+test_that("data is created for a random sample of subjects", {
+			
+	dataA <- data.frame(
+		TEST = "1",
+		DY = c(1, 2),
+		USUBJID = c("subject-A", "subject-F")
+	)
+	listPlotsA <- subjectProfileEventPlot(
+		data = dataA,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)			
+	
+	dataB <- data.frame(
+		TEST = "1",
+		DY = seq.int(4),
+		USUBJID =  c("subject-B", "subject-A", "subject-C", "subject-D")
+	)
+	listPlotsB <- subjectProfileEventPlot(
+		data = dataB,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)
+	listPlots <- list(A = listPlotsA, B = listPlotsB)	
+	
+	subjectSubsetData <- data.frame(
+		USUBJID = c("subject-A", "subject-C", "subject-D")
+	)
+	
+	reportFile <- tempfile(pattern = "report", fileext = ".pdf")
+	expect_silent(
+		paths <- createSubjectProfileReport(
+			listPlots = listPlots,
+			outputFile = reportFile,
+			subjectSubsetData = subjectSubsetData,
+			subjectSample = 2
+		)
+	)
+	
+	reportCnt <- pdftools::pdf_data(reportFile)
+	reportCntTxt <- sapply(reportCnt, function(x) paste(x[["text"]], collapse = " "))
+	reportCntTxtWithSubj <- grep("subject-\\w", reportCntTxt, value = TRUE)
+	reportSubjects <- gsub(".+ (subject\\-\\w) .+", "\\1", reportCntTxtWithSubj)
+	
+	expect_length(reportSubjects, 2)	
+	expect_true(all(reportSubjects %in% subjectSubsetData$USUBJID))
+	
+})
+
+
+test_that("data is created for a set of specified subject", {
+			
+	dataA <- data.frame(
+		TEST = "1",
+		DY = c(1, 2),
+		USUBJID = c("subject-A", "subject-F")
+	)
+	listPlotsA <- subjectProfileEventPlot(
+		data = dataA,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)			
+	
+	dataB <- data.frame(
+		TEST = "1",
+		DY = seq.int(4),
+		USUBJID =  c("subject-B", "subject-A", "subject-C", "subject-D")
+	)
+	listPlotsB <- subjectProfileEventPlot(
+		data = dataB,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)
+	listPlots <- list(A = listPlotsA, B = listPlotsB)	
+	
+	reportFile <- tempfile(pattern = "report", fileext = ".pdf")
+	expect_silent(
+		paths <- createSubjectProfileReport(
+			listPlots = listPlots,
+			outputFile = reportFile,
+			subset = c("subject-A", "subject-C", "subject-Y")
+		)
+	)
+	
+	reportCnt <- pdftools::pdf_data(reportFile)
+	reportCntTxt <- sapply(reportCnt, function(x) paste(x[["text"]], collapse = " "))
+	reportCntTxtWithSubj <- grep("subject-\\w", reportCntTxt, value = TRUE)
+	reportSubjects <- gsub(".+ (subject\\-\\w) .+", "\\1", reportCntTxtWithSubj)
+	
+	expect_setequal(reportSubjects, c("subject-A", "subject-C"))	
+	
+})
+			
