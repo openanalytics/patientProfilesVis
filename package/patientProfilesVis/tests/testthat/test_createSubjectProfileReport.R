@@ -727,4 +727,98 @@ test_that("profile figures are exported", {
 	expect_setequal(figFiles, c("subject-I-1.pdf", "subject-II-1.pdf"))
 	
 })
+
+test_that("warning in case export subject profiles by batch but report created across subjects", {
+			
+	data <- data.frame(
+		TEST = "1",
+		DY = c(1, 2),
+		USUBJID = c("1", "2")
+	)
+	listPlots <- subjectProfileEventPlot(
+		data = data,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)		
+	listPlots <- list(A = listPlots)
+	
+	reportFile <- tempfile(pattern = "report", fileext = ".pdf")
+	
+	expect_warning(
+		paths <- createSubjectProfileReport(
+			listPlots = listPlots,
+			outputFile = reportFile,
+			exportBatchSize = 5
+		),
+		"creation.*per batch not possible",
+		ignore.case = TRUE
+	)
+	
+})
+
+test_that("warning in case export subject profiles by batch but plots aligned across subjects", {
+			
+	data <- data.frame(
+		TEST = "1",
+		DY = c(1, 2),
+		USUBJID = c("1", "2")
+	)
+	listPlots <- subjectProfileEventPlot(
+		data = data,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)		
+	listPlots <- list(A = listPlots)
+	
+	reportFile <- tempfile(pattern = "report", fileext = ".pdf")
+	
+	expect_warning(
+		paths <- createSubjectProfileReport(
+			listPlots = listPlots,
+			outputFile = reportFile,
+			exportBatchSize = 5,
+			reportPerSubject = TRUE
+		),
+		"creation.*per batch not possible",
+		ignore.case = TRUE
+	)
+	
+})
+
+test_that("export subject profiles by batch", {
+			
+	data <- data.frame(
+		TEST = "1",
+		DY = 1,
+		USUBJID = as.character(seq.int(7))
+	)
+	listPlots <- subjectProfileEventPlot(
+		data = data,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)		
+	listPlots <- list(A = listPlots)
+		
+	reportFile <- tempfile(pattern = "report", fileext = ".pdf")
+			
+	expect_silent(
+		paths <- createSubjectProfileReport(
+			listPlots = listPlots,
+			outputFile = reportFile,
+			exportBatchSize = 3,
+			reportPerSubject = TRUE,
+			timeAlignPerSubject = "all"
+		)
+	)
+	
+	expect_length(paths, length(unique(data$USUBJID)))
+	
+	# check that difference between creation of report
+	# between batches is longer than within batch:
+	reportModifTime <- file.info(paths)[, "mtime"]
+	reportModifTimeDiff <- diff(reportModifTime)
+	expect_gte(reportModifTimeDiff[3], max(reportModifTimeDiff[-c(3, 6)]))
+	expect_gte(reportModifTimeDiff[6], max(reportModifTimeDiff[-c(3, 6)]))
+	
+})
 			
