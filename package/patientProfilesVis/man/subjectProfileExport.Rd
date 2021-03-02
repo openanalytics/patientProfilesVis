@@ -37,8 +37,10 @@ In this case, the \code{shiny} package should be available.}
 (1 by default). If more than 1, computation is parallelized, in this case
 the package \code{parallel} is required.}
 
-\item{exportFigures}{logical, if TRUE (FALSE by default) the figures are also exported
-in png format in a 'figures' folder}
+\item{exportFigures}{Logical, if TRUE (FALSE by default) the 
+subject profile figures are also exported
+in pdf format in a 'figures' folder.\cr
+Figures are named as \code{[subjectID]-[page].pdf}}
 }
 \value{
 No returned value, the plots are exported to \code{outputDir}

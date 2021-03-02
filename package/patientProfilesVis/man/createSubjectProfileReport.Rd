@@ -128,8 +128,7 @@ If not specified, all subjects available in \code{subjectSubsetData} are conside
 of interest to filter subjects on.}
 
 \item{subjectSample}{(optional) Integer of length 1
-with number of random subject(s) that should be considered,
-e.g. to check the created patient profiles for a subset of the data.
+with number of random subject(s) that should be considered in the specified subset dataset.
 By default, all specified subjects are considered (set to NULL).}
 
 \item{seed}{(optional) Integer of length 1 with seed used to select random subjects 
@@ -140,8 +139,10 @@ if \code{subjectSample} is specified (123 by default).}
 
 \item{outputFile}{string, path to the output report}
 
-\item{exportFigures}{logical, if TRUE (FALSE by default) the figures are also exported
-in png format in a 'figures' folder}
+\item{exportFigures}{Logical, if TRUE (FALSE by default) the 
+subject profile figures are also exported
+in pdf format in a 'figures' folder.\cr
+Figures are named as \code{[subjectID]-[page].pdf}}
 
 \item{reportPerSubject}{Logical, if TRUE (FALSE by default)
 export a subject profile report by subject.}
