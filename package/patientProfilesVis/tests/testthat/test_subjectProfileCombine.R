@@ -291,3 +291,33 @@ test_that("number of lines is extracted for each plot", {
 	)
 			
 })
+
+test_that("the height of the combined subject profile is restricted to a number of lines", {
+			
+	data <- data.frame(
+		AEDECOD = "a", 
+		USUBJID = "1"
+	)
+	listPlots <- subjectProfileTextPlot(
+		data = data,
+		paramValueVar = "AEDECOD",
+		table = TRUE,
+		paging = TRUE
+	)
+	listPlots <- replicate(10, listPlots, simplify = FALSE)	
+	names(listPlots) <- as.character(seq_len(10))
+	
+	maxNLines <- 15
+	listPlotsSubj <- subjectProfileCombine(
+		listPlots = listPlots,
+		maxNLines = maxNLines
+	)
+	
+	# check that no more than specified number of lines for each page:
+	nLinesSubjPage <- sapply(listPlotsSubj[["1"]], function(x) attr(x, "metaData")$nLines)
+	expect_true(all(nLinesSubjPage < maxNLines))
+	
+	# check that multiple 'pages' are created
+	expect_gte(length(listPlotsSubj[["1"]]), 1)
+			
+})
