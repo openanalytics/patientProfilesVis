@@ -70,7 +70,7 @@ subjectProfileLinePlot <- function(
 	subjectSample = NULL, seed = 123,
 	subsetData = NULL, subsetVar = NULL, subsetValue = NULL, 
 	xLab = timeLab,
-	yLab = NULL,
+	yLab = "",
 	timeLim = NULL,
 	title = toString(getLabelVar(paramValueVar, labelVars = labelVars, label = paramLab)),
 	label = title,

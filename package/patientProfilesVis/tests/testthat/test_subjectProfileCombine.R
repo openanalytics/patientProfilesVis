@@ -264,7 +264,16 @@ test_that("number of lines is extracted for each plot", {
 		paramVar = "TEST",
 		timeVar = "DY"
 	)
-	listPlots <- list(A = listPlotsA, B = listPlotsB)	
+	dataC <- data.frame(
+		AEDECOD = "a", 
+		USUBJID = "1"
+	)
+	listPlotsC <- subjectProfileTextPlot(
+		data = dataC,
+		paramValueVar = "AEDECOD"
+	)
+	
+	listPlots <- list(A = listPlotsA, B = listPlotsB, C = listPlotsC)	
 			
 	# remove 'nLines' attribute
 	listPlotsWthtNLines <- sapply(listPlots, function(lMod){

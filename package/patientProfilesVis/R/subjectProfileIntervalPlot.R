@@ -51,7 +51,7 @@ subjectProfileIntervalPlot <- function(
 	timeTrans = NULL, timeExpand = NULL,
 	timeAlign = TRUE,
 	xLab = timeLab,
-	yLab = NULL,
+	yLab = "",
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
 	colorPalette = NULL,
 	alpha = 1,

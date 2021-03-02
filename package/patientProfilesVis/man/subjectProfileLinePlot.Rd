@@ -34,7 +34,7 @@ subjectProfileLinePlot(
   subsetVar = NULL,
   subsetValue = NULL,
   xLab = timeLab,
-  yLab = NULL,
+  yLab = "",
   timeLim = NULL,
   title = toString(getLabelVar(paramValueVar, labelVars = labelVars, label = paramLab)),
   label = title,
