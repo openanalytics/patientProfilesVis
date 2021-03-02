@@ -262,6 +262,41 @@ test_that("report is created with bookmark", {
 	# (because subjectSortData is not specified)
 	expect_true(any(grepl("Index.*SEX.*Female.*2.*Male.*1", reportIndexTxt)))
 	expect_true(any(grepl("Index.*AGE.*25 years.*1.*58 years.*2", reportIndexTxt)))
-	
 			
+})
+
+test_that("bookmark data should contain bookmark variables and subject variable", {
+			
+	data <- data.frame(
+		TEST = "1",
+		DY = c(1, 2),
+		USUBJID = "subject-I"
+	)
+	listPlots <- subjectProfileEventPlot(
+		data = data,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)	
+	listPlots <- list(A = listPlots)	
+	
+	expect_error(
+		createSubjectProfileReport(
+			listPlots = listPlots,
+			outputFile = reportFile,
+			bookmarkData = data.frame(SEX = "Female"),
+			bookmarkVar = "SEX"
+		),
+		"USUBJID.*not available"
+	)
+	
+	expect_error(
+		createSubjectProfileReport(
+			listPlots = listPlots,
+			outputFile = reportFile,
+			bookmarkData = data.frame(USUBJID = "subject-I"),
+			bookmarkVar = "SEX"
+		),
+		"SEX.*not available"
+	)
+	
 })

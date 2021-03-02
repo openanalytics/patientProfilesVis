@@ -31,6 +31,10 @@ defineIndex <- function(
 	labelVars = NULL
 ){
 	
+	# check if specified variable(s) are available in the data
+	checkVar(var = subjectVar, data = data)
+	checkVar(var = var, data = data)
+	
 	# Index creation:
 	# extract name used in Index (labels are the variable column names)
 	indexTitles <- getLabelVar(var, labelVars = labelVars)
