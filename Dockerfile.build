@@ -19,7 +19,9 @@ RUN apt-get update && apt-get install --no-install-recommends -y libgit2-dev \
 	pandoc \
 	pandoc-citeproc \
 	texlive-full \
-	texinfo
+	texinfo \
+    # for qpdf package
+	libjpeg-dev
 RUN rm -rf /var/lib/apt/lists/*
 
 RUN R -e "cat(\"local(options(repos = c(CRAN = 'https://cloud.r-project.org')))\n\", file = R.home('etc/Rprofile.site'), append = TRUE)"
