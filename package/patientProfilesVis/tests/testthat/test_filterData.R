@@ -88,7 +88,7 @@ test_that("subset variable is not available", {
 	
 })
 
-test_that("filtering is correctly done on specified subject variable", {
+test_that("subjects are filtered based on a variable", {
 			
 	data1 <- data.frame(
 		CAT = c("A", NA_character_, "B", "A"), 

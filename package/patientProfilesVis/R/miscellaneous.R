@@ -703,7 +703,7 @@ filterData <- function(
 		if(subjectSample < length(subjects)){
 			set.seed(seed)
 			subjectSubset <- sample(x = subjects, size = subjectSample)
-			data <- data[which(data[, subjectVar] %in% subjectSubset), ]
+			data <- data[which(data[, subjectVar] %in% subjectSubset), , drop = FALSE]
 		}
 	}
 	

@@ -34,6 +34,9 @@
 #' If not specified, all subjects available in \code{subjectSubsetData} are considered.
 #' @param subjectSubsetValue Character vector with value(s) of \code{subjectSubsetVar}
 #' of interest to filter subjects on.
+#' @param subjectSample (optional) Integer of length 1
+#' with number of random subject(s) that should be considered in the specified subset dataset.
+#' By default, all specified subjects are considered (set to NULL).
 #' @param subjectSubset subjectSubset (optional) Character vector with subjects of interest 
 #' (available in \code{subjectVar}), NULL by default.
 #' @param subset Character vector with subjects of interest 
@@ -132,16 +135,22 @@ createSubjectProfileReport <- function(
 				unique(as.character(dataSubjectSubset[, subjectVar]))
 			)
 			
+		}else	if(!is.null(subjectSample)){
+			warning("Dataset should be provided in case a sample of subjects is considered. 'subjectSample' is ignored.")
 		}
 		
-		# filter 'listPlots' to only retain selected subjects
-		listPlots <- sapply(listPlots, function(x){
-			metaDataX <- attributes(x)$metaData
-			newX <- x[which(names(x) %in% subset)]
-			attributes(newX)$metaData <- metaDataX
-			newX
-		}, simplify = FALSE)		
-		listPlots <- listPlots[sapply(listPlots, length) > 0]
+		if(!is.null(subset)){
+			
+			# filter 'listPlots' to only retain selected subjects
+			listPlots <- sapply(listPlots, function(x){
+				metaDataX <- attributes(x)$metaData
+				newX <- x[which(names(x) %in% subset)]
+				attributes(newX)$metaData <- metaDataX
+				newX
+			}, simplify = FALSE)		
+			listPlots <- listPlots[sapply(listPlots, length) > 0]
+			
+		}
 		
 	}
 	
