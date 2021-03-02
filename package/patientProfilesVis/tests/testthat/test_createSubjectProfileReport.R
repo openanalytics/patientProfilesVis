@@ -265,7 +265,7 @@ test_that("report is created with bookmark", {
 			
 })
 
-test_that("bookmark data should contain bookmark variables and subject variable", {
+test_that("warning if bookmark data doesn't contain bookmark variables and subject variable", {
 			
 	data <- data.frame(
 		TEST = "1",
@@ -279,7 +279,7 @@ test_that("bookmark data should contain bookmark variables and subject variable"
 	)	
 	listPlots <- list(A = listPlots)	
 	
-	expect_error(
+	expect_warning(
 		createSubjectProfileReport(
 			listPlots = listPlots,
 			outputFile = reportFile,
@@ -289,7 +289,7 @@ test_that("bookmark data should contain bookmark variables and subject variable"
 		"USUBJID.*not available"
 	)
 	
-	expect_error(
+	expect_warning(
 		createSubjectProfileReport(
 			listPlots = listPlots,
 			outputFile = reportFile,
@@ -299,4 +299,197 @@ test_that("bookmark data should contain bookmark variables and subject variable"
 		"SEX.*not available"
 	)
 	
+})
+
+test_that("subjects are sorted in the report based on an increasing variable", {
+			
+	dataA <- data.frame(
+		TEST = "1",
+		DY = c(1, 2),
+		USUBJID = "subject-I"
+	)
+	listPlotsA <- subjectProfileEventPlot(
+		data = dataA,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)			
+			
+	dataB <- data.frame(
+		TEST = "1",
+		DY = c(3, 4),
+		USUBJID =  c("subject-II", "subject-I")
+	)
+	listPlotsB <- subjectProfileEventPlot(
+		data = dataB,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)
+	listPlots <- list(A = listPlotsA, B = listPlotsB)	
+			
+	subjectSortData <- data.frame(
+		USUBJID = c("subject-I", "subject-II"),
+		AGE = c(58, 25)
+	)
+	subjectSortVar <- "AGE"
+			
+	reportFile <- tempfile(pattern = "report", fileext = ".pdf")
+	expect_silent(
+		paths <- createSubjectProfileReport(
+			listPlots = listPlots,
+			outputFile = reportFile,
+			subjectSortData = subjectSortData,
+			subjectSortVar = subjectSortVar
+		)
+	)
+	expect_true(file.exists(reportFile))
+			
+	reportCnt <- pdftools::pdf_data(reportFile)
+	reportCntTxt <- sapply(reportCnt, function(x) paste(x[["text"]], collapse = " "))
+	
+	# first subject II, then subject I
+	expect_lte(
+		grep(" subject-II ", reportCntTxt),
+		grep(" subject-I ", reportCntTxt)
+	)
+	
+})
+
+test_that("subjects are sorted in the report based on a decreasing variable", {
+	
+	dataA <- data.frame(
+		TEST = "1",
+		DY = c(1, 2),
+		USUBJID = "subject-I"
+	)
+	listPlotsA <- subjectProfileEventPlot(
+		data = dataA,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)			
+	
+	dataB <- data.frame(
+		TEST = "1",
+		DY = c(3, 4),
+		USUBJID =  c("subject-II", "subject-I")
+	)
+	listPlotsB <- subjectProfileEventPlot(
+		data = dataB,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)
+	listPlots <- list(A = listPlotsA, B = listPlotsB)	
+	
+	subjectSortData <- data.frame(
+		USUBJID = c("subject-I", "subject-II"),
+		AGE = c(58, 25)
+	)
+	subjectSortVar <- "AGE"
+	
+	reportFile <- tempfile(pattern = "report", fileext = ".pdf")
+	expect_silent(
+		paths <- createSubjectProfileReport(
+			listPlots = listPlots,
+			outputFile = reportFile,
+			subjectSortData = subjectSortData,
+			subjectSortVar = subjectSortVar,
+			subjectSortDecreasing = TRUE
+		)
+	)
+	expect_true(file.exists(reportFile))
+	
+	reportCnt <- pdftools::pdf_data(reportFile)
+	reportCntTxt <- sapply(reportCnt, function(x) paste(x[["text"]], collapse = " "))
+	
+	# first subject I, then subject II
+	expect_gte(
+		grep(" subject-II ", reportCntTxt),
+		grep(" subject-I ", reportCntTxt)
+	)
+	
+})
+
+test_that("warning if dataset to sort subjects doesn't contain sorting variables and subject variable", {
+			
+	data <- data.frame(
+		TEST = "1",
+		DY = c(1, 2),
+		USUBJID = "subject-I"
+	)
+	listPlots <- subjectProfileEventPlot(
+		data = data,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)	
+	listPlots <- list(A = listPlots)	
+	
+	expect_warning(
+		createSubjectProfileReport(
+			listPlots = listPlots,
+			outputFile = reportFile,
+			subjectSortData = data.frame(SEX = "Female"),
+			subjectSortVar = "SEX"
+		),
+		"USUBJID.*not available"
+	)
+	
+	expect_warning(
+		createSubjectProfileReport(
+			listPlots = listPlots,
+			outputFile = reportFile,
+			subjectSortData = data.frame(USUBJID = "subject-I"),
+			subjectSortVar = "SEX"
+		),
+		"SEX.*not available"
+	)
+	
+})
+
+test_that("profiles are exported separately based on an increasing variable", {
+			
+	dataA <- data.frame(
+		TEST = "1",
+		DY = c(1, 2),
+		USUBJID = "subject-I"
+	)
+	listPlotsA <- subjectProfileEventPlot(
+		data = dataA,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)			
+			
+	dataB <- data.frame(
+		TEST = "1",
+		DY = c(3, 4),
+		USUBJID =  c("subject-II", "subject-I")
+	)
+	listPlotsB <- subjectProfileEventPlot(
+		data = dataB,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)
+	listPlots <- list(A = listPlotsA, B = listPlotsB)	
+			
+	subjectSortData <- data.frame(
+		USUBJID = c("subject-I", "subject-II"),
+		AGE = c(58, 25)
+	)
+	subjectSortVar <- "AGE"
+			
+	reportFile <- tempfile(pattern = "report", fileext = ".pdf")
+	expect_silent(
+		paths <- createSubjectProfileReport(
+			listPlots = listPlots,
+			outputFile = reportFile,
+			subjectSortData = subjectSortData,
+			subjectSortVar = subjectSortVar,
+			reportPerSubject = TRUE
+		)
+	)
+
+	# first subject II, then subject I
+	expect_lte(
+		grep("subject-II.pdf$", paths),
+		grep("subject-I.pdf$", paths)
+	)
+			
 })

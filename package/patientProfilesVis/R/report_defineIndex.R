@@ -31,38 +31,45 @@ defineIndex <- function(
 	labelVars = NULL
 ){
 	
-	# check if specified variable(s) are available in the data
-	checkVar(var = subjectVar, data = data)
-	checkVar(var = var, data = data)
+	varsNotInData <- setdiff(c(subjectVar, var), colnames(data))
 	
-	# Index creation:
-	# extract name used in Index (labels are the variable column names)
-	indexTitles <- getLabelVar(var, labelVars = labelVars)
-	indexMake <- paste(
-		paste0("\\makeindex[intoc,name=", names(indexTitles), ",columns=1,title={Index based on ",  indexTitles, "}]"),
-		collapse = "\n"
-	)
+	if(length(varsNotInData) == 0){
 	
-	# Index entry creation for each subject:
-	# extract values of specified 'var'
-	indexInfo <- daply(data, subjectVar, function(x){	
-		indexX <- unlist(x[, var, drop = FALSE])
-		if(nrow(x) > 1)
-			stop("Multiple information available for subject: ", unique(x[, subjectVar]), 
-				" for index construction.")
-		paste(
-			paste0("\\index[", names(indexX), "]{", indexX, "}"),
-			collapse = " "
+		# Index creation:
+		# extract name used in Index (labels are the variable column names)
+		indexTitles <- getLabelVar(var, labelVars = labelVars)
+		indexMake <- paste(
+			paste0("\\makeindex[intoc,name=", names(indexTitles), ",columns=1,title={Index based on ",  indexTitles, "}]"),
+			collapse = "\n"
 		)
-	})
-	
-	# Index printing:
-	indexPrint <- paste(
-		paste0("\\printindex[", names(indexTitles), "]"),
-		collapse = "\n"
-	)
-	
-	res <- list(indexMake = indexMake, indexEntry = indexInfo, indexPrint = indexPrint)
+		
+		# Index entry creation for each subject:
+		# extract values of specified 'var'
+		indexInfo <- daply(data, subjectVar, function(x){	
+			indexX <- unlist(x[, var, drop = FALSE])
+			if(nrow(x) > 1)
+				stop("Multiple information available for subject: ", unique(x[, subjectVar]), 
+					" for index construction.")
+			paste(
+				paste0("\\index[", names(indexX), "]{", indexX, "}"),
+				collapse = " "
+			)
+		})
+		
+		# Index printing:
+		indexPrint <- paste(
+			paste0("\\printindex[", names(indexTitles), "]"),
+			collapse = "\n"
+		)
+		
+		res <- list(indexMake = indexMake, indexEntry = indexInfo, indexPrint = indexPrint)
+			
+	}else{
+		warning("No bookmark is created because the variable(s): ", 
+			toString(sQuote(varsNotInData)), 
+			" are not available in the data.")
+		res <- NULL
+	}
 	
 	return(res)
 	

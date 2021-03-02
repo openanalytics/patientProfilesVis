@@ -22,7 +22,7 @@ sortSubjects(
 should be sorted.}
 
 \item{subjectSortVar}{Variable(s) of \code{subjectSortData} 
-used  the order for the subjects.}
+used to order the subjects}
 
 \item{subjectSortDecreasing}{Logical, if TRUE (FALSE by default)
 subjects are sorted based on inverse order of \code{subjectSortVar}.}
