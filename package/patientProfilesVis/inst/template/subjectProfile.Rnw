@@ -83,7 +83,7 @@
 	if(verbose)	message("Extract height for each plot.")
 	figHeightInches <- sapply(listPlotsPerSubject, function(plotSubject)
 		# number of lines in plot panel
-		attr(plotSubject, "nLinesPlot") * inputParameters$formatReport$heightLineIn
+		attr(plotSubject, "metaData")$nLines * inputParameters$formatReport$heightLineIn
 	)
 	
 	# extract labels 

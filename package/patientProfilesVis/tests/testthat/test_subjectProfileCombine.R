@@ -236,3 +236,58 @@ test_that("execution within a shiny app run without errors", {
 	expect_silent(shiny::testServer(server, output$test))
 			
 })
+
+test_that("number of lines is extracted for each plot", {
+		
+	# in the rare event that list plots are modified
+	# by the user and the nLines computed in each plotting
+	# function is removed
+	dataA <- data.frame(
+		TEST = seq(3),
+		DY = seq(3),
+		USUBJID = "1",
+		AVAL = rnorm(3)
+	)
+	listPlotsA <- subjectProfileLinePlot(
+		data = dataA,
+		timeVar = "DY",
+		paramNameVar = "TEST",
+		paramValueVar = "AVAL"
+	)
+	dataB <- data.frame(
+		TEST = "1",
+		DY = c(3, 4),
+		USUBJID = "1"
+	)
+	listPlotsB <- subjectProfileEventPlot(
+		data = dataB,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)
+	listPlots <- list(A = listPlotsA, B = listPlotsB)	
+			
+	# remove 'nLines' attribute
+	listPlotsWthtNLines <- sapply(listPlots, function(lMod){
+		sapply(lMod, function(lSubj){
+			sapply(lSubj, function(gg){
+				attr(gg, "metaData")$nLines <- NULL
+				gg
+			}, simplify = FALSE)		
+		}, simplify = FALSE)					
+	}, simplify = FALSE)
+	# number of lines is extracted for each ggplot
+	expect_silent(
+		listPlotsWthtNLineCombined <- subjectProfileCombine(listPlotsWthtNLines)
+	)
+	
+	# number of lines is extracted from the attribute in 'listPlots'
+	expect_silent(
+		listPlotsCombined <- subjectProfileCombine(listPlots)
+	)
+	
+	expect_equal(
+		object = attr(listPlotsWthtNLineCombined[[1]][[1]], "metaData")$nLines,
+		expected = attr(listPlotsCombined[[1]][[1]], "metaData")$nLines	
+	)
+			
+})

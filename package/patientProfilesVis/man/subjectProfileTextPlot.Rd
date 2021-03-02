@@ -100,7 +100,8 @@ based on the max length of the character in each column.}
 }
 \value{
 list of (across subjects) of list (across modules) of \code{\link[ggplot2]{ggplot2} objects}, 
-also of class \code{subjectProfileTextPlot}, with additional metaData attributes containing
+also of class \code{subjectProfileTextPlot}, with additional \code{metaData} 
+attributes containing
 '\code{label}' and 'timeLim'.
 }
 \description{

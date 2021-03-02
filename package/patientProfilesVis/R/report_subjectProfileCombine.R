@@ -14,9 +14,13 @@
 #' If some plots are missing for a specific subject,
 #' an empty plot is created, containing information
 #' as a text based on the \code{label} with which the plot was created.
-#' @return a list of \code{subjectProfile[X]Plot} object, 
+#' @return a nested list of \code{\link[ggplot2]{ggplot}} object, 
 #' containing the combined
-#' profile plots across modules for each subject.
+#' profile plots across modules for each subject/page.\cr
+#' Each plot object contains in the associated attribute:
+#' \code{metaData} containing: \code{nLines}: an estimation
+#' of the number of 'lines' each plot occupies 
+#' (e.g. to set height of the exported figure).
 #' @inheritParams prepareSubjectProfile
 #' @inheritParams combineVerticallyGGplot
 #' @inheritParams getTimeLimSubjectProfilePlots
