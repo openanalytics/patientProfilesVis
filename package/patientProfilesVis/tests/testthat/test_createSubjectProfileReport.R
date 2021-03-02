@@ -373,6 +373,7 @@ test_that("warning if bookmark data doesn't contain bookmark variables and subje
 	)	
 	listPlots <- list(A = listPlots)	
 	
+	reportFile <- tempfile(pattern = "report", fileext = ".pdf")
 	expect_warning(
 		createSubjectProfileReport(
 			listPlots = listPlots,
@@ -516,6 +517,7 @@ test_that("warning if dataset to sort subjects doesn't contain sorting variables
 	)	
 	listPlots <- list(A = listPlots)	
 	
+	reportFile <- tempfile(pattern = "report", fileext = ".pdf")
 	expect_warning(
 		createSubjectProfileReport(
 			listPlots = listPlots,
