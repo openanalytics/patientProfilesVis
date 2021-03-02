@@ -241,7 +241,9 @@ test_that("report is created with bookmark", {
 			listPlots = listPlots,
 			outputFile = reportFile,
 			bookmarkData = bookmarkData,
-			bookmarkVar = bookmarkVars
+			bookmarkVar = bookmarkVars,
+			# by default, subjectSortData == bookmarkData
+			subjectSortData = NULL
 		)
 	)
 	expect_true(file.exists(reportFile))
@@ -251,5 +253,15 @@ test_that("report is created with bookmark", {
 	tocCnt <- unlist(tocCntList, recursive = TRUE)
 	expect_true(any(grepl("Index based on SEX", tocCnt)))
 	expect_true(any(grepl("Index based on AGE", tocCnt)))
+	
+	reportCnt <- pdftools::pdf_data(reportFile)
+	reportCntIndex <- reportCnt[sapply(reportCnt, function(x) grepl("Index", x[, "text"]))]
+	reportIndexTxt <- sapply(reportCntIndex, function(x) paste(x[["text"]], collapse = " "))
+	
+	# by default, subjects are sorted based on alphabetical order
+	# (because subjectSortData is not specified)
+	expect_true(any(grepl("Index.*SEX.*Female.*2.*Male.*1", reportIndexTxt)))
+	expect_true(any(grepl("Index.*AGE.*25 years.*1.*58 years.*2", reportIndexTxt)))
+	
 			
 })
