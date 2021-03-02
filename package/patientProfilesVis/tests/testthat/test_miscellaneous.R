@@ -110,3 +110,13 @@ test_that("a variable is formatted to be used as an aesthetic in a plot", {
 			
 })
 
+test_that("linetype palette is extracted for the patient profiles", {
+			
+	x <- c("Treatment B", "Treatment A", NA_character_, "Treatment A")
+	linetype <- getGLPGLinetypePalettePatientProfile(x = x)
+	expect_type(linetype, "character")
+	expect_length(linetype, 3)
+	expect_named(linetype, c("Treatment B", "Treatment A", 'NA'))
+			
+})
+

@@ -3,10 +3,7 @@
 \name{getGLPGShapePalettePatientProfile}
 \alias{getGLPGShapePalettePatientProfile}
 \title{Get a Galapagos shape palette palette of specified length
-for patient profile visualization visualization.
-This is only a wrapper above \code{\link[glpgStyle]{getGLPGShapePalette}},
-including by default missing values (contrary to the default of the
-code{\link[glpgStyle]{getGLPGShapePalette}} function).}
+for patient profile visualization visualization.}
 \usage{
 getGLPGShapePalettePatientProfile(..., includeNA = TRUE, asText = TRUE)
 }
@@ -25,8 +22,9 @@ vector of shape values
 }
 \description{
 This is only a wrapper above \code{\link[glpgStyle]{getGLPGShapePalette}},
-including by default missing values and formatting the symbols as text
-(in case mixed with Unicode).
+including by default missing values (contrary to the default of the
+code{\link[glpgStyle]{getGLPGShapePalette}} function) 
+and formatting the symbols as text (in case mixed with Unicode).
 }
 \author{
 Laure Cougnaud
