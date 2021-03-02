@@ -10,8 +10,12 @@
 #' @param listPlots nested list of plots, as returned by the \code{\link{subjectProfileTextPlot}},
 #' \code{\link{subjectProfileEventPlot}}, \code{\link{subjectProfileIntervalPlot}} or
 #' \code{\link{subjectProfileLinePlot}} functions.
-#' @param bookmarkData Data.frame with data containing information on which the index should be based
-#' @param bookmarkVar variable(s) of \code{data} of interest for the index
+#' @param bookmarkData,bookmarkVar Data.frame with data containing information for the index,
+#' and character vector with corresponding variable(s) of interest.
+#' An index will be created at the end of the subject profile report.\cr
+#' The index contains a section per variable, referencing the 
+#' pages of the report containing subject profiles
+#' for each category/variable.
 #' @param subjectSortData Data.frame with data containing information on how the subjects 
 #' should be sorted (by default same as \code{bookmarkData}):
 #' \itemize{

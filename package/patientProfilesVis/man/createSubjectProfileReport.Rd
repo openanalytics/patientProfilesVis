@@ -91,9 +91,12 @@ Each sublist contains:
 
 \item{refLinesLabelVar}{string, variable of \code{refLinesData} with label for reference line(s)}
 
-\item{bookmarkData}{Data.frame with data containing information on which the index should be based}
-
-\item{bookmarkVar}{variable(s) of \code{data} of interest for the index}
+\item{bookmarkData, bookmarkVar}{Data.frame with data containing information for the index,
+and character vector with corresponding variable(s) of interest.
+An index will be created at the end of the subject profile report.\cr
+The index contains a section per variable, referencing the 
+pages of the report containing subject profiles
+for each category/variable.}
 
 \item{subjectSortData}{Data.frame with data containing information on how the subjects 
 should be sorted (by default same as \code{bookmarkData}):
@@ -171,8 +174,14 @@ the package \code{parallel} is required.}
 }
 \value{
 The path(s) of the report(s) is returned invisibly, and the
-the report is created at the location
-specified by \code{outputFile}.
+report is created at the location
+specified by \code{outputFile}.\cr
+If the report is created by subject, 
+the name of the exported subject profile is built as:
+\code{[filename]-[subjectID].pdf}, with [filename] extracted from
+\code{outputFile}.
+Space and platform-specific file separator are replaced by
+a dash in the filename.\cr
 If no patient profiles are available in the input,
 nothing is returned and a warning is triggered.
 }
