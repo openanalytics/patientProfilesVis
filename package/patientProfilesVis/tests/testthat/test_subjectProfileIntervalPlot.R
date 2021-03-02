@@ -698,6 +698,37 @@ test_that("missing time values are imputed based on data records", {
 	
 })
 
+test_that("time values imputed from the data are set to the interval [0, Inf] when all data records are missing", {
+			
+	data <- data.frame(
+		TEST = 1,
+		START = NA_real_,
+		END = NA_real_, 
+		USUBJID = "1"
+	)
+			
+	expect_message(
+		plots <- subjectProfileIntervalPlot(
+			data = data,
+			timeStartVar = "START",
+			timeEndVar = "END",
+			paramVar = "TEST",
+			timeImpType = "data-based"
+		)
+	)
+	gg <- plots[["1"]][[1]]
+			
+	# extract data behind the point
+	isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
+	ggDataPoint <- lapply(which(isGeomPoint), function(i){
+		layer_data(gg, i)
+	})
+	ggDataPoint <- do.call(rbind, ggDataPoint)
+	expect_equal(ggDataPoint$x, c(0, Inf))
+			
+})
+
+
 test_that("missing time values are imputed based on an external dataset", {
 			
 	# USUBJID 1: missing end, complete interval
