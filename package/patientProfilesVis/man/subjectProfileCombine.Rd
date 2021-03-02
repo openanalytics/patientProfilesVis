@@ -49,8 +49,12 @@ This is only used for the modules with which \code{timeAlign} is specified.}
 
 \item{subjectVar}{String, variable of data (and subset data) with subject ID.}
 
-\item{maxNLines}{maximum number of lines for a combined plot,
-to fit in the page height}
+\item{maxNLines}{Maximum number of lines for a combined plot,
+to fit in the page height. \cr
+When the different visualizations
+are combined for each subject, they will be allocated 
+to different pages if the number of lines of the combined visualization
+is higher than this number.}
 
 \item{refLines}{(optional) nested list with details for reference line(s).
 Each sublist contains:

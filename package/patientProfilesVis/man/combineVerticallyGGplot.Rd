@@ -14,8 +14,12 @@ combineVerticallyGGplot(
 )
 }
 \arguments{
-\item{maxNLines}{maximum number of lines for a combined plot,
-to fit in the page height}
+\item{maxNLines}{Maximum number of lines for a combined plot,
+to fit in the page height. \cr
+When the different visualizations
+are combined for each subject, they will be allocated 
+to different pages if the number of lines of the combined visualization
+is higher than this number.}
 
 \item{nCores}{Integer containing the number of cores used for the computation
 (1 by default). If more than 1, computation is parallelized, in this case

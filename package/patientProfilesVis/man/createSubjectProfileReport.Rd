@@ -156,8 +156,12 @@ and modules are not aligned across subjects (\code{timeAlignPerSubject} is: 'all
 \item{labelVars}{Named character vector with variable labels 
 (names are the variable code)}
 
-\item{maxNLines}{maximum number of lines for a combined plot,
-to fit in the page height}
+\item{maxNLines}{Maximum number of lines for a combined plot,
+to fit in the page height. \cr
+When the different visualizations
+are combined for each subject, they will be allocated 
+to different pages if the number of lines of the combined visualization
+is higher than this number.}
 
 \item{shiny}{logical, set to TRUE (FALSE by default) 
 if the report is generated from a Shiny application.
