@@ -62,7 +62,6 @@ getPathTemplate <- function(file){
 #' subset of the output of the \code{subjectProfile[X]Plot} 
 #' function, for a particular subject/module/page.
 #' @author Laure Cougnaud
-#' @inheritParams getNLinesLabel
 #' @inherit getNLinesLabel return
 #' @importFrom ggplot2 ggplot_build
 #' @export

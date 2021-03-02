@@ -106,8 +106,9 @@ should be sorted (by default same as \code{bookmarkData}):
 }
 This data should contain \code{subjectSortVar} and \code{subjectVar}.}
 
-\item{subjectSortVar}{variable(s) of \code{subjectSortData} indicating the order for the subjects in the report,
-by default same as \code{bookmarkVar}}
+\item{subjectSortVar}{Character vector, 
+variable(s) of \code{subjectSortData} indicating the order for the subjects in the report,
+(by default same as \code{bookmarkVar}).}
 
 \item{subjectSortDecreasing}{Logical, if TRUE (FALSE by default)
 subjects are sorted based on decreasing order of \code{subjectSortVar}.}

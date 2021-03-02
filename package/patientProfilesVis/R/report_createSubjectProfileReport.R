@@ -23,8 +23,9 @@
 #' \item{for the export, in case \code{reportPerSubject} is TRUE}
 #' }
 #' This data should contain \code{subjectSortVar} and \code{subjectVar}.
-#' @param subjectSortVar variable(s) of \code{subjectSortData} indicating the order for the subjects in the report,
-#' by default same as \code{bookmarkVar}
+#' @param subjectSortVar Character vector, 
+#' variable(s) of \code{subjectSortData} indicating the order for the subjects in the report,
+#' (by default same as \code{bookmarkVar}).
 #' @param subjectSortDecreasing Logical, if TRUE (FALSE by default)
 #' subjects are sorted based on decreasing order of \code{subjectSortVar}.
 #' @param subjectSubsetData Data.frame used to select subset of subjects of interest.
@@ -301,7 +302,7 @@ createSubjectProfileReport <- function(
 #' @param subjectSortData Data.frame with data containing information on how the subjects 
 #' should be sorted.
 #' @param subjectSortVar Variable(s) of \code{subjectSortData} 
-#' used  the order for the subjects.
+#' used to order the subjects
 #' @param subjectSortDecreasing Logical, if TRUE (FALSE by default)
 #' subjects are sorted based on inverse order of \code{subjectSortVar}.
 #' @param verbose logical, if TRUE print messages during execution
@@ -333,8 +334,8 @@ sortSubjects <- function(
 			subjects <- c(subjectsSpecifiedAndSorted, subjectsSpecifiedAndNotInSortData)
 			
 		}else{
-			warning("The subjects are not ordered according the specification, ",
-				"because variable(s): ", toString(sQuote(varsNotInData)), 
+			warning("The subjects are not sorted as specified, ",
+				"because the variable(s): ", toString(sQuote(varsNotInData)), 
 				" are not available in the data.")
 		}
 	}
