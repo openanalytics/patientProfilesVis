@@ -38,6 +38,40 @@ test_that("report is created with custom file name", {
 			
 })
 
+test_that("progress messages are printed during report creation", {
+			
+	data <- data.frame(
+		TEST = seq(3),
+		DY = seq(3),
+		USUBJID = "1"
+	)
+	plots <- subjectProfileEventPlot(
+		data = data,
+		timeVar = "DY",
+		paramVar = "TEST",
+		timeLim = c(0, NA)
+	)
+			
+	reportFile <- tempfile(pattern = "report", fileext = ".pdf")
+			
+	expect_message(
+		createSubjectProfileReport(
+			listPlots = list(plots),
+			outputFile = reportFile,
+			verbose = TRUE
+		)
+	)
+	
+	expect_silent(
+		createSubjectProfileReport(
+			listPlots = list(plots),
+			outputFile = reportFile,
+			verbose = FALSE
+		)
+	)
+	
+})
+
 test_that("report is created without errors in case of unicode symbols", {
 			
 	data <- data.frame(
@@ -70,8 +104,7 @@ test_that("report is created without errors in case of unicode symbols", {
 	expect_silent(
 		createSubjectProfileReport(
 			listPlots = listPlots,
-			outputFile = reportFile,
-			verbose = FALSE
+			outputFile = reportFile
 		)
 	)
 	expect_true(file.exists(reportFile))
@@ -99,8 +132,7 @@ test_that("report is created if only one time limit is specified", {
 	expect_silent(
 		createSubjectProfileReport(
 			listPlots = list(plots),
-			outputFile = reportFile,
-			verbose = FALSE
+			outputFile = reportFile
 		)
 	)
 	expect_true(file.exists(reportFile))
@@ -128,8 +160,7 @@ test_that("a Rmd document can be rendered after creation of patient profiles", {
 	# check that creation proceeds without errors
 	createSubjectProfileReport(
 		listPlots = list(plots),
-		outputFile = reportFile,
-		verbose = FALSE
+		outputFile = reportFile
 	)
 	
 	# test with dummy Rmd
@@ -263,6 +294,69 @@ test_that("report is created with bookmark", {
 	expect_true(any(grepl("Index.*SEX.*Female.*2.*Male.*1", reportIndexTxt)))
 	expect_true(any(grepl("Index.*AGE.*25 years.*1.*58 years.*2", reportIndexTxt)))
 			
+})
+
+test_that("report is created with bookmark with variable labels", {
+			
+	dataA <- data.frame(
+		TEST = "1",
+		DY = c(1, 2),
+		USUBJID = "subject-I"
+	)
+	listPlotsA <- subjectProfileEventPlot(
+		data = dataA,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)			
+			
+	dataB <- data.frame(
+		TEST = "1",
+		DY = c(3, 4),
+		USUBJID =  c("subject-II", "subject-I")
+	)
+	listPlotsB <- subjectProfileEventPlot(
+		data = dataB,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)
+	listPlots <- list(A = listPlotsA, B = listPlotsB)	
+			
+	bookmarkData <- data.frame(
+		USUBJID = c("subject-I", "subject-II"),
+		SEX = c("Male", "Female"),
+		AGE = c("25", "58")
+	)
+	bookmarkVars <- c("SEX", "AGE")
+			
+	reportFile <- tempfile(pattern = "report", fileext = ".pdf")
+	expect_silent(
+		createSubjectProfileReport(
+			listPlots = listPlots,
+			outputFile = reportFile,
+			bookmarkData = bookmarkData,
+			bookmarkVar = bookmarkVars,
+			# by default, subjectSortData == bookmarkData
+			subjectSortData = NULL,
+			labelVars = c(AGE = "Age (years)")
+		)
+	)
+	expect_true(file.exists(reportFile))
+			
+	# check that there is an index based on SEX and AGE in the Table of Content
+	tocCntList <- pdftools::pdf_toc(reportFile)
+	tocCnt <- unlist(tocCntList, recursive = TRUE)
+	expect_true(any(grepl("Index based on SEX", tocCnt)))
+	expect_true(any(grepl("Index based on Age (years)", tocCnt, fixed = TRUE)))
+	
+	reportCnt <- pdftools::pdf_data(reportFile)
+	reportCntIndex <- reportCnt[sapply(reportCnt, function(x) grepl("Index", x[, "text"]))]
+	reportIndexTxt <- sapply(reportCntIndex, function(x) paste(x[["text"]], collapse = " "))
+	
+	# by default, subjects are sorted based on alphabetical order
+	# (because subjectSortData is not specified)
+	expect_true(any(grepl("Index.*SEX", reportIndexTxt)))
+	expect_true(any(grepl("Index.*Age \\(years\\)", reportIndexTxt)))
+	
 })
 
 test_that("warning if bookmark data doesn't contain bookmark variables and subject variable", {
