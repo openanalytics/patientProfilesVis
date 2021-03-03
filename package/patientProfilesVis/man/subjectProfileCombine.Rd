@@ -39,13 +39,15 @@ should have the same time limits
 \item{timeAlignPerSubject}{Character vector, specifying if the plots
 should be aligned (or not) across subjects
 \itemize{
-\item{'none' (by default): }{all modules have the same time limit across subjects}
-\item{'all': }{all modules have different time limits per subject}
-\item{character vector with subset of these modules which should have
- different time limits per subject
+\item{'none' (by default): }{all modules to align
+have the same time limit across subjects}
+\item{'all': }{all modules to align
+ have different time limits per subject}
+\item{character vector with subset of the modules to align per subject
 (should correspond to the names of \code{listPlots})}
 }
-This is only used for the modules with which \code{timeAlign} is specified.}
+Only the modules already specified in \code{timeAlign}
+can be aligned by subject.}
 
 \item{subjectVar}{String, variable of data (and subset data) with subject ID.}
 

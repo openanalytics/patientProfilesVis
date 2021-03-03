@@ -361,3 +361,39 @@ test_that("reference lines are set from specified dataset without errors", {
 	# to add: check that labels are present in the output
 			
 })
+
+test_that("warning if inverse of transformation is not a function", {
+		
+	# rare case that inverse of trans not specified as a function
+	dataA <- data.frame(
+		TEST = "1",
+		DY = c(1, 10),
+		USUBJID = "1"
+	)
+	listPlotsA <- subjectProfileEventPlot(
+		data = dataA,
+		paramVar = "TEST",
+		timeVar = "DY",
+		timeTrans = scales::log10_trans()
+	)
+	attr(listPlotsA, "metaData")$timeTrans$inverse <- "function(x) 10^x"
+	
+	dataB <- data.frame(
+		TEST = "1",
+		DY = c(3, 4),
+		USUBJID = "1"
+	)
+	listPlotsB <- subjectProfileEventPlot(
+		data = dataB,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)
+	listPlots <- list(A = listPlotsA, B = listPlotsB)	
+			
+	expect_warning(
+		try(listPlotsSubj <- subjectProfileCombine(listPlots), silent = TRUE),
+		"transformation.*not available as a function"
+	)
+			
+})
+
