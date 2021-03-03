@@ -137,6 +137,39 @@ test_that("message if only a set plots to align has time axis expanded", {
 			
 })
 
+test_that("creation successful if plots have different time expand", {
+			
+	dataA <- data.frame(
+		TEST = "1",
+		DY = c(1, 2),
+		USUBJID = "1"
+	)
+			
+	listPlotsA <- subjectProfileEventPlot(
+		data = dataA,
+		paramVar = "TEST",
+		timeVar = "DY",
+		timeExpand = expansion(mult = 0, add = 3)
+	)
+	dataB <- data.frame(
+		TEST = "1",
+		DY = c(3, 4),
+		USUBJID = "1"
+	)
+	listPlotsB <- subjectProfileEventPlot(
+		data = dataB,
+		paramVar = "TEST",
+		timeVar = "DY",
+		timeExpand = expansion(mult = 2, add = 0)
+	)
+	listPlots <- list(A = listPlotsA, B = listPlotsB)	
+			
+	expect_message(
+		subjectProfileCombine(listPlots)
+	)
+			
+})
+
 test_that("subject profiles are combined in a parallel framework", {
 			
 	data <- data.frame(
