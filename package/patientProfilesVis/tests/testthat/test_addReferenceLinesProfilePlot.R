@@ -1,5 +1,7 @@
 context("add reference lines to a subject profile plot")
 
+library(ggplot2)
+
 test_that("reference lines are set from specified list", {
 		
 	data <- data.frame(
@@ -87,7 +89,7 @@ test_that("reference lines are set from specified dataset", {
 	
 })
 
-test_that("failure if reference line dataset doesn't contain the subject variablee", {
+test_that("failure if reference line dataset doesn't contain the subject variable", {
 			
 	data <- data.frame(
 		TEST = seq(3),
