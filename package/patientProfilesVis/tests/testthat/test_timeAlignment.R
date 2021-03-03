@@ -332,3 +332,47 @@ test_that("list of plots should have unique names in case plots are aligned", {
 	)
 			
 })
+
+test_that("warning if module to align is not time-variant", {
+			
+	data <- data.frame(
+		AEDECOD = "a", 
+		USUBJID = "1"
+	)
+	listPlots <- subjectProfileTextPlot(
+		data = data,
+		paramValueVar = "AEDECOD"
+	)
+	listPlots <- list(A = listPlots)	
+			
+	expect_warning(
+		timeLim <- patientProfilesVis:::getTimeLimSubjectProfilePlots(
+			listPlots = listPlots,
+			timeAlign = "A"
+		),
+		"A.*not time variant"
+	)
+		
+})
+
+test_that("warning if module to align is not available", {
+			
+	data <- data.frame(
+		AEDECOD = "a", 
+		USUBJID = "1"
+	)
+	listPlots <- subjectProfileTextPlot(
+		data = data,
+		paramValueVar = "AEDECOD"
+	)
+	listPlots <- list(A = listPlots)	
+			
+	expect_warning(
+		timeLim <- patientProfilesVis:::getTimeLimSubjectProfilePlots(
+			listPlots = listPlots,
+			timeAlign = "C"
+		),
+		"C.*not available"
+	)
+			
+})
