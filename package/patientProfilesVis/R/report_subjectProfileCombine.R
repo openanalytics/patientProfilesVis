@@ -225,9 +225,7 @@ prepareSubjectProfile <- function(
 				timeTransMod <- if(!is.null(timeTrans)){
 					if(inherits(timeTrans, "trans")){
 						timeTrans
-					}else	if(is.list(timeTrans) && mod %in% names(timeTrans)){
-						timeTrans[[mod]]
-					} 
+					}
 				}
 				# set time expand
 				timeExpandMod <- if(!is.null(timeExpand)){
@@ -603,10 +601,11 @@ checkTimeTrans <- function(listPlots, timeLim = NULL){
 	timeTrans <- NULL
 	if(!is.null(timeLim)){
 		
-		# consider only the modules to be aligned
+		# consider only the modules to be aligned...
 		if(is.list(timeLim))
 			timeTransMod <- timeTransMod[names(timeLim)]
-		# and time variant
+		
+		# ... and time variant
 		modTimeVariant <- names(which(sapply(listPlots, isSubjectProfileTimeVariant, empty = FALSE)))
 		timeTransMod <- timeTransMod[modTimeVariant]
 		
@@ -624,25 +623,16 @@ checkTimeTrans <- function(listPlots, timeLim = NULL){
 			if(checkFctId(timeTransModSpec)){
 				
 				timeTransUsed <- timeTransModSpec[[1]]	
-				# set new transformation for all modules without this transformation
-#				timeTrans <- if(is.list(timeLim)){
-#					modToTrans <- setdiff(names(timeLim), names(timeTransModSpec))
-#					if(length(modToTrans) > 0){
-#						modToTransST <- paste("Modules:", toString(modToTrans))
-#						setNames(replicate(length(timeLim), timeTransUsed, simplify = FALSE), modToTrans)
-#					}
-#				}else{
+				
 				# set transformation for all modules in case transformation specified for one of them
-				modToTransST <- "All modules"
 				timeTrans <- timeTransUsed
-#				}
 				if(!is.null(timeTrans))
 					message(paste("All modules are transformed with", timeTrans$name, 
 						"to be time aligned."
 					))
 				
-				# if different time transformations are used,
-				# the modules cannot be aligned
+			# if different time transformations are used,
+			# the modules cannot be aligned
 			}else{
 				
 				timeTransModName <- sapply(timeTransModSpec, function(x) ifelse(is.null(x), "none", x$name))
