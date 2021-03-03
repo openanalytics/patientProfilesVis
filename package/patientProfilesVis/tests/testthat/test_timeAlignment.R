@@ -1,6 +1,6 @@
 context("time limits are extracted based on time alignment policy")
 
-test_that("get time limits when plots are aligned across modules and subject", {
+test_that("plots are aligned across modules and subject", {
 			
 	dataA <- data.frame(
 		TEST = "1",
@@ -36,7 +36,31 @@ test_that("get time limits when plots are aligned across modules and subject", {
 	
 })
 
-test_that("get time limits when plots are not aligned", {
+test_that("specification of time alignment as logical is deprecated", {
+			
+	data <- data.frame(
+		TEST = "1",
+		DY = c(1, 2),
+		USUBJID = c("1", "2")
+	)
+	listPlots <- subjectProfileEventPlot(
+		data = data,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)
+	listPlots <- list(A = listPlots)	
+	
+	expect_warning(
+		timeLim <- patientProfilesVis:::getTimeLimSubjectProfilePlots(
+			listPlots = listPlots,
+			timeAlign = TRUE
+		),
+		"deprecated"
+	)
+			
+})
+
+test_that("plots are not aligned", {
 			
 	dataA <- data.frame(
 		TEST = "1",
@@ -69,7 +93,7 @@ test_that("get time limits when plots are not aligned", {
 		
 })
 
-test_that("get time limits when only a set of modules are aligned", {
+test_that("only a set of modules are aligned", {
 			
 	dataA <- data.frame(
 		TEST = "1",
@@ -115,7 +139,7 @@ test_that("get time limits when only a set of modules are aligned", {
 			
 })
 
-test_that("get time limits when all modules are aligned per subject", {
+test_that("all modules are aligned per subject", {
 			
 	dataA <- data.frame(
 		TEST = "1",
@@ -156,7 +180,7 @@ test_that("get time limits when all modules are aligned per subject", {
 			
 })
 
-test_that("get time limits for a set of modules aligned across subjects, and a set of modules aligned per subject", {
+test_that("a set of modules aligned across subjects, and a set of modules aligned per subject", {
 			
 	dataA <- data.frame(
 		TEST = "1",
@@ -210,7 +234,7 @@ test_that("get time limits for a set of modules aligned across subjects, and a s
 			
 })
 
-test_that("get time limits for module aligned across subjects, modules aligned per subject, and module not aligned", {
+test_that("some module aligned across subjects, modules aligned per subject, and module not aligned", {
 			
 	dataA <- data.frame(
 		TEST = "1",
