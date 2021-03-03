@@ -257,12 +257,16 @@ test_that("number of lines is extracted for each plot", {
 	dataB <- data.frame(
 		TEST = "1",
 		DY = c(3, 4),
-		USUBJID = "1"
+		USUBJID = "1",
+		RIND = c("Low", "High")
 	)
 	listPlotsB <- subjectProfileEventPlot(
 		data = dataB,
 		paramVar = "TEST",
-		timeVar = "DY"
+		timeVar = "DY",
+		# to have a legend:
+		colorVar = "RIND",
+		shapeVar = "RIND"
 	)
 	dataC <- data.frame(
 		AEDECOD = "a", 
@@ -273,7 +277,11 @@ test_that("number of lines is extracted for each plot", {
 		paramValueVar = "AEDECOD"
 	)
 	
-	listPlots <- list(A = listPlotsA, B = listPlotsB, C = listPlotsC)	
+	listPlots <- list(
+		A = listPlotsA, 
+		B = listPlotsB, 
+		C = listPlotsC
+	)	
 			
 	# remove 'nLines' attribute
 	listPlotsWthtNLines <- sapply(listPlots, function(lMod){
@@ -284,7 +292,8 @@ test_that("number of lines is extracted for each plot", {
 			}, simplify = FALSE)		
 		}, simplify = FALSE)					
 	}, simplify = FALSE)
-	# number of lines is extracted for each ggplot
+
+	# number of lines is estimated based on the plot object
 	expect_silent(
 		listPlotsWthtNLineCombined <- subjectProfileCombine(listPlotsWthtNLines)
 	)
