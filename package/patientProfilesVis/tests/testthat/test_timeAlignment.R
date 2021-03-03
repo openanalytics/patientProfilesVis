@@ -402,3 +402,74 @@ test_that("warning if module to align per subject not specified among modules to
 	)
 			
 })
+
+test_that("warning if inverse of transformation is not a function", {
+			
+	# rare case that inverse of trans not specified as a function
+	dataA <- data.frame(
+		TEST = "1",
+		DY = c(1, 10),
+		USUBJID = "1"
+	)
+	listPlotsA <- subjectProfileEventPlot(
+		data = dataA,
+		paramVar = "TEST",
+		timeVar = "DY",
+		timeTrans = scales::log10_trans()
+	)
+	attr(listPlotsA, "metaData")$timeTrans$inverse <- "function(x) 10^x"
+	
+	dataB <- data.frame(
+		TEST = "1",
+		DY = c(3, 4),
+		USUBJID = "1"
+	)
+	listPlotsB <- subjectProfileEventPlot(
+		data = dataB,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)
+	listPlots <- list(A = listPlotsA, B = listPlotsB)	
+	
+	expect_warning(
+		try(timeLim <- getTimeLimSubjectProfilePlots(listPlots), silent = TRUE),
+		"transformation.*not available as a function"
+	)
+	
+})
+
+test_that("time limits are set for a subset of the modules", {
+			
+	dataA <- data.frame(
+		TEST = "1",
+		DY = c(1, 10),
+		USUBJID = "1"
+	)
+	timeLimA <- c(0, 10)
+	listPlotsA <- subjectProfileEventPlot(
+		data = dataA,
+		paramVar = "TEST",
+		timeVar = "DY",
+		timeLim = timeLimA
+	)
+	
+	dataB <- data.frame(
+		TEST = "1",
+		DY = c(3, 4),
+		USUBJID = "1"
+	)
+	listPlotsB <- subjectProfileEventPlot(
+		data = dataB,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)
+	listPlots <- list(A = listPlotsA, B = listPlotsB)	
+			
+	expect_silent(
+		timeLim <- getTimeLimSubjectProfilePlots(listPlots)
+	)
+	expect_length(timeLim, 2)
+	expect_equal(timeLim[["A"]], timeLimA)
+	expect_equal(timeLim[["B"]], timeLimA)
+			
+})
