@@ -177,13 +177,28 @@ subjectProfileEventPlot <- function(
 			nLinesPlot <- sum(nLines) + 0.8 * (length(nLines) - 1)
 			
 			# legend:
+			nLinesLegendColor <- if(!is.null(colorVar)){
+				getNLinesLegend(values = colorPalette, title = colorLab)
+			}else	0
+			nLinesLegendShape <- if(!is.null(shapeVar)){
+				getNLinesLegend(values = shapePalette, title = shapeLab)
+			}else	0
 			nLinesLegend <- 0 +
-				if(!is.null(colorVar))	getNLinesLegend(values = colorPalette, title = colorLab) +
-				if(!is.null(shapeVar))	getNLinesLegend(values = shapePalette, title = shapeLab) +
-				# 1 line to separate the two legends if color and shape are specified and different
-				# (ggplot will create separate legend if the title differ)
-				if(!is.null(colorVar) & !is.null(shapeVar) && (colorVar != shapeVar || colorLab != shapeLab))	1
-				
+				if(!is.null(colorVar) & !is.null(shapeVar)){
+					# one legend (ggplot will create separate legend if the title differ)
+					if(colorVar == shapeVar && !is.null(colorLab) & !is.null(shapeLab) && shapeLab == colorLab){
+						nLinesLegendColor 
+					# two legends
+					}else{
+						# 1 line to separate the two legends if color and shape are specified and different
+						nLinesLegendColor + nLinesLegendShape + 1
+					}
+				}else	if(!is.null(colorVar)){
+					nLinesLegendColor
+				}else	if(!is.null(shapeVar)){
+					nLinesLegendShape
+				}else	0
+			
 			nLinesPlot <- max(sum(nLinesPlot), nLinesLegend)	
 			
 			# in title and axes

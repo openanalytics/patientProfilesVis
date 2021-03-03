@@ -142,7 +142,7 @@ getNLinesLegend <- function(gg, values, data, var, title){
 					grobLegendI <- grobLegend$grobs[[i]]
 					idxLegendILabels <- grep("^label", grobLegendI$layout$name)
 					nLinesLegendILabels <- n_distinct(grobLegendI$layout[idxLegendILabels, "t"])
-					nLinesLegendILabels <- nLinesLegendILabels + 0.8 * nLinesLegendILabels
+					nLinesLegendILabels <- nLinesLegendILabels + 0.8 * (nLinesLegendILabels -1)
 					nLinesLegendITitle <- sum(grobLegendI$layout$name == "title")
 					nLinesLegendILabels + nLinesLegendITitle
 				}, FUN.VALUE = numeric(1))
