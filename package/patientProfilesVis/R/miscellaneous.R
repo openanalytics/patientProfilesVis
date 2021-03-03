@@ -115,13 +115,12 @@ getNLinesSubjectProfile <- function(gg){
 #' and title (\code{legendTitle})
 #' @param gg \code{\link[ggplot2]{ggplot2}} object
 #' @param values Vector with unique legend values
-#' @param var Character vector with variable in legend.
 #' @inheritParams patientProfilesVis-common-args
 #' @return integer with (approximated) number of lines
 #' @author Laure Cougnaud
 #' @importFrom ggplot2 ggplot_gtable ggplot_build
 #' @importFrom dplyr n_distinct
-getNLinesLegend <- function(gg, values, data, var, title){
+getNLinesLegend <- function(gg, values, title){
 	
 	if(!missing(gg)){
 	
@@ -157,15 +156,6 @@ getNLinesLegend <- function(gg, values, data, var, title){
 	}else	if(!missing(values)){
 		
 		nLinesLegendTotal <- sum(countNLines(values)) + 0.8*(length(values)-1)
-		
-	}else	if(!missing(data) & !missing(var)){
-		
-		elLegendList <- lapply(var, function(varI){
-			x <- data[, varI]
-			values <- if(is.factor(x))	levels(x)	else unique(x)
-		})
-		elLegend <- unique(do.call(c, elLegendList))
-		nLinesLegendTotal <- getNLinesLegend(values = elLegend)	
 		
 	}else	stop("Legend values via 'values' or a ggplot2 object via 'gg' should be specified.")
 	
