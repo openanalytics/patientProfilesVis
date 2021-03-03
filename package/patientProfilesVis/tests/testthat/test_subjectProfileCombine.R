@@ -309,9 +309,7 @@ test_that("the height of the combined subject profile is restricted to a number 
 	)
 	listPlots <- subjectProfileTextPlot(
 		data = data,
-		paramValueVar = "AEDECOD",
-		table = TRUE,
-		paging = TRUE
+		paramValueVar = "AEDECOD"
 	)
 	listPlots <- replicate(10, listPlots, simplify = FALSE)	
 	names(listPlots) <- as.character(seq_len(10))
