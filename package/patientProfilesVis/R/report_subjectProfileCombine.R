@@ -9,7 +9,10 @@
 #' \item{the time axis is transformed if any of the
 #' plot was created with a time transformation}
 #' \item{the time axis is expanded for all plots 
-#' if any of the plot was created with a time axis expanded}
+#' if any of the plot was created with a time axis expanded.\cr
+#' The \code{\link[ggplot2]{expansion}} object for
+#' the combined plot is created 
+#' from the max of each expansion element across modules.}
 #' }
 #' If some plots are missing for a specific subject,
 #' an empty plot is created, containing information
