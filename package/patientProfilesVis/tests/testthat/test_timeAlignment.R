@@ -376,3 +376,29 @@ test_that("warning if module to align is not available", {
 	)
 			
 })
+
+test_that("warning if module to align per subject not specified among modules to align", {
+			
+	data <- data.frame(
+		TEST = "1",
+		DY = c(1, 2),
+		USUBJID = c("1", "2")
+	)
+	listPlots <- subjectProfileEventPlot(
+		data = data,
+		paramVar = "TEST",
+		timeVar = "DY"
+	)
+	listPlots <- replicate(2, listPlots, simplify = FALSE)
+	names(listPlots) <- c("A", "B")
+			
+	expect_warning(
+		timeLim <- patientProfilesVis:::getTimeLimSubjectProfilePlots(
+			listPlots = listPlots,
+			timeAlign = "A",
+			timeAlignPerSubject = "B"
+		),
+		"B.*not.*available.*modules to align"
+	)
+			
+})
