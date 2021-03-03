@@ -330,3 +330,36 @@ test_that("the height of the combined subject profile is restricted to a number 
 	expect_gte(length(listPlotsSubj[["1"]]), 1)
 			
 })
+
+test_that("reference lines are set from specified dataset without errors", {
+			
+	data <- data.frame(
+		TEST = seq(3),
+		DY = c(1, 2, 3),
+		USUBJID = "1"
+	) 		
+	listPlots <- subjectProfileEventPlot(
+		data = data,
+		timeVar = "DY",
+		paramVar = "TEST"
+	)
+	listPlots <- list(A = listPlots)
+			
+	dataVS <- data.frame(
+		DY = c(1, 2),
+		visitName = c("First Visit", "Last Visit"),
+		USUBJID = "1"
+	)
+	
+	expect_silent(
+		listPlotsSubj <- subjectProfileCombine(
+			listPlots = listPlots,
+			refLinesData = dataVS,
+			refLinesTimeVar = "DY",
+			refLinesLabelVar = "visitName"
+		)
+	)
+	
+	# to add: check that labels are present in the output
+			
+})
