@@ -507,6 +507,35 @@ test_that("label is specified", {
 			
 })
 
+test_that("variables are too long to fit in one table column", {
+
+	data <- data.frame(
+		AEDECOD = paste(sample(LETTERS, 500, replace = TRUE), collapse = " "),
+		USUBJID = "1"
+	)
+
+	listPlots <- subjectProfileTextPlot(
+		data = data,
+		paramValueVar = "AEDECOD",
+		table = TRUE
+	)
+	
+	gg <- listPlots[["1"]][[1]]
+	isGeomTable <- sapply(gg$layers, function(l) inherits(l$geom, "GeomCustomAnn"))
+	
+	# table is defined as gtable
+	gTable <- layer_grob(gg, which(isGeomTable))[[1]]
+	gTable <- gtable::gtable_filter(gTable, "fg")# filter background(=bg) elements
+	gTableLabels <- sapply(gTable$grobs, "[[", "label") # plot labels
+	
+	# remove table header with variable name:
+	gTableLabelsCnt <- setdiff(gTableLabels, "AEDECOD")
+	
+	# check that values span multiple lines
+	expect_match(gTableLabelsCnt, regexp = "\n", fixed = TRUE)
+			
+})
+
 test_that("visualization spans multiple pages", {
 			
 	data <- data.frame(
