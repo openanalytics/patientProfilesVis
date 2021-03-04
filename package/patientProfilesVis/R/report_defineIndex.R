@@ -3,7 +3,7 @@
 #' @param subjects vector with subject IDs (based on the \code{subjectVar} variable)
 #' @param data data.frame with data containing information on which the index should be based
 #' @param var variable(s) of \code{data} of interest for the index
-#' @inheritParams subjectProfileIntervalPlot
+#' @inheritParams patientProfilesVis-common-args
 #' @return list with elements:
 #' \itemize{
 #' \item{'indexDef':}{string with LaTeX code for creation of index, 

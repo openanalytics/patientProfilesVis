@@ -21,7 +21,7 @@ checkVar <- function(var, data){
 #' Filter missing records in data in the time and y variables,
 #' with informative message.
 #' @param var String with variable of interest.
-#' @param yLab Label for the variable.
+#' @param varLab String, label for \code{var}.
 #' @inheritParams patientProfilesVis-common-args
 #' @return Update data with filtered records +
 #' message in the console.
@@ -242,8 +242,6 @@ countNLines <- function(x){
 #' 'y': the variable is displayed in the x-axis or 
 #' 'panel': the variable is displayed as separated facets.
 #' This is used to compute height for each line of the plot.
-#' @param formatReport list with parameters used to specify the format of the report,
-#' e.g. output of the \code{\link{subjectProfileReportFormat}} function
 #' @param title logical, has the plot a title?
 #' @param xLab logical, has the plot a label for the x-axis?
 #' @param caption logical, has the plot a caption?
@@ -256,6 +254,7 @@ countNLines <- function(x){
 #' \cr
 #' If FALSE, the entire plot is included in one single page.
 #' @inheritParams formatParamVarTextPlot
+#' @inheritParams patientProfilesVis-common-args
 #' @return input \code{data} with additional column 'pagePlot'
 #' containing the page for the plot
 #' @author Laure Cougnaud
@@ -472,8 +471,8 @@ interactionWithMissing <- function(data, vars, varSep = " - "){
 #' If not specified, column width is optimized
 #' based on the max length of the character in each column.
 #' @inheritParams glpgUtilityFct::formatVarForPlotLabel
-#' @inheritParams getPageVar
 #' @inheritParams getOptimalColWidth
+#' @inheritParams patientProfilesVis-common-args
 #' @return \code{data} with reformatted \code{paramVar} and \code{paramValueVar} variables,
 #' with additional attribute: \code{colWidth}.
 #' @importFrom glpgUtilityFct formatVarForPlotLabel
@@ -554,7 +553,7 @@ formatParamVarTextPlot <- function(data,
 #' @param data Data.frame with columns for which optimal width should be extracted.
 #' @param labels (optional) Character vector with column labels for \code{data}.
 #' @param widthValue max number of characters in the code{paramValueVar} parameter.
-#' @inheritParams getPageVar
+#' @inheritParams patientProfilesVis-common-args
 #' @return Numeric vector of \code{length(ncol(data))} with optimal widths.
 #' @importFrom stats median
 #' @importFrom plyr colwise

@@ -4,6 +4,8 @@
 #' are automatically split in multiple pages.
 #' The margins are extracted across plots to ensure that plots will
 #' be probably aligned.
+#' @param listPlots listPlots per subject as created inside the
+#' \code{\link{subjectProfileCombine}} function.
 #' @param maxNLines Maximum number of lines for a combined plot,
 #' to fit in the page height. \cr
 #' When the different visualizations

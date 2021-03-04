@@ -63,6 +63,34 @@ is displayed in the labels of the y-axis.}
 of \code{data} based on which the data will be grouped and sorted 
 (in the y-axis) in the plot.}
 
+\item{subsetData}{(optional) Data.frame with extra dataset to filter on.
+This dataset is filtered, and only records from \code{data} 
+with common subject IDs will be retained.\cr
+If not specified, \code{data} is used.}
+
+\item{subsetVar}{(optional) String with variable of subset data to filter on.
+\code{subsetValue} should be specified too.\cr
+If not specified, all records from the subset data are retained.}
+
+\item{subsetValue}{(optional) Character vector with value(s) of interest to
+retain in the filtered data.
+These values should be available in \code{subsetVar}.\cr
+Missing values in the subject variable are not retained 
+in the filtered data.}
+
+\item{subjectVar}{String, variable of \code{data} with subject ID}
+
+\item{subjectSubset}{(optional) Character vector with subjects of interest 
+(available in \code{subjectVar}), NULL by default.}
+
+\item{subjectSample}{(optional) Integer of length 1
+with number of random subject(s) that should be considered,
+e.g. to check the created patient profiles for a subset of the data.
+By default, all specified subjects are considered (set to NULL).}
+
+\item{seed}{(optional) Integer of length 1 with seed used to select random subjects 
+if \code{subjectSample} is specified (123 by default).}
+
 \item{xLab}{String, label for the x-axis.}
 
 \item{yLab}{String, label for the y-axis.}
@@ -76,12 +104,24 @@ This label is displayed in the final profile
 report, in case no data is available for
 for a specific patient, as: 'No [label] available.'}
 
+\item{labelVars}{Named character vector with variable labels 
+(names are the variable code)}
+
 \item{paramVarSep}{String (' - ' by default) 
 with character(s) used to concatenate multiple 
 variables for the same record in the plot area.}
 
 \item{formatReport}{list with parameters used to specify the format of the report,
 e.g. output of the \code{\link{subjectProfileReportFormat}} function}
+
+\item{paging}{Logical, if TRUE (by default), automatic 
+paging is enabled, so patient profiles module too big to fit
+in one page will span multiple pages.
+Please note that the size of the graphic window 
+(or report page) may need
+to be re-sized in order that the plot fits.
+\cr
+If FALSE, the entire plot is included in one single page.}
 
 \item{table}{Logical, if TRUE (FALSE by default) the information
 contained in the variables: \code{paramValueVar} is displayed as a table. 

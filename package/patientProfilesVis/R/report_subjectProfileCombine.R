@@ -156,7 +156,7 @@ subjectProfileCombine <- function(
 #' named by module. If NULL, no transformation are done.
 #' @param ... list of subject profiles (across modules)
 #' @param labels string with labels for the plots
-#' @inheritParams subjectProfileIntervalPlot
+#' @inheritParams patientProfilesVis-common-args
 #' @inheritParams addReferenceLinesProfilePlot
 #' @return \code{subjectProfilePlot} object, containing the combined
 #' profile plots

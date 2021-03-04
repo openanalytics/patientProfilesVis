@@ -66,8 +66,9 @@ with parameters. Variable content is displayed in the y-axis.}
 with label for the parameter variable(s) (\code{paramVar}).\cr
 This is used to set the default title.}
 
-\item{paramGroupVar}{(optional) character vector with variable(s) of \code{data} with grouping.
-If specified, the parameters will be grouped by this(these) variable(s) in the y-axis.}
+\item{paramGroupVar}{(optional) Character vector with variable(s) 
+of \code{data} based on which the data will be grouped and sorted 
+(in the y-axis) in the plot.}
 
 \item{timeStartVar}{String, variable of \code{data} 
 with start of time interval.}
@@ -81,12 +82,14 @@ with end of time interval.}
 \item{timeEndLab}{String, label for \code{timeEndVar},
 displayed in a message and in the plot caption.}
 
+\item{timeLabel}{This parameter is deprecated, use \code{timeLab} instead.}
+
 \item{timeLab}{String, label for \code{timeVar}.
 This is used in the message
 indicating missing values for \code{timeVar},
 and for the default label of the x-axis.}
 
-\item{subjectVar}{String, variable of data (and subset data) with subject ID.}
+\item{subjectVar}{String, variable of \code{data} with subject ID}
 
 \item{subjectSubset}{(optional) Character vector with subjects of interest 
 (available in \code{subjectVar}), NULL by default.}

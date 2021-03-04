@@ -24,7 +24,7 @@ formatTimeInterval(
 )
 }
 \arguments{
-\item{data}{Data.frame with data}
+\item{data}{Data.frame with data.}
 
 \item{timeStartVar}{String, variable of \code{data} 
 with start of time interval.}
@@ -50,7 +50,13 @@ displayed at the end of the time interval.
 If not specified, default shape palette is used,
 see section 'Time interval representation'.}
 
-\item{subjectVar}{String, variable of data (and subset data) with subject ID.}
+\item{subjectVar}{String, variable of \code{data} with subject ID}
+
+\item{timeLim}{(optional) Vector of length 2 with time limits (x-axis).
+If not specified, these are extracted from the minimum \code{timeStartVar} 
+and maximum \code{timeEndVar} per subject.\cr
+The time limits are stored as attributes of the plots,
+used to align the plots in the final report.}
 
 \item{timeLimData}{Data.frame with data used to impute time
 in case some time records are missing in \code{data}, 
@@ -75,11 +81,6 @@ specified.}
 
 \item{labelVars}{Named character vector with variable labels 
 (names are the variable code)}
-
-\item{timeLab}{String, label for \code{timeVar}.
-This is used in the message
-indicating missing values for \code{timeVar},
-and for the default label of the x-axis.}
 }
 \value{
 list with:

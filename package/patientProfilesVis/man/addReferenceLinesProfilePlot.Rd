@@ -22,7 +22,7 @@ addReferenceLinesProfilePlot(
 a subject profile plot for a specific subject (and page)
 (subset of the output of the \code{subjectProfile[X]Plot})}
 
-\item{subjectVar}{String, variable of data (and subset data) with subject ID.}
+\item{subjectVar}{String, variable of \code{data} with subject ID}
 
 \item{refLines}{(optional) nested list with details for reference line(s).
 Each sublist contains:

@@ -115,7 +115,7 @@ variable(s) of \code{subjectSortData} indicating the order for the subjects in t
 \item{subjectSortDecreasing}{Logical, if TRUE (FALSE by default)
 subjects are sorted based on decreasing order of \code{subjectSortVar}.}
 
-\item{subjectVar}{String, variable of data (and subset data) with subject ID.}
+\item{subjectVar}{String, variable of \code{data} with subject ID}
 
 \item{subjectSubset}{subjectSubset (optional) Character vector with subjects of interest 
 (available in \code{subjectVar}), NULL by default.}

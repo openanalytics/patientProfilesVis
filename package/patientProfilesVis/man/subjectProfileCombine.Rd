@@ -22,7 +22,8 @@ subjectProfileCombine(
 )
 }
 \arguments{
-\item{listPlots}{list of list of \code{subjectProfile[X]Plot} plots}
+\item{listPlots}{listPlots per subject as created inside the
+\code{\link{subjectProfileCombine}} function.}
 
 \item{timeLim}{time limits, as returned by the
 \code{\link{getTimeLimSubjectProfilePlots}} function.}
@@ -49,7 +50,7 @@ have the same time limit across subjects}
 Only the modules already specified in \code{timeAlign}
 can be aligned by subject.}
 
-\item{subjectVar}{String, variable of data (and subset data) with subject ID.}
+\item{subjectVar}{String, variable of \code{data} with subject ID}
 
 \item{maxNLines}{Maximum number of lines for a combined plot,
 to fit in the page height. \cr
