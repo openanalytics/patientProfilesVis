@@ -53,8 +53,9 @@ This is used to set the default title.}
 \item{paramVarSep}{string with character(s) used to concatenate multiple 
 \code{paramVar}, ' - ' by default.}
 
-\item{paramGroupVar}{(optional) character vector with variable(s) of \code{data} with grouping.
-If specified, the parameters will be grouped by this(these) variable(s) in the y-axis.}
+\item{paramGroupVar}{(optional) Character vector with variable(s) 
+of \code{data} based on which the data will be grouped and sorted 
+(in the y-axis) in the plot.}
 
 \item{colorVar}{String, variable of \code{data} with color.
 This variable is used
@@ -66,12 +67,23 @@ for the colors and the filling of the points.}
 The variable should be named with the corresponding element
 in \code{colorVar}.}
 
-\item{shapeLab}{String with label for \code{timeStartShapeVar}\code{timeEndShapeVar}}
+\item{shapeVar}{String, variable of \code{data} for shape of the points.
+By default, same as \code{colorVar}.}
 
-\item{shapePalette}{Named vector with (combined) shape palette for 
-\code{timeStartShapeVar}\code{timeEndShapeVar}.}
+\item{shapeLab}{String, label for \code{shapeVar}.
+Set by default to \code{colorLab} if \code{colorVar}
+but not \code{shapeVar} is not specified.}
+
+\item{shapePalette}{Named character vector with shape palette
+for \code{shapeVar}.
+The variable should be named with the corresponding element
+in \code{shapeVar}.}
 
 \item{alpha}{Numeric with transparency, 1 by default.}
+
+\item{timeVar}{String, variable of \code{data} with time,
+displayed in the x axis.\cr
+Records with missing time are not displayed in the plot.}
 
 \item{timeLab}{String, label for \code{timeVar}.
 This is used in the message
@@ -86,7 +98,7 @@ For example, produced by the \code{\link{getTimeTrans}} function.}
 \item{timeExpand}{Vector of range expansion constants for the time axis
 (see \code{expand} parameter in \code{\link[ggplot2]{scale_x_continuous}}).}
 
-\item{subjectVar}{String, variable of data (and subset data) with subject ID.}
+\item{subjectVar}{String, variable of \code{data} with subject ID}
 
 \item{subjectSubset}{(optional) Character vector with subjects of interest 
 (available in \code{subjectVar}), NULL by default.}

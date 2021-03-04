@@ -34,7 +34,9 @@
 #' @param shapeSize Size for the symbols, any integer or 
 #' object supported by \code{size} in \code{\link[ggplot2]{geom_point}}.
 #' @param title String with title, label of the parameter value variable by default.
-#' @inheritParams subjectProfileIntervalPlot
+#' @inheritParams patientProfilesVis-common-args
+#' @inheritParams filterData
+#' @inheritParams getPageVar
 #' @return List of (across subjects) of list (across modules) 
 #' of \code{\link[ggplot2]{ggplot2} objects}, 
 #' also of class \code{subjectProfileLinePlot}.

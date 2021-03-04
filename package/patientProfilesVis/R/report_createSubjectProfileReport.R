@@ -56,9 +56,10 @@
 #' This might speed up the export for a high number of subjects.
 #' Only available if report is created by subject (\code{reportPerSubject} is TRUE)
 #' and modules are not aligned across subjects (\code{timeAlignPerSubject} is: 'all').
+#' @inheritParams patientProfilesVis-common-args
 #' @inheritParams subjectProfileCombine
-#' @inheritParams subjectProfileIntervalPlot
 #' @inheritParams subjectProfileExport
+#' @inheritParams filterData
 #' @return The path(s) of the report(s) is returned invisibly, and the
 #' report is created at the location
 #' specified by \code{outputFile}.\cr
@@ -307,7 +308,6 @@ createSubjectProfileReport <- function(
 
 #' Sort subjects based on a specified dataset/variable.
 #' @param subjects Character vector with subjects of interest
-#' @param subjectVar String, variable of \code{data} with subject ID
 #' @param subjectSortData Data.frame with data containing information on how the subjects 
 #' should be sorted.
 #' @param subjectSortVar Variable(s) of \code{subjectSortData} 
@@ -315,6 +315,7 @@ createSubjectProfileReport <- function(
 #' @param subjectSortDecreasing Logical, if TRUE (FALSE by default)
 #' subjects are sorted based on inverse order of \code{subjectSortVar}.
 #' @param verbose logical, if TRUE print messages during execution
+#' @inheritParams patientProfilesVis-common-args
 #' @return Updated \code{subjects}
 #' @author Laure Cougnaud
 sortSubjects <- function(
@@ -364,7 +365,7 @@ sortSubjects <- function(
 #' @return No returned value, the plots are exported to \code{outputDir}
 #' @inheritParams defineIndex
 #' @inheritParams subjectProfileCombine 
-#' @inheritParams subjectProfileIntervalPlot
+#' @inheritParams patientProfilesVis-common-args
 #' @importFrom tools texi2pdf file_path_sans_ext
 #' @importFrom knitr knit knit_patterns knit_hooks pat_rnw render_sweave
 #' @author Laure Cougnaud

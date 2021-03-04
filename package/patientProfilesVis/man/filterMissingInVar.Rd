@@ -17,7 +17,10 @@ filterMissingInVar(
 
 \item{var}{String with variable of interest.}
 
-\item{yLab}{Label for the variable.}
+\item{varLab}{String, label for \code{var}.}
+
+\item{labelVars}{Named character vector with variable labels 
+(names are the variable code)}
 }
 \value{
 Update data with filtered records +

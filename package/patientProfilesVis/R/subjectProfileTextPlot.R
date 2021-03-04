@@ -52,9 +52,6 @@
 #' @param paramNameVar (optional) Character vector of length 1 with
 #' variable of \code{data} with parameter name. This
 #' is displayed in the labels of the y-axis.
-#' @param paramGroupVar (optional) Character vector with variable(s) 
-#' of \code{data} based on which the data will be grouped and sorted 
-#' (in the y-axis) in the plot.
 #' @param paramVarSep String (' - ' by default) 
 #' with character(s) used to concatenate multiple 
 #' variables for the same record in the plot area.
@@ -63,7 +60,9 @@
 #' Otherwise, the values of the different variables are concatenated in the same line.
 #' @param title String with title, 'Subject information' by default.
 #' @inheritParams patientProfilesVis-common-args
+#' @inheritParams filterData
 #' @inheritParams formatParamVarTextPlot
+#' @inheritParams getPageVar
 #' @return list of (across subjects) of list (across modules) of \code{\link[ggplot2]{ggplot2} objects}, 
 #' also of class \code{subjectProfileTextPlot}, with additional \code{metaData} 
 #' attributes containing
@@ -145,7 +144,7 @@ subjectProfileTextPlot <- function(
 			dataToTransform <- unique(data[, unique(c(subjectVar, paramValueVar)), drop = FALSE])
 			# to avoid warning in 'melt': 
 			# - 'attributes are not identical across measure variables; they will be dropped'
-			if(!is.null(var))
+			if(!is.null(paramValueVar))
 				dataToTransform[, paramValueVar] <- lapply(
 					dataToTransform[, paramValueVar, drop = FALSE], 
 					as.character

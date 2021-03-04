@@ -14,6 +14,9 @@
 #' for \code{shapeVar}.
 #' The variable should be named with the corresponding element
 #' in \code{shapeVar}.
+#' @param paramGroupVar (optional) Character vector with variable(s) 
+#' of \code{data} based on which the data will be grouped and sorted 
+#' (in the y-axis) in the plot.
 #' @param xLab String, label for the x-axis.
 #' @param yLab String, label for the y-axis.
 #' @param label String, label for the visualization.
@@ -52,5 +55,13 @@
 #' so nested by subject and page.
 #' The names of the list should be unique, and
 #' are used 
+#' @param alpha Numeric with transparency, 1 by default.
+#' @param labelVars Named character vector with variable labels 
+#' (names are the variable code)
+#' @param subjectVar String, variable of \code{data} with subject ID
+#' @param formatReport list with parameters used to specify the format of the report,
+#' e.g. output of the \code{\link{subjectProfileReportFormat}} function
+#' @param paramVarSep string with character(s) used to concatenate multiple 
+#' \code{paramVar}, ' - ' by default.
 #' @name patientProfilesVis-common-args
 NULL

@@ -1,8 +1,6 @@
 #' Visualize time interval in subject profiles,
 #' so event with a start and end time.
 #' @inheritSection formatTimeInterval Time interval representation
-#' @param paramVarSep string with character(s) used to concatenate multiple 
-#' \code{paramVar}, ' - ' by default.
 #' @param colorVar String, variable of \code{data} with color,
 #' used both for the point(s) and segment(s).
 #' @param shapePalette Named vector with (combined) shape palette for 
@@ -14,8 +12,8 @@
 #' If set to FALSE, each plot has its own time-limits.\cr
 #' If set to FALSE, this is not compatible with 
 #' the specification of \code{timeLim}.
-#' @param alpha Numeric with transparency, 1 by default.
 #' @param title String with title, label of the parameter variable by default.
+#' @param timeLabel This parameter is deprecated, use \code{timeLab} instead.
 #' @inheritParams patientProfilesVis-common-args
 #' @inheritParams filterData
 #' @inheritParams glpgUtilityFct::formatVarForPlotLabel
@@ -391,10 +389,6 @@ subjectProfileIntervalPlot <- function(
 #' displayed at the end of the time interval.
 #' If not specified, default shape palette is used,
 #' see section 'Time interval representation'.
-#' @param timeLab String, label for \code{timeVar}.
-#' This is used in the message
-#' indicating missing values for \code{timeVar},
-#' and for the default label of the x-axis.
 #' @param timeStartLab String, label for \code{timeStartVar},
 #' displayed in a message and in the plot caption.
 #' @param timeEndLab String, label for \code{timeEndVar},
@@ -414,9 +408,8 @@ subjectProfileIntervalPlot <- function(
 #' 'data-based' or 'none', see section: 'Time interval representation'.\cr
 #' This imputation type is not used if a dataset used to impute time is 
 #' specified.
-#' @param labelVars Named character vector with variable labels 
-#' (names are the variable code)
-#' @inheritParams filterData
+#' @inheritParams patientProfilesVis-common-args
+#' @inheritParams getPageVar
 #' @return list with:
 #' \itemize{
 #' \item{'data': }{Data with:

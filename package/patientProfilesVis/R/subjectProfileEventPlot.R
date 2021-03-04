@@ -4,7 +4,9 @@
 #' This variable is used
 #' for the colors and the filling of the points.
 #' @param title String with title, label of the parameter variable by default.
-#' @inheritParams subjectProfileIntervalPlot
+#' @inheritParams patientProfilesVis-common-args
+#' @inheritParams filterData
+#' @inheritParams getPageVar
 #' @return list of (across subjects) of list (across modules) of \code{\link[ggplot2]{ggplot2} objects}, 
 #' also of class \code{subjectProfileEventPlot}, with additional metaData attributes containing
 #' '\code{label}', 'timeLim' and 'timeTrans' (if specified).

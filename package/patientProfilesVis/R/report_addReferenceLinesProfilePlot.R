@@ -21,7 +21,7 @@
 #' @param timeLim vector of length 2 with time limits.
 #' This is used to set the limits to the plot
 #' containing the reference lines labels (if requested).
-#' @inheritParams subjectProfileIntervalPlot
+#' @inheritParams patientProfilesVis-common-args
 #' @return 
 #' If \code{addLabel} is:
 #' \itemize{ 

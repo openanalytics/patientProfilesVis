@@ -14,6 +14,9 @@ combineVerticallyGGplot(
 )
 }
 \arguments{
+\item{listPlots}{listPlots per subject as created inside the
+\code{\link{subjectProfileCombine}} function.}
+
 \item{maxNLines}{Maximum number of lines for a combined plot,
 to fit in the page height. \cr
 When the different visualizations

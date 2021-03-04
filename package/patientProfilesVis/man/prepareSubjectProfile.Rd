@@ -42,7 +42,7 @@ Each sublist contains:
 
 \item{refLinesLabelVar}{string, variable of \code{refLinesData} with label for reference line(s)}
 
-\item{subjectVar}{String, variable of data (and subset data) with subject ID.}
+\item{subjectVar}{String, variable of \code{data} with subject ID}
 
 \item{timeTrans}{Time transformation, or list of such transformation
 named by module. If NULL, no transformation are done.}
