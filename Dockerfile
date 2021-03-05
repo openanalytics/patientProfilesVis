@@ -20,6 +20,8 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
 	libpoppler-cpp-dev \
 # for flextable/systemfonts
     libfontconfig1-dev \
+# for flextable/gdtools
+    libcairo2-dev \
 # for glpgUtilityFct (png pkg):
 	libpng-dev \
     && rm -rf /var/lib/apt/lists/*
