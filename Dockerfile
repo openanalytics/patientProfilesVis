@@ -18,6 +18,8 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     libjpeg-dev \    
 # for pdftools
 	libpoppler-cpp-dev \
+# for flextable/systemfonts
+    libfontconfig1-dev \
 # for glpgUtilityFct (png pkg):
 	libpng-dev \
     && rm -rf /var/lib/apt/lists/*
