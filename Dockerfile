@@ -18,6 +18,8 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     libjpeg-dev \    
 # for pdftools
 	libpoppler-cpp-dev \
+# for glpgUtilityFct (png pkg):
+	libpng-dev \
     && rm -rf /var/lib/apt/lists/*
 
 RUN R -e "cat(\"local(options(repos = c(CRAN = 'https://cloud.r-project.org')))\n\", file = R.home('etc/Rprofile.site'), append = TRUE)"
