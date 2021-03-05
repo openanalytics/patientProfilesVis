@@ -5,13 +5,10 @@ pipeline {
     }
     environment {
         IMAGE = 'glpgpatientprofiles'
-        NS = 'oa'
+        NS = 'glpgpatientprofiles'
         REG = '196229073436.dkr.ecr.eu-west-1.amazonaws.com'
         TAG = sh(returnStdout: true, script: "echo $BRANCH_NAME | sed -e 's/[A-Z]/\\L&/g' -e 's/[^a-z0-9._-]/./g'").trim()
         DOCKER_BUILDKIT = '1'
-        CI = 'jenkins'
-        NOT_CRAN = 'true'
-        VDIFFR_RUN_TESTS = 'true'
     }
     stages {
         stage('Build Image') {
@@ -25,22 +22,16 @@ pipeline {
                       - name: dind
                         image: 196229073436.dkr.ecr.eu-west-1.amazonaws.com/oa-infrastructure/dind
                         securityContext:
-                          privileged: true
-                        resources:
-                            requests: 
-                                memory: "1024Mi"
-                            limits:
-                                memory: "1536Mi"
-                    '''
+                          privileged: true'''
                     defaultContainer 'dind'
                 }
             }
             steps {
-            	  copyArtifacts filter: '*.tar.gz', fingerprintArtifacts: true, projectName: 'git/glpgStyle/master', selector: lastSuccessful()
+				copyArtifacts filter: '*.tar.gz', fingerprintArtifacts: true, projectName: 'git/glpgStyle/master', selector: lastSuccessful()
                 copyArtifacts filter: '*.tar.gz', fingerprintArtifacts: true, projectName: 'git/GLPGUtilityFct/master', selector: lastSuccessful()   
                 withOARegistry {
-                	sh "docker build --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from ${env.REG}/${env.NS}/${env.IMAGE}:${env.TAG} --cache-from ${env.REG}/${env.NS}/${env.IMAGE}:master -t ${env.NS}/${env.IMAGE}:${env.TAG} -f Dockerfile.build ."
-                 }
+                    sh "docker build --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from ${env.REG}/${env.NS}/${env.IMAGE}:${env.TAG} --cache-from ${env.REG}/${env.NS}/${env.IMAGE}:master -t ${env.NS}/${env.IMAGE}:${env.TAG} -f Dockerfile ."
+                }
                 ecrPush "${env.REG}", "${env.NS}/${env.IMAGE}", "${env.TAG}", '', 'eu-west-1'
             }
         }
@@ -66,7 +57,7 @@ pipeline {
                     stages {
                         stage('Roxygen') {
                             steps {
-                                sh 'R -q -e \'roxygen2::roxygenize("package/patientProfilesVis", load = "source")\''
+                                sh 'R -q -e \'roxygen2::roxygenize("package/patientProfilesVis")\''
                             }
                         }
                         stage('Build') {
@@ -86,14 +77,14 @@ pipeline {
                         }
                         stage('Test and coverage') {
                             steps {
-                              sh '''
+                           	  sh '''
                                 R -q -e \'
                                 pc <- covr::package_coverage("package/patientProfilesVis", type = "none", code = "testthat::test_package(\\"patientProfilesVis\\", reporter = testthat::JunitReporter$new(file = file.path(Sys.getenv(\\"WORKSPACE\\"), \\"results.xml\\")))");
                                 covr::report(x = pc, file = paste0("testCoverage-", attr(pc, "package")$package, "-", attr(pc, "package")$version, ".html"))
                                 covr::to_cobertura(pc)
                                 \'
                                 zip -r testCoverage.zip lib/ testCoverage*.html
-                                '''
+                                '''                            
                             }
                             post {
                                 always {
@@ -106,7 +97,7 @@ pipeline {
                 }
                 stage('Archive artifacts') {
                     steps {
-                        archiveArtifacts artifacts: '*.tar.gz, *.pdf, **/00check.log, *.Rout, **/vdiffr.Rout.fail, testCoverage.zip', fingerprint: true
+                        archiveArtifacts artifacts: '*.tar.gz, *.pdf, **/00check.log, testCoverage.zip', fingerprint: true
                     }
                 }
             }
