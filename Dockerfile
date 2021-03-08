@@ -5,6 +5,12 @@
 FROM openanalytics/r-ver:3.6.1
 
 # System libraries (incl. system requirements for R packages)
+
+RUN apt-get update
+RUN apt-get install -y software-properties-common
+# for libpoppler >= 0.71
+RUN add-apt-repository ppa:cran/poppler
+
 RUN apt-get update && apt-get install --no-install-recommends -y \
     libssl-dev \
     pandoc pandoc-citeproc \
