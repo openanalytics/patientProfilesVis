@@ -47,7 +47,6 @@
 #' @author Laure Cougnaud
 #' @family patient profiles plotting function
 #' @import ggplot2
-#' @importFrom glpgStyle glpgColor
 #' @importFrom plyr dlply
 #' @importFrom glpgUtilityFct getLabelVar formatVarForPlotLabel
 #' @export
@@ -55,7 +54,7 @@ subjectProfileLinePlot <- function(
 	data,
 	paramValueVar, paramLab = getLabelVar(paramValueVar, labelVars = labelVars),
 	paramNameVar = NULL, paramVarSep = " - ",
-	paramValueRangeVar = NULL, colorValueRange = unname(glpgColor("extra")["lightGreen"]),
+	paramValueRangeVar = NULL, colorValueRange = "lightgreen",
 	yLimFrom = c("all", "value"),
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
 	colorPalette = NULL,
@@ -132,11 +131,11 @@ subjectProfileLinePlot <- function(
 	# convert aesthetic variables to factor
 	if(!is.null(colorVar)){
 		data[, colorVar] <- convertAesVar(data, colorVar)
-		if(is.null(colorPalette))	colorPalette <- getGLPGColorPalettePatientProfile(x = data[, colorVar])
-	}else	colorPalette <- getGLPGColorPalettePatientProfile(n = 1)
+		if(is.null(colorPalette))	colorPalette <- getColorPalettePatientProfile(x = data[, colorVar])
+	}else	colorPalette <- getColorPalettePatientProfile(n = 1)
 	if(!is.null(shapeVar)){
 		data[, shapeVar] <- convertAesVar(data, var = shapeVar)
-		if(is.null(shapePalette))	shapePalette <- getGLPGShapePalettePatientProfile(x = data[, shapeVar])
+		if(is.null(shapePalette))	shapePalette <- getShapePalettePatientProfile(x = data[, shapeVar])
 	}
 	
 	timeLim <- formatTimeLim(

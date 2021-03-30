@@ -7,10 +7,28 @@ Author: Laure Cougnaud
 Maintainer: Laure Cougnaud <laure.cougnaud@openanalytics.eu>
 Description: Creation of report with customizable visualization 
   of patient profiles.
-Imports: ggplot2 (>= 3.0.0), plyr, cowplot, tools, reshape2, knitr, 
-  glpgStyle (>= 1.0.0), grid, dplyr, stringr, 
-  glpgUtilityFct (>= 0.24.0), parallel, gridExtra, scales
-Suggests: pander, shiny, testthat, grDevices, rmarkdown, gtable,
+Imports: 
+  ggplot2 (>= 3.0.0), 
+  plyr, 
+  cowplot, 
+  tools, 
+  reshape2, 
+  knitr, 
+  grid, 
+  dplyr, 
+  stringr, 
+  glpgUtilityFct (>= 0.24.0), 
+  parallel, 
+  gridExtra, 
+  scales,
+  viridisLite
+Suggests: 
+  pander, 
+  shiny, 
+  testthat, 
+  grDevices, 
+  rmarkdown, 
+  gtable,
   pdftools
 License: file LICENSE
 RoxygenNote: 7.1.1

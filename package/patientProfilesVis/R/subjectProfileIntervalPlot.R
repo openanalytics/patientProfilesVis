@@ -132,9 +132,9 @@ subjectProfileIntervalPlot <- function(
 	# convert color variable to factor
 	if(!is.null(colorVar)){
 		data[, colorVar] <- convertAesVar(data, colorVar)
-		if(is.null(colorPalette))	colorPalette <- getGLPGColorPalettePatientProfile(x = data[, colorVar])
+		if(is.null(colorPalette))	colorPalette <- getColorPalettePatientProfile(x = data[, colorVar])
 	}else{
-		if(is.null(colorPalette))	colorPalette <- getGLPGColorPalettePatientProfile(n = 1)
+		if(is.null(colorPalette))	colorPalette <- getColorPalettePatientProfile(n = 1)
 	}
 	
 	hasShapeVar <- !is.null(timeStartShapeVar) | !is.null(timeEndShapeVar)
@@ -145,7 +145,7 @@ subjectProfileIntervalPlot <- function(
 			data[, timeEndShapeVar] <- convertAesVar(data, timeEndShapeVar)
 		if(is.null(shapePalette)){
 			shapes <- unlist(lapply(data[, c(timeStartShapeVar, timeEndShapeVar)], levels))
-			shapePalette <- getGLPGShapePalettePatientProfile(x = shapes)
+			shapePalette <- getShapePalettePatientProfile(x = shapes)
 		}
 	}
 	if(is.null(timeStartShapeVar) | is.null(timeEndShapeVar))

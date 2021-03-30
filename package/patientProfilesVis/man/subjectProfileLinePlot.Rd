@@ -12,7 +12,7 @@ subjectProfileLinePlot(
   paramNameVar = NULL,
   paramVarSep = " - ",
   paramValueRangeVar = NULL,
-  colorValueRange = unname(glpgColor("extra")["lightGreen"]),
+  colorValueRange = "lightgreen",
   yLimFrom = c("all", "value"),
   colorVar = NULL,
   colorLab = getLabelVar(colorVar, labelVars = labelVars),

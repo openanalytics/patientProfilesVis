@@ -2,7 +2,7 @@
 title: "Introduction to the `patientProfilesVis` package"
 author: "Laure Cougnaud"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
-output: glpgStyle::html_report
+output: rmarkdown::html_document
 vignette: >
   %\VignetteIndexEntry{Introduction to the patientProfilesVis package}
   %\VignetteEngine{knitr::rmarkdown}
@@ -1017,32 +1017,31 @@ is not run during the vignette creation.
 ```{r createReportWithAllModules-referenceLinesFromSAP, eval = FALSE}
 
 	# reference lines input parameter
-	library(glpgStyle)
 	refLinesParam <- list(
 		list(
 			label = 'Start screening',
 			time = -28,
-			color = glpgPaletteCharts()["purple"]
+			color = "purple"
 		), 
 		list(
 			label = 'End screening',
 			time = -1,
-			color = glpgPaletteCharts()["purple"]
+			color = "purple"
 		), 
 		list(
 			label = 'Start treatment',
 			time = 1,
-			color = glpgPaletteCharts()["darkblue"]
+			color = "darkblue"
 		), 
 		list(
 			label = 'End treatment',
 			time = 29,
-			color = glpgPaletteCharts()["darkblue"]
+			color = "darkblue"
 		),
 		list(
 			label = 'Follow-up',
 			time = 49,
-			color = glpgPaletteCharts()["pink"]
+			color = "pink"
 		)
 	)
 

@@ -3,7 +3,7 @@ title: "Template to create patient profiles for SDTM datasets"
 subtitle: "Study: X, Batch X"
 author: "Laure Cougnaud"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
-output: glpgStyle::html_report
+output: rmarkdown::html_document
 vignette: >
   %\VignetteIndexEntry{SDTM template for patient profiles}
   %\VignetteEngine{knitr::rmarkdown}
@@ -53,7 +53,6 @@ The following R packages are required:
 
 	library(patientProfilesVis)
 	library(glpgUtilityFct)
-	library(glpgStyle)
 
 ```
 
@@ -85,8 +84,6 @@ created. These shape of the symbols are specified Unicode format in hexadecimal
  (see [List of unicode symbols](https://en.wikipedia.org/wiki/List_of_Unicode_characters)).
 
 ```{r patientProfiles-palettes}
-
-	colorPalette <- glpgColor(c("main", "extra", "highlight"))
 	
 	# color/shape palette for reference range indicator (abnormality lab/vs)
 	# Please note that this might be manually updated
@@ -103,16 +100,16 @@ created. These shape of the symbols are specified Unicode format in hexadecimal
 		Unknown = '+'
 	)
 	colorPaletteRind <- c(
-		`Low Panic` = unname(colorPalette["signalRed"]),
-		LOW = unname(colorPalette["orange"]), Low = unname(colorPalette["orange"]),
-		`Low Normal` = unname(colorPalette["yellow"]),
-		NORMAL = unname(colorPalette["green"]), Normal = unname(colorPalette["green"]),
-		`High Normal` = unname(colorPalette["yellow"]),
-		HIGH = unname(colorPalette["orange"]), High = unname(colorPalette["orange"]),
-		`High Panic` = unname(colorPalette["signalRed"]),
-		Abnormal = unname(colorPalette["signalRed"]),
-		'NA' = unname(colorPalette["grey"]),
-		Unknown = unname(colorPalette["grey"])
+		`Low Panic` = "red",
+		LOW = "orange", Low = "orange",
+		`Low Normal` = "yellow",
+		NORMAL = "green", Normal = "green",
+		`High Normal` = "yellow",
+		HIGH = "orange", High = "orange",
+		`High Panic` = "red",
+		Abnormal = "red",
+		'NA' = "grey",
+		Unknown = "grey"
 	)
 
 ```

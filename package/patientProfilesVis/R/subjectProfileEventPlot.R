@@ -81,11 +81,11 @@ subjectProfileEventPlot <- function(
 	# convert aesthetic variables to factor
 	if(!is.null(colorVar)){
 		data[, colorVar] <- convertAesVar(data, colorVar)
-		if(is.null(colorPalette))	colorPalette <- getGLPGColorPalettePatientProfile(x = data[, colorVar])
-	}else	colorPalette <- getGLPGColorPalettePatientProfile(n = 1)
+		if(is.null(colorPalette))	colorPalette <- getColorPalettePatientProfile(x = data[, colorVar])
+	}else	colorPalette <- getColorPalettePatientProfile(n = 1)
 	if(!is.null(shapeVar)){
 		data[, shapeVar] <- convertAesVar(data, var = shapeVar)
-		if(is.null(shapePalette))	shapePalette <- getGLPGShapePalettePatientProfile(x = data[, shapeVar])
+		if(is.null(shapePalette))	shapePalette <- getShapePalettePatientProfile(x = data[, shapeVar])
 	}
 	
 	# format variable
