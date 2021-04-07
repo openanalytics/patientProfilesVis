@@ -46,7 +46,9 @@ defineIndex <- function(
 		# Index entry creation for each subject:
 		# extract values of specified 'var'
 		indexInfo <- daply(data, subjectVar, function(x){	
-			indexX <- unlist(x[, var, drop = FALSE])
+			xVar <- x[, var, drop = FALSE]
+			xVar <- lapply(xVar, as.character) # in case var is a factor
+			indexX <- unlist(xVar)
 			if(nrow(x) > 1)
 				stop("Multiple information available for subject: ", unique(x[, subjectVar]), 
 					" for index construction.")
