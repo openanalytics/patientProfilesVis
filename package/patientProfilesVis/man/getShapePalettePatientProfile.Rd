@@ -38,13 +38,13 @@ Note that 19 unique symbols are available at maximum
 }
 \examples{
 #' extract longest shape palette available
-getShapePalettePatientProfiles(n = 19)
+getShapePalettePatientProfile(n = 19)
 # extract palette for a vector
-getShapePalettePatientProfiles(x = paste('treatment', 1:4))
+getShapePalettePatientProfile(x = paste('treatment', 1:4))
 # include missing
-getShapePalettePatientProfiles(x = c(NA_character_, "group1"), includeNA = TRUE)
+getShapePalettePatientProfile(x = c(NA_character_, "group1"), includeNA = TRUE)
 # get symbols as 'text' (e.g. to be combined with Unicode in ggplot2)
-getShapePalettePatientProfiles(x = paste('treatment', 1:4), asText = TRUE)
+getShapePalettePatientProfile(x = paste('treatment', 1:4), asText = TRUE)
 }
 \author{
 Laure Cougnaud

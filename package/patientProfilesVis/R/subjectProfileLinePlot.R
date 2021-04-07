@@ -48,7 +48,7 @@
 #' @family patient profiles plotting function
 #' @import ggplot2
 #' @importFrom plyr dlply
-#' @importFrom glpgUtilityFct getLabelVar formatVarForPlotLabel
+#' @importFrom clinUtils getLabelVar formatVarForPlotLabel
 #' @export
 subjectProfileLinePlot <- function(
 	data,

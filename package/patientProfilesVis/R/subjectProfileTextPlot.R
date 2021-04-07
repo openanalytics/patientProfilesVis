@@ -73,7 +73,7 @@
 #' @importFrom gridExtra tableGrob ttheme_minimal
 #' @importFrom plyr dlply ddply
 #' @importFrom reshape2 melt
-#' @importFrom glpgUtilityFct getLabelVar formatLongLabel
+#' @importFrom clinUtils getLabelVar formatLongLabel
 #' @export
 subjectProfileTextPlot <- function(
 	data,

@@ -1,7 +1,7 @@
-library(glpgUtilityFct)
+library(clinUtils)
 
-data(SDTMDataPelican)
-dataAll <- SDTMDataPelican
+data(dataSDTMCDISCP01)
+dataAll <- dataSDTMCDISCP01
 
 # keep only a subset of subjects
 # (e.g. to visualize specified patient profiles
@@ -23,14 +23,14 @@ filterData(
 # keep only adverse events for subjects in a specific treatment arm
 filterData(
 	data = dataAll$AE,
-	subsetData = dataAll$SL,
-	subsetVar = "ARM",
-	subsetValue = "GLP2737 75 mg b.i.d. + Orkambi"
+	subsetData = dataAll$DM,
+	subsetVar = "ACTARM",
+	subsetValue = "Placebo"
 )
 
 # filter based on subjects of interest
 filterData(
 	data = dataAll$AE,
-	subjectSubset = c("study-4903-07", "study-4907-04")
+	subjectSubset = c("01-701-1148", "01-701-1211")
 )
 

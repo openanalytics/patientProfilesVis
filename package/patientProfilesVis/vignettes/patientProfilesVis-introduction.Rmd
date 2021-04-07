@@ -17,12 +17,13 @@ vignette: >
 	opts_chunk$set(
 		echo = TRUE, results = 'asis', warning = FALSE, 
 		error = FALSE, message = FALSE, cache = FALSE,
-		fig.width = 8, fig.height = 7,
+		fig.width = 14, fig.height = 7,
 		fig.path = "./figures_vignette/",
-		#out.width = '0.7\\textwidth', 
-		fig.align = 'center')#, out.height = 0.5\\textwidth', fig.path = 'graphs/') 
-	options(width = 170)#, stringsAsFactors = FALSE
-	options(warn = 1)#instead of warn = 0 by default -> to have place where warnings occur in the call to Sweave function
+		fig.align = 'center'
+	)
+	options(width = 170)
+	# include warnings where they occur
+	options(warn = 1)
 	
 	heightLineIn  <- 0.2
 	
@@ -40,44 +41,38 @@ profiles.
 
 ## Data format
 
-The input dataset for the workflow should be a data.frame, 
-usually loaded from a _SAS_ data file (`sas7bdat` format).
-The label of the variables stored in the `SAS` datasets is also used
-for title/captions. 
+The input dataset for the creation of patient profiles should be a data.frame,
+typically CDISC SDTM or ADaM datasets.
 
-The function `loadDataADaMSDTM` can be used to load your custom `SAS` dataset(s) of
-interest.
-This function returns two objects:
+The package also support tibble datasets as imported by the `read_sas`/`read_xpt` functions
+from the [`haven`](https://CRAN.R-project.org/package=haven).
 
-* a list of `data.frame` containing the data for each _SAS_ dataset(s), stored
-  in the `$data` slot
-* a vector containing the labels for each column of the data (used e.g. for
-  default titles of the figures), stored in the `$labelVars` slot
+Alternatively, datasets can be imported at once with the
+`loadDataADaMSDTM` function from the `clinUtils` package.
 
-A few `sdtm` datasets from the _Pelican_ study are included in the
-`glpgUtilityFct` package for the demonstration, via the dataset
-`SDTMDataPelican` and corresponding variable labels `labelVarsSDTMPelican`.
+The package is demonstrated with a subset of the SDTM datasets 
+from the CDISC Pilot 01 dataset, available in the `clinUtils`
+package.
 
 ```{r loadData}	
 	
-	library(glpgUtilityFct)
+	library(clinUtils)
 
-	# example dataset(s) formatted as a list of data.frame
-	data(SDTMDataPelican)
-#	pander(lapply(SDTMDataPelican, head, 1))
+	# import example SDTM datasets
+	data(dataSDTMCDISCP01)
+	# formatted as a list of data.frame (one per domain)
+	dataAll <- dataSDTMCDISCP01
+	pander(lapply(dataAll, head, 1))
 	
 	# and corresponding labels
-	data(labelVarsSDTMPelican)
-#	pander(head(labelVarsSDTMPelican))
-	
-	# load example ADaM dataset
-	data(ADaMDataPelican)
-	# ... and corresponding labels
-	data(labelVarsADaMPelican)
+	labelVars <- attr(dataAll, "labelVars")
+	head(labelVars)
 	
 ```
 
 # Creation of the plot modules
+
+## General
 
 Four plot types/modules are currently available in the package:
 
@@ -91,8 +86,9 @@ Four plot types/modules are currently available in the package:
 `subjectProfileLinePlot`
   
 Each of this function returns a nested list of plots (`ggplot` object).
+
 Each element of the list contains the plots for a specific subject.
-The subject profile plot for a specific module is possibly into
+The subject profile plot for a specific subject/module is possibly split into
 multiple plots to fit in the final report (`formatReport` parameter).
   
 ## Text module
@@ -110,14 +106,14 @@ containing the parameter value (`paramValueVar`).
 	# annotate subject demographics meta-data
 	# by specifying a set of variables to include
 	dmPlots <- subjectProfileTextPlot(
-		data = SDTMDataPelican$DM,
+		data = dataAll$DM,
 		paramValueVar = c("SEX|AGE", "RACE|COUNTRY", "ARM"),
-		labelVars = labelVarsSDTMPelican
+		labelVars = labelVars
 	)
 	
 ```
 
-```{r exampleTextModule-wideFormat-include, echo = FALSE, fig.height = attributes(dmPlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Demographic information with the 'subjectProfileTextPlot' function for patient:", names(dmPlots)[1])}
+```{r exampleTextModule-wideFormat-include, echo = FALSE, fig.height = attributes(dmPlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Demographic information with the 'subjectProfileTextPlot' function for patient:", names(dmPlots)[1])}
 
 	print(dmPlots[[1]][[1]])
 
@@ -135,16 +131,16 @@ for a certain variable name.
 	# annotate subject medical history
 	# by specifying a combination of parameter value/name
 	mhPlots <- subjectProfileTextPlot(
-		data = SDTMDataPelican$MH,
-		paramNameVar = "MHTERM",
-		paramValueVar = c("MHCAT", "MHSTDTC", "MHENDTC"),
+		data = dataAll$MH,
+		paramNameVar = c("MHTERM"),
+		paramValueVar = c("MHCAT", "MHDECOD", "MHSTDTC"),
 		title = "Medical History: status",
-		labelVars = labelVarsSDTMPelican
+		labelVars = labelVars
 	)
 		
 ```
 
-```{r exampleTextModule-longFormat-noGrouping-include, echo = FALSE, fig.height = attributes(mhPlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlots)[1])}
+```{r exampleTextModule-longFormat-noGrouping-include, echo = FALSE, fig.height = attributes(mhPlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlots)[1])}
 
 	print(mhPlots[[1]][[1]])
 
@@ -152,46 +148,60 @@ for a certain variable name.
 
 ### Table format (listing)
 
-Information are displayed as a table format by setting the `table` parameter to TRUE.
+Information is displayed as a listing, by setting the `table` parameter to TRUE.
 
 ```{r exampleTextModule-tableFormat}
 
 	aeListingPlots <- subjectProfileTextPlot(
-		data = SDTMDataPelican$AE,
-		paramValueVar = c("AEBODSYS", "AESOC", "AEHLT", "AELLT", "AEDECOD", "AESTDTC", "AEENDTC", "AESER", "AEACN"),
+		data = dataAll$AE,
+		paramValueVar = c(
+			"AEBODSYS", "AESOC", "AEHLT", 
+			"AELLT", "AEDECOD", "AESTDTC", 
+			"AEENDTC", "AESER", "AEACN"
+		),
 		paramGroupVar = "AESTDTC",
-		labelVars = labelVarsSDTMPelican,
+		labelVars = labelVars,
 		table = TRUE
 	)
-	subjID <- SDTMDataPelican$AE[which.max(nchar(SDTMDataPelican$AE$AETERM)), "USUBJID"]
 	
 ```
 
-```{r exampleTextModule-tableFormat-include, echo = FALSE, fig.height = attributes(aeListingPlots[[subjID]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Adverse event listing with the 'subjectProfileTextPlot' function for patient:", subjID)}
+```{r exampleTextModule-tableFormat-include, echo = FALSE, fig.height = attributes(aeListingPlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Adverse event listing with the 'subjectProfileTextPlot' function for patient:", names(aeListingPlots)[1])}
 
-	print(aeListingPlots[[subjID]][[1]])
+	print(aeListingPlots[[1]][[1]])
 
 ```
 
 By default, the widths of the columns of the table are optimized based on the column content, 
 but custom widths can be specified via the `colWidth` parameter.
 
+For example, the columns for the body system and system organ class
+are enlarged.
+
 ```{r exampleTextModule-tableFormat-customWidth}
 
 	aeListingPlots <- subjectProfileTextPlot(
-		data = SDTMDataPelican$AE,
-		paramValueVar = c("AEBODSYS", "AESOC", "AEHLT", "AELLT", "AEDECOD", "AESTDTC", "AEENDTC", "AESER", "AEACN"),
+		data = dataAll$AE,
+		paramValueVar = c(
+			"AEBODSYS", "AESOC", "AEHLT", 
+			"AELLT", "AEDECOD", "AESTDTC", 
+			"AEENDTC", "AESER", "AEACN"
+		),
 		paramGroupVar = "AESTDTC",
-		labelVars = labelVarsSDTMPelican,
+		labelVars = labelVars,
 		table = TRUE,
-		colWidth = c(0.1, 0.1, 0.1, 0.1, 0.3, 0.05, 0.05, 0.1, 0.1)
+		colWidth = c(
+			0.2, 0.2, 0.05, 
+			0.1, 0.1, 0.05, 
+			0.05, 0.05, 0.05
+		)
 	)
 	
 ```
 
-```{r exampleTextModule-tableFormat-customWidth-include, echo = FALSE, fig.height = attributes(aeListingPlots[[subjID]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Adverse event listing with the 'subjectProfileTextPlot' function for patient:", subjID)}
+```{r exampleTextModule-tableFormat-customWidth-include, echo = FALSE, fig.height = attributes(aeListingPlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Adverse event listing with the 'subjectProfileTextPlot' function for patient:", names(aeListingPlots)[1])}
 
-	print(aeListingPlots[[subjID]][[1]])
+	print(aeListingPlots[[1]][[1]])
 
 ```
 
@@ -208,21 +218,21 @@ they should be concatenated with a specific format, a function
 	# annotate subject medical history
 	# by specifying a combination of parameter value/name
 	paramValueVarFct <- function(data)
-		with(data, paste0(MHENRTPT, " (start = ", MHSTDTC, 
-			ifelse(MHENDTC != "", paste0(", end = ", MHENDTC, ")"), ")")
-			)
-		)
+		with(data, paste0(
+			ifelse(MHSEV != "", paste("severity:", MHSEV, ""), ""),
+			"(start = ", ifelse(MHSTDTC != "", MHSTDTC, "undefined"), ")"
+		))
 	mhPlotsMultipleVars <- subjectProfileTextPlot(
-		data = SDTMDataPelican$MH,
+		data = dataAll$MH,
 		paramNameVar = "MHDECOD",
 		paramValueVar = paramValueVarFct,
 		title = "Medical History: status with dates",
-		labelVars = labelVarsSDTMPelican
+		labelVars = labelVars
 	)
 		
 ```
 
-```{r exampleTextModule-longFormat-multipleVariables-include, echo = FALSE, fig.height = attributes(mhPlotsMultipleVars[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlotsMultipleVars)[1])}
+```{r exampleTextModule-longFormat-multipleVariables-include, echo = FALSE, fig.height = attributes(mhPlotsMultipleVars[[1]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlotsMultipleVars)[1])}
 
 	print(mhPlotsMultipleVars[[1]][[1]])
 
@@ -235,17 +245,17 @@ they should be concatenated with a specific format, a function
 	# annotate subject medical history
 	# by specifying a combination of parameter value/name
 	mhPlotsGroup <- subjectProfileTextPlot(
-		data = SDTMDataPelican$MH,
+		data = dataAll$MH,
 		paramNameVar = "MHDECOD",
-		paramValueVar = "MHENRTPT",
+		paramValueVar = c("MHDECOD", "MHSTDTC"),
 		paramGroupVar = "MHCAT",
 		title = "Medical History: grouped by category",
-		labelVars = labelVarsSDTMPelican
+		labelVars = labelVars
 	)
 	
 ```
 
-```{r exampleTextModule-longFormat-grouping-include, echo = FALSE, fig.height = attributes(mhPlotsGroup[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlotsGroup)[1])}
+```{r exampleTextModule-longFormat-grouping-include, echo = FALSE, fig.height = attributes(mhPlotsGroup[[1]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlotsGroup)[1])}
 
 	print(mhPlotsGroup[[1]][[1]])
 
@@ -253,12 +263,12 @@ they should be concatenated with a specific format, a function
 
 ## Interval/Range module
 
-The 'interval' module enables to represent a time interval for
-some parameters/events of interest.
+Event with a fixed start/end time are displayed as time interval
+via the 'interval' module.
 
 ### Adverse events
 
-It is used here to represent the start/end date of the adverse events.
+This module is used to represent the start/end date of the adverse events.
 
 Please **check section [Missing starting/end time](#intervalMissingStartEnd) for further information 
 on how records with
@@ -266,24 +276,26 @@ missing start/end date are represented**.
 
 ```{r exampleIntervalModule-ae}
 
-	# AEPTCD: preferred term code
-	dataAE <- SDTMDataPelican$AE
-	# specify order of value in 'AESEV'
-	dataAE[, "AESEV"] <- factor(dataAE[, "AESEV"], levels = c("MILD", "MODERATE"))
+	dataAE <- dataAll$AE
+	
+	# sort severities
+	dataAE[, "AESEV"] <- factor(dataAE[, "AESEV"], levels = c("MILD", "MODERATE", "SEVERE"))
+	
 	aePlots <- subjectProfileIntervalPlot(
 		data = dataAE,
 		paramVar = "AETERM",
 		timeStartVar = "AESTDY",
 		timeEndVar = "AEENDY",
 		colorVar = "AESEV",
-		labelVars = labelVarsSDTMPelican,
+		labelVars = labelVars,
 		title = "Adverse events"
 	)
-	subjectAE <- "study-4907-07"
+	
+	subjectAE <- "01-718-1427"
 		
 ```
 
-```{r exampleIntervalModule-ae-include, echo = FALSE, fig.height = attributes(aePlots[[subjectAE]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", subjectAE)}
+```{r exampleIntervalModule-ae-include, echo = FALSE, fig.height = attributes(aePlots[[subjectAE]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", subjectAE)}
 
 	print(aePlots[[subjectAE]][[1]])
 
@@ -296,20 +308,19 @@ this time interval visualization
 
 ```{r exampleIntervalModule-ex}
 
-	# AEPTCD: preferred term codes
 	exPlots <- subjectProfileIntervalPlot(
-		data = SDTMDataPelican$EX,
+		data = dataAll$EX,
 		paramVar = c("EXTRT", "EXDOSE", "EXDOSU"),
 		timeStartVar = "EXSTDY",
 		timeEndVar = "EXENDY",
 		colorVar = "EXDOSFRM",
-		labelVars = labelVarsSDTMPelican,
+		labelVars = labelVars,
 		title = "Treatment exposure"
 	)
 
 ```
 
-```{r exampleIntervalModule-exinclude, echo = FALSE, fig.height = attributes(exPlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Exposure interval with the 'subjectProfileIntervalPlot' function for patient:", names(exPlots)[1])}
+```{r exampleIntervalModule-exinclude, echo = FALSE, fig.height = attributes(exPlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Exposure interval with the 'subjectProfileIntervalPlot' function for patient:", names(exPlots)[1])}
 
 	print(exPlots[[1]][[1]])
 
@@ -319,22 +330,26 @@ this time interval visualization
 
 ```{r exampleIntervalModule-cm}
 
-	# AEPTCD: preferred term codes
 	cmPlots <- subjectProfileIntervalPlot(
-		data = SDTMDataPelican$CM,
-		paramVar = c("CMINDC", "CMTRT", "CMDOSTXT", "CMDOSU", "CMROUTE", "CMDOSFRQ"),
+		data = dataAll$CM,
+		paramVar = c(
+			"CMTRT", 
+			"CMDOSE", "CMDOSU", "CMROUTE", 
+			"CMDOSFRQ"
+		),
 		timeStartVar = "CMSTDY",
 		timeEndVar = "CMENDY",
-		paramGroupVar = "CMINDC",
-		colorVar = "CMINDC",
-		labelVars = labelVarsSDTMPelican,
+		paramGroupVar = "CMCLAS",
+		colorVar = "CMCLAS",
+		labelVars = labelVars,
 		title = "Concomitant medications"
 	)
-	subjectCM <- "study-4905-02"
+	
+	subjectCM <- "01-701-1148"
 
 ```
 
-```{r exampleIntervalModule-cm-include, echo = FALSE, fig.height = attributes(cmPlots[[subjectCM]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", subjectCM)}
+```{r exampleIntervalModule-cm-include, echo = FALSE, fig.height = attributes(cmPlots[[subjectCM]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", subjectCM)}
 
 	print(cmPlots[[subjectCM]][[1]])
 
@@ -343,10 +358,14 @@ this time interval visualization
 ### Missing starting/end time {#intervalMissingStartEnd}
 
 The interval visualization requires specified start/end time for each record.
-However, records with missing starting/end time are frequently collected.
+
+However, it is frequent that the start or the end time of an event/record is missing
+in clinical data, especially if the data is being collected.
+
 Different types of missing values can occur during a clinical study:
 
-* partial dates, e.g. concomitant medication in 2012, relative date not encoded
+* partial dates, e.g. a concomitant medication that occurs 2012, 
+but for which the relative date is not encoded
 * on-going event at data collection, e.g. adverse event
 * 'true' missing: actual date not reported
 
@@ -371,23 +390,19 @@ Records with:
 
 ```{r exampleIntervalModule-ae-default, message = TRUE}
 
-	# AEPTCD: preferred term code
-	dataAE <- SDTMDataPelican$AE
-	# specify order of value in 'AESEV'
-	dataAE[, "AESEV"] <- factor(dataAE[, "AESEV"], levels = c("MILD", "MODERATE"))
 	aePlots <- subjectProfileIntervalPlot(
 		data = dataAE,
 		paramVar = "AETERM",
 		timeStartVar = "AESTDY",
 		timeEndVar = "AEENDY",
 		colorVar = "AESEV",
-		labelVars = labelVarsSDTMPelican,
+		labelVars = labelVars,
 		title = "Adverse events"
 	)
 		
 ```
 
-```{r exampleIntervalModule-ae-default-include, echo = FALSE, fig.height = attributes(aePlots[[subjectAE]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", subjectAE)}
+```{r exampleIntervalModule-ae-default-include, echo = FALSE, fig.height = attributes(aePlots[[subjectAE]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", subjectAE)}
 
 	print(aePlots[[subjectAE]][[1]])
 
@@ -401,77 +416,95 @@ the **time limits can be extracted** from a
 the **`timeLimData`/`timeLimStartVar`/`timeLimEndVar`** parameters.
 
 This option is used below to impute missing starting/end time with the first/last visit
-for each subject based on the 'Subject Visit' dataset.
+for each subject based on the 'Subject Visit' dataset.  
+
+As the start and end of the subject visit dates are not available as
+relative day in the example data, these are first computed based
+on the subject reference start date/time available in the demography dataset.
+
+```{r formatSVData}
+
+dataSV <- dataAll$SV
+dataSV$RFSTDTC <- dataAll$DM[match(dataSV$USUBJID, dataAll$DM$USUBJID), "RFSTDTC"]
+dataSV$SVSTDY <- with(dataSV, as.numeric(as.Date(SVSTDTC)-as.Date(RFSTDTC)+1))
+dataSV$SVENDY <- with(dataSV, as.numeric(as.Date(SVENDTC)-as.Date(RFSTDTC)+1))
+
+
+```
 
 ```{r exampleIntervalModule-ae-timeLimData, message = TRUE}
-
+	
 	aePlotsTimLimFromSV <- subjectProfileIntervalPlot(
 		data = dataAE,
 		paramVar = "AETERM",
 		timeStartVar = "AESTDY",
 		timeEndVar = "AEENDY",
 		colorVar = "AESEV",
-		labelVars = labelVarsSDTMPelican,
+		labelVars = labelVars,
 		title = "Adverse events",
-		timeLimData = SDTMDataPelican$SV,
-		timeLimStartVar = "SVSTDY", 
-		timeLimEndVar = "SVENDY"
+		timeLimData = dataSV,
+		timeLimStartVar = "SVSTDY", timeLimStartLab = "First subject visit", 
+		timeLimEndVar = "SVENDY", timeLimEndLab = "Last subject visit", 
 	)
 	
 ```
 
-```{r exampleIntervalModule-ae-timeLimData-include, echo = FALSE, fig.height = attributes(aePlotsTimLimFromSV[[subjectAE]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste0("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", subjectAE, ". Missing start/end date are extracted from the subject-level dataset.")}
+```{r exampleIntervalModule-ae-timeLimData-include, echo = FALSE, fig.height = attributes(aePlotsTimLimFromSV[[subjectAE]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste0("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", subjectAE, ". Missing start/end date are extracted from the subject-level dataset.")}
 
 	print(aePlotsTimLimFromSV[[subjectAE]][[1]])
 
 ```
 
 ```{r exampleIntervalModule-ae-timeLimData-svData}
-	svSubjectAE <- subset(SDTMDataPelican$SV, USUBJID == "study-4907-07")[, c("VISIT", "SVSTDY", "SVENDY")]
+	svSubjectAE <- subset(dataSV, USUBJID == subjectAE)[, c("VISIT", "SVSTDY", "SVENDY")]
 	pander(svSubjectAE)
 ```
 
 This is also used to restrict the time limits of the plots.
-The time limits of the concomitant medications is quite large compared to the
-study time range.
-As the modules will be combined with the same time limits, it might be
-advisable to restrict the time limits for this module via the `timeLimData`,
-`timeLimStartVar` and `timeLimEndVar` parameter.
-In this example the time limits are restricted to the minimum/maximum
-time range of the subject visits.
+
+As the modules will be combined with the same time limits, 
+it might be advisable to restrict the time limits for this module via the 
+`timeLimData`, `timeLimStartVar` and `timeLimEndVar` parameter.   
+In this example the time limits are restricted to the minimum/maximum time range
+ of the subject visits.
 
 ```{r exampleIntervalModule-cm-restrictedTimeLimits}
 
 	cmPlotsTimeSV <- subjectProfileIntervalPlot(
-		data = SDTMDataPelican$CM,
-		paramVar = c("CMINDC", "CMTRT", "CMDOSTXT", "CMDOSU", "CMROUTE", "CMDOSFRQ"),
+		data = dataAll$CM,
+		paramVar = c(
+			"CMTRT", 
+			"CMDOSE", "CMDOSU", "CMROUTE", 
+			"CMDOSFRQ"
+		),
 		timeStartVar = "CMSTDY",
 		timeEndVar = "CMENDY",
-		paramGroupVar = "CMINDC",
-		colorVar = "CMINDC",
-		labelVars = labelVarsSDTMPelican,
+		paramGroupVar = "CMCLAS",
+		colorVar = "CMCLAS",
+		labelVars = labelVars,
 		title = "Concomitant medications",
-		timeLimData = SDTMDataPelican$SV,
+		timeLimData = dataSV,
 		timeLimStartVar = "SVSTDY",
-		timeLimEndVar = "SVENDY"
+		timeLimEndVar = "SVENDY",
+		timeAlign = FALSE
 	)
 
 ```
 
-```{r exampleIntervalModule-cm-restrictedTimeLimits-include, echo = FALSE, fig.height = attributes(cmPlotsTimeSV[[subjectCM]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", subjectCM, "with time limits restricted to subject visits")}
+```{r exampleIntervalModule-cm-restrictedTimeLimits-include, echo = FALSE, fig.height = attributes(cmPlotsTimeSV[[subjectCM]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", subjectCM, "with time limits restricted to subject visits")}
 
 	print(cmPlotsTimeSV[[subjectCM]][[1]])
 
 ```
+
 
 #### Custom specification for missing and partial dates
 
 Missing start/end dates, partial dates or custom date status can be specified
 by creating two extra variables in the input data containing the status of the
 start/end time (`timeStartShapeVar`/`timeEndShapeVar`). 
+
 This status is represented as different symbols in the plot.
-In this case the `timeStartVar`/`timeEndVar` variables already contain the imputed
-date in case of missing values.
 
 Please note that because the [default `ggplot2` symbol palette](https://ggplot2.tidyverse.org/reference/scale_shape.html)
 doesn't contain the left and right triangle symbols; these are specified
@@ -488,6 +521,7 @@ in Unicode format in hexadecimal (see [List of unicode symbols](https://en.wikip
 		`Missing start`= "\u25C4", # left-pointing arrow
 		'NOT RECOVERED/NOT RESOLVED' = "\u25BA", # right-pointing arrow
 		'RECOVERED/RESOLVED' = "\u25A0", # small square
+		'FATAL' = "\u2666", # diamond
 		UNKNOWN = "+"
 	)
 	
@@ -499,40 +533,47 @@ in Unicode format in hexadecimal (see [List of unicode symbols](https://en.wikip
 		shapePalette = shapePalette,
 		shapeLab = "Study date status", 
 		colorVar = "AESEV",
-		labelVars = labelVarsSDTMPelican,
+		labelVars = labelVars,
 		title = "Adverse events"
 	)
+	
+	subjectAE <- "01-701-1211"
 
 ```
 
-```{r exampleIntervalModule-ae-customMissingPartialDates-include, echo = FALSE, fig.height = attributes(aePlotsShape[["study-4904-01"]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", subjectAE, "with custom shape specification")}
+```{r exampleIntervalModule-ae-customMissingPartialDates-include, echo = FALSE, fig.height = attributes(aePlotsShape[[subjectAE]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", subjectAE, "with custom shape specification")}
 
-	print(aePlotsShape[["study-4904-01"]][[1]])
+	print(aePlotsShape[[subjectAE]][[1]])
 
 ```
 
 ### Specification of time limits
 
-To restrict the time range in the visualization, the time limits can be set via the `timeLim` parameter:
+To restrict the time range in the visualization, the time limits can be set via 
+the `timeLim` parameter:
 
 ```{r exampleIntervalModule-cm-restrictedTimeLimits2}
 
-	timeLim <- c(-28, 53)
+	timeLim <- c(0, 168)
 	cmPlotsTimeSpec <- subjectProfileIntervalPlot(
-		data = SDTMDataPelican$CM,
-		paramVar = c("CMINDC", "CMTRT", "CMDOSTXT", "CMDOSU", "CMROUTE", "CMDOSFRQ"),
+		data = dataAll$CM,
+		paramVar = c(
+			"CMTRT", 
+			"CMDOSE", "CMDOSU", "CMROUTE", 
+			"CMDOSFRQ"
+		),
 		timeStartVar = "CMSTDY",
 		timeEndVar = "CMENDY",
-		paramGroupVar = "CMINDC",
-		colorVar = "CMINDC",
-		labelVars = labelVarsSDTMPelican,
+		paramGroupVar = "CMCLAS",
+		colorVar = "CMCLAS",
+		labelVars = labelVars,
 		title = "Concomitant medications",
 		timeLim = timeLim
 	)
 
 ```
 
-```{r exampleIntervalModule-cm-restrictedTimeLimits2-include, echo = FALSE, fig.height = attributes(cmPlotsTimeSpec[[subjectCM]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", subjectCM, "with time limits restricted to: (", toString(timeLim), ")")}
+```{r exampleIntervalModule-cm-restrictedTimeLimits2-include, echo = FALSE, fig.height = attributes(cmPlotsTimeSpec[[subjectCM]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", subjectCM, "with time limits restricted to: (", toString(timeLim), ")")}
 
 	print(cmPlotsTimeSpec[[subjectCM]][[1]])
 
@@ -548,13 +589,17 @@ To obtain visualization which don't align, the parameter: `timeAlign` is set to 
 ```{r exampleIntervalModule-cm-timeAlign-FALSE}
 
 	cmPlotsNotAligned <- subjectProfileIntervalPlot(
-		data = SDTMDataPelican$CM,
-		paramVar = c("CMINDC", "CMTRT", "CMDOSTXT", "CMDOSU", "CMROUTE", "CMDOSFRQ"),
+		data = dataAll$CM,
+		paramVar = c(
+			"CMTRT", 
+			"CMDOSE", "CMDOSU", "CMROUTE", 
+			"CMDOSFRQ"
+		),
 		timeStartVar = "CMSTDY",
 		timeEndVar = "CMENDY",
-		paramGroupVar = "CMINDC",
-		colorVar = "CMINDC",
-		labelVars = labelVarsSDTMPelican,
+		paramGroupVar = "CMCLAS",
+		colorVar = "CMCLAS",
+		labelVars = labelVars,
 		title = "Concomitant medications",
 		timeAlign = FALSE
 	)
@@ -563,9 +608,10 @@ To obtain visualization which don't align, the parameter: `timeAlign` is set to 
 
 In this case, each visualization contains specific time-limits.
 
-```{r exampleIntervalModule-cm-timeAlign-FALSE-include-1, echo = FALSE, fig.height = attributes(cmPlotsNotAligned[[subjectCM]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", subjectCM, "with custom shape specification")}
+```{r exampleIntervalModule-cm-timeAlign-FALSE-include-1, echo = FALSE, fig.height = attributes(cmPlotsNotAligned[[subjectCM]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Adverse events with the 'subjectProfileIntervalPlot' function for patient:", subjectCM, "with custom shape specification")}
 
 	print(cmPlotsNotAligned[[subjectCM]][[1]])
+
 
 ```
 
@@ -581,62 +627,71 @@ The 'event' module enables to represent event data.
 This is used to represent the presence/absence of a certain
 laboratory measurement (and corresponding time).
 
+```{r formatLBData}
+
+# prepare data for plots:
+dataLB <- dataAll$LB
+# sort the categories (empty values '', if any, becomes NA)
+dataLB$LBNRIND <- factor(dataLB$LBNRIND, levels = c("LOW", "NORMAL", "HIGH", "ABNORMAL"))
+
+```
+
 ```{r exampleEventModule}
-	
-	## laboratory data
-	
-	# prepare data for plots:
-	dataLB <- SDTMDataPelican$LB
-	# sort the categories (empty values '' becomes NA)
-	dataLB$LBNRIND <- factor(dataLB$LBNRIND, levels = c("LOW", "NORMAL", "HIGH"))
 	
 	# create plot
 	lbPlots <- subjectProfileEventPlot(
 		data = dataLB,
-		paramVar = c("LBSCAT", "LBTEST"),
-		paramGroupVar = "LBSCAT",
+		paramVar = c("LBCAT", "LBTEST"),
+		paramGroupVar = "LBCAT",
 		timeVar = "LBDY",
-		labelVars = labelVarsSDTMPelican,
+		labelVars = labelVars,
 		title = "Laboratory test measurements"
 	)
 
 ```
 
-```{r exampleEventModule-include, echo = FALSE, fig.height = attributes(lbPlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with the 'subjectProfileEventPlot' function for patient:", names(lbPlots)[1])}
+```{r exampleEventModule-include, echo = FALSE, fig.height = attributes(lbPlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Laboratory data with the 'subjectProfileEventPlot' function for patient:", names(lbPlots)[1])}
 
 	print(lbPlots[[1]][[1]])
 
 ```
 
-### Color variable
+### Color/symbol variable
 
-The reference range indicator is used to color the presence/absence of the
-laboratory data via the `colorVar` parameter.
-This parameter is also used for the symbol via the `shapeVar` variable.
+The laboratory events are colored based on the category of the laboratory parameter,
+with the `colorVar` parameter.
+
+The reference range indicator is used to set different symbols 
+via the `shapeVar`.
 Symbols specific of this categorization are used via the `shapePalette`
-parameter: bottom/top arrow for low/high measurements, and dot for measurements
-in normal range.
+parameter: bottom/top arrow for low/high measurements, dot for measurements
+in normal range and star for abnormal measurements.
 
 ```{r exampleEventModuleWithColor}
 
 	# create plot
-	lbPlotsColor <- subjectProfileEventPlot(
+	lbPlotsColorShape <- subjectProfileEventPlot(
 		data = dataLB,
 		paramVar = "LBTEST",
-		paramGroupVar = "LBSCAT",
+		paramGroupVar = "LBCAT",
 		timeVar = "LBDY",
-		colorVar = "LBNRIND",
-		labelVars = labelVarsSDTMPelican,
+		colorVar = "LBCAT",
+		labelVars = labelVars,
 		shapeVar = "LBNRIND",
-		shapePalette = c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24, 'NA' = 3),
+		shapePalette = c(
+			'LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24, 
+			'ABNORMAL' = 11
+		),
 		title = "Laboratory test measurements: reference range indicator"
 	)
 	
+	subjectLB <- "01-704-1445"
+	
 ```
 
-```{r exampleEventModuleWithColor-include, echo = FALSE, fig.height = attributes(lbPlotsColor[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with reference range with the 'subjectProfileEventPlot' function for patient:", names(lbPlotsColor)[1])}
+```{r exampleEventModuleWithColor-include, echo = FALSE, fig.height = attributes(lbPlotsColorShape[[subjectLB]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Laboratory data with reference range with the 'subjectProfileEventPlot' function for patient:", subjectLB)}
 
-	print(lbPlotsColor[[1]][[1]])
+	print(lbPlotsColorShape[[subjectLB]][[1]])
 
 ```
 
@@ -668,18 +723,21 @@ hematology parameters.
 		subsetVar = "LBCAT", subsetValue = "HEMATOLOGY",
 		timeVar = "LBDY",
 		colorVar = "LBNRIND",
-		labelVars = labelVarsSDTMPelican,
 		shapeVar = "LBNRIND",
-		shapePalette = c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24, 'NA' = 3),
-		title = "Hematology test measurements"
+		shapePalette = c(
+			'LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24, 
+			'ABNORMAL' = 11
+		),
+		title = "Hematology test measurements",
+		labelVars = labelVars
 	)
 	cat("The", length(lbPlotsSubset), "patients with hematology measurements:", toString(names(lbPlotsSubset)), "are considered.\n")
 	
 ```
 
-```{r exampleEventModuleWithSubset-include, echo = FALSE, fig.height = attributes(lbPlotsSubset[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Hematology data with the 'subjectProfileEventPlot' function for patient:", names(lbPlotsSubset)[1])}
+```{r exampleEventModuleWithSubset-include, echo = FALSE, fig.height = attributes(lbPlotsSubset[[subjectLB]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Hematology data with the 'subjectProfileEventPlot' function for patient:", subjectLB)}
 
-	print(lbPlotsSubset[[1]][[1]])
+	print(lbPlotsSubset[[subjectLB]][[1]])
 
 ```
 
@@ -695,21 +753,24 @@ extracted from the `subjectVar` parameter):
 		data = dataLB,
 		paramVar = "LBTEST",
 		subsetVar = "LBCAT", subsetValue = "HEMATOLOGY",
-		subjectSubset = names(lbPlotsSubset)[1],
+		subjectSubset = subjectLB,
 		timeVar = "LBDY",
 		colorVar = "LBNRIND",
-		labelVars = labelVarsSDTMPelican,
 		shapeVar = "LBNRIND",
-		shapePalette = c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24, 'NA' = 3),
-		title = "Laboratory test measurements for subject of interest"
+		shapePalette = c(
+			'LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24, 
+			'ABNORMAL' = 11
+		),
+		title = "Laboratory test measurements for subject of interest",
+		labelVars = labelVars
 	)
 	cat("Only the patient:", toString(names(lbPlotsSubjectSubset)), "is considered.\n")
 	
 ```
 
-```{r exampleEventModuleWithSubset-2-include, echo = FALSE, fig.height = attributes(lbPlotsSubjectSubset[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Hematology data with the 'subjectProfileEventPlot' function for patient:", names(lbPlotsSubset)[1])}
+```{r exampleEventModuleWithSubset-2-include, echo = FALSE, fig.height = attributes(lbPlotsSubjectSubset[[subjectLB]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Hematology data with the 'subjectProfileEventPlot' function for patient:", subjectLB)}
 
-	print(lbPlotsSubjectSubset[[1]][[1]])
+	print(lbPlotsSubjectSubset[[subjectLB]][[1]])
 	
 ```
 
@@ -717,27 +778,33 @@ extracted from the `subjectVar` parameter):
 
 The `subsetData` parameter is used to specify only a subset of the subjects 
 available in a different dataset.
-For example, to create the laboratory plots only for the patients with adverse events:
+For example, to create the laboratory plots only for the patients with serious adverse events:
 
 ```{r exampleEventModuleWithSubset-3}
+
+	# consider only serious Adverse Events
+	dataAESER <- subset(dataAll$AE, AESER == "Y")
 
 	# create plot
 	lbPlotsDataSubset <- subjectProfileEventPlot(
 		data = dataLB,
 		paramVar = "LBTEST",
-		subsetData = SDTMDataPelican$AE,
+		subsetData = dataAESER,
 		timeVar = "LBDY",
 		colorVar = "LBNRIND",
-		labelVars = labelVarsSDTMPelican,
 		shapeVar = "LBNRIND",
-		shapePalette = c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24, 'NA' = 3),
-		title = "Laboratory test measurements for patients with adverse events"
+		shapePalette = c(
+			'LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24, 
+			'ABNORMAL' = 11
+		),
+		title = "Laboratory test measurements for patients with adverse events",
+		labelVars = labelVars
 	)
-	cat("Only the", length(lbPlotsDataSubset), "subjects in the AE dataset are considered.")
+	cat("Only the", length(lbPlotsDataSubset), "subjects with serious adverse events are considered.")
 	
 ```
 
-```{r exampleEventModuleWithSubset-3-include, echo = FALSE, fig.height = attributes(lbPlotsDataSubset[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Hematology data with the 'subjectProfileEventPlot' function for patient:", names(lbPlotsSubset)[1])}
+```{r exampleEventModuleWithSubset-3-include, echo = FALSE, fig.height = attributes(lbPlotsDataSubset[[1]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Hematology data with the 'subjectProfileEventPlot' function for patient:", names(lbPlotsSubset)[1])}
 
 	print(lbPlotsDataSubset[[1]][[1]])
 	
@@ -751,9 +818,6 @@ The 'line' module enables to represent value of a variable across time.
 
 This is used to represent the evolution of the lab parameters.
 
-The reference range (`paramValueRangeVar` variable) of each variable is
-highlighted in the plot.
-
 ```{r exampleLineModule}
 
 	# create plot
@@ -761,18 +825,17 @@ highlighted in the plot.
 		data = dataLB,
 		paramNameVar = "LBTEST", 
 		paramValueVar = "LBSTRESN",
-		paramGroupVar = "LBSCAT",
-		paramValueRangeVar = c("LBSTNRLO", "LBSTNRHI"),
+		paramGroupVar = "LBCAT",
 		timeVar = "LBDY",
 		title = "Laboratory test measurements: actual value",
-		labelVars = labelVarsSDTMPelican
+		labelVars = labelVars
 	)
 	
 ```
 
-```{r exampleLineModule-include, echo = FALSE, fig.height = attributes(lbLinePlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with the 'subjectProfileLinePlot' function for patient:", names(lbLinePlots)[1])}
+```{r exampleLineModule-include, echo = FALSE, fig.height = attributes(lbLinePlots[[subjectLB]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Laboratory data with the 'subjectProfileLinePlot' function for patient:", subjectLB)}
 
-	print(lbLinePlots[[1]][[1]])
+	print(lbLinePlots[[subjectLB]][[1]])
 
 ```
 
@@ -792,19 +855,21 @@ The reference range measurement is represented via these parameters.
 		paramValueVar = "LBSTRESN",
 		colorVar = "LBNRIND",
 		shapeVar = "LBNRIND",
-		shapePalette = c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24),
-		paramGroupVar = "LBSCAT",
-		paramValueRangeVar = c("LBSTNRLO", "LBSTNRHI"),
+		shapePalette = c(
+			'LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24, 
+			'ABNORMAL' = 11
+		),
+		paramGroupVar = "LBCAT",
 		timeVar = "LBDY",
 		title = "Laboratory test measurements: actual value",
-		labelVars = labelVarsSDTMPelican
+		labelVars = labelVars
 	)
 	
 ```
 
-```{r exampleLineModule-colorShape-include, echo = FALSE, fig.height = attributes(lbLinePlotsColorShape[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with reference range with the 'subjectProfileLinePlot' function for patient:", names(lbLinePlotsColorShape)[1])}
+```{r exampleLineModule-colorShape-include, echo = FALSE, fig.height = attributes(lbLinePlotsColorShape[[subjectLB]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Laboratory data with reference range with the 'subjectProfileLinePlot' function for patient:", subjectLB)}
 
-	print(lbLinePlotsColorShape[[1]][[1]])
+	print(lbLinePlotsColorShape[[subjectLB]][[1]])
 
 ```
 
@@ -812,7 +877,7 @@ The reference range measurement is represented via these parameters.
 
 #### Display reference range indicators
 
-A reference range can be visualized if two variables
+A reference range for each parameter can be visualized if the variables
 containing the low and upper limit of the range are specified
 via `paramValueRangeVar`:
 
@@ -823,18 +888,18 @@ via `paramValueRangeVar`:
 		data = dataLB,
 		paramNameVar = "LBTEST", 
 		paramValueVar = "LBSTRESN",
-		paramGroupVar = "LBSCAT",
+		paramGroupVar = "LBCAT",
 		paramValueRangeVar = c("LBSTNRLO", "LBSTNRHI"),
 		timeVar = "LBDY",
 		title = "Laboratory test measurements: actual value",
-		labelVars = labelVarsSDTMPelican
+		labelVars = labelVars
 	)
 	
 ```
 
-```{r exampleLineModule-paramValueRangeVar-value-include, echo = FALSE, fig.height = attributes(lbLineRefRangePlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with the 'subjectProfileLinePlot' function with a reference range for patient:", names(lbLineRefRangePlots)[1])}
+```{r exampleLineModule-paramValueRangeVar-value-include, echo = FALSE, fig.height = attributes(lbLineRefRangePlots[[subjectLB]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Laboratory data with the 'subjectProfileLinePlot' function with a reference range for patient:", subjectLB)}
 
-	print(lbLineRefRangePlots[[1]][[1]])
+	print(lbLineRefRangePlots[[subjectLB]][[1]])
 
 ```
 
@@ -845,9 +910,8 @@ is extended to the reference range in case the
 range of the associated observations is smaller 
 than the specified reference range.
 
-If the range of the y-axis should only contain the data range, 
-so shouldn't be extended
-to cover the reference range, the `yLimFrom` parameter should be set on:
+If the range of the y-axis should **only contain the range of the actual measurements**, 
+(so shouldn't be extended to cover the reference range), the `yLimFrom` parameter should be set on:
 'value'.
 
 ```{r exampleLineModule-yLimFrom-value}
@@ -857,19 +921,19 @@ to cover the reference range, the `yLimFrom` parameter should be set on:
 		data = dataLB,
 		paramNameVar = "LBTEST", 
 		paramValueVar = "LBSTRESN",
-		paramGroupVar = "LBSCAT",
+		paramGroupVar = "LBCAT",
 		paramValueRangeVar = c("LBSTNRLO", "LBSTNRHI"),
 		yLimFrom = "value",
 		timeVar = "LBDY",
 		title = "Laboratory test measurements: actual value",
-		labelVars = labelVarsSDTMPelican
+		labelVars = labelVars
 	)
 	
 ```
 
-```{r exampleLineModule-yLimFrom-value-include, echo = FALSE, fig.height = attributes(lbLineYLimFromValuePlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Laboratory data with the 'subjectProfileLinePlot' function for patient:", names(lbLineYLimFromValuePlots)[1])}
+```{r exampleLineModule-yLimFrom-value-include, echo = FALSE, fig.height = attributes(lbLineYLimFromValuePlots[[subjectLB]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Laboratory data with the 'subjectProfileLinePlot' function for patient:", subjectLB)}
 
-	print(lbLineYLimFromValuePlots[[1]][[1]])
+	print(lbLineYLimFromValuePlots[[subjectLB]][[1]])
 
 ```
 
@@ -877,84 +941,108 @@ to cover the reference range, the `yLimFrom` parameter should be set on:
 
 ## Missing values 
 
-The missing values are always represented in the legend: color/shape palettes.
+Missing values in the specified color/shape variables are always displayed
+in the legend and associated palette.
 
 If the variable is specified as character (by default when the dataset is loaded
 into R), the **variable is converted to a factor and empty
 values ('', if any) in the variable are converted to missing (NA)**.
 
 If the variable is specified as factor, the missing values are included in the
-levels of the factor (`exclude = NULL`  in `factor`).
+levels of the factor (via `exclude = NULL`  in `factor`).
 
 ## Order of the categories
 
 By **default**, if a character vector is specified, the categories are sorted in
 **alphabetical order** when the variable is converted to a factor in R.
 
-```{r lab-SDTM-categories-default, fig.height = attributes(lbPlotsColor[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14}
-
-	## SDTM dataset
-
-	sdtmLB <- SDTMDataPelican$LB
+```{r lab-SDTM-categories-default}
 			
+	dataLB <- dataAll$LB
+
 	# LBRIND is a character: elements sorted in alphabetical order
 	lbPlotsColor <- subjectProfileEventPlot(
-		data = sdtmLB,
+		data = dataLB,
 		paramVar = "LBTEST",
-			paramGroupVar = "LBSCAT",
+		paramGroupVar = "LBCAT",
 		timeVar = "LBDY",
 		colorVar = "LBNRIND",
-		labelVars = labelVarsSDTMPelican,
-		title = "Laboratory test measurements: reference range indicator"
+		title = "Laboratory test measurements: actual value",
+		labelVars = labelVars
 	)
-	print(lbPlotsColor[[1]][[1]])
 	
 ```	
 
+```{r lab-SDTM-categories-default-include, echo = FALSE, fig.height = attributes(lbPlotsColor[[subjectLB]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Laboratory data with the 'subjectProfileEventPlot' function with color/shape ordered alphabetically for patient:", subjectLB)}
+
+print(lbPlotsColor[[subjectLB]][[1]])
+
+```
+
 To **specify the elements of the variable in a specific order** (e.g. ordered
 categories), the variable should be converted to a **factor with its levels
-sorted in the order of interest**. 
+sorted in the order of interest** (as by default in `ggplot2`). 
 
 For example, the reference ranges for the laboratory measurements are sorted
 from low to high in the legend: 
 
-```{r lab-SDTM-categories-sorted, fig.height = attributes(lbPlotsColor[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14}
+```{r lab-SDTM-categories-sorted}
 	
+	dataLB <- dataAll$LB
 	# sort LBRIND
-	sdtmLB$LBNRIND <- with(sdtmLB, factor(LBNRIND, levels = c("LOW", "NORMAL", "HIGH")))
-	lbPlotsColor <- subjectProfileEventPlot(
-		data = sdtmLB,
-		paramVar = "LBTEST",
-		paramGroupVar = "LBSCAT",
-		timeVar = "LBDY",
-		colorVar = "LBNRIND",
-		labelVars = labelVarsSDTMPelican,
-		title = "Laboratory test measurements: reference range indicator"
+	dataLB$LBNRIND <- with(dataLB, 
+		factor(LBNRIND, levels = c("LOW", "NORMAL", "HIGH", "ABNORMAL"))
 	)
-	print(lbPlotsColor[[1]][[1]])
+	
+	# create plot
+	lbPlotsColor <- subjectProfileEventPlot(
+		data = dataLB,
+		paramVar = "LBTEST",
+		paramGroupVar = "LBCAT",
+		timeVar = "LBDY",
+		colorVar = "LBNRIND",,
+		title = "Laboratory test measurements: actual value",
+		labelVars = labelVars
+	)
 	
 ```
 
-In the `ADaM` dataset, for some specific variables with categories, the
-corresponding numeric variable can be used for sorting:
+```{r lab-SDTM-categories-sorted-include, echo = FALSE, fig.height = attributes(lbPlotsColor[[subjectLB]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Laboratory data with the 'subjectProfileEventPlot' function with color/shape ordered as specified for patient:", subjectLB)}
 
-```{r lab-ADaM-categories-sorted, fig.height = attributes(lbPlotsColor[[1]][[1]])$metaData$nLines*heightLineIn, fig.width = 14}	
+print(lbPlotsColor[[subjectLB]][[1]])
+
+```
+
+Sometimes, the variable are also available 
+their numeric form in the CDISC datasets.
+
+In this case, corresponding numeric variable can be used for sorting:
+
+```{r lab-ADaM-categories-sorted-numeric}	
 	
-	## ADaM
+	dataLB <- dataAll$LB
 	
-	# in ADaM, the reference range can be sorted based on the corresponding numeric variable
-	ADLB <- ADaMDataPelican$ADLB
-	ADLB$ANRIND <- with(ADLB, reorder(ANRIND, ANRINDN))
+	# for the demo, creates numeric variable associated to reference range
+	# (often already available)
+	dataLB$LBNRINDN <- c(LOW = 1, NORMAL = 2, HIGH = 3, ABNORMAL = 10)[dataLB$LBNRIND]
+	
+	dataLB$LBNRIND <- with(dataLB, reorder(LBNRIND, LBNRINDN))
+	
 	lbPlotsColor <- subjectProfileEventPlot(
-		data = ADLB,
-		paramVar = "PARAM",
-		paramGroupVar = "PARCAT1",
-		timeVar = "ADY",
-		colorVar = "ANRIND",
-		labelVars = labelVarsADaMPelican,
-		title = "Laboratory test measurements: reference range indicator"
+		data = dataLB,
+		paramVar = "LBTEST",
+		paramGroupVar = "LBCAT",
+		timeVar = "LBDY",
+		colorVar = "LBNRIND", shapeVar = "LBNRIND",
+		title = "Laboratory test measurements: actual value",
+		labelVars = labelVars
 	)
-	print(lbPlotsColor[[1]][[1]])
+
+```
+
+```{r lab-SDTM-categories-sorted-numeric, echo = FALSE, fig.height = attributes(lbPlotsColor[[subjectLB]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Laboratory data with the 'subjectProfileEventPlot' function with color/shape ordered based on the corresponding numeric variable for patient:", subjectLB)}
+
+print(lbPlotsColor[[subjectLB]][[1]])
 
 ```
 
@@ -966,36 +1054,76 @@ The `timeTrans` parameter is used to specify a custom transformation of the time
 
 The `getTimeTrans` provides convenient transformations: 
 
-* 'asinh': hyperbolic arc-sine transformation, to zoom in small absolute time values (around 0).
+* 'asinh': hyperbolic arc-sine transformation, to zoom in small absolute time values 
+(around 0).  
 Negative and positive values are represented in a log-like fashion.
 * 'asinh-neg': hyperbolic arc-sine transformation only for
 negative relative time. The positive time frame is represented in a linear scale
 and negative times are represented in a log-like fashion.
+
 This is typically of interest for domains including events occurring/recorded
 long before the start of the study (e.g. concomitant medications).
+
+For example, the following subject has a concomitant medication
+starting long before the start of the study. This results
+into the positive part of the time axis being 'squeezed'.
+
+```{r exampleIntervalModule-cm-example}
+
+	cmPlots <- subjectProfileIntervalPlot(
+		data = dataAll$CM,
+		paramVar = c(
+			"CMTRT", 
+			"CMDOSE", "CMDOSU", "CMROUTE", 
+			"CMDOSFRQ"
+		),
+		timeStartVar = "CMSTDY",
+		timeEndVar = "CMENDY",
+		paramGroupVar = "CMCLAS",
+		colorVar = "CMCLAS",
+		title = "Concomitant medications",
+		labelVars = labelVars
+	)
+	
+	subjectCMTimeTrans <- "01-701-1192"
+
+```
+
+```{r exampleIntervalModule-cm-example-include, echo = FALSE, fig.height = attributes(cmPlots[[subjectCMTimeTrans]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", subjectCMTimeTrans)}
+
+	print(cmPlots[[subjectCMTimeTrans]][[1]])
+
+```
+
+A hyperbolic arc-sine transformation is applied on the time axis,
+only for the negative times, to focus mainly on the
+medications taken after the start of the treatment exposure (after time 0).
 
 ```{r exampleIntervalModule-cm-timeTransformation}
 
 	timeTrans <- getTimeTrans("asinh-neg")
-
-	# AEPTCD: preferred term codes
-	cmPlots <- subjectProfileIntervalPlot(
-		data = SDTMDataPelican$CM,
-		paramVar = c("CMINDC", "CMTRT", "CMDOSTXT", "CMDOSU", "CMROUTE", "CMDOSFRQ"),
+	
+	cmPlotsTimeTrans <- subjectProfileIntervalPlot(
+		data = dataAll$CM,
+		paramVar = c(
+			"CMTRT", 
+			"CMDOSE", "CMDOSU", "CMROUTE", 
+			"CMDOSFRQ"
+		),
 		timeStartVar = "CMSTDY",
 		timeEndVar = "CMENDY",
-		paramGroupVar = "CMINDC",
-		colorVar = "CMINDC",
-		labelVars = labelVarsSDTMPelican,
+		paramGroupVar = "CMCLAS",
+		colorVar = "CMCLAS",
+		timeTrans = timeTrans,
 		title = "Concomitant medications",
-		timeTrans = timeTrans
+		labelVars = labelVars
 	)
 
 ```
 
-```{r exampleIntervalModule-cm-timeTransformation-include, echo = FALSE, fig.height = attributes(cmPlots[["study-4905-02"]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function for patient:", names(cmPlots)[1])}
+```{r exampleIntervalModule-cm-timeTransformation-include, echo = FALSE, fig.height = attributes(cmPlotsTimeTrans[[subjectCMTimeTrans]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Concomitant medications with the 'subjectProfileIntervalPlot' function with asinh negative transformation of the time axis for patient:", subjectCMTimeTrans)}
 
-	print(cmPlots[["study-4905-02"]][[1]])
+	print(cmPlotsTimeTrans[[subjectCMTimeTrans]][[1]])
 
 ```
 
@@ -1015,6 +1143,8 @@ As the creation of the report is time-consuming, the report creation
 is not run during the vignette creation.
 
 ```{r createReportWithAllModules-referenceLinesFromSAP, eval = FALSE}
+
+	#TODO
 
 	# reference lines input parameter
 	refLinesParam <- list(
@@ -1082,13 +1212,13 @@ As the creation of the report is time-consuming, the report creation is not run 
 		listPlots = list(dmPlots, mhPlots, exPlots, aePlots, lbPlotsColor),
 		outputFile = "subjectProfile_SDTM_referenceLinesFromSV.pdf",
 		# reference line(s)
-		refLinesData = SDTMDataPelican$SV,
+		refLinesData = dataAll$SV,
 		refLinesTimeVar = "SVSTDY",
 		refLinesLabelVar = "VISIT",
 		# bookmark(s)
-		bookmarkData = SDTMDataPelican$DM,
+		bookmarkData = dataAll$DM,
 		bookmarkVar = c("SEX", "ARM"),
-		labelVars = attr(SDTMDataPelican, "labelVars"),
+		labelVars = attr(dataAll, "labelVars"),
 		exportFigures = TRUE
 	)
 
@@ -1116,19 +1246,19 @@ the laboratory measurements before and after baseline.
 ```{r createReportWithAllModules-example}
 
 	# Adverse events visualization
-	dataAE <- SDTMDataPelican$AE
+	dataAE <- dataAll$AE
 	aePlots <- subjectProfileIntervalPlot(
 		data = dataAE,
 		paramVar = "AETERM",
 		timeStartVar = "AESTDY",
 		timeEndVar = "AEENDY",
 		colorVar = "AESEV",
-		labelVars = labelVarsSDTMPelican,
+		labelVars = labelVars,
 		title = "Adverse events"
 	)
 
 	# Laboratory measurements
-	dataLB <- SDTMDataPelican$LB
+	dataLB <- dataAll$LB
 	# sort the categories (empty values '' becomes NA)
 	dataLB$LBNRIND <- factor(dataLB$LBNRIND, levels = c("LOW", "NORMAL", "HIGH"))
 	lbLinePlots <- subjectProfileLinePlot(
@@ -1139,7 +1269,7 @@ the laboratory measurements before and after baseline.
 		paramValueRangeVar = c("LBSTNRLO", "LBSTNRHI"),
 		timeVar = "LBDY",
 		title = "Laboratory test measurements: actual value",
-		labelVars = labelVarsSDTMPelican
+		labelVars = labelVars
 	)
 
 	# create the list of visualizations

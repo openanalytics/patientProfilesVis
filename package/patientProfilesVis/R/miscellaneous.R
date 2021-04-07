@@ -470,12 +470,12 @@ interactionWithMissing <- function(data, vars, varSep = " - "){
 #' larger than the specified width.
 #' If not specified, column width is optimized
 #' based on the max length of the character in each column.
-#' @inheritParams glpgUtilityFct::formatVarForPlotLabel
+#' @inheritParams clinUtils::formatVarForPlotLabel
 #' @inheritParams getOptimalColWidth
 #' @inheritParams patientProfilesVis-common-args
 #' @return \code{data} with reformatted \code{paramVar} and \code{paramValueVar} variables,
 #' with additional attribute: \code{colWidth}.
-#' @importFrom glpgUtilityFct formatVarForPlotLabel
+#' @importFrom clinUtils formatVarForPlotLabel
 #' @seealso \link{subjectProfileTextPlot}
 #' @author Laure Cougnaud
 formatParamVarTextPlot <- function(data, 
@@ -600,7 +600,8 @@ getOptimalColWidth <- function(
 	
 }
 
-#' Filter a dataset for records of interest.
+#' Filter a dataset for records of interest,
+#' for use in the patient profiles.
 #' 
 #' Data is filtered based on the following workflow:
 #' \enumerate{

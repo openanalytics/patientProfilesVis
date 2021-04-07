@@ -16,7 +16,7 @@
 #' @param timeLabel This parameter is deprecated, use \code{timeLab} instead.
 #' @inheritParams patientProfilesVis-common-args
 #' @inheritParams filterData
-#' @inheritParams glpgUtilityFct::formatVarForPlotLabel
+#' @inheritParams clinUtils::formatVarForPlotLabel
 #' @inheritParams formatTimeInterval
 #' @inheritParams getPageVar
 #' @return list of (across subjects) of list (across pages) 
@@ -29,7 +29,7 @@
 #' @import ggplot2
 #' @importFrom plyr dlply
 #' @importFrom stats reorder
-#' @importFrom glpgUtilityFct getLabelVar formatVarForPlotLabel
+#' @importFrom clinUtils getLabelVar formatVarForPlotLabel
 #' @export
 subjectProfileIntervalPlot <- function(
 	data,
@@ -431,7 +431,7 @@ subjectProfileIntervalPlot <- function(
 #' \item{'caption': }{String with extra explanation concerning imputation that could be included in plot caption.}
 #' }
 #' @importFrom plyr ddply
-#' @importFrom glpgUtilityFct getLabelVar
+#' @importFrom clinUtils getLabelVar
 #' @author Laure Cougnaud
 formatTimeInterval <- function(data, 
 	timeStartVar, timeStartLab = getLabelVar(timeStartVar, labelVars = labelVars),

@@ -15,8 +15,8 @@
 #' @import ggplot2
 #' @importFrom plyr dlply
 #' @importFrom stats reorder
-#' @importFrom glpgUtilityFct formatVarForPlotLabel
-#' @importFrom glpgUtilityFct getLabelVar
+#' @importFrom clinUtils formatVarForPlotLabel
+#' @importFrom clinUtils getLabelVar
 #' @export
 subjectProfileEventPlot <- function(
 	data,

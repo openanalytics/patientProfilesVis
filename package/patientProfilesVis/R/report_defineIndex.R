@@ -21,7 +21,7 @@
 #' }
 #' }
 #' @importFrom plyr daply
-#' @importFrom glpgUtilityFct getLabelVar
+#' @importFrom clinUtils getLabelVar
 #' @author Laure Cougnaud
 defineIndex <- function(
 	subjects, 
