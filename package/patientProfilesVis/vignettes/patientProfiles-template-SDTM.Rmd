@@ -3,7 +3,12 @@ title: "Template to create patient profiles for SDTM datasets"
 subtitle: "Study: X, Batch X"
 author: "Laure Cougnaud"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
-output: rmarkdown::html_document
+output: 
+  rmarkdown::html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 5
+    number_sections: true
 vignette: >
   %\VignetteIndexEntry{SDTM template for patient profiles}
   %\VignetteEngine{knitr::rmarkdown}
@@ -13,7 +18,7 @@ vignette: >
 # Introduction
 
 This document presents an example of standard patient profile report
-for SDTM datasets.
+for a typical CDISC 'Study Data Tabulation Model' (a.k.a SDTM) datasets.
 
 This document is intended to be used as a template to create patient profile
 report for your specific study.
@@ -36,13 +41,8 @@ variables available in the data, ...).
 	library(knitr)
 
 	knitr::opts_chunk$set(
-		echo = TRUE, # print code in the report
-		message = TRUE,
 		error = FALSE, # stop document execution if error (not the default)
-		fig.align = "center",
-		warning = FALSE,
-		# to have list of DT included within a chunk with: glpgUtilityFct::knitPrintListObjects
-		results = 'asis'
+		fig.align = "center"
 	)
 	
 ```
@@ -52,7 +52,6 @@ The following R packages are required:
 ```{r patientProfiles-loadPackages}
 
 	library(patientProfilesVis)
-	library(glpgUtilityFct)
 
 ```
 
@@ -62,55 +61,19 @@ The SDTMs datasets are imported into R.
 
 ```{r patientProfiles-loadData}
 	
-	# For this vignette, an example STDM dataset from the Pelican
-	# study is imported into R
-	data(SDTMDataPelican, package = "glpgUtilityFct")
-	data(labelVarsSDTMPelican, package = "glpgUtilityFct")
-	dataAll <- SDTMDataPelican
-	labelVars <- labelVarsSDTMPelican
+	library(clinUtils)
+	
+	# For this vignette, an example STDM dataset is used
+	# (subset of the CDISC Pilot 01 study) 
+	data(dataSDTMCDISCP01, package = "clinUtils")
+	dataAll <- dataSDTMCDISCP01
+	labelVars <- attr(dataSDTMCDISCP01, "labelVars")
 	
 	# If SDTM datasets should be imported from the external folder,
 	# the following code could be used:
 #	pathFiles <- list.files(path = "/path/to/data", pattern = "*.sas7bdat$", full.names = TRUE)
 #	dataAll <- loadDataADaMSDTM(files = pathFiles)
 #	labelVars <- attr(dataAll, "labelVars")
-
-```
-
-## Palettes
-
-Color and shape palette for the reference indicator variable are
-created. These shape of the symbols are specified Unicode format in hexadecimal
- (see [List of unicode symbols](https://en.wikipedia.org/wiki/List_of_Unicode_characters)).
-
-```{r patientProfiles-palettes}
-	
-	# color/shape palette for reference range indicator (abnormality lab/vs)
-	# Please note that this might be manually updated
-	shapePaletteRind <- c(
-		`Low Panic` = '\u25BC', # big filled up-pointing arrow
-		LOW = '\u25BC', Low = '\u25BC', # filled down-pointing arrow
-		`Low Normal` = '\u25BC', # small filled down-pointing arrow
-		NORMAL = '\u25CF', Normal = '\u25CF', # filled circle
-		`High Normal` = '\u25B2', # small filled up-pointing arrow
-		HIGH = '\u25B2', High = '\u25B2', # filled up-pointing arrow
-		`High Panic` = '\u25B2', # big filled up-pointing arrow
-		Abnormal = '\u2666', # diamond
-		'NA' = '+', # cross (3)
-		Unknown = '+'
-	)
-	colorPaletteRind <- c(
-		`Low Panic` = "red",
-		LOW = "orange", Low = "orange",
-		`Low Normal` = "yellow",
-		NORMAL = "green", Normal = "green",
-		`High Normal` = "yellow",
-		HIGH = "orange", High = "orange",
-		`High Panic` = "red",
-		Abnormal = "red",
-		'NA' = "grey",
-		Unknown = "grey"
-	)
 
 ```
 
@@ -132,8 +95,9 @@ See the vignette:
 	dmPlots <- subjectProfileTextPlot(
 		data = dataAll$DM,
 		paramValueVar = c(
-			"SEX", "RACE", "COUNTRY", "ARM",
-			"SITEID", "AGE", "RFSTDTC"
+			"SEX", "RACE", "ETHNIC",
+			"COUNTRY", "ARM",
+			"AGE", "RFSTDTC"
 		),
 		# optional:
 		labelVars = labelVars
@@ -148,9 +112,9 @@ See the vignette:
 	
 	mhPlots <- subjectProfileTextPlot(
 		data = dataAll$MH,
-		paramValueVar = c("MHDECOD", "MHSTDTC", "MHENDTC"),
+		paramValueVar = c("MHDECOD", "MHTERM", "MHSTDTC"), #"MHENDTC" if available
 		# optional:
-		paramGroupVar = "MHSTDTC",
+		paramGroupVar = c("MHSTDTC", "MHDY"),
 		title = "Medical history (Start - End)",
 		labelVars = labelVars,
 		table = TRUE
@@ -165,12 +129,16 @@ See the vignette:
 
 	cmPlots <- subjectProfileIntervalPlot(
 		data = dataAll$CM,
-		paramVar = c("CMDECOD", "CMDOSTXT", "CMDOSU", "CMDOSFRQ", "CMROUTE"),
+		paramVar = c(
+			"CMTRT", 
+			"CMDOSE", "CMDOSU", "CMROUTE", 
+			"CMDOSFRQ"
+		),
 		timeStartVar = "CMSTDY",
 		timeEndVar = "CMENDY",
 		# optional:
-		paramGroupVar = "CMINDC",
-		colorVar = "CMINDC",
+		paramGroupVar = "CMCLAS", # or CMINDC
+		colorVar = "CMCLAS", # or CMINDC
 		labelVars = labelVars,
 		title = "Concomitant medications",
 		# To zoom in axis scale in study time frame
@@ -191,16 +159,20 @@ See the vignette:
 
 	exPlots <- subjectProfileIntervalPlot(
 		data = dataAll$EX,
-		paramVar = c("EXTRT", "EXDOSE", "EXDOSU", "EXDOSFRM", "EXDOSFRQ", "EXROUTE", "EXTPT"),
+		paramVar = c(
+			"EXTRT", "EXDOSE", "EXDOSU", 
+			"EXDOSFRM", "EXDOSFRQ", "EXROUTE"
+		), # "EXTPT" if available
 		timeStartVar = "EXSTDY",
 		timeEndVar = "EXENDY",
 		# optional:
 		colorVar = "EXDOSFRM",
 		title = "Treatment exposure",
-		timeAlign = FALSE,
 		alpha = 0.8,
 		labelVars = labelVars
 	)
+	
+	patientProfilesPlots <- c(patientProfilesPlots, list(EX = exPlots))
 
 ```
 
@@ -208,9 +180,13 @@ See the vignette:
 
 ```{r patientProfiles-adverseEvents}
 
+	dataAE <- dataAll$AE$AESEV
+	# to adapt for specific dataset
+	dataAE$AESEV <- factor(dataAll$AE$AESEV, levels = c("MILD", "MODERATE", "SEVERE"))
+	
 	aePlots <- subjectProfileIntervalPlot(
 		data = dataAll$AE,
-		paramVar = "AEDECOD",
+		paramVar = "AEDECOD", # AETERM, depending on coding
 		timeStartVar = "AESTDY",
 		timeEndVar = "AEENDY",
 		# optional:
@@ -230,27 +206,28 @@ See the vignette:
 
 ```{r patientProfiles-laboratory}
 
+	dataLB <- dataAll$LB
+	# to adapt for dataset
+	dataLB$LBNRIND <- factor(dataLB$LBNRIND, levels = c("LOW", "NORMAL", "HIGH", "ABNORMAL"))
+
 	# specify custom color and shape palette
-	lbRind <- unique(dataAll$LB$LBNRIND)
-	colorPaletteLB <- colorPaletteRind[which(names(colorPaletteRind) %in% c(lbRind, "NA"))]
-	shapePaletteLB <- shapePaletteRind[which(names(shapePaletteRind) %in% c(lbRind, "NA"))]
-	
+	colorPaletteLB <- clinUtils::getPaletteCDISC(x = dataLB$LBNRIND, var = "NRIND", type = "color")
+	shapePaletteLB <- clinUtils::getPaletteCDISC(x = dataLB$LBNRIND, var = "NRIND", type = "shape")
 	
 	lbPlots <- subjectProfileLinePlot(
-		data = dataAll$LB,
+		data = dataLB,
 		paramValueVar = "LBSTRESN",
 		paramNameVar = "LBTEST",
 		timeVar = "LBDY",
 		# optional
 		paramValueRangeVar = c("LBSTNRLO", "LBSTNRHI"),
-		paramGroupVar = c("LBCAT", "LBSCAT"),
+		paramGroupVar = "LBCAT", # "LBSCAT" if available
 		colorVar = "LBNRIND", colorPalette = colorPaletteLB,
 		shapeVar = "LBNRIND", shapePalette = shapePaletteLB,
 		shapeSize = 4,
 		title = "Laboratory test measurements",
 		alpha = 0.8,
-		labelVars = labelVars,
-		subjectSubset = "study-4902-02"
+		labelVars = labelVars
 	)
 	
 	patientProfilesPlots <- c(patientProfilesPlots, list(LB = lbPlots))
@@ -270,8 +247,8 @@ See the vignette:
 		paramNameVar = "VSTEST",
 		timeVar = "VSDY",
 		# optional
-		paramGroupVar = "VSCAT",
-		colorVar = "VSCAT", 
+#		paramGroupVar = "VSCAT", # if available
+		colorVar = "VSPOS", # if available
 		shapeSize = 2,
 		title = "Vital signs",
 		alpha = 0.8,
@@ -283,7 +260,10 @@ See the vignette:
 
 ## Electrocardiogram
 
-```{r patientProfiles-ECG}
+Note: no ECG data is available for the example dataset,
+so this domain is not considered for the example.
+
+```{r patientProfiles-ECG, eval = FALSE}
 
 	# If available, reference range indicator
 	# could be displayed via the color/shape variable
@@ -302,7 +282,9 @@ See the vignette:
 	
 ```
 
-## Creation of the subject profiles
+## Creation of the reports
+
+The subject profile report is created by subject.
 
 ```{r patientProfiles-createSubjectProfileReport, message = FALSE, warning = TRUE}
 
@@ -317,22 +299,21 @@ See the vignette:
 		timeAlign = "all", timeAlignPerSubject = "all",
 		exportBatchSize = 5,
 		
-		# export subjects with highest AE toxicity grades first
+		# export subjects with highest adverse events severity
 		subjectSortData = dataAll$AE,
 		subjectSortVar = "AESEV",
 		subjectSortDecreasing = TRUE,
 		
-#		# only consider subset of patients:
-#		# - option 1: from a dataset
+#		# only patients with severe adverse events
 #		subjectSubsetData = dataAll$AE,
 #		subsetVar = "AETOXGR",
-#		subsetValue = c("MODERATE", "SEVERE"),
-#		# - or from specified USUBJID
-		subset = c("study-4902-02", "study-4903-07", "study-4908-01", "study-4907-07")
-
+#		subsetValue = "SEVERE"
 	)
 
 ```
+
+The resulting subject profiles reports are available in 
+[this folder](./patientProfiles).
 
 # Session information
 

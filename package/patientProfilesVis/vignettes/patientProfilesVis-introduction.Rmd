@@ -42,7 +42,7 @@ and any measurements conducted during
 a clinical trial (e.g. laboratory, vital signs or ECG).
 
 
-```{r loadPackages}
+```{r loadPackages, message = FA:SE}
 
 	library(patientProfilesVis)
 	library(pander)
@@ -1602,6 +1602,8 @@ a specific study, the different modules can be created only for a
 **subset of the subjects** via the `subjectSubset` or `subsetData`/`subsetVar`/`subsetValue`
 parameters
 * for the final creation of the  patient profiles on the entire set of patients:
+    + the reports can be created for the patients of highest concern first,
+    e.g. patients with severe adverse events (via `subjectSortData`/`subjectSortVar`)
     + the reports can be exported **by batch of X subjects**, via the `exportBatchSize`
     parameter. Exporting the patient profiles by batch of 10 subjects can be a good idea for a
     for study with a high number of patients.
