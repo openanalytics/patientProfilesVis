@@ -1133,8 +1133,8 @@ e.g. at the start of the R session, with:
 ```{r palettes-customGeneral-set}
 
 # change palettes for the entire R session
-options(`patientProfilesVis.colors` = c("gold", "pink", "cyan"))
-options(`patientProfilesVis.shapes` = c("cross", "diamond", "circle", "square"))
+options(patientProfilesVis.colors = c("gold", "pink", "cyan"))
+options(patientProfilesVis.shapes = c("cross", "diamond", "circle", "square"))
 
 ```
 
@@ -1169,8 +1169,8 @@ at the start of a new R session, or by setting:
 ```{r palettes-default-reset}
 
 # change palettes for the entire R session
-options(`patientProfilesVis.colors` = colorsDefault)
-options(`patientProfilesVis.shapes` = shapesDefault)
+options(patientProfilesVis.colors = colorsDefault)
+options(patientProfilesVis.shapes = shapesDefault)
 
 ```
 
