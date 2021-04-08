@@ -8,6 +8,7 @@ Maintainer: Laure Cougnaud <laure.cougnaud@openanalytics.eu>
 Description: Creation of report with customizable visualization 
   of patient profiles.
 Imports: 
+  clinUtils,
   ggplot2 (>= 3.0.0), 
   plyr, 
   cowplot, 
@@ -17,7 +18,6 @@ Imports:
   grid, 
   dplyr, 
   stringr, 
-  glpgUtilityFct (>= 0.24.0), 
   parallel, 
   gridExtra, 
   scales,
