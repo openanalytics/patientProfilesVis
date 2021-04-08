@@ -42,7 +42,7 @@ and any measurements conducted during
 a clinical trial (e.g. laboratory, vital signs or ECG).
 
 
-```{r loadPackages, message = FA:SE}
+```{r loadPackages, message = FALSE}
 
 	library(patientProfilesVis)
 	library(pander)
@@ -974,7 +974,7 @@ The `subsetData` parameter is used to specify only a subset of the subjects avai
 	
 ```
 
-# Specification of the color/shape
+# Specify colors/shapes
 
 ## Missing values 
 
@@ -1084,6 +1084,97 @@ print(lbPlotsColor[[subjectLB]][[1]])
 ```
 
 ## Palettes
+
+### Set palette for the entire session
+
+Palette for the colors and shapes associated with specific variables
+can be set for all patient profile visualizations at once by
+setting the `patientProfilesVis.colors` and `patientProfilesVis.shapes`
+options at the start of the R session.
+
+The default palette for colors is the `viridis` colorblind palette 
+and a custom palette for shapes has been created in the package.
+
+```{r palettes-default-get}
+
+# display default palettes
+colorsDefault <- getOption("patientProfilesVis.colors")
+colorsDefault
+shapesDefault <- getOption("patientProfilesVis.shapes")
+shapesDefault
+
+```
+
+```{r palettes-default-example}
+
+# create plot
+lbPlots <- subjectProfileEventPlot(
+	data = dataLB,
+	paramVar = "LBTEST",
+	paramGroupVar = "LBCAT",
+	timeVar = "LBDY",
+	colorVar = "LBNRIND", 
+	shapeVar = "LBNRIND", 
+	title = "Laboratory test measurements: actual value",
+	labelVars = labelVarsSDTM
+)
+
+```
+
+```{r palettes-default-example-include, echo = FALSE, fig.height = attributes(lbPlots[[subjectLB]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Laboratory data with reference range with the 'subjectProfileLinePlot' function with default colors/shapes for patient:", subjectLB)}
+
+print(lbPlots[[subjectLB]][[1]])
+
+```
+
+The palettes can be set for all patient profile visualization,
+e.g. at the start of the R session, with:
+
+```{r palettes-customGeneral-set}
+
+# change palettes for the entire R session
+options(`patientProfilesVis.colors` = c("gold", "pink", "cyan"))
+options(`patientProfilesVis.shapes` = c("cross", "diamond", "circle", "square"))
+
+```
+
+In case the palette contains less elements than available in the data,
+these are replicated.
+
+```{r palettes-customGeneral-example}
+
+# create plot
+lbPlots <- subjectProfileEventPlot(
+	data = dataLB,
+	paramVar = "LBTEST",
+	paramGroupVar = "LBCAT",
+	timeVar = "LBDY",
+	colorVar = "LBNRIND", 
+	shapeVar = "LBNRIND", 
+	title = "Laboratory test measurements: actual value",
+	labelVars = labelVarsSDTM
+)
+
+```
+
+```{r palettes-customGeneral-example-include, echo = FALSE, fig.height = attributes(lbPlots[[subjectLB]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Laboratory data with reference range with the 'subjectProfileLinePlot' function with default colors/shapes for patient:", subjectLB)}
+
+	print(lbPlots[[subjectLB]][[1]])
+
+```
+
+Palettes are reset to the default patient profiles palettes 
+at the start of a new R session, or by setting:
+
+```{r palettes-default-reset}
+
+# change palettes for the entire R session
+options(`patientProfilesVis.colors` = colorsDefault)
+options(`patientProfilesVis.shapes` = shapesDefault)
+
+```
+
+### Palette for standard CDISC variables
 
 Custom palettes for standard reference indicator variable are available
 in the `clinUtils` package, via the function `getPaletteCDISC`.

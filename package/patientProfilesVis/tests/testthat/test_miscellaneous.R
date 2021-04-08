@@ -109,14 +109,3 @@ test_that("a variable is formatted to be used as an aesthetic in a plot", {
 	expect_equal(levels(varAes), c("A", "B", NA_character_))
 			
 })
-
-test_that("linetype palette is extracted for the patient profiles", {
-			
-	x <- c("Treatment B", "Treatment A", NA_character_, "Treatment A")
-	linetype <- getLinetypePalettePatientProfile(x = x)
-	expect_type(linetype, "character")
-	expect_length(linetype, 3)
-	expect_named(linetype, c("Treatment B", "Treatment A", 'NA'))
-			
-})
-

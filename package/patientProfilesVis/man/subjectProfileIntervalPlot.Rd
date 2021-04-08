@@ -169,7 +169,14 @@ used both for the point(s) and segment(s).}
 
 \item{colorPalette}{Named vector with color palette.
 The variable should be named with the corresponding element
-in \code{colorVar}.}
+in \code{colorVar}.\cr
+Colors can also be defined for the entire session, by setting
+\code{options(patientProfilesVis.colors = X)} with X either:
+\itemize{
+\item{a vector with colors}
+\item{a function returning a vector of colors for a specified number
+of elements (\code{viridis} by default)}
+}}
 
 \item{alpha}{Numeric with transparency, 1 by default.}
 

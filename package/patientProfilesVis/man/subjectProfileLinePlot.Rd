@@ -91,7 +91,14 @@ for the colors and the filling of the points.}
 
 \item{colorPalette}{Named vector with color palette.
 The variable should be named with the corresponding element
-in \code{colorVar}.}
+in \code{colorVar}.\cr
+Colors can also be defined for the entire session, by setting
+\code{options(patientProfilesVis.colors = X)} with X either:
+\itemize{
+\item{a vector with colors}
+\item{a function returning a vector of colors for a specified number
+of elements (\code{viridis} by default)}
+}}
 
 \item{shapeVar}{String, variable of \code{data} for shape of the points.
 By default, same as \code{colorVar}.}
@@ -103,7 +110,17 @@ but not \code{shapeVar} is not specified.}
 \item{shapePalette}{Named character vector with shape palette
 for \code{shapeVar}.
 The variable should be named with the corresponding element
-in \code{shapeVar}.}
+in \code{shapeVar}.\cr
+Shapes can also be defined for the entire session, by setting
+\code{options(patientProfilesVis.shapes = X)} with X either:
+\itemize{
+\item{a vector with shapes}
+\item{a function returning a vector of shapes for a specified number
+of elements}
+}
+Note it is advised to specify the shapes as character,
+e.g. 'cross' instead of \code{4}, in case Unicode
+symbols should also be used.}
 
 \item{paramGroupVar}{(optional) Character vector with variable(s) 
 of \code{data} based on which the data will be grouped and sorted 
