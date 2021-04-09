@@ -150,7 +150,7 @@ RUN R -e "remotes::install_version('haven', version = '2.3.1', upgrade = FALSE)"
     R -e "remotes::install_version('htmlwidgets', version = '1.5.3', upgrade = FALSE)" && \
     R -e "remotes::install_version('plotly', version = '4.9.3', upgrade = FALSE)" && \
     R -e "remotes::install_version('DT', version = '0.17', upgrade = FALSE)" && \
-    R -e "remotes::install_version('data.table', version = '1.14.0', upgrade = FALSE)" && \
+    R -e "remotes::install_version('data.table', version = '1.14.0', upgrade = FALSE)"
 
 # clinUtils
 COPY clinUtils_*.tar.gz /tmp/clinUtils.tar.gz
