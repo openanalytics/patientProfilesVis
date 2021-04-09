@@ -80,9 +80,9 @@ getShapePalettePatientProfile <- function(
 	if(is.null(n)) n <- length(x)
 	
 	palette <- getOption("patientProfilesVis.shapes")
-	palette <- if(is.null(palette)){
-		shapesPatientProfiles
-	}else	if(is.function(palette)){
+	if(is.null(palette))
+		palette <- shapesPatientProfiles
+	palette <- if(is.function(palette)){
 		palette(n)
 	}else{
 		rep(palette, length.out = n)
@@ -145,9 +145,9 @@ getColorPalettePatientProfile <- function(
 	if(is.null(n)) n <- length(x)
 	
 	palette <- getOption("patientProfilesVis.colors")
-	palette <- if(is.null(palette)){
-		colorsPatientProfiles
-	}else	if(is.function(palette)){
+	if(is.null(palette))
+		palette <- colorsPatientProfiles
+	palette <- if(is.function(palette)){
 		palette(n)
 	}else{
 		rep(palette, length.out = n)

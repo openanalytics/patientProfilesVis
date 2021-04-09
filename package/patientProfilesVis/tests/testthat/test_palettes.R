@@ -32,6 +32,108 @@ test_that("Default palette is viridis", {
       
     })
 
+test_that("Color palette is successfully set as a vector via global options", {
+			
+	colorsDefault <- getOption("patientProfilesVis.colors")
+			
+	# set colors to custom palette
+	colorPalette <- c("gold", "blue", "green")
+	options(patientProfilesVis.colors = colorPalette)
+	
+	expect_equal(
+		getColorPalettePatientProfile(n = 10),
+		rep(colorPalette, length.out = 10)
+	)
+	
+	# reset to default
+	options(patientProfilesVis.colors = colorsDefault)
+	
+})
+
+test_that("Shape palette is successfully set as a vector via global options", {
+			
+	shapesDefault <- getOption("patientProfilesVis.shapes")
+			
+	# set colors to custom palette
+	shapePalette <- c("square", "circle")
+	options(patientProfilesVis.shapes = shapePalette)
+			
+	expect_equal(
+		getShapePalettePatientProfile(n = 10),
+		rep(shapePalette, length.out = 10)
+	)
+			
+	# reset to default
+	options(patientProfilesVis.shapes = shapesDefault)
+			
+})
+
+test_that("Color palette is successfully set as a function via global options", {
+			
+	colorsDefault <- getOption("patientProfilesVis.colors")
+		
+	# set colors to custom palette
+	colorPaletteFct <- rainbow
+	options(patientProfilesVis.colors = colorPaletteFct)
+			
+	expect_equal(
+		getColorPalettePatientProfile(n = 10),
+		colorPaletteFct(10)
+	)
+			
+	# reset to default
+	options(patientProfilesVis.colors = colorsDefault)
+			
+})
+
+test_that("Shape palette is successfully set as a function via global options", {
+			
+	shapesDefault <- getOption("patientProfilesVis.shapes")
+			
+	# set shapes to custom palette
+	shapePaletteFct <- function(n)
+		rep(c("cross", "circle"), length.out = n)
+	options(patientProfilesVis.shapes = shapePaletteFct)
+			
+	expect_equal(
+		getShapePalettePatientProfile(n = 10),
+		shapePaletteFct(10)
+	)
+			
+	# reset to default
+	options(patientProfilesVis.shapes = shapesDefault)
+		
+})
+
+test_that("Shape palette is successfully set as the default if no options are provided", {
+			
+	shapesDefault <- getOption("patientProfilesVis.shapes")
+		
+	options(patientProfilesVis.shapes = NULL)
+	expect_equal(
+		getShapePalettePatientProfile(n = 10),
+		rep(shapesDefault, length.out = 10)
+	)
+	
+	# reset shapes to default
+	options(patientProfilesVis.shapes = shapesDefault)
+			
+})
+
+test_that("Color palette is set as the default if no options are provided", {
+			
+	colorsDefault <- getOption("patientProfilesVis.colors")
+	
+	options(patientProfilesVis.colors = NULL)
+	expect_equal(
+		getColorPalettePatientProfile(n = 10),
+		colorsDefault(10)
+	)
+	
+	# reset shapes to default
+	options(patientProfilesVis.colors = colorsDefault)
+	
+})
 
 test_that("Unnamed palette", {
       
