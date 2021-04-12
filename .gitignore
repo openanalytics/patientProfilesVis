@@ -19,3 +19,4 @@ PatientProfile_3067_101.Rmd
 *.out
 .RDuetConsole
 figures_vignette
+report/
