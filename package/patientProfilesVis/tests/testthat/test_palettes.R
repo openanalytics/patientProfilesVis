@@ -105,36 +105,6 @@ test_that("Shape palette is successfully set as a function via global options", 
 		
 })
 
-test_that("Shape palette is successfully set as the default if no options are provided", {
-			
-	shapesDefault <- getOption("patientProfilesVis.shapes")
-		
-	options(patientProfilesVis.shapes = NULL)
-	expect_equal(
-		getShapePalettePatientProfile(n = 10),
-		rep(shapesDefault, length.out = 10)
-	)
-	
-	# reset shapes to default
-	options(patientProfilesVis.shapes = shapesDefault)
-			
-})
-
-test_that("Color palette is set as the default if no options are provided", {
-			
-	colorsDefault <- getOption("patientProfilesVis.colors")
-	
-	options(patientProfilesVis.colors = NULL)
-	expect_equal(
-		getColorPalettePatientProfile(n = 10),
-		colorsDefault(10)
-	)
-	
-	# reset shapes to default
-	options(patientProfilesVis.colors = colorsDefault)
-	
-})
-
 test_that("Unnamed palette", {
       
       expect_named(getColorPalettePatientProfile(n = 1), NULL)
