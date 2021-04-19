@@ -2,38 +2,52 @@
 % Please edit documentation in R/palettes.R
 \name{getShapePalettePatientProfile}
 \alias{getShapePalettePatientProfile}
-\title{Get a shape palette of specified length,
-either from a vector of names for the palette, or
-from a specified length.}
+\title{Get a shape palette for patient profile
+visualizations.}
 \usage{
-getShapePalettePatientProfile(n = NULL, x = NULL, includeNA = TRUE)
+getShapePalettePatientProfile(..., includeNA = TRUE, asText = TRUE)
 }
 \arguments{
-\item{n}{Integer of length 1, number of elements in palette.}
-
-\item{x}{Vector with elements used for palette.
+\item{...}{
+  Arguments passed on to \code{\link[clinUtils:getShapePalette]{clinUtils::getShapePalette}}
+  \describe{
+    \item{\code{n}}{Integer of length 1, number of elements in palette.}
+    \item{\code{x}}{Vector with elements used for palette.
 If factor, the levels are used, otherwise the unique elements of the vector.
 Missing values are automatically removed, excepted if
 \code{includeNA} is set to TRUE.}
-
-\item{includeNA}{Logical (TRUE by default), 
+    \item{\code{includeNA}}{Logical (FALSE by default), 
 should NA elements be retained in the palette in case
 \code{x} is specified?}
+    \item{\code{asText}}{Logical (FALSE by default), should the palette
+be expressed as integer (base R plot and ggplot2 compatible)
+or in text format 
+(e.g. required if combined with unicode symbols in ggplot2)?}
+    \item{\code{palette}}{A function or a vector, for custom shapes.\cr
+The vector should be a character if \code{asText} is set to TRUE.\cr
+Default is the \code{\link[clinUtils]{clinShapes}} shape palette,
+or \code{\link[clinUtils]{clinShapesText}} is \code{asText} is set to TRUE.}
+  }}
 }
 \value{
-vector of shape values
+Vector of shapes,
+named with the elements in \code{x} if \code{x} is specified.
 }
 \description{
-Note that 19 unique symbols are available at maximum
-(replicated if necessary).
+This is a simple wrapper around the 
+\link[clinUtils]{getShapePalette},
+with different defaults:
+\itemize{
+\item{inclusion of missing values by
+default (\code{includeNA} set to \code{TRUE})
 }
-\examples{
-#' extract longest shape palette available
-getShapePalettePatientProfile(n = 19)
-# extract palette for a vector
-getShapePalettePatientProfile(x = paste('treatment', 1:4))
-# include missing
-getShapePalettePatientProfile(x = c(NA_character_, "group1"), includeNA = TRUE)
+\item{the extraction of shapes as text
+by default (\code{asText} set to \code{TRUE})
+}
+}
+}
+\seealso{
+\link[clinUtils]{getShapePalette}
 }
 \author{
 Laure Cougnaud

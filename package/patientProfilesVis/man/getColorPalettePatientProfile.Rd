@@ -2,40 +2,44 @@
 % Please edit documentation in R/palettes.R
 \name{getColorPalettePatientProfile}
 \alias{getColorPalettePatientProfile}
-\title{Get a color palette of specified length
-for patient profile visualization visualization.}
+\title{Get a color palette for patient profile
+visualizations.}
 \usage{
-getColorPalettePatientProfile(n = NULL, x = NULL, includeNA = TRUE)
+getColorPalettePatientProfile(..., includeNA = TRUE)
 }
 \arguments{
-\item{n}{Integer of length 1, number of elements in palette.}
-
-\item{x}{Vector with elements used for palette.
+\item{...}{
+  Arguments passed on to \code{\link[clinUtils:getColorPalette]{clinUtils::getColorPalette}}
+  \describe{
+    \item{\code{n}}{Integer of length 1, number of elements in palette.}
+    \item{\code{x}}{Vector with elements used for palette.
 If factor, the levels are used, otherwise the unique elements of the vector.
 Missing values are automatically removed, excepted if
 \code{includeNA} is set to TRUE.}
-
-\item{includeNA}{Logical (TRUE by default), 
+    \item{\code{includeNA}}{Logical (FALSE by default), 
 should NA elements be retained in the palette in case
 \code{x} is specified?}
+    \item{\code{palette}}{A function or a vector, for custom colors.
+Default is the the colorblind 
+\code{\link[viridisLite]{viridis}} color palette.}
+  }}
 }
 \value{
-Character vector with colors,
+Vector of shapes,
 named with the elements in \code{x} if \code{x} is specified.
 }
 \description{
-Get a color palette of specified length
-for patient profile visualization visualization.
+This is a simple wrapper around the 
+\link[clinUtils]{getColorPalette},
+with different defaults:
+\itemize{
+\item{inclusion of missing values
+by default (\code{includeNA} set to \code{TRUE})
 }
-\examples{
-# extract longest palette available
-getColorPalettePatientProfile(n = 11)
-# extract palette for a vector
-getColorPalettePatientProfile(x = paste('treatment', 1:4))
-# color-blinded palette
-getColorPalettePatientProfile(n = 10)
-# no color for missing values:
-getColorPalettePatientProfile(x = c(NA_character_, "group1"), includeNA = FALSE)
+}
+}
+\seealso{
+\link[clinUtils]{getColorPalette}
 }
 \author{
 Laure Cougnaud
