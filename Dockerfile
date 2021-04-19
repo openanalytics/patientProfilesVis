@@ -135,15 +135,7 @@ RUN R -e "remotes::install_version('pkgload', version = '1.2.0', upgrade = FALSE
     R -e "remotes::install_version('cowplot', version = '1.1.1', upgrade = FALSE)" && \
     R -e "remotes::install_version('waldo', version = '0.2.4', upgrade = FALSE)" && \
     R -e "remotes::install_version('testthat', version = '3.0.2', upgrade = FALSE)"
-
-# extra dependencies of glpgStyle
-RUN R -e "remotes::install_version('bookdown', version = '0.21', upgrade = FALSE)" && \
-    R -e "remotes::install_version('viridisLite', version = '0.3.0', upgrade = FALSE)"
-
-# glpgStyle
-COPY glpgStyle_*.tar.gz /tmp/glpgStyle.tar.gz
-RUN R -e "install.packages('/tmp/glpgStyle.tar.gz', repos = NULL, dependencies = FALSE)"
-
+    
 # extra dependencies of clinUtils
 RUN R -e "remotes::install_version('haven', version = '2.3.1', upgrade = FALSE)" && \
     R -e "remotes::install_version('png', version = '0.1-7', upgrade = FALSE)" && \
