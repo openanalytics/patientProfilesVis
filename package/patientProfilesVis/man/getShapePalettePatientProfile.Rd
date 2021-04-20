@@ -16,25 +16,27 @@ getShapePalettePatientProfile(..., includeNA = TRUE, asText = TRUE)
 If factor, the levels are used, otherwise the unique elements of the vector.
 Missing values are automatically removed, excepted if
 \code{includeNA} is set to TRUE.}
-    \item{\code{includeNA}}{Logical (FALSE by default), 
-should NA elements be retained in the palette in case
-\code{x} is specified?}
-    \item{\code{asText}}{Logical (FALSE by default), should the palette
-be expressed as integer (base R plot and ggplot2 compatible)
-or in text format 
-(e.g. required if combined with unicode symbols in ggplot2)?}
     \item{\code{palette}}{A function or a vector, for custom shapes.\cr
 The vector should be a character if \code{asText} is set to TRUE.\cr
 Default is the \code{\link[clinUtils]{clinShapes}} shape palette,
 or \code{\link[clinUtils]{clinShapesText}} is \code{asText} is set to TRUE.}
   }}
+
+\item{includeNA}{Logical (TRUE by default), 
+should NA elements be retained in the palette in case
+\code{x} is specified?}
+
+\item{asText}{Logical (TRUE by default), should the palette
+be expressed as integer (base R plot and ggplot2 compatible)
+or in text format 
+(e.g. required if combined with unicode symbols in ggplot2)?}
 }
 \value{
 Vector of shapes,
 named with the elements in \code{x} if \code{x} is specified.
 }
 \description{
-This is a simple wrapper around the 
+This is a simple wrapper around 
 \link[clinUtils]{getShapePalette},
 with different defaults:
 \itemize{

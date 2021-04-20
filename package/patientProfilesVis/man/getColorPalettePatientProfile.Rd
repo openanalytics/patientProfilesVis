@@ -16,20 +16,21 @@ getColorPalettePatientProfile(..., includeNA = TRUE)
 If factor, the levels are used, otherwise the unique elements of the vector.
 Missing values are automatically removed, excepted if
 \code{includeNA} is set to TRUE.}
-    \item{\code{includeNA}}{Logical (FALSE by default), 
-should NA elements be retained in the palette in case
-\code{x} is specified?}
     \item{\code{palette}}{A function or a vector, for custom colors.
 Default is the the colorblind 
 \code{\link[viridisLite]{viridis}} color palette.}
   }}
+
+\item{includeNA}{Logical (TRUE by default), 
+should NA elements be retained in the palette in case
+\code{x} is specified?}
 }
 \value{
 Vector of shapes,
 named with the elements in \code{x} if \code{x} is specified.
 }
 \description{
-This is a simple wrapper around the 
+This is a simple wrapper around 
 \link[clinUtils]{getColorPalette},
 with different defaults:
 \itemize{

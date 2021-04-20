@@ -1,7 +1,14 @@
+#' Parameters for all patient profiles visualization palette functions.
+#' @param includeNA Logical (TRUE by default), 
+#' should NA elements be retained in the palette in case
+#' \code{x} is specified?
+#' @name patientProfilesVis-palette
+NULL
+
 #' Get a shape palette for patient profile
 #' visualizations.
 #' 
-#' This is a simple wrapper around the 
+#' This is a simple wrapper around 
 #' \link[clinUtils]{getShapePalette},
 #' with different defaults:
 #' \itemize{
@@ -12,6 +19,11 @@
 #' by default (\code{asText} set to \code{TRUE})
 #' }
 #' }
+#' @param asText Logical (TRUE by default), should the palette
+#' be expressed as integer (base R plot and ggplot2 compatible)
+#' or in text format 
+#' (e.g. required if combined with unicode symbols in ggplot2)?
+#' @inheritParams patientProfilesVis-palette
 #' @inheritDotParams clinUtils::getShapePalette
 #' @inherit clinUtils::getShapePalette return
 #' @author Laure Cougnaud
@@ -34,7 +46,7 @@ getShapePalettePatientProfile <- function(
 #' Get a color palette for patient profile
 #' visualizations.
 #' 
-#' This is a simple wrapper around the 
+#' This is a simple wrapper around 
 #' \link[clinUtils]{getColorPalette},
 #' with different defaults:
 #' \itemize{
@@ -42,6 +54,7 @@ getShapePalettePatientProfile <- function(
 #' by default (\code{includeNA} set to \code{TRUE})
 #' }
 #' }
+#' @inheritParams patientProfilesVis-palette
 #' @inheritDotParams clinUtils::getColorPalette
 #' @inherit clinUtils::getShapePalette return
 #' @author Laure Cougnaud
