@@ -20,8 +20,7 @@ Imports:
   stringr, 
   parallel, 
   gridExtra, 
-  scales,
-  viridisLite
+  scales
 Suggests: 
   pander, 
   shiny, 
@@ -29,7 +28,8 @@ Suggests:
   grDevices, 
   rmarkdown, 
   gtable,
-  pdftools
+  pdftools,
+  viridisLite
 License: file LICENSE
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr
