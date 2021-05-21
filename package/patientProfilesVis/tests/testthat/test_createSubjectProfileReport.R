@@ -909,12 +909,5 @@ test_that("export subject profiles by batch", {
 	
 	expect_length(paths, length(unique(data$USUBJID)))
 	
-	# check that difference between creation of report
-	# between batches is longer than within batch:
-	reportModifTime <- file.info(paths)[, "mtime"]
-	reportModifTimeDiff <- diff(reportModifTime)
-	expect_gte(reportModifTimeDiff[3], max(reportModifTimeDiff[-c(3, 6)]))
-	expect_gte(reportModifTimeDiff[6], max(reportModifTimeDiff[-c(3, 6)]))
-	
 })
 			
