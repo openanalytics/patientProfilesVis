@@ -16,10 +16,12 @@ getShapePalettePatientProfile(..., includeNA = TRUE, asText = TRUE)
 If factor, the levels are used, otherwise the unique elements of the vector.
 Missing values are automatically removed, excepted if
 \code{includeNA} is set to TRUE.}
-    \item{\code{palette}}{A function or a vector, for custom shapes.\cr
+    \item{\code{palette}}{A vector of custom shapes,
+or a function returning this vector from a specific
+number of shapes.\cr
 The vector should be a character if \code{asText} is set to TRUE.\cr
 Default is the \code{\link[clinUtils]{clinShapes}} shape palette,
-or \code{\link[clinUtils]{clinShapesText}} is \code{asText} is set to TRUE.}
+or \code{\link[clinUtils]{clinShapesText}} if \code{asText} is set to TRUE.}
   }}
 
 \item{includeNA}{Logical (TRUE by default), 

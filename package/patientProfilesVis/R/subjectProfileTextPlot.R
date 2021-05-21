@@ -262,7 +262,7 @@ subjectProfileTextPlot <- function(
 			
 				gg <- ggplot(data = dataSubjectPage) + 
 					geom_text(
-						aes(x = 0, y = variable, label = value),
+						aes_string(x = 0, y = "variable", label = "value"),
 						hjust = 0,
 						size = rel(3)
 					)

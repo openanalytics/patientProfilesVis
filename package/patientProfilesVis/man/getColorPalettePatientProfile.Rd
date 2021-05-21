@@ -16,7 +16,9 @@ getColorPalettePatientProfile(..., includeNA = TRUE)
 If factor, the levels are used, otherwise the unique elements of the vector.
 Missing values are automatically removed, excepted if
 \code{includeNA} is set to TRUE.}
-    \item{\code{palette}}{A function or a vector, for custom colors.
+    \item{\code{palette}}{A vector of custom colors,
+or a function returning this vector from a specific
+number of colors.\cr
 Default is the the colorblind 
 \code{\link[viridisLite]{viridis}} color palette.}
   }}
