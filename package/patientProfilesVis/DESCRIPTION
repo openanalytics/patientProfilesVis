@@ -1,12 +1,21 @@
 Package: patientProfilesVis
 Type: Package
-Title: Visualization Of Patient Profiles
-Version: 1.5.0.999
-Date: 2021-04-19
-Author: Laure Cougnaud
-Maintainer: Laure Cougnaud <laure.cougnaud@openanalytics.eu>
-Description: Creation of report with customizable visualization 
-  of patient profiles.
+Title: Visualization of Patient Profiles
+Version: 2.0.0
+Date: 2021-05-21
+Authors@R: person(given = "Laure", family = "Cougnaud", role = c("aut", "cre"),
+  email = "laure.cougnaud@openanalytics.eu")
+Description: Creation of patient profiles visualizations for
+  exploration, diagnostic or monitoring purposes during a clinical trial.
+  These static visualizations display an patient-specific overview
+  of the evolution during the trial timeframe of 
+  parameters of interest (as laboratory, ECG, vital signs),
+  presence of adverse events, exposure to a treatment; 
+  associated with metadata patient information, 
+  as demography, concomitant medication.
+  The visualizations can be tailored for specific domain(s) or endpoint(s) of interest.
+  Visualizations are exported into patient profile report(s)
+  or can be embedded in custom report(s).
 Imports: 
   clinUtils,
   ggplot2 (>= 3.0.0), 
@@ -30,8 +39,7 @@ Suggests:
   gtable,
   pdftools,
   viridisLite
-License: file LICENSE
+License: GPL-3
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr
-LazyData: true
 SystemRequirements: latex
