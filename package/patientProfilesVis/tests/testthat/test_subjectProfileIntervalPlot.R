@@ -53,7 +53,8 @@ test_that("parameter values are correctly displayed by subject", {
 		TEST = c("A", "B", "C"),
 		START = c(1, 2, 3),
 		END = c(2, 3, 4),
-		USUBJID = c("a", "b", "a")
+		USUBJID = c("a", "b", "a"),
+		stringsAsFactors = TRUE
 	)
 			
 	plots <- subjectProfileIntervalPlot(

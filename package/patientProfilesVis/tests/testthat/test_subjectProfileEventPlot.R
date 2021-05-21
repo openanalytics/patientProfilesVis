@@ -76,12 +76,13 @@ test_that("parameter variables are correctly displayed for each subject", {
 					
 				# variables are order from the bottom to the top in the data
 				# so use revert order
-				dataPlot <- data.frame(x = xCoord, y = yLabel)
+				dataPlot <- data.frame(x = xCoord, y = yLabel, stringsAsFactors = FALSE)
 				
 			},
 			expected = {
-				dataReference <- subset(data, USUBJID == !!subjID)
-				setNames(dataReference[, c("DY", "TEST")], c("x", "y"))
+				dataReference <- subset(data, USUBJID == !!subjID)[, c("DY", "TEST")]
+				dataReference$TEST <- as.character(dataReference$TEST)
+				setNames(dataReference, c("x", "y"))
 			},
 			check.attributes = FALSE # (rownames differ)
 		)		

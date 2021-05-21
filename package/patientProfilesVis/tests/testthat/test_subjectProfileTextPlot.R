@@ -290,11 +290,13 @@ test_that("variable(s) are represented as a table", {
 		byrow = TRUE,
 		dimnames = list(NULL, subset(ggDataLong, t == 1)$label) # header
 	)
+	ggData <- as.data.frame(ggData, stringsAsFactors = FALSE)
 	
 	dataOrder <- data[with(data, order(CAT, TERM, START, END)), ]
+	dataOrder[, ] <- lapply(dataOrder, as.character)
 	
 	expect_equal(
-		object = as.data.frame(ggData),
+		object = ggData,
 		expected = dataOrder[, paramValueVar],
 		check.attributes = FALSE
 	)
