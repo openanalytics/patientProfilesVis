@@ -39,7 +39,7 @@ Suggests:
   gtable,
   pdftools,
   viridisLite
-License: GPL-3
+License: MIT + file LICENSE
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr
 SystemRequirements: latex
