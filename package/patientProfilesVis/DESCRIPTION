@@ -39,6 +39,8 @@ Suggests:
   gtable,
   pdftools,
   viridisLite
+URL: https://github.com/openanalytics/patientProfilesVis
+BugReports: https://github.com/openanalytics/patientProfilesVis/issues
 License: MIT + file LICENSE
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr
