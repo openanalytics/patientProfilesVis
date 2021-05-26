@@ -8,7 +8,7 @@ packagePath <- "../package/patientProfilesVis/"
 ## create reference figures for vdiffr::expect_doppelganger
 
 library(vdiffr)
-library(glpgUtilityFct)
+library(patientProfilesVis)
 
 # The same collate statement should be used than the R CMD check
 # at the creation of the reference figures with 'manage_cases'
