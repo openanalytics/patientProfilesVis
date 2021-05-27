@@ -28,7 +28,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     libfontconfig1-dev \
 # for flextable/gdtools
     libcairo2-dev \
-# for glpgUtilityFct (png pkg):
+# for clinUtils (png pkg):
 	libpng-dev \
     && rm -rf /var/lib/apt/lists/*
 
