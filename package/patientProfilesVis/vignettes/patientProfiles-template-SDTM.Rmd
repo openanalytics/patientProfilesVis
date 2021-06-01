@@ -313,7 +313,7 @@ The subject profile report is created by subject.
 ```
 
 The resulting subject profiles reports are available in 
-[this folder](./patientProfiles).
+the folder: _'./patientProfiles'_.
 
 # Session information
 

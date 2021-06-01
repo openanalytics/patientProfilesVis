@@ -1309,9 +1309,12 @@ The function:
 
 ## Example report
 
+Example code to create patient profiles for SDTM or ADaM datasets is
+described below.
+
 ### SDTM dataset
 
-```{r createSubjectProfileReport-SDTM, out.width = "100%"}
+```{r createSubjectProfileReport-SDTM}
 
 # demography
 dmPlots <- subjectProfileTextPlot(
@@ -1399,7 +1402,11 @@ createSubjectProfileReport(
 
 ```
 
-Here is the resulting [subject profile report](`r pathReport`).
+Here is the resulting subject profile report:
+
+```{r createSubjectProfileReport-SDTM-include, echo = FALSE, out.width = "100%", out.height = "500px"}
+knitr::include_graphics(pathReport)
+```
 
 ### ADaM dataset
 
@@ -1452,7 +1459,11 @@ createSubjectProfileReport(
 
 ```
 
-Here is the resulting [subject profile report](`r pathReport`).
+Here is the resulting subject profile report:
+
+```{r createSubjectProfileReport-ADaM-include, echo = FALSE, out.width = "100%", out.height = "500px"}
+knitr::include_graphics(pathReport)
+```
 
 ## Reference lines
 
@@ -1503,7 +1514,11 @@ createSubjectProfileReport(
 
 ```
 
-Here is the resulting [subject profile report](`r pathReport`).
+Here is the resulting subject profile report:
+
+```{r createSubjectProfileReport-referenceLines-custom-include, echo = FALSE, out.width = "100%", out.height = "500px"}
+knitr::include_graphics(pathReport)
+```
 
 ### Reference lines from subject visits
 
@@ -1537,7 +1552,11 @@ createSubjectProfileReport(
 
 ```
 
-Here is the resulting [subject profile report](`r pathReport`).
+Here is the resulting subject profile report:
+
+```{r createSubjectProfileReport-referenceLines-subjectVisit-include, echo = FALSE, out.width = "100%", out.height = "500px"}
+knitr::include_graphics(pathReport)
+```
 
 ## Bookmarks
 
@@ -1574,7 +1593,11 @@ createSubjectProfileReport(
 
 ```
 
-Here is the resulting [subject profile report](`r pathReport`).
+Here is the resulting subject profile report:
+
+```{r createSubjectProfileReport-bookmarks-include, echo = FALSE, out.width = "100%", out.height = "500px"}
+knitr::include_graphics(pathReport)
+```
 
 ## Time alignment {#createSubjectProfileReportTimeAlign}
 
@@ -1626,7 +1649,11 @@ is extended to also contain the times for laboratory measurements
 	
 ```
 
-Here is the resulting [subject profile report](`r pathReport`).
+Here is the resulting subject profile report:
+
+```{r createReportWithAllModules-default-include, echo = FALSE, out.width = "100%", out.height = "500px"}
+knitr::include_graphics(pathReport)
+```
 
 ### Visualizations aligned across subjects only for a specific domain
 
@@ -1644,7 +1671,12 @@ The visualizations are aligned only for the adverse events domain
 	)
 	
 ```
-Here is the resulting [subject profile report](`r pathReport`).
+
+Here is the resulting subject profile report:
+
+```{r createReportWithAllModules-timeAlign-AE-include, echo = FALSE, out.width = "100%", out.height = "500px"}
+knitr::include_graphics(pathReport)
+```
 
 ### Visualizations not aligned across domains
 
@@ -1661,7 +1693,12 @@ The visualizations are not aligned across domain (`timeAlign` set to: 'none') ne
 	)
 	
 ```
-Here is the resulting [subject profile report](`r pathReport`).
+
+Here is the resulting subject profile report:
+
+```{r createReportWithAllModules-timeAlign-none-include, echo = FALSE, out.width = "100%", out.height = "500px"}
+knitr::include_graphics(pathReport)
+```
 
 ### Visualizations aligned per subject
 
@@ -1679,7 +1716,11 @@ The visualizations are aligned (`timeAlign` set to: 'all') per subject (`timeAli
 	
 ```
 
-Here is the resulting [subject profile report](`r pathReport`).
+Here is the resulting subject profile report:
+
+```{r createReportWithAllModules-timeAlignPerSubject-all-include, echo = FALSE, out.width = "100%", out.height = "500px"}
+knitr::include_graphics(pathReport)
+```
 
 # Optimization of patient profiles creation
 
