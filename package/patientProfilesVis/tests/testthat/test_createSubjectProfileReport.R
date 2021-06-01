@@ -820,7 +820,7 @@ test_that("profile figures are exported", {
 	
 	# do the figure files exist?
 	figFiles <- list.files(figDir)
-	expect_setequal(figFiles, c("subject-I-1.pdf", "subject-II-1.pdf"))
+	expect_true(all(c("subject-I-1.pdf", "subject-II-1.pdf") %in% figFiles))
 	
 })
 

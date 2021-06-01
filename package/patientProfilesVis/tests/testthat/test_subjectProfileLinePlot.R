@@ -307,7 +307,7 @@ test_that("a reference range is correctly displayed", {
 			paramValueVar = "AVAL",
 			paramValueRangeVar = c("LOW", "HIGH2")
 		),
-		"'HIGH2' are not available in the data"
+		"HIGH2.* are not available in the data"
 	)
 	
 	# correct specification
