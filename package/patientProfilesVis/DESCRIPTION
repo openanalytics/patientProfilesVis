@@ -5,10 +5,10 @@ Version: 2.0.0
 Date: 2021-05-26
 Authors@R: person(given = "Laure", family = "Cougnaud", role = c("aut", "cre"),
   email = "laure.cougnaud@openanalytics.eu")
-Description: Creation of patient profiles visualizations for
+Description: Creation of patient profile visualizations for
   exploration, diagnostic or monitoring purposes during a clinical trial.
-  These static visualizations display an patient-specific overview
-  of the evolution during the trial timeframe of 
+  These static visualizations display a patient-specific overview
+  of the evolution during the trial time frame of 
   parameters of interest (as laboratory, ECG, vital signs),
   presence of adverse events, exposure to a treatment; 
   associated with metadata patient information, 
