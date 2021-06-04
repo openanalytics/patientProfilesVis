@@ -286,7 +286,12 @@ so this domain is not considered for the example.
 
 The subject profile report is created by subject.
 
-```{r patientProfiles-createSubjectProfileReport, message = FALSE, warning = TRUE}
+Please note that the subject profile reports are not
+ not created by default in the vignette, for time constraints.
+ 
+Feel free to run yourself the code, and check the resulting pdf reports!
+
+```{r patientProfiles-createSubjectProfileReport, message = FALSE, warning = TRUE, eval = FALSE}
 
 	pathsPatientProfiles <- createSubjectProfileReport(
 			
@@ -311,9 +316,6 @@ The subject profile report is created by subject.
 	)
 
 ```
-
-The resulting subject profiles reports are available in 
-the folder: _'./patientProfiles'_.
 
 # Session information
 
