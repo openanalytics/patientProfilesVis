@@ -2,6 +2,7 @@
     o change default color palette to generic: get[Color|Shape|Linetype]PalettePatientProfile
     o fix in case bookmarkVar is a factor
     o new options to set color/shape palette globally
+    o figure dir not created if exportFigures is FALSE on Windows
 1.5.0
     o add unit tests
     o no export of subjectProfileTheme

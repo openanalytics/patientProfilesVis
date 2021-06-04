@@ -436,7 +436,7 @@ subjectProfileExport <- function(
 	filesToRemove <- c(file.path(outputDir, "Sweave.sty"), basename(pathTemplateWd), texFile)
 	unlink(filesToRemove)
 	
-	if(!exportFigures)	unlink("figures/", recursive = TRUE)
+	if(!exportFigures)	unlink("figures", recursive = TRUE)
 	
 	setwd(oldwd)
 	unlink("Sweave.sty")

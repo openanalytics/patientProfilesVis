@@ -806,6 +806,19 @@ test_that("profile figures are exported", {
 	listPlots <- list(A = listPlotsA, B = listPlotsB)	
 			
 	reportFile <- tempfile(pattern = "report", fileext = ".pdf")
+	figDir <- file.path(dirname(reportFile), "figures")
+	if(dir.exists(figDir)) unlink(figDir, recursive = TRUE)
+	
+	expect_silent(
+		paths <- createSubjectProfileReport(
+			listPlots = listPlots,
+			outputFile = reportFile,
+			exportFigures = FALSE
+		)
+	)
+	# does the figure dir exist?
+	expect_false(dir.exists(figDir))
+	
 	expect_silent(
 		paths <- createSubjectProfileReport(
 			listPlots = listPlots,
@@ -815,7 +828,6 @@ test_that("profile figures are exported", {
 	)
 	
 	# does the figure dir exist?
-	figDir <- file.path(dirname(reportFile), "figures")
 	expect_true(dir.exists(figDir))
 	
 	# do the figure files exist?
