@@ -22,6 +22,7 @@ vignette: >
 	opts_chunk$set(
 		error = FALSE, 
 		fig.width = 14, fig.height = 7,
+		dev = "png",
 		out.width = "100%",
 		fig.align = 'center'
 	)
@@ -81,7 +82,7 @@ library(clinUtils)
 data(dataSDTMCDISCP01)
 # formatted as a list of data.frame (one per domain)
 dataSDTM <- dataSDTMCDISCP01
-pander(lapply(dataSDTM, head, 1))
+names(dataSDTM)
 
 # and corresponding labels
 labelVarsSDTM <- attr(dataSDTM, "labelVars")
@@ -101,11 +102,17 @@ is also imported for the example in section [ADaM dataset].
 data(dataADaMCDISCP01)
 # formatted as a list of data.frame (one per domain)
 dataADaM <- dataADaMCDISCP01
-pander(lapply(dataADaM, head, 1))
+names(dataADaM)
 
 # and corresponding labels
 labelVarsADaM <- attr(dataADaM, "labelVars")
 head(labelVarsADaM)
+
+# example subjects for the vignette:
+subjectAE <- "01-718-1427"
+subjectMH <- "01-718-1371"
+subjectCM <- "01-701-1148"
+subjectLB <- "01-704-1445"
 	
 ```	
 
@@ -169,23 +176,27 @@ containing the parameter value (`paramValueVar`).
 It is possible to specify multiple variable to represent in the plot
 for a certain variable name.
 
+```{r example-subject}
+```
+
 ```{r exampleTextModule-longFormat-noGrouping}	
 
 	# annotate subject medical history
 	# by specifying a combination of parameter value/name
 	mhPlots <- subjectProfileTextPlot(
 		data = dataSDTM$MH,
-		paramNameVar = c("MHTERM"),
-		paramValueVar = c("MHCAT", "MHDECOD", "MHSTDTC"),
+		paramNameVar = c("MHDECOD"),
+		paramValueVar = c("MHSTDTC", "MHSEV"),
+		paramGroupVar = "MHCAT",
 		title = "Medical History: status",
 		labelVars = labelVarsSDTM
 	)
 		
 ```
 
-```{r exampleTextModule-longFormat-noGrouping-include, echo = FALSE, fig.height = attributes(mhPlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlots)[1])}
+```{r exampleTextModule-longFormat-noGrouping-include, echo = FALSE, fig.height = attributes(mhPlots[[subjectMH]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", subjectMH)}
 
-	print(mhPlots[[1]][[1]])
+	print(mhPlots[[subjectMH]][[1]])
 
 ```
 
@@ -209,17 +220,17 @@ Information is displayed as a listing, by setting the `table` parameter to TRUE.
 	
 ```
 
-```{r exampleTextModule-tableFormat-include, echo = FALSE, fig.height = attributes(aeListingPlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Adverse event listing with the 'subjectProfileTextPlot' function for patient:", names(aeListingPlots)[1])}
+```{r exampleTextModule-tableFormat-include, echo = FALSE, fig.height = attributes(aeListingPlots[[subjectAE]][[1]])$metaData$nLines*heightLineIn, fig.width = 14, fig.cap = paste("Adverse event listing with the 'subjectProfileTextPlot' function for patient:", subjectAE)}
 
-	print(aeListingPlots[[1]][[1]])
+	print(aeListingPlots[[subjectAE]][[1]])
 
 ```
 
 By default, the widths of the columns of the table are optimized based on the column content, 
 but custom widths can be specified via the `colWidth` parameter.
 
-For example, the columns for the body system and system organ class
-are enlarged.
+For example, the column for the system organ class
+is enlarged.
 
 ```{r exampleTextModule-tableFormat-customWidth}
 
@@ -242,13 +253,11 @@ are enlarged.
 	
 ```
 
-```{r exampleTextModule-tableFormat-customWidth-include, echo = FALSE, fig.height = attributes(aeListingPlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Adverse event listing with the 'subjectProfileTextPlot' function for patient:", names(aeListingPlots)[1])}
+```{r exampleTextModule-tableFormat-customWidth-include, echo = FALSE, fig.width = 14, fig.height = attributes(aeListingPlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Adverse event listing with the 'subjectProfileTextPlot' function for patient:", names(aeListingPlots)[1])}
 
-	print(aeListingPlots[[1]][[1]])
+	print(aeListingPlots[[subjectAE]][[1]])
 
 ```
-
-
 
 #### Customization for multiple variables
 
@@ -275,9 +284,9 @@ they should be concatenated with a specific format, a function
 		
 ```
 
-```{r exampleTextModule-longFormat-multipleVariables-include, echo = FALSE, fig.height = attributes(mhPlotsMultipleVars[[1]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlotsMultipleVars)[1])}
+```{r exampleTextModule-longFormat-multipleVariables-include, echo = FALSE, fig.height = attributes(mhPlotsMultipleVars[[subjectMH]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", subjectMH)}
 
-	print(mhPlotsMultipleVars[[1]][[1]])
+	print(mhPlotsMultipleVars[[subjectMH]][[1]])
 
 ```
 
@@ -298,9 +307,9 @@ they should be concatenated with a specific format, a function
 	
 ```
 
-```{r exampleTextModule-longFormat-grouping-include, echo = FALSE, fig.height = attributes(mhPlotsGroup[[1]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", names(mhPlotsGroup)[1])}
+```{r exampleTextModule-longFormat-grouping-include, echo = FALSE, fig.height = attributes(mhPlotsGroup[[subjectMH]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Medical history with the 'subjectProfileTextPlot' function for patient:", subjectMH)}
 
-	print(mhPlotsGroup[[1]][[1]])
+	print(mhPlotsGroup[[subjectMH]][[1]])
 
 ```
 
@@ -333,8 +342,6 @@ missing start/end date are represented**.
 		labelVars = labelVarsSDTM,
 		title = "Adverse events"
 	)
-	
-	subjectAE <- "01-718-1427"
 		
 ```
 
@@ -387,8 +394,6 @@ this time interval visualization
 		labelVars = labelVarsSDTM,
 		title = "Concomitant medications"
 	)
-	
-	subjectCM <- "01-701-1148"
 
 ```
 
@@ -579,8 +584,6 @@ in Unicode format in hexadecimal (see [List of unicode symbols](https://en.wikip
 		labelVars = labelVarsSDTM,
 		title = "Adverse events"
 	)
-	
-	subjectAE <- "01-701-1211"
 
 ```
 
@@ -675,8 +678,9 @@ laboratory measurement (and corresponding time).
 
 ```{r formatLBData}
 
-# prepare data for plots:
-dataLB <- dataSDTM$LB
+# consider a subset of the laboratory data for example:
+lbTests <- c("CHOL", "PHOS", "ANISO", "MCHC", "PLAT", "KETONES")
+dataLB <- subset(dataSDTM$LB, LBTESTCD %in% lbTests)
 # sort the categories (empty values '', if any, becomes NA)
 dataLB$LBNRIND <- factor(dataLB$LBNRIND, levels = c("LOW", "NORMAL", "HIGH", "ABNORMAL"))
 
@@ -696,9 +700,9 @@ dataLB$LBNRIND <- factor(dataLB$LBNRIND, levels = c("LOW", "NORMAL", "HIGH", "AB
 
 ```
 
-```{r exampleEventModule-include, echo = FALSE, fig.height = attributes(lbPlots[[1]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Laboratory data with the 'subjectProfileEventPlot' function for patient:", names(lbPlots)[1])}
+```{r exampleEventModule-include, echo = FALSE, fig.height = attributes(lbPlots[[subjectLB]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Laboratory data with the 'subjectProfileEventPlot' function for patient:", subjectLB)}
 
-	print(lbPlots[[1]][[1]])
+	print(lbPlots[[subjectLB]][[1]])
 
 ```
 
@@ -731,8 +735,6 @@ in normal range and star for abnormal measurements.
 		title = "Laboratory test measurements: reference range indicator"
 	)
 	
-	subjectLB <- "01-704-1445"
-	
 ```
 
 ```{r exampleEventModuleWithColor-include, echo = FALSE, fig.height = attributes(lbPlotsColorShape[[subjectLB]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Laboratory data with reference range with the 'subjectProfileEventPlot' function for patient:", subjectLB)}
@@ -740,6 +742,7 @@ in normal range and star for abnormal measurements.
 	print(lbPlotsColorShape[[subjectLB]][[1]])
 
 ```
+
 ## Line module
 
 ### General
@@ -783,7 +786,7 @@ The reference range measurement is represented via these parameters.
 		data = dataLB,
 		paramNameVar = "LBTEST", 
 		paramValueVar = "LBSTRESN",
-		colorVar = "LBNRIND",
+		colorVar = "LBCAT",
 		shapeVar = "LBNRIND",
 		shapePalette = c(
 			'LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24, 
@@ -820,6 +823,11 @@ via `paramValueRangeVar`:
 		paramValueVar = "LBSTRESN",
 		paramGroupVar = "LBCAT",
 		paramValueRangeVar = c("LBSTNRLO", "LBSTNRHI"),
+		shapeVar = "LBNRIND",
+		shapePalette = c(
+			'LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24, 
+			'ABNORMAL' = 11
+		),
 		timeVar = "LBDY",
 		title = "Laboratory test measurements: actual value",
 		labelVars = labelVarsSDTM
@@ -853,6 +861,11 @@ If the range of the y-axis should **only contain the range of the actual measure
 		paramValueVar = "LBSTRESN",
 		paramGroupVar = "LBCAT",
 		paramValueRangeVar = c("LBSTNRLO", "LBSTNRHI"),
+		shapeVar = "LBNRIND",
+		shapePalette = c(
+			'LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24, 
+			'ABNORMAL' = 11
+		),
 		yLimFrom = "value",
 		timeVar = "LBDY",
 		title = "Laboratory test measurements: actual value",
@@ -879,7 +892,14 @@ These parameters are also available for all other module types.
 
 ## Subset based on extra variable
 
-If only a subset of parameters are of interest `subsetVar` and `subsetValue` can be used. By default, the subset is extracted from the current `data`, but can also be extracted from a different dataset specified via `subsetData`. These parameters are here used to represent only the measurements for the hematology parameters.
+If only a subset of parameters are of interest `subsetVar` and `subsetValue` 
+can be used. 
+
+By default, the subset is extracted from the current `data`, 
+but can also be extracted from a different dataset specified via `subsetData`. 
+
+The patient laboratory profile is only created for the 
+patients with severe adverse events:
 
 ```{r exampleEventModuleWithSubset}
 
@@ -887,7 +907,9 @@ If only a subset of parameters are of interest `subsetVar` and `subsetValue` can
 	lbPlotsSubset <- subjectProfileEventPlot(
 		data = dataLB,
 		paramVar = "LBTEST",
-		subsetVar = "LBCAT", subsetValue = "HEMATOLOGY",
+		# select subjects of interest:
+		subsetData = dataSDTM$AE,
+		subsetVar = "AESEV", subsetValue = "SEVERE",
 		timeVar = "LBDY",
 		colorVar = "LBNRIND",
 		shapeVar = "LBNRIND",
@@ -898,14 +920,8 @@ If only a subset of parameters are of interest `subsetVar` and `subsetValue` can
 		title = "Hematology test measurements",
 		labelVars = labelVarsSDTM
 	)
-	cat("The", length(lbPlotsSubset), "patients with hematology measurements:", toString(names(lbPlotsSubset)), "are considered.\n")
+	cat("Only the", length(lbPlotsSubset), "patients with severe adverse events:", toString(names(lbPlotsSubset)), "are considered.\n")
 	
-```
-
-```{r exampleEventModuleWithSubset-include, echo = FALSE, fig.height = attributes(lbPlotsSubset[[subjectLB]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Hematology data with the 'subjectProfileEventPlot' function for patient:", subjectLB)}
-
-	print(lbPlotsSubset[[subjectLB]][[1]])
-
 ```
 
 ## Set of subjects of interest
@@ -934,46 +950,6 @@ A set of subjects of interest from the input `data` can be specified via the `su
 	
 ```
 
-```{r exampleEventModuleWithSubset-2-include, echo = FALSE, fig.height = attributes(lbPlotsSubjectSubset[[subjectLB]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Hematology data with the 'subjectProfileEventPlot' function for patient:", subjectLB)}
-
-	print(lbPlotsSubjectSubset[[subjectLB]][[1]])
-	
-```
-
-## Subset based on a different dataset
-
-The `subsetData` parameter is used to specify only a subset of the subjects available in a different dataset. For example, to create the laboratory plots only for the patients with serious adverse events:
-
-```{r exampleEventModuleWithSubset-3}
-
-	# consider only serious Adverse Events
-	dataAESER <- subset(dataSDTM$AE, AESER == "Y")
-
-	# create plot
-	lbPlotsDataSubset <- subjectProfileEventPlot(
-		data = dataLB,
-		paramVar = "LBTEST",
-		subsetData = dataAESER,
-		timeVar = "LBDY",
-		colorVar = "LBNRIND",
-		shapeVar = "LBNRIND",
-		shapePalette = c(
-			'LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24, 
-			'ABNORMAL' = 11
-		),
-		title = "Laboratory test measurements for patients with adverse events",
-		labelVars = labelVarsSDTM
-	)
-	cat("Only the", length(lbPlotsDataSubset), "subjects with serious adverse events are considered.")
-	
-```
-
-```{r exampleEventModuleWithSubset-3-include, echo = FALSE, fig.height = attributes(lbPlotsDataSubset[[1]][[1]])$metaData$nLines*heightLineIn, fig.cap = paste("Hematology data with the 'subjectProfileEventPlot' function for patient:", names(lbPlotsSubset)[1])}
-
-	print(lbPlotsDataSubset[[1]][[1]])
-	
-```
-
 # Specify colors/shapes
 
 ## Missing values 
@@ -995,7 +971,7 @@ By **default**, if a character vector is specified, the categories are sorted in
 
 ```{r lab-SDTM-categories-default}
 			
-	dataLB <- dataSDTM$LB
+	dataLB <- subset(dataSDTM$LB, LBTESTCD %in% lbTests)
 
 	# LBRIND is a character: elements sorted in alphabetical order
 	lbPlotsColor <- subjectProfileEventPlot(
@@ -1025,7 +1001,7 @@ from low to high in the legend:
 
 ```{r lab-SDTM-categories-sorted}
 	
-	dataLB <- dataSDTM$LB
+	dataLB <- subset(dataSDTM$LB, LBTESTCD %in% lbTests)
 	# sort LBRIND
 	dataLB$LBNRIND <- with(dataLB, 
 		factor(LBNRIND, levels = c("LOW", "NORMAL", "HIGH", "ABNORMAL"))
@@ -1057,7 +1033,7 @@ In this case, corresponding numeric variable can be used for sorting:
 
 ```{r lab-ADaM-categories-sorted-numeric}	
 	
-	dataLB <- dataSDTM$LB
+	dataLB <- subset(dataSDTM$LB, LBTESTCD %in% lbTests)
 	
 	# for the demo, creates numeric variable associated to reference range
 	# (often already available)
@@ -1099,7 +1075,7 @@ and a custom palette for shapes has been created in the package.
 
 # display default palettes
 colorsDefault <- getOption("patientProfilesVis.colors")
-colorsDefault
+str(colorsDefault)
 shapesDefault <- getOption("patientProfilesVis.shapes")
 shapesDefault
 
@@ -1180,8 +1156,6 @@ Custom palettes for standard reference indicator variable are available
 in the `clinUtils` package, via the function `getPaletteCDISC`.
 
 ```{r palettes}
-
-dataLB <- dataSDTM$LB
 
 # sort LBNRIND
 dataLB$LBNRIND <- with(dataLB, 
@@ -1307,6 +1281,12 @@ The function:
   `subjectProfileCombine` function)
 * creates a _pdf_ report containing the resulting plots (one page per subject)
 
+Please note that the example report(s) in the section 
+are not created by default in the vignette,
+for time constraints.
+
+Feel free to run yourself the code, and check the resulting pdf report!
+
 ## Example report
 
 Example code to create patient profiles for SDTM or ADaM datasets is
@@ -1314,7 +1294,7 @@ described below.
 
 ### SDTM dataset
 
-```{r createSubjectProfileReport-SDTM}
+```{r createSubjectProfileReport-SDTM, eval = FALSE}
 
 # demography
 dmPlots <- subjectProfileTextPlot(
@@ -1402,15 +1382,9 @@ createSubjectProfileReport(
 
 ```
 
-Here is the resulting subject profile report:
-
-```{r createSubjectProfileReport-SDTM-include, echo = FALSE, out.width = "100%", out.height = "500px"}
-knitr::include_graphics(pathReport)
-```
-
 ### ADaM dataset
 
-```{r createSubjectProfileReport-ADaM}
+```{r createSubjectProfileReport-ADaM, eval = FALSE}
 
 # demography
 adslPlots <- subjectProfileTextPlot(
@@ -1459,12 +1433,6 @@ createSubjectProfileReport(
 
 ```
 
-Here is the resulting subject profile report:
-
-```{r createSubjectProfileReport-ADaM-include, echo = FALSE, out.width = "100%", out.height = "500px"}
-knitr::include_graphics(pathReport)
-```
-
 ## Reference lines
 
 ### Specify custom reference lines
@@ -1475,7 +1443,7 @@ visualizations.
 Custom reference lines to indicated the two screening visits and the
 baseline are displayed for a example subject:
 
-```{r createSubjectProfileReport-referenceLines-custom}
+```{r createSubjectProfileReport-referenceLines-custom, eval = FALSE}
 
 # reference lines input parameter
 refLinesParam <- list(
@@ -1507,17 +1475,10 @@ createSubjectProfileReport(
 		aePlots, 
 		lbLinePlots
 	),
-	subset = "01-718-1427",
 	refLines = refLinesParam,
 	outputFile = pathReport
 )
 
-```
-
-Here is the resulting subject profile report:
-
-```{r createSubjectProfileReport-referenceLines-custom-include, echo = FALSE, out.width = "100%", out.height = "500px"}
-knitr::include_graphics(pathReport)
 ```
 
 ### Reference lines from subject visits
@@ -1525,7 +1486,7 @@ knitr::include_graphics(pathReport)
 In the following example: the reference lines are extracted from the subject
 visits: `SV` dataset. 
 
-```{r createSubjectProfileReport-referenceLines-subjectVisit}
+```{r createSubjectProfileReport-referenceLines-subjectVisit, eval = FALSE}
 
 # create report
 pathReport <- "subjectProfile_SDTM_referenceLines_subjectVisit.pdf"
@@ -1542,7 +1503,6 @@ createSubjectProfileReport(
 		aePlots, 
 		lbLinePlots
 	),
-	subset = "01-718-1427",
 	# reference line(s)
 	refLinesData = dataSV,
 	refLinesTimeVar = "VISITDY",
@@ -1552,17 +1512,11 @@ createSubjectProfileReport(
 
 ```
 
-Here is the resulting subject profile report:
-
-```{r createSubjectProfileReport-referenceLines-subjectVisit-include, echo = FALSE, out.width = "100%", out.height = "500px"}
-knitr::include_graphics(pathReport)
-```
-
 ## Bookmarks
 
 A simple index by sex and arm of each subject is created via the bookmark parameter.
 
-```{r createSubjectProfileReport-bookmarks}
+```{r createSubjectProfileReport-bookmarks, eval = FALSE}
 
 # create report
 pathReport <- "subjectProfile_SDTM_bookmarks.pdf"
@@ -1591,12 +1545,6 @@ createSubjectProfileReport(
 	outputFile = pathReport
 )
 
-```
-
-Here is the resulting subject profile report:
-
-```{r createSubjectProfileReport-bookmarks-include, echo = FALSE, out.width = "100%", out.height = "500px"}
-knitr::include_graphics(pathReport)
 ```
 
 ## Time alignment {#createSubjectProfileReportTimeAlign}
@@ -1638,7 +1586,7 @@ Please note that because all domains are aligned, the adverse event domain
 is extended to also contain the times for laboratory measurements
 (and not only from baseline on as specified during the creation of the AE visualizations). 
 
-```{r createReportWithAllModules-default, out.width = "100%", out.height = "700px"}
+```{r createReportWithAllModules-default, out.width = "100%", out.height = "700px", eval = FALSE}
 
 	pathReport <- "subjectProfile_timeAlign-all_timeAlignPerSubject-none.pdf"
 	createSubjectProfileReport(
@@ -1649,18 +1597,12 @@ is extended to also contain the times for laboratory measurements
 	
 ```
 
-Here is the resulting subject profile report:
-
-```{r createReportWithAllModules-default-include, echo = FALSE, out.width = "100%", out.height = "500px"}
-knitr::include_graphics(pathReport)
-```
-
 ### Visualizations aligned across subjects only for a specific domain
 
 The visualizations are aligned only for the adverse events domain 
 (`timeAlign` set to: 'AE') and across subjects (`timeAlignPerSubject`  is "none").
 
-```{r createReportWithAllModules-timeAlign-AE, out.width = "100%", out.height = "700px"}
+```{r createReportWithAllModules-timeAlign-AE, out.width = "100%", out.height = "700px", eval = FALSE}
 
 	pathReport <- "subjectProfile_timeAlign-AE_timeAlignPerSubject-none.pdf"
 	createSubjectProfileReport(
@@ -1672,17 +1614,11 @@ The visualizations are aligned only for the adverse events domain
 	
 ```
 
-Here is the resulting subject profile report:
-
-```{r createReportWithAllModules-timeAlign-AE-include, echo = FALSE, out.width = "100%", out.height = "500px"}
-knitr::include_graphics(pathReport)
-```
-
 ### Visualizations not aligned across domains
 
 The visualizations are not aligned across domain (`timeAlign` set to: 'none') neither subjects (`timeAlignPerSubject`  is "none").
 
-```{r createReportWithAllModules-timeAlign-none, out.width = "100%", out.height = "700px"}
+```{r createReportWithAllModules-timeAlign-none, out.width = "100%", out.height = "700px", eval = FALSE}
 
 	pathReport <- "subjectProfile_timeAlign-none_timeAlignPerSubject-none.pdf"
 	createSubjectProfileReport(
@@ -1694,17 +1630,11 @@ The visualizations are not aligned across domain (`timeAlign` set to: 'none') ne
 	
 ```
 
-Here is the resulting subject profile report:
-
-```{r createReportWithAllModules-timeAlign-none-include, echo = FALSE, out.width = "100%", out.height = "500px"}
-knitr::include_graphics(pathReport)
-```
-
 ### Visualizations aligned per subject
 
 The visualizations are aligned (`timeAlign` set to: 'all') per subject (`timeAlignPerSubject`  is "all").
 
-```{r createReportWithAllModules-timeAlignPerSubject-all, out.width = "100%", out.height = "700px"}
+```{r createReportWithAllModules-timeAlignPerSubject-all, out.width = "100%", out.height = "700px", eval = FALSE}
 
 	pathReport <- "subjectProfile_timeAlign-all_timeAlignPerSubject-all.pdf"
 	createSubjectProfileReport(
@@ -1714,12 +1644,6 @@ The visualizations are aligned (`timeAlign` set to: 'all') per subject (`timeAli
 		timeAlignPerSubject = "all"
 	)
 	
-```
-
-Here is the resulting subject profile report:
-
-```{r createReportWithAllModules-timeAlignPerSubject-all-include, echo = FALSE, out.width = "100%", out.height = "500px"}
-knitr::include_graphics(pathReport)
 ```
 
 # Optimization of patient profiles creation
