@@ -2,8 +2,8 @@ context("Create subject profile report")
 
 library(pdftools)
 
-# skip following tests on CRAN because too time-consuming
-skip_on_cran() 
+# Note: a few tests are skipped on CRAN because the overall suite is too
+# time-consuming to execute in CRAN
 
 test_that("report is created with custom file name", {
 			
@@ -43,6 +43,8 @@ test_that("report is created with custom file name", {
 
 test_that("progress messages are printed during report creation", {
 			
+	skip_on_cran() 
+			
 	data <- data.frame(
 		TEST = seq(3),
 		DY = seq(3),
@@ -76,6 +78,8 @@ test_that("progress messages are printed during report creation", {
 })
 
 test_that("report is created without errors in case of unicode symbols", {
+			
+	skip_on_cran() 
 			
 	data <- data.frame(
 		TEST = seq(2),
@@ -117,6 +121,8 @@ test_that("report is created without errors in case of unicode symbols", {
 
 test_that("report is created if only one time limit is specified", {
 
+	skip_on_cran() 
+			
 	data <- data.frame(
 		TEST = seq(3),
 		DY = seq(3),
@@ -145,6 +151,8 @@ test_that("report is created if only one time limit is specified", {
 
 test_that("a Rmd document can be rendered after creation of patient profiles", {
 	
+	skip_on_cran() 		
+			
 	# this was a bug with patientProfilesVis < 1.2.0
 			
 	data <- data.frame(
@@ -185,6 +193,8 @@ test_that("a Rmd document can be rendered after creation of patient profiles", {
 
 
 test_that("report is created per subject", {
+	
+	skip_on_cran() 			
 			
 	dataA <- data.frame(
 		TEST = "1",
@@ -238,6 +248,8 @@ test_that("report is created per subject", {
 })
 
 test_that("report is created with bookmark", {
+
+	skip_on_cran() 	
 			
 	dataA <- data.frame(
 		TEST = "1",
@@ -300,6 +312,8 @@ test_that("report is created with bookmark", {
 })
 
 test_that("report is created with bookmark with variable labels", {
+
+	skip_on_cran() 
 			
 	dataA <- data.frame(
 		TEST = "1",
@@ -363,6 +377,8 @@ test_that("report is created with bookmark with variable labels", {
 })
 
 test_that("warning if bookmark data doesn't contain bookmark variables and subject variable", {
+
+	skip_on_cran() 
 			
 	data <- data.frame(
 		TEST = "1",
@@ -400,6 +416,8 @@ test_that("warning if bookmark data doesn't contain bookmark variables and subje
 })
 
 test_that("subjects are sorted in the report based on an increasing variable", {
+
+	skip_on_cran() 
 			
 	dataA <- data.frame(
 		TEST = "1",
@@ -453,7 +471,9 @@ test_that("subjects are sorted in the report based on an increasing variable", {
 })
 
 test_that("subjects are sorted in the report based on a decreasing variable", {
-	
+
+	skip_on_cran() 
+			
 	dataA <- data.frame(
 		TEST = "1",
 		DY = c(1, 2),
@@ -507,6 +527,8 @@ test_that("subjects are sorted in the report based on a decreasing variable", {
 })
 
 test_that("warning if dataset to sort subjects doesn't contain sorting variables and subject variable", {
+
+	skip_on_cran() 
 			
 	data <- data.frame(
 		TEST = "1",
@@ -544,6 +566,8 @@ test_that("warning if dataset to sort subjects doesn't contain sorting variables
 })
 
 test_that("profiles are exported separately based on an increasing variable", {
+
+	skip_on_cran() 
 			
 	dataA <- data.frame(
 		TEST = "1",
@@ -594,6 +618,8 @@ test_that("profiles are exported separately based on an increasing variable", {
 })
 
 test_that("report is created for a subset of the subjects based on a dataset", {
+
+	skip_on_cran() 
 			
 	dataA <- data.frame(
 		TEST = "1",
@@ -641,6 +667,8 @@ test_that("report is created for a subset of the subjects based on a dataset", {
 })
 
 test_that("report is created for a subset of the subjects based on a dataset, specified variable and value", {
+
+	skip_on_cran() 
 			
 	dataA <- data.frame(
 		TEST = "1",
@@ -691,6 +719,8 @@ test_that("report is created for a subset of the subjects based on a dataset, sp
 })
 
 test_that("report is created for a random sample of subjects", {
+
+	skip_on_cran() 
 			
 	dataA <- data.frame(
 		TEST = "1",
@@ -742,6 +772,8 @@ test_that("report is created for a random sample of subjects", {
 
 test_that("report is created for a set of specified subject", {
 			
+	skip_on_cran() 
+			
 	dataA <- data.frame(
 		TEST = "1",
 		DY = c(1, 2),
@@ -784,7 +816,9 @@ test_that("report is created for a set of specified subject", {
 })
 
 test_that("profile figures are exported", {
-	
+
+	skip_on_cran() 
+			
 	dataA <- data.frame(
 		TEST = "1",
 		DY = c(1, 2),
@@ -840,6 +874,8 @@ test_that("profile figures are exported", {
 })
 
 test_that("warning in case export subject profiles by batch but report created across subjects", {
+
+	skip_on_cran() 
 			
 	data <- data.frame(
 		TEST = "1",
@@ -868,6 +904,8 @@ test_that("warning in case export subject profiles by batch but report created a
 })
 
 test_that("warning in case export subject profiles by batch but plots aligned across subjects", {
+
+	skip_on_cran() 
 			
 	data <- data.frame(
 		TEST = "1",
@@ -897,6 +935,8 @@ test_that("warning in case export subject profiles by batch but plots aligned ac
 })
 
 test_that("export subject profiles by batch", {
+
+	skip_on_cran() 
 			
 	data <- data.frame(
 		TEST = "1",
