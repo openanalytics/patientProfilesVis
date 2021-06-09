@@ -2,6 +2,9 @@ context("Create subject profile report")
 
 library(pdftools)
 
+# skip following tests on CRAN because too time-consuming
+skip_on_cran() 
+
 test_that("report is created with custom file name", {
 			
 	dataA <- data.frame(
