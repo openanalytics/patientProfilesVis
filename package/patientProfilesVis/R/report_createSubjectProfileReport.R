@@ -380,7 +380,7 @@ subjectProfileExport <- function(
 	outputDir <- normalizePath(dirname(outputFile), winslash = "/", mustWork = FALSE)
 	if(!dir.exists(outputDir))	dir.create(outputDir, recursive = TRUE)
 
-	pathTemplate <- patientProfilesVis::getPathTemplate("subjectProfile.Rnw")
+	pathTemplate <- getPathTemplate("subjectProfile.Rnw")
 	pathTemplateWd <- file.path(outputDir, basename(pathTemplate))
 	tmp <- file.copy(from = pathTemplate, to = pathTemplateWd, overwrite = TRUE)
 	pathTexFile <- paste0(file_path_sans_ext(pathTemplateWd), ".tex")
