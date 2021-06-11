@@ -110,6 +110,10 @@ e.g. output of the \code{\link{subjectProfileReportFormat}} function}
 \item{paramVarSep}{string with character(s) used to concatenate multiple 
 \code{paramVar}, ' - ' by default.}
 }
+\value{
+No return value, used for the documentation of 
+the functions of the package.
+}
 \description{
 Arguments used across the functions of the patientProfilesVis package.
 }

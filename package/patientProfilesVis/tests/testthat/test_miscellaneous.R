@@ -3,11 +3,11 @@ context("Miscellaneous utility functions for the patient profiles")
 test_that("path of patient profiles template is retrieved", {
 
 	template <- "subjectProfile.Rnw"
-	pathTemplate <- getPathTemplate(template)
+	pathTemplate <- patientProfilesVis:::getPathTemplate(template)
 	expect_true(file.exists(pathTemplate))
 	expect_equal(basename(pathTemplate), template)
 			
-	expect_false(file.exists(getPathTemplate("blabla")))
+	expect_false(file.exists(patientProfilesVis:::getPathTemplate("blabla")))
 
 })
 

@@ -2,15 +2,21 @@
 % Please edit documentation in R/miscellaneous.R
 \name{getPathTemplate}
 \alias{getPathTemplate}
-\title{get path of the any \code{file} template in the \code{CSRFigures} package}
+\title{Get path of the report template 
+in the \code{patientProfilesVis} package}
 \usage{
 getPathTemplate(file)
 }
 \arguments{
 \item{file}{file name (with extension)}
 }
+\value{
+String with path to the template in the 
+installed \code{patientProfilesVis} package
+}
 \description{
-get path of the any \code{file} template in the \code{CSRFigures} package
+Get path of the report template 
+in the \code{patientProfilesVis} package
 }
 \author{
 Laure Cougnaud

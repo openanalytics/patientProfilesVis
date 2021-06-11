@@ -43,10 +43,12 @@ filterMissingInVar <- function(
 	
 }
 
-#' get path of the any \code{file} template in the \code{CSRFigures} package
+#' Get path of the report template 
+#' in the \code{patientProfilesVis} package
 #' @param file file name (with extension)
 #' @author Laure Cougnaud
-#' @export
+#' @return String with path to the template in the 
+#' installed \code{patientProfilesVis} package
 getPathTemplate <- function(file){
 	system.file(file.path("template", file), package = "patientProfilesVis")
 }

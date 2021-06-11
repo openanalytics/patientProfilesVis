@@ -3,6 +3,8 @@
 #' should NA elements be retained in the palette in case
 #' \code{x} is specified?
 #' @name patientProfilesVis-palette
+#' @return No return value, used for the documentation of 
+#' the palette functions of the package.
 NULL
 
 #' Get a shape palette for patient profile

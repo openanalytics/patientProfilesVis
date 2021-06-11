@@ -81,4 +81,6 @@
 #' @param paramVarSep string with character(s) used to concatenate multiple 
 #' \code{paramVar}, ' - ' by default.
 #' @name patientProfilesVis-common-args
+#' @return No return value, used for the documentation of 
+#' the functions of the package.
 NULL
