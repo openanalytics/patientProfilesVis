@@ -422,7 +422,9 @@ subjectProfileExport <- function(
 	
 	# texi2pdf cannot deal with space in name and file should be in current directory
 	oldwd <- getwd()
-	setwd(outputDir)	
+	on.exit(setwd(oldwd))
+	
+	setwd(outputDir)
 	
 	# convert to pdf
 	texFile <- basename(pathTexFile)
@@ -438,7 +440,6 @@ subjectProfileExport <- function(
 	
 	if(!exportFigures)	unlink("figures", recursive = TRUE)
 	
-	setwd(oldwd)
 	unlink("Sweave.sty")
 	
 }
