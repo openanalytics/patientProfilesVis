@@ -1,3 +1,4 @@
 # patientProfilesVis
 
-This package is in the process of being submitted to CRAN, so might be updated soon. Stay tuned!
+The package is also available on CRAN! 
+Check it out at: https://cran.r-project.org/package=patientProfilesVis
