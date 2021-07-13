@@ -1,3 +1,5 @@
+2.0.1
+    o vignette: shorten path exported figures (CRAN requirement for Windows)
 2.0.0
     o change default color palette to generic: get[Color|Shape|Linetype]PalettePatientProfile
     o fix in case bookmarkVar is a factor
