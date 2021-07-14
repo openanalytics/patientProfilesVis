@@ -1,6 +1,7 @@
 \documentclass[a4paper, 10pt]{article}
 
 \usepackage{imakeidx}
+\usepackage{calc}
 
 % Chunk with specifc-enough names hould be used in order that 
 % if run within another knitr doc: all chunks should have unique names
@@ -179,7 +180,19 @@
 			if(!is.null(bookmarkInfos) && bookmarkInfos[i] != "")	bookmarkInfos[i],
 			"\n", sep = ""
 		)
+		# this solves the issue with empty page is image is slightly too big
+		cat("\\noindent\n")
+		cat("\\begingroup\n")
+		cat("\\maxdepth=\\maxdimen\n")
+		cat("\\raisebox{\\topskip-\\height}[0pt][\\height-\\topskip]{%\n")
+		cat("\\makebox[\\textwidth][l]{%\n")
+		
+		# include the image
 		cat("\\includegraphics[width=\\textwidth]{", fileNames[i], "}\n", sep = "")
+		
+		# close raise/make box
+		cat("}%\n}%\n")
+		
 		cat('\\newpage\n')
 			
 	})
