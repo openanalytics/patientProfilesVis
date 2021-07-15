@@ -295,8 +295,13 @@ getPageVar <- function(data, var,
 			# compute number of elements per page
 			nLines <- countNLines(levels(data[, var]))
 			
-			nElPerPage <- floor(maxNLines / 
-				max(max(nLines), switch(typeVar, 'y' = 1, 'panel' = 4))
+			nLinesPerEl <- max(max(nLines), switch(typeVar, 'y' = 1, 'panel' = 4))
+			
+			nElPerPage <- switch(typeVar,
+				'y' = {
+					nElPerPage <- floor(maxNLines / (nLinesPerEl + 0.8))
+				},
+				'panel' = floor(maxNLines / nLinesPerEl)
 			)
 			
 			# cut the variable by the maximum number of lines
