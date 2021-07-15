@@ -137,8 +137,8 @@ subjectProfileIntervalPlot <- function(
 		if(is.null(colorPalette))	colorPalette <- getColorPalettePatientProfile(n = 1)
 	}
 	
-	hasShapeVar <- !is.null(timeStartShapeVar) | !is.null(timeEndShapeVar)
-	if(hasShapeVar){
+	# convert specified shape variable(s) & extract palettes
+	if(!is.null(timeStartShapeVar) | !is.null(timeEndShapeVar)){
 		if(!is.null(timeStartShapeVar))
 			data[, timeStartShapeVar] <- convertAesVar(data, timeStartShapeVar)
 		if(!is.null(timeEndShapeVar))
@@ -152,10 +152,13 @@ subjectProfileIntervalPlot <- function(
 		shapePalette <- c(shapePalette, timeShapePalette)
 	shapePalette <- shapePalette[!duplicated(names(shapePalette))]
 	
+	# if shape variables are not specified, used the default
 	if(is.null(timeStartShapeVar))
 		timeStartShapeVar <- "timeStartStatus"
 	if(is.null(timeEndShapeVar))
 		timeEndShapeVar <- "timeEndStatus"
+	
+	hasShapeVar <- !is.null(timeStartShapeVar) | !is.null(timeEndShapeVar)
 	
 	listPlots <- dlply(data, subjectVar, function(dataSubject){	
 						

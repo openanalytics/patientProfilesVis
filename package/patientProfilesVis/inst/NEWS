@@ -1,6 +1,7 @@
 2.0.2
     o fix issue empty page start report
     o fix issue figure overflows page for parameter var with multiple lines
+    o interval plot: fix issue small height for non specified time start/end shape var 
 2.0.1
     o vignette: shorten path exported figures (CRAN requirement for Windows)
 2.0.0

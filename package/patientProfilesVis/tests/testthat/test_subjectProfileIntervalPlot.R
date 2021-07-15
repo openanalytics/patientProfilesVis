@@ -605,6 +605,41 @@ test_that("missing time values are imputed with 'minimal' imputation", {
 			
 })
 
+test_that("Figure height correctly includes legend height when shape variables are not specified", {
+		
+	# This is fixed in the version 2.0.2 of the package
+	data <- data.frame(
+		TEST = 1,
+		START = 1,
+		START_STATUS = "Complete",
+		END_STATUS = "Complete",
+		END = 1,
+		USUBJID = "1"
+	)
+			
+	plotsShapeDef <- subjectProfileIntervalPlot(
+		data = data,
+		timeStartVar = "START",
+		timeEndVar = "END",
+		paramVar = "TEST"
+	)	
+	
+	plotsShapeSpec <- subjectProfileIntervalPlot(
+		data = data,
+		timeStartVar = "START",
+		timeStartShapeVar = "START_STATUS",
+		timeEndShapeVar = "END_STATUS",
+		timeEndVar = "END",
+		paramVar = "TEST"
+	)	
+	
+	expect_gte(
+		object = attr(plotsShapeDef[[1]][[1]], "metaData")$nLines,
+		expected = attr(plotsShapeSpec[[1]][[1]], "metaData")$nLines
+	)
+			
+})
+
 test_that("missing time values are imputed based on data records", {
 			
 	# USUBJID 1: 
@@ -1410,3 +1445,4 @@ test_that("variable labels are specified", {
 	expect_equal(unname(colorScale$name), "Reference indicator")
 	
 })
+
