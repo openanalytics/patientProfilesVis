@@ -13,7 +13,6 @@
 #' If set to FALSE, this is not compatible with 
 #' the specification of \code{timeLim}.
 #' @param title String with title, label of the parameter variable by default.
-#' @param timeLabel This parameter is deprecated, use \code{timeLab} instead.
 #' @inheritParams patientProfilesVis-common-args
 #' @inheritParams filterData
 #' @inheritParams clinUtils::formatVarForPlotLabel
@@ -38,7 +37,7 @@ subjectProfileIntervalPlot <- function(
 	paramGroupVar = NULL,
 	timeStartVar, timeStartLab = getLabelVar(timeStartVar, labelVars = labelVars),
 	timeEndVar, timeEndLab = getLabelVar(timeEndVar, labelVars = labelVars),
-	timeLabel = "time", timeLab = toString(c(timeStartLab, timeEndLab)),
+	timeLab = toString(c(timeStartLab, timeEndLab)),
 	subjectVar = "USUBJID", subjectSubset = NULL,
 	subjectSample = NULL, seed = 123,
 	subsetData = NULL, subsetVar = NULL, subsetValue = NULL, 
@@ -64,11 +63,6 @@ subjectProfileIntervalPlot <- function(
 	paging = TRUE){
 
 	timeImpType <- match.arg(timeImpType)
-
-	if(timeLabel != "time"){
-		.Deprecated(old = "timeLabel", new = "timeLab")
-		timeLab <- timeLabel
-	}
 	
 	# in case data is a tibble:
 	data <- as.data.frame(data)

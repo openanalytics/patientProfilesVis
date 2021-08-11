@@ -3,7 +3,7 @@ context("Visualize subject profile as a text")
 library(ggplot2)
 library(gtable)
 
-test_that("subject variable is specified", {
+test_that("Subject profile plots are correctly sorted in the output based on the levels of the subject ID variable", {
 			
 	data <- data.frame(
 		SEX = c("F", "M", "F"),
@@ -21,7 +21,7 @@ test_that("subject variable is specified", {
 			
 })
 
-test_that("error if subject variable is not present in the data", {
+test_that("An error is generated if the subject variable is not present in the data", {
 			
 	data <- data.frame(SEX = c("F", "M", "F"))
 	expect_error(
@@ -31,7 +31,7 @@ test_that("error if subject variable is not present in the data", {
 			
 })
 
-test_that("parameter values are correctly displayed by subject", {
+test_that("Parameter variables are correctly displayed for each subject", {
 			
 	data <- data.frame(
 		SEX = c("F", "M", "F"),
@@ -85,7 +85,7 @@ test_that("parameter values are correctly displayed by subject", {
 		
 })
 
-test_that("variable(s) of parameter value are combined", {
+test_that("Parameter variables are correctly combined", {
 			
 	data <- data.frame(
 		SEX = "M", AGE = NA_character_,
@@ -110,7 +110,7 @@ test_that("variable(s) of parameter value are combined", {
 		
 })
 
-test_that("variable(s) of parameter value are combined with specified separator", {
+test_that("Parameter values are correctly combined with a specified separator", {
 			
 	data <- data.frame(
 		SEX = "M", AGE = NA_character_,
@@ -133,7 +133,7 @@ test_that("variable(s) of parameter value are combined with specified separator"
 			
 })
 
-test_that("label(s) for variable(s) of parameter value are specified", {
+test_that("Specified labels for parameter variables are correctly set", {
 			
 	data <- data.frame(
 		SEX = "M", AGE = NA_character_,
@@ -161,7 +161,7 @@ test_that("label(s) for variable(s) of parameter value are specified", {
 			
 })
 
-test_that("variable(s) of parameter name and value are specified", {
+test_that("Parameter variables and names are correctly displayed", {
 			
 	# example with multiple records
 	# for the same label
@@ -194,7 +194,7 @@ test_that("variable(s) of parameter name and value are specified", {
 	
 })
 
-test_that("variable for parameter name should be of length 1", {
+test_that("An error is generated if there is more than one parameter name", {
 			
 	data <- data.frame(
 		CAT = "A",
@@ -213,7 +213,7 @@ test_that("variable for parameter name should be of length 1", {
 	)		
 })
 
-test_that("variable(s) for parameter name and function for parameter value are specified", {
+test_that("A specified parameter value function correctly returns a new variable with parameter values", {
 			
 	# example with multiple records
 	# for the same label
@@ -251,7 +251,7 @@ test_that("variable(s) for parameter name and function for parameter value are s
 			
 })
 
-test_that("variable(s) are represented as a table", {
+test_that("Parameter variables are correctly represented in a table format", {
 			
 	# example with multiple records for the same subject
 	data <- data.frame(
@@ -303,7 +303,7 @@ test_that("variable(s) are represented as a table", {
 	
 })
 
-test_that("parameters are grouped based on grouping variable(s)", {
+test_that("Parameter values are correctly ordered/grouped based on grouping variables", {
 			
 	# example where data is first sorted based on multiple
 	# grouping variables (factor and character),
@@ -344,7 +344,7 @@ test_that("parameters are grouped based on grouping variable(s)", {
 			
 })
 
-test_that("parameters displayed as table are grouped based on grouping variable(s)", {
+test_that("Parameter values in a table format are correctly ordered/grouped based on grouping variables", {
 
 	data <- data.frame(
 		CAT1 = c("I", "I", "I", "II"),
@@ -393,7 +393,7 @@ test_that("parameters displayed as table are grouped based on grouping variable(
 	
 })
 
-test_that("label is specified for the x variable", {
+test_that("A label for the variable on the x-axis is correctly set", {
 			
 	data <- data.frame(ARM = "A", USUBJID = "1")
 	xLab <- "ARM: Planned treatment arm"
@@ -411,7 +411,7 @@ test_that("label is specified for the x variable", {
 			
 })
 
-test_that("label is specified for the y variable", {
+test_that("A label for the variable on the y-axis is correctly set", {
 			
 	data <- data.frame(ARM = "A", USUBJID = "1")
 	yLab <- "Demographic variable"
@@ -429,7 +429,7 @@ test_that("label is specified for the y variable", {
 			
 })
 
-test_that("title is specified", {
+test_that("A title is correctly set", {
 			
 	data <- data.frame(ARM = "A", USUBJID = "1")
 	title <- "Demographic information"
@@ -447,7 +447,7 @@ test_that("title is specified", {
 			
 })
 
-test_that("variable labels are specified", {
+test_that("Labels for aesthetic, plot or axis title are correctly extracted from the specified variable labels", {
 			
 	data <- data.frame(
 		SEX = "F",
@@ -491,7 +491,7 @@ test_that("variable labels are specified", {
 			
 })
 
-test_that("label is specified", {
+test_that("A label for the metadata of the subject profile plots is correctly set", {
 			
 	data <- data.frame(ARM = "A", USUBJID = "1")
 	label <- "demographic information"
@@ -509,7 +509,7 @@ test_that("label is specified", {
 			
 })
 
-test_that("variables are too long to fit in one table column", {
+test_that("Variables that are too long to fit in one table column will span multiple lines", {
 
 	data <- data.frame(
 		AEDECOD = paste(sample(LETTERS, 500, replace = TRUE), collapse = " "),
@@ -538,7 +538,7 @@ test_that("variables are too long to fit in one table column", {
 			
 })
 
-test_that("visualization spans multiple pages", {
+test_that("Visualizations correctly span multiple pages", {
 			
 	data <- data.frame(
 		AEDECOD = sample(LETTERS, 100, replace = TRUE), 
@@ -573,7 +573,7 @@ test_that("visualization spans multiple pages", {
 			
 })
 
-test_that("column width is fixed for table", {
+test_that("The widths of the table columns are correctly set", {
 			
 	data <- data.frame(
 		CAT = paste(as.character(seq_len(100)), collapse = " "),

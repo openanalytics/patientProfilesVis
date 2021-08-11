@@ -1,6 +1,6 @@
-context("time transformers for patient profiles")
+context("time transformers for subject profiles")
 
-test_that("an hyperbolic arc-sin transformer is extracted", {
+test_that("A hyperbolic arc-sin transformation is correctly extracted", {
 			
 	timeTrans <- getTimeTrans(type = "asinh")
 	expect_is(timeTrans, "trans")
@@ -13,7 +13,7 @@ test_that("an hyperbolic arc-sin transformer is extracted", {
 			
 })
 
-test_that("an hyperbolic arc-sin transformer for negative values is extracted", {
+test_that("A hyperbolic arc-sin transformation handling negative values is correctly extracted", {
 			
 	timeTrans <- getTimeTrans(type = "asinh-neg")
 	expect_is(timeTrans, "trans")
@@ -31,7 +31,7 @@ test_that("an hyperbolic arc-sin transformer for negative values is extracted", 
 			
 })
 
-test_that("an hyperbolic arc-sin transformer with scale is extracted", {
+test_that("A hyperbolic arc-sin transformation with scaling factor is correctly extracted", {
 			
 	scale <- 10
 	timeTrans <- getTimeTrans(type = "asinh", scale = scale)
@@ -43,7 +43,7 @@ test_that("an hyperbolic arc-sin transformer with scale is extracted", {
 			
 })
 
-test_that("the breaks are customized in the transformer", {
+test_that("The time axis breaks for the transformer is correctly formatted via a function", {
 			
 	formatFct <- formatC
 	timeTrans <- getTimeTrans(type = "asinh", formatFct = formatFct)

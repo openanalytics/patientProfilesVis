@@ -5,7 +5,7 @@ library(pdftools)
 # Note: a few tests are skipped on CRAN because the overall suite is too
 # time-consuming to execute in CRAN
 
-test_that("report is created with custom file name", {
+test_that("A report is correctly created with a custom file name", {
 			
 	dataA <- data.frame(
 		TEST = "1",
@@ -41,7 +41,7 @@ test_that("report is created with custom file name", {
 			
 })
 
-test_that("progress messages are printed during report creation", {
+test_that("Progress messages are printed when requested during report creation", {
 			
 	skip_on_cran() 
 			
@@ -77,7 +77,7 @@ test_that("progress messages are printed during report creation", {
 	
 })
 
-test_that("report is created without errors in case of unicode symbols", {
+test_that("The report is created without errors when unicode symbols are used", {
 			
 	skip_on_cran() 
 			
@@ -119,7 +119,7 @@ test_that("report is created without errors in case of unicode symbols", {
 			
 })
 
-test_that("report is created if only one time limit is specified", {
+test_that("A report is successfully created if only one time limit is specified", {
 
 	skip_on_cran() 
 			
@@ -149,7 +149,7 @@ test_that("report is created if only one time limit is specified", {
 			
 })
 
-test_that("a Rmd document can be rendered after creation of patient profiles", {
+test_that("A Rmd document is rendered correctly after the creation of the subject profiles", {
 	
 	skip_on_cran() 		
 			
@@ -192,7 +192,7 @@ test_that("a Rmd document can be rendered after creation of patient profiles", {
 })
 
 
-test_that("report is created per subject", {
+test_that("The report is successfully created per subject", {
 	
 	skip_on_cran() 			
 			
@@ -247,7 +247,7 @@ test_that("report is created per subject", {
 			
 })
 
-test_that("report is created with bookmark", {
+test_that("A report is correctly created with bookmark", {
 
 	skip_on_cran() 	
 			
@@ -311,7 +311,7 @@ test_that("report is created with bookmark", {
 			
 })
 
-test_that("report is created with bookmark with variable labels", {
+test_that("A report is correctly created with bookmark, containig variable labels", {
 
 	skip_on_cran() 
 			
@@ -376,7 +376,7 @@ test_that("report is created with bookmark with variable labels", {
 	
 })
 
-test_that("warning if bookmark data doesn't contain bookmark variables and subject variable", {
+test_that("Warnings are generated in case the bookmark data does not contain the bookmark or the subject variables", {
 
 	skip_on_cran() 
 			
@@ -415,7 +415,7 @@ test_that("warning if bookmark data doesn't contain bookmark variables and subje
 	
 })
 
-test_that("subjects are sorted in the report based on an increasing variable", {
+test_that("Subjects are correctly sorted in the report in ascending order of a specified variable", {
 
 	skip_on_cran() 
 			
@@ -470,7 +470,7 @@ test_that("subjects are sorted in the report based on an increasing variable", {
 	
 })
 
-test_that("subjects are sorted in the report based on a decreasing variable", {
+test_that("Subjects are correctly sorted in the report in descending order of a specified variable", {
 
 	skip_on_cran() 
 			
@@ -526,7 +526,7 @@ test_that("subjects are sorted in the report based on a decreasing variable", {
 	
 })
 
-test_that("warning if dataset to sort subjects doesn't contain sorting variables and subject variable", {
+test_that("A warning is generated if the dataset to sort the subjects does not contain the sorting or subject variables", {
 
 	skip_on_cran() 
 			
@@ -565,7 +565,7 @@ test_that("warning if dataset to sort subjects doesn't contain sorting variables
 	
 })
 
-test_that("profiles are exported separately based on an increasing variable", {
+test_that("Reports are created successfully by subject based on a sorting variable", {
 
 	skip_on_cran() 
 			
@@ -617,7 +617,7 @@ test_that("profiles are exported separately based on an increasing variable", {
 			
 })
 
-test_that("report is created for a subset of the subjects based on a dataset", {
+test_that("A report is correctly created for a subset of the subjects based on a dataset", {
 
 	skip_on_cran() 
 			
@@ -666,7 +666,7 @@ test_that("report is created for a subset of the subjects based on a dataset", {
 	
 })
 
-test_that("report is created for a subset of the subjects based on a dataset, specified variable and value", {
+test_that("A report is correctly created for a subset of the subjects, based on a specified value of a variable in a dataset", {
 
 	skip_on_cran() 
 			
@@ -718,7 +718,7 @@ test_that("report is created for a subset of the subjects based on a dataset, sp
 			
 })
 
-test_that("report is created for a random sample of subjects", {
+test_that("A report is correctly created for a random sample of the subjects", {
 
 	skip_on_cran() 
 			
@@ -770,7 +770,7 @@ test_that("report is created for a random sample of subjects", {
 })
 
 
-test_that("report is created for a set of specified subject", {
+test_that("A report is correctly created for a set of specified subjects by specifying subject IDs", {
 			
 	skip_on_cran() 
 			
@@ -815,7 +815,7 @@ test_that("report is created for a set of specified subject", {
 	
 })
 
-test_that("profile figures are exported", {
+test_that("Patient profile figures are successfully exported", {
 
 	skip_on_cran() 
 			
@@ -873,7 +873,7 @@ test_that("profile figures are exported", {
 	
 })
 
-test_that("warning in case export subject profiles by batch but report created across subjects", {
+test_that("A warning is generated if the report is requested to be exported by batch when the report is created across subjects", {
 
 	skip_on_cran() 
 			
@@ -903,7 +903,7 @@ test_that("warning in case export subject profiles by batch but report created a
 	
 })
 
-test_that("warning in case export subject profiles by batch but plots aligned across subjects", {
+test_that("A warning is generated in case a report is requested to be exported when plots are not aligned across subjects", {
 
 	skip_on_cran() 
 			
@@ -934,7 +934,7 @@ test_that("warning in case export subject profiles by batch but plots aligned ac
 	
 })
 
-test_that("export subject profiles by batch", {
+test_that("Subject profiles are successfully exported by batch", {
 
 	skip_on_cran() 
 			

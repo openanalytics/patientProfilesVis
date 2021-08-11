@@ -36,12 +36,16 @@ getShapePalettePatientProfile <- function(
 	...,
 	includeNA = TRUE, asText = TRUE){
 
-	palette <- getShapePalette(
-		...,
-		includeNA = includeNA,
-		asText = asText,
-		palette = getOption("patientProfilesVis.shapes")
+	argsFct <- c(
+		list(...),
+		list(
+			includeNA = includeNA,
+			asText = asText
+		)
 	)
+	if(asText)	argsFct$palette <- getOption("patientProfilesVis.shapes")
+	palette <- do.call(getShapePalette, argsFct)
+	return(palette)
 	
 }
 

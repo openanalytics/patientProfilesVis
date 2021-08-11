@@ -2,6 +2,10 @@
     o fix issue empty page start report
     o fix issue figure overflows page for parameter var with multiple lines
     o interval plot: fix issue small height for non specified time start/end shape var 
+    o get shape palette patient profiles: fix for asText set to FALSE
+    o time profile interval plot: remove deprecated param timeLabel (replaced by timeLab)
+    o subject profile combine: remove spec of timeAlign as a logical (deprecated, replaced by timeAlign = 'all'/'none')
+    o unit tests: updates based on independent review
 2.0.1
     o vignette: shorten path exported figures (CRAN requirement for Windows)
 2.0.0

@@ -2,37 +2,59 @@ context("Palettes")
 
 library(viridisLite)
 
-test_that("Missing values in palette is extracted as specified", {
-      xWithNA <- c(NA_character_, "group1")
-      expect_false('NA' %in% names(getColorPalettePatientProfile(x = xWithNA, includeNA = FALSE)))
-      expect_true('NA' %in% names(getColorPalettePatientProfile(x = xWithNA)))
-      expect_false('NA' %in% names(getShapePalettePatientProfile(x = xWithNA, includeNA = FALSE)))
-      expect_true('NA' %in% names(getShapePalettePatientProfile(x = xWithNA)))
-    })
+# Unit tests only included for the functionalities specified
+# of the patient profiles vis package
+# Complete suite of tests available in the clinUtils package
 
-test_that("Empty values in palette is retained", {
-      xWithEmpty <- c("", "group1")
-      expect_silent(palette <- getColorPalettePatientProfile(x = xWithEmpty))
-      expect_equal(names(palette), xWithEmpty)
-      xWithEmpty <- c("", "group1")
-      expect_silent(palette <- getShapePalettePatientProfile(x = xWithEmpty))
-      expect_equal(names(palette), xWithEmpty)
-    })
+test_that("Missing values are included by default in the color palette", {
+			
+	xWithNA <- c(NA_character_, "group1")	
+	expect_true('NA' %in% names(getColorPalettePatientProfile(x = xWithNA)))		
+			
+})
 
-test_that("Default palette is viridis", {
-      
-      expect_identical(
-          getColorPalettePatientProfile(n = 1),
-          viridis(n = 1)
-      )     
-      expect_identical(
-          getColorPalettePatientProfile(n = 2),
-          viridis(n = 2)
-      )
-      
-    })
+test_that("Missing values are correctly not included in the color palette when requested", {
+			
+	xWithNA <- c(NA_character_, "group1")	
+	expect_false('NA' %in% names(getColorPalettePatientProfile(x = xWithNA, includeNA = FALSE)))	
+			
+})
 
-test_that("Color palette is successfully set as a vector via global options", {
+test_that("Missing values are included by default in the shape palette", {
+			
+	xWithNA <- c(NA_character_, "group1")	
+	expect_true('NA' %in% names(getShapePalettePatientProfile(x = xWithNA)))		
+			
+})
+
+test_that("Missing values are correctly not included in the shape palette when requested", {
+			
+	xWithNA <- c(NA_character_, "group1")	
+	expect_false('NA' %in% names(getShapePalettePatientProfile(x = xWithNA, includeNA = FALSE)))	
+			
+})
+
+test_that("The shape palette is extracted as character by default", {
+			
+	x <- c("a", "b", "c", "d")
+	expect_type(
+		object = getShapePalettePatientProfile(x = x), 
+		type = "character"
+	)
+			
+})
+
+test_that("The shape palette is extracted as integer when requested", {
+			
+	x <- c("a", "b", "c", "d")
+	expect_type(
+		object = getShapePalettePatientProfile(x = x, asText = FALSE), 
+		type = "integer"
+	)
+			
+})
+
+test_that("The color palette is correctly set as a vector via global options", {
 			
 	colorsDefault <- getOption("patientProfilesVis.colors")
 			
@@ -50,7 +72,7 @@ test_that("Color palette is successfully set as a vector via global options", {
 	
 })
 
-test_that("Shape palette is successfully set as a vector via global options", {
+test_that("The shape palette is correctly set as a vector via global options", {
 			
 	shapesDefault <- getOption("patientProfilesVis.shapes")
 			
@@ -68,7 +90,7 @@ test_that("Shape palette is successfully set as a vector via global options", {
 			
 })
 
-test_that("Color palette is successfully set as a function via global options", {
+test_that("The color palette is correctly set as a function via global options", {
 			
 	colorsDefault <- getOption("patientProfilesVis.colors")
 		
@@ -86,7 +108,7 @@ test_that("Color palette is successfully set as a function via global options", 
 			
 })
 
-test_that("Shape palette is successfully set as a function via global options", {
+test_that("The shape palette is correctly set as a function via global options", {
 			
 	shapesDefault <- getOption("patientProfilesVis.shapes")
 			
@@ -104,13 +126,3 @@ test_that("Shape palette is successfully set as a function via global options", 
 	options(patientProfilesVis.shapes = shapesDefault)
 		
 })
-
-test_that("Unnamed palette", {
-      
-      expect_named(getColorPalettePatientProfile(n = 1), NULL)
-      expect_named(getShapePalettePatientProfile(n = 1), NULL)
-      
-    })
-
-
-

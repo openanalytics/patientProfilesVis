@@ -3,7 +3,7 @@ context("Subject profiles are combined")
 library(ggplot2)
 library(shiny)
 
-test_that("subject profile with empty element is displayed as plot", {
+test_that("Subject profiles with empty elements are still displayed as plots", {
 			
 	data <- data.frame(
 		TEST = seq(3),
@@ -36,7 +36,7 @@ test_that("subject profile with empty element is displayed as plot", {
 			
 })
 
-test_that("error is returned if plots to align have different time transformations", {
+test_that("An error is generated if the subject profiles to align have different time transformations", {
 			
 	dataA <- data.frame(
 		TEST = "1",
@@ -70,7 +70,7 @@ test_that("error is returned if plots to align have different time transformatio
 			
 })
 
-test_that("message if only a set plots to align are time-transformed", {
+test_that("A message is generated if the time axis of the subject profiles needs to be transformed to be time-aligned", {
 			
 	dataA <- data.frame(
 		TEST = "1",
@@ -99,11 +99,10 @@ test_that("message if only a set plots to align are time-transformed", {
 		subjectProfileCombine(listPlots),
 		"transform.*log-10"
 	)
-	# to add: check that second module is time transformed in the output
 			
 })
 
-test_that("message if only a set plots to align has time axis expanded", {
+test_that("A message is generated if the time axis of the subject profiles needs to be expanded to be time-aligned", {
 			
 	dataA <- data.frame(
 		TEST = "1",
@@ -115,7 +114,7 @@ test_that("message if only a set plots to align has time axis expanded", {
 		data = dataA,
 		paramVar = "TEST",
 		timeVar = "DY",
-		timeExpand = expansion(mult = 0, add = 3)
+		timeExpand = ggplot2::expansion(mult = 0, add = 3)
 	)
 	dataB <- data.frame(
 		TEST = "1",
@@ -133,11 +132,10 @@ test_that("message if only a set plots to align has time axis expanded", {
 		subjectProfileCombine(listPlots),
 		"module.*expanded"
 	)
-	# to add: check that second module is time expanded in the output
 			
 })
 
-test_that("creation successful if plots have different time expand", {
+test_that("Subject profiles with different time axis expansions are successfully combined", {
 			
 	dataA <- data.frame(
 		TEST = "1",
@@ -149,7 +147,7 @@ test_that("creation successful if plots have different time expand", {
 		data = dataA,
 		paramVar = "TEST",
 		timeVar = "DY",
-		timeExpand = expansion(mult = 0, add = 3)
+		timeExpand = ggplot2::expansion(mult = 0, add = 3)
 	)
 	dataB <- data.frame(
 		TEST = "1",
@@ -165,12 +163,13 @@ test_that("creation successful if plots have different time expand", {
 	listPlots <- list(A = listPlotsA, B = listPlotsB)	
 			
 	expect_message(
-		subjectProfileCombine(listPlots)
+		subjectProfileCombine(listPlots),
+		".+ expanded.+ to be time aligned"
 	)
 			
 })
 
-test_that("subject profiles are combined in a parallel framework", {
+test_that("Subject profiles are successfully combined in a parallel framework", {
 			
 	data <- data.frame(
 		TEST = "1",
@@ -186,12 +185,12 @@ test_that("subject profiles are combined in a parallel framework", {
 	names(listPlots) <- as.character(seq_len(10))
 	
 	expect_silent(
-		subjectProfileCombine(listPlots, nCores = 2)
+		listPlotsSubj <- subjectProfileCombine(listPlots, nCores = 2)
 	)
-			
+	
 })
 
-test_that("progress information is displayed", {
+test_that("Progress information is displayed only when requested when combining patient profiles", {
 
 	data <- data.frame(
 		TEST = "1",
@@ -215,7 +214,7 @@ test_that("progress information is displayed", {
 
 })
 
-test_that("warning is triggered within a shiny app without progress widget", {
+test_that("A warning is generated within a shiny app without progress widget", {
 			
 	data <- data.frame(
 		TEST = "1",
@@ -244,7 +243,7 @@ test_that("warning is triggered within a shiny app without progress widget", {
 	
 })
 	
-test_that("execution within a shiny app run without errors", {
+test_that("No error is generated when subject profiles are combined inside a shiny app", {
 				
 	data <- data.frame(
 		TEST = "1",
@@ -270,7 +269,7 @@ test_that("execution within a shiny app run without errors", {
 			
 })
 
-test_that("number of lines is extracted for each plot", {
+test_that("The number of lines to be displayed in the subject profile plot is correctly extracted when plots are combined", {
 		
 	# in the rare event that list plots are modified
 	# by the user and the nLines computed in each plotting
@@ -343,7 +342,7 @@ test_that("number of lines is extracted for each plot", {
 			
 })
 
-test_that("the height of the combined subject profile is restricted to a number of lines", {
+test_that("The height of the combined subject profiles is correctly restricted to the specified number of lines", {
 			
 	data <- data.frame(
 		AEDECOD = "a", 
@@ -371,7 +370,7 @@ test_that("the height of the combined subject profile is restricted to a number 
 			
 })
 
-test_that("reference lines are set from specified dataset without errors", {
+test_that("No error is generated when reference lines are set from a specified dataset for combined profile plots", {
 			
 	data <- data.frame(
 		TEST = seq(3),
@@ -399,7 +398,5 @@ test_that("reference lines are set from specified dataset without errors", {
 			refLinesLabelVar = "visitName"
 		)
 	)
-	
-	# to add: check that labels are present in the output
 			
 })

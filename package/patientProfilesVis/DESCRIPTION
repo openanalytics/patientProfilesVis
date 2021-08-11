@@ -2,8 +2,14 @@ Package: patientProfilesVis
 Type: Package
 Title: Visualization of Patient Profiles
 Version: 2.0.2
-Date: 2021-07-15
-Authors@R: c(person(given = "Laure", family = "Cougnaud", role = c("aut", "cre"), email = "laure.cougnaud@openanalytics.eu"), person(given = "Open Analytics", role = "cph"))
+Date: 2021-08-11
+Authors@R: c(
+  person(given = "Laure", family = "Cougnaud", 
+  role = c("aut", "cre"), email = "laure.cougnaud@openanalytics.eu"), 
+  person(given = "Margaux", family = "Faes", 
+  role = "rev", comment = "tests"),
+  person(given = "Open Analytics", role = "cph")
+  )
 Description: Creation of patient profile visualizations for
   exploration, diagnostic or monitoring purposes during a clinical trial.
   These static visualizations display a patient-specific overview

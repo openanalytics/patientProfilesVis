@@ -1,6 +1,6 @@
 context("Filter data")
 
-test_that("original data is retained if no filtering criterias are specified", {
+test_that("The original data is retained when no filtering criteria are specified", {
 			
 	data <- data.frame(
 		CAT = c("A", "A", "B", "A"), 
@@ -16,7 +16,7 @@ test_that("original data is retained if no filtering criterias are specified", {
 			
 })
 
-test_that("warning if subject var is specified without subject value", {
+test_that("A warning is generated is a filter variable is specified without a value", {
 			
 	data <- data.frame(
 		CAT = c("A", "A", "B", "A"), 
@@ -33,7 +33,7 @@ test_that("warning if subject var is specified without subject value", {
 			
 })
 
-test_that("warning if subject value is specified without subject variable", {
+test_that("A warning is generated is a filter value is specified without a filter variable", {
 			
 	data <- data.frame(
 		CAT = c("A", "A", "B", "A"), 
@@ -52,7 +52,7 @@ test_that("warning if subject value is specified without subject variable", {
 })
 
 
-test_that("data is filtered based on subject variable and subject value", {
+test_that("The data is correctly filtered based on a filter variable and value", {
 			
 	data <- data.frame(
 		CAT = c("A", NA_character_, "B", "A"), 
@@ -72,7 +72,7 @@ test_that("data is filtered based on subject variable and subject value", {
 	
 })
 
-test_that("subset variable is not available", {
+test_that("A warning is generated when a filter variable is not available in the data", {
 			
 	data <- data.frame(
 		CAT = c("A", NA_character_, "B", "A"), 
@@ -88,40 +88,7 @@ test_that("subset variable is not available", {
 	
 })
 
-test_that("subjects are filtered based on a variable", {
-			
-	data1 <- data.frame(
-		CAT = c("A", NA_character_, "B", "A"), 
-		TERM = c("a1", "a2", "b", "a3"), 
-		START = c("01/2020", "02/2020", "01/2019", "03/2021"),
-		USUBJID = c("1", "1", "2", "3"),
-		stringsAsFactors = FALSE
-	)
-	data2 <- data1
-	colnames(data2)[which(colnames(data2) == "USUBJID")] <- "subject ID"
-			
-	expect_identical(
-		subset(
-			filterData(
-				data = data1, 
-				subsetVar = "CAT", subsetValue = "A",
-				subjectVar = "USUBJID"
-			),
-			select = -USUBJID
-		),
-		subset(
-			filterData(
-				data = data2, 
-				subsetVar = "CAT", subsetValue = "A",
-				subjectVar = "subject ID"
-			),
-			select = -`subject ID`
-		)
-	)
-			
-})
-
-test_that("data is filtered based on external dataset only", {
+test_that("The data is correctly filtered based on a specified dataset", {
 			
 	data <- data.frame(
 		CAT = c("A", "A", "B", "A"), 
@@ -143,8 +110,34 @@ test_that("data is filtered based on external dataset only", {
 			
 })
 
+test_that("The data is correctly filtered based on a specified dataset and custom subject variable", {
+			
+	data <- data.frame(
+		CAT = c("A", "A", "B", "A"), 
+		TERM = c("a1", "a2", "b", "a3"), 
+		START = c("01/2020", "02/2020", "01/2019", "03/2021"),
+		`subject ID` = c("1", "1", "2", "3"),
+		stringsAsFactors = FALSE,
+		check.names = FALSE
+	)
+			
+	dataSubset <- data.frame(
+		`subject ID` = c("1", "2"), 
+		check.names = FALSE
+	)
+			
+	expect_identical(
+		filterData(
+			data = data, 
+			subsetData = dataSubset,
+			subjectVar = "subject ID"
+		),
+		subset(data, `subject ID` %in% c("1", "2"))
+	)
+			
+})
 
-test_that("data is filtered based on external dataset, specified variable and value", {
+test_that("The data is correctly filtered based on a specified variable and value in a specified dataset", {
 			
 	data <- data.frame(
 		CAT = c("A", NA_character_, "B", "A"), 
@@ -170,7 +163,7 @@ test_that("data is filtered based on external dataset, specified variable and va
 			
 })
 
-test_that("data is filtered based on specified subjects", {
+test_that("The data is correctly filtered based on specified subjects", {
 			
 	data <- data.frame(
 		CAT = c("A", NA_character_, "B", "A"), 
@@ -187,7 +180,7 @@ test_that("data is filtered based on specified subjects", {
 			
 })
 
-test_that("data is filtered based on random sample of subjects", {
+test_that("The data is correctly filtered based on a random sample of subjects", {
 			
 	data <- data.frame(
 		CAT = c("A", NA_character_, "B", "A"), 
@@ -204,7 +197,7 @@ test_that("data is filtered based on random sample of subjects", {
 			
 })
 
-test_that("seed is specified", {
+test_that("When a seed is specified, the random sample remains identical", {
 			
 	data <- data.frame(
 		CAT = c("A", NA_character_, "B", "A"), 

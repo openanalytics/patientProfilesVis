@@ -1,6 +1,6 @@
 context("time limits are extracted based on time alignment policy")
 
-test_that("plots are aligned across modules and subject", {
+test_that("Plots are correctly aligned across modules and subjects", {
 			
 	dataA <- data.frame(
 		TEST = "1",
@@ -36,31 +36,7 @@ test_that("plots are aligned across modules and subject", {
 	
 })
 
-test_that("specification of time alignment as logical is deprecated", {
-			
-	data <- data.frame(
-		TEST = "1",
-		DY = c(1, 2),
-		USUBJID = c("1", "2")
-	)
-	listPlots <- subjectProfileEventPlot(
-		data = data,
-		paramVar = "TEST",
-		timeVar = "DY"
-	)
-	listPlots <- list(A = listPlots)	
-	
-	expect_warning(
-		timeLim <- patientProfilesVis:::getTimeLimSubjectProfilePlots(
-			listPlots = listPlots,
-			timeAlign = TRUE
-		),
-		"deprecated"
-	)
-			
-})
-
-test_that("plots are not aligned", {
+test_that("Time limits are not set in case no alignment is requested", {
 			
 	dataA <- data.frame(
 		TEST = "1",
@@ -93,7 +69,7 @@ test_that("plots are not aligned", {
 		
 })
 
-test_that("only a set of modules are aligned", {
+test_that("A set of plots are correctly time-aligned", {
 			
 	dataA <- data.frame(
 		TEST = "1",
@@ -139,7 +115,7 @@ test_that("only a set of modules are aligned", {
 			
 })
 
-test_that("all modules are aligned per subject", {
+test_that("All plots are aligned per subject if requested", {
 			
 	dataA <- data.frame(
 		TEST = "1",
@@ -180,7 +156,7 @@ test_that("all modules are aligned per subject", {
 			
 })
 
-test_that("a set of modules aligned across subjects, and a set of modules aligned per subject", {
+test_that("Time limits are correctly aligned across subjects, while aligning a set of modules per subject", {
 			
 	dataA <- data.frame(
 		TEST = "1",
@@ -234,7 +210,7 @@ test_that("a set of modules aligned across subjects, and a set of modules aligne
 			
 })
 
-test_that("some module aligned across subjects, modules aligned per subject, and module not aligned", {
+test_that("Time limits are correctly aligned across a subset of the plots and a subset of subjects", {
 			
 	dataA <- data.frame(
 		TEST = "1",
@@ -286,7 +262,7 @@ test_that("some module aligned across subjects, modules aligned per subject, and
 			
 })
 
-test_that("list of plots should be named in case plots are aligned", {
+test_that("An error is generated in case the list of plots to align is not named", {
 			
 	data <- data.frame(
 		TEST = "1",
@@ -310,7 +286,7 @@ test_that("list of plots should be named in case plots are aligned", {
 	
 })
 
-test_that("list of plots should have unique names in case plots are aligned", {
+test_that("An error is generated in case the list of plots to align does not contain unique names", {
 			
 	data <- data.frame(
 		TEST = "1",
@@ -333,7 +309,7 @@ test_that("list of plots should have unique names in case plots are aligned", {
 			
 })
 
-test_that("warning if module to align is not time-variant", {
+test_that("A warning is generated if modules to align do not contain a time variable", {
 			
 	data <- data.frame(
 		AEDECOD = "a", 
@@ -355,7 +331,7 @@ test_that("warning if module to align is not time-variant", {
 		
 })
 
-test_that("warning if module to align is not available", {
+test_that("A warning is generated in case the plot requested to align is not available", {
 			
 	data <- data.frame(
 		AEDECOD = "a", 
@@ -377,7 +353,7 @@ test_that("warning if module to align is not available", {
 			
 })
 
-test_that("warning if module to align per subject not specified among modules to align", {
+test_that("A warning is generated in case the module to align per subject is not specified among the modules to align", {
 			
 	data <- data.frame(
 		TEST = "1",
@@ -403,7 +379,7 @@ test_that("warning if module to align per subject not specified among modules to
 			
 })
 
-test_that("warning if inverse of transformation is not a function", {
+test_that("A warning is generated if the inverse of a transformation is not a function", {
 			
 	# rare case that inverse of trans not specified as a function
 	dataA <- data.frame(
@@ -438,7 +414,7 @@ test_that("warning if inverse of transformation is not a function", {
 	
 })
 
-test_that("time limits are set for a subset of the modules", {
+test_that("Time limits are correctly set for a subset of the modules", {
 			
 	dataA <- data.frame(
 		TEST = "1",

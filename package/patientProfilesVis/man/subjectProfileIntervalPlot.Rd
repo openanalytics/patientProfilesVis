@@ -15,7 +15,6 @@ subjectProfileIntervalPlot(
   timeStartLab = getLabelVar(timeStartVar, labelVars = labelVars),
   timeEndVar,
   timeEndLab = getLabelVar(timeEndVar, labelVars = labelVars),
-  timeLabel = "time",
   timeLab = toString(c(timeStartLab, timeEndLab)),
   subjectVar = "USUBJID",
   subjectSubset = NULL,
@@ -81,8 +80,6 @@ with end of time interval.}
 
 \item{timeEndLab}{String, label for \code{timeEndVar},
 displayed in a message and in the plot caption.}
-
-\item{timeLabel}{This parameter is deprecated, use \code{timeLab} instead.}
 
 \item{timeLab}{String, label for \code{timeVar}.
 This is used in the message

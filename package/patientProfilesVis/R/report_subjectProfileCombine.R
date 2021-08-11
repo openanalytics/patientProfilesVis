@@ -340,16 +340,6 @@ getTimeLimSubjectProfilePlots <- function(
 	listPlots, 
 	timeAlign = "all", timeAlignPerSubject = "none"){
 	
-	if(is.logical(timeAlign)){
-		
-		warning(
-			"'timeAlign' as a logical is deprecated, ",
-			"please use instead: timeAlign = 'all' if TRUE or 'none' if FALSE."
-		)
-		timeAlign <- ifelse(timeAlign, "all", "none")
-		
-	}
-	
 	if(length(timeAlign) == 1 && timeAlign == "none"){
 		
 		timeLim <- NULL

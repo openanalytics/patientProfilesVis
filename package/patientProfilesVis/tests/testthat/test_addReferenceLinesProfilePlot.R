@@ -2,7 +2,7 @@ context("add reference lines to a subject profile plot")
 
 library(ggplot2)
 
-test_that("reference lines are set from specified list", {
+test_that("Reference lines are set from a specified list", {
 		
 	data <- data.frame(
 		TEST = seq(3),
@@ -39,7 +39,7 @@ test_that("reference lines are set from specified list", {
 			
 })
 
-test_that("reference lines are set from specified dataset", {
+test_that("Reference lines are set from a specified dataset", {
 			
 	data <- data.frame(
 		TEST = seq(3),
@@ -58,7 +58,7 @@ test_that("reference lines are set from specified dataset", {
 		USUBJID = c("2", "2")
 	)
 
-	# plot with patient with reference line
+	# plot with subject with reference line
 	gg <- patientProfilesVis:::addReferenceLinesProfilePlot(
 		gg = plots[["2"]][[1]],
 		refLinesData = dataVS,
@@ -75,7 +75,7 @@ test_that("reference lines are set from specified dataset", {
 	ggDataVLine <- do.call(rbind, ggDataVLine)
 	expect_equal(ggDataVLine$x, c(0, 10))
 	
-	# plot for patient without reference lines
+	# plot for subject without reference lines
 	gg <- patientProfilesVis:::addReferenceLinesProfilePlot(
 		gg = plots[["1"]][[1]],
 		refLinesData = dataVS,
@@ -89,7 +89,7 @@ test_that("reference lines are set from specified dataset", {
 	
 })
 
-test_that("failure if reference line dataset doesn't contain the subject variable", {
+test_that("An error is generated if the specified data set for the reference line does not contain the subject variable", {
 			
 	data <- data.frame(
 		TEST = seq(3),
@@ -118,7 +118,7 @@ test_that("failure if reference line dataset doesn't contain the subject variabl
 			
 })
 
-test_that("reference lines are set from specified dataset with custom subject variable", {
+test_that("Reference lines are correctly set from a specified data set with a custom subject variable", {
 			
 	data <- data.frame(
 		TEST = seq(3),
@@ -166,7 +166,7 @@ test_that("reference lines are set from specified dataset with custom subject va
 			
 })
 
-test_that("reference lines are set with labels from specified list", {
+test_that("Reference lines are correctly set with the labels from a specified list", {
 			
 	data <- data.frame(
 		TEST = seq(3),
@@ -204,7 +204,7 @@ test_that("reference lines are set with labels from specified list", {
 			
 })
 
-test_that("reference lines are set with labels from specified dataset", {
+test_that("Reference lines are correctly set with the labels from a specified data set", {
 			
 	data <- data.frame(
 		TEST = seq(3),
@@ -243,7 +243,7 @@ test_that("reference lines are set with labels from specified dataset", {
 			
 })
 
-test_that("reference lines are set with custom color/linetype", {
+test_that("A custom color & linetype is correctly set to reference lines", {
 			
 	data <- data.frame(
 		TEST = seq(3),
@@ -286,8 +286,10 @@ test_that("reference lines are set with custom color/linetype", {
 	
 })
 
-test_that("reference lines are set with custom color/linetype", {
+test_that("Time limits are correctly set in the visualization of reference lines if requested", {
 			
+	# (Time limits are set internally in case the plots should be time-aligned)		
+	
 	data <- data.frame(
 		TEST = seq(3),
 		DY = c(1, 2, 3),
@@ -317,7 +319,7 @@ test_that("reference lines are set with custom color/linetype", {
 
 })
 
-test_that("warning if subject ID missing in case of reference lines from specified dataset", {
+test_that("A warning is generated in case the subject ID is missing while reference lines are specified from a data set", {
 			
 	data <- data.frame(
 		TEST = seq(3),

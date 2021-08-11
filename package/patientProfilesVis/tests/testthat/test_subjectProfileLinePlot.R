@@ -2,7 +2,7 @@ context("Visualize subject profile as a line")
 
 library(ggplot2)
 
-test_that("subject variable is specified", {
+test_that("Subject profile plots are correctly sorted in the output based on the levels of the subject ID variable", {
 			
 	data <- data.frame(
 		TEST = c("A", "B", "C"),
@@ -24,7 +24,7 @@ test_that("subject variable is specified", {
 			
 })
 
-test_that("error if subject variable is not present in the data", {
+test_that("An error is generated if the subject variable is not present in the data", {
 			
 	data <- data.frame(
 		TEST = c("A", "B", "C"),
@@ -43,7 +43,7 @@ test_that("error if subject variable is not present in the data", {
 			
 })
 
-test_that("correct data are displayed for each subject", {
+test_that("Parameter variables and values are correctly displayed for each subject", {
 			
 	data <- data.frame(
 		TEST = factor(rep(c("A", "B"), each = 5), levels = c("B", "A")),
@@ -101,7 +101,7 @@ test_that("correct data are displayed for each subject", {
 			
 })
 
-test_that("multiple parameter variables are correctly combined and ordered", {
+test_that("Multiple parameter variables are correctly combined and ordered", {
 			
 	# example where variables are specified as factor
 	# in this case variables are ordered based on factor levels
@@ -158,7 +158,7 @@ test_that("multiple parameter variables are correctly combined and ordered", {
 			
 })
 
-test_that("variable(s) of parameters are combined with specified separator", {
+test_that("Parameter values are correctly combined with a specified separator", {
 			
 	data <- data.frame(
 		CAT = factor(c("A", "A", "A", "B"), levels = c("B", "A")),
@@ -196,7 +196,7 @@ test_that("variable(s) of parameters are combined with specified separator", {
 
 
 
-test_that("label(s) for parameter variable(s) are specified", {
+test_that("Specified labels for parameter variables are correctly set", {
 			
 	data <- data.frame(
 		CAT = "A", TEST = "a1",
@@ -230,7 +230,7 @@ test_that("label(s) for parameter variable(s) are specified", {
 			
 })
 
-test_that("parameters are grouped based on grouping variable(s)", {
+test_that("Parameter values are correctly ordered/grouped based on grouping variables", {
 			
 	# example where data is first sorted based on multiple
 	# grouping variables (factor and character),
@@ -271,7 +271,7 @@ test_that("parameters are grouped based on grouping variable(s)", {
 			
 })
 
-test_that("a reference range is correctly displayed", {
+test_that("The reference ranges are correctly displayed", {
 	
 	# Parameter A: reference range outside data range
 	# Parameter B: reference range inside data range
@@ -339,7 +339,7 @@ test_that("a reference range is correctly displayed", {
 	
 })
 
-test_that("limits for the y-axis is restricted to observations range", {
+test_that("Limits for the y-axis are correctly restricted to the observation range", {
 			
 	# Parameter A: reference range outside data range
 	# Parameter B: reference range inside data range
@@ -385,7 +385,7 @@ test_that("limits for the y-axis is restricted to observations range", {
 			
 })
 
-test_that("a custom color is specified for the reference range", {
+test_that("A custom color is correctly set for the reference range", {
 			
 	data <- data.frame(
 		TEST = c("A", "A"),
@@ -418,7 +418,7 @@ test_that("a custom color is specified for the reference range", {
 	
 })
 
-test_that("points are colored based on a variable", {
+test_that("Data points are correctly colored based on a specified variable", {
 			
 	data <- data.frame(
 		TEST = c("A", "A", "B"),
@@ -484,7 +484,7 @@ test_that("points are colored based on a variable", {
 	
 })
 
-test_that("points are colored with specified palette", {
+test_that("Data points are correctly colored with a specified palette", {
 			
 	data <- data.frame(
 		TEST = seq(3),
@@ -519,7 +519,7 @@ test_that("points are colored with specified palette", {
 			
 })
 
-test_that("color label is specified", {
+test_that("A specified label for the color variable is correctly set", {
 			
 	data <- data.frame(
 		TEST = seq(3),
@@ -559,7 +559,7 @@ test_that("color label is specified", {
 	
 })
 
-test_that("symbols are based on the color variable by default if specified", {
+test_that("Data point shapes are based on the color variable by default", {
 			
 	data <- data.frame(
 		TEST = seq(3),
@@ -593,7 +593,7 @@ test_that("symbols are based on the color variable by default if specified", {
 	
 })
 
-test_that("points are shaped based on a variable", {
+test_that("Data points are correctly shaped based on a specified variable", {
 			
 	data <- data.frame(
 		TEST = seq(3),
@@ -648,7 +648,7 @@ test_that("points are shaped based on a variable", {
 			
 })
 
-test_that("points are shaped with specified palette", {
+test_that("Data points are correctly shaped with a specified palette", {
 			
 	data <- data.frame(
 		TEST = seq(3),
@@ -683,7 +683,7 @@ test_that("points are shaped with specified palette", {
 	
 })
 
-test_that("shape label is specified", {
+test_that("A specified label for the shape variable is correctly set", {
 			
 	data <- data.frame(
 		TEST = seq(3),
@@ -718,7 +718,7 @@ test_that("shape label is specified", {
 	
 })
 
-test_that("symbols are set to a specific size", {
+test_that("The shape symbols are correctly set to a specific size", {
 			
 	data <- data.frame(
 		TEST = seq(3),
@@ -745,7 +745,7 @@ test_that("symbols are set to a specific size", {
 	
 })
 
-test_that("points are set transparent", {
+test_that("Data points are correctly set transparent", {
 			
 	data <- data.frame(
 		TEST = seq(3),
@@ -772,7 +772,7 @@ test_that("points are set transparent", {
 	
 })
 
-test_that("time label is specified", {
+test_that("A title is correctly set", {
 	
 	data <- data.frame(
 		TEST = seq(3),
@@ -797,7 +797,7 @@ test_that("time label is specified", {
 	
 })
 
-test_that("a transformation is applied on the time variable", {
+test_that("A transformation is correctly applied on the time variable", {
 			
 	data <- data.frame(
 		TEST = seq(3),
@@ -828,7 +828,7 @@ test_that("a transformation is applied on the time variable", {
 			
 })
 
-test_that("time axis is expanded", {
+test_that("The time axis is correctly expanded if requested", {
 			
 	data <- data.frame(
 		TEST = seq(3),
@@ -860,7 +860,7 @@ test_that("time axis is expanded", {
 	
 })
 
-test_that("time limits are specified", {
+test_that("Limits for the time axis are correctly set", {
 			
 	data <- data.frame(
 		TEST = seq(3),
@@ -886,7 +886,7 @@ test_that("time limits are specified", {
 		
 })
 
-test_that("label is specified for the x variable", {
+test_that("A label for the variable on the x-axis is correctly set", {
 			
 	data <- data.frame(
 		TEST = seq(3),
@@ -910,7 +910,7 @@ test_that("label is specified for the x variable", {
 	
 })
 
-test_that("label is specified for the y variable", {
+test_that("A label for the variable on the y-axis is correctly set", {
 			
 	data <- data.frame(
 		TEST = seq(3),
@@ -934,7 +934,7 @@ test_that("label is specified for the y variable", {
 	
 })
 
-test_that("title is specified", {
+test_that("A title is correctly set", {
 			
 	data <- data.frame(
 		TEST = seq(3),
@@ -961,7 +961,7 @@ test_that("title is specified", {
 	
 })
 
-test_that("label is specified", {
+test_that("A label for the metadata of the subject profile plots is correctly set", {
 			
 	data <- data.frame(
 		TEST = seq(3),
@@ -986,7 +986,7 @@ test_that("label is specified", {
 	
 })
 
-test_that("variable labels are specified", {
+test_that("Labels for aesthetic, plot or axis title are correctly extracted from the specified variable labels", {
 			
 	data <- data.frame(
 		TEST = seq(3),

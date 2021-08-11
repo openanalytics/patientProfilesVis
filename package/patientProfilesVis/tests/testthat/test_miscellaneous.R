@@ -1,6 +1,6 @@
-context("Miscellaneous utility functions for the patient profiles")
+context("Miscellaneous utility functions for the subject profiles")
 
-test_that("path of patient profiles template is retrieved", {
+test_that("The path of the subject profiles is correctly retrieved", {
 
 	template <- "subjectProfile.Rnw"
 	pathTemplate <- patientProfilesVis:::getPathTemplate(template)
@@ -11,7 +11,7 @@ test_that("path of patient profiles template is retrieved", {
 
 })
 
-test_that("default report format for subject profile is extracted", {
+test_that("The default report format for subject profiles is correctly extracted", {
 			
 	reportFormat <- subjectProfileReportFormat()		
 	expect_type(reportFormat, "list")
@@ -28,7 +28,7 @@ test_that("default report format for subject profile is extracted", {
 			
 })
 
-test_that("missing values in one of the parameter variable don't propagate", {
+test_that("The combined variable contains a missing value only if all variables to combine are missing", {
 			
 	data <- data.frame(
 		A = c(NA_character_, "1", NA_character_),
@@ -47,7 +47,7 @@ test_that("missing values in one of the parameter variable don't propagate", {
 			
 })
 
-test_that("parameter factor variable(s) have their order retained when combined", {
+test_that("When factor variables are combined, the order of their levels is retained", {
 			
 	data <- data.frame(
 		var1 = factor(
@@ -65,18 +65,18 @@ test_that("parameter factor variable(s) have their order retained when combined"
 		vars = c("var1", "var2")
 	)
 	resReference <- factor(
-		c("A - a1", "A - a2", "B - b1", "NA - NA"),
-		c("B - b1", "A - a2", "A - a1", "NA - NA")			
+		x = c("A - a1", "A - a2", "B - b1", "NA - NA"),
+		levels = c("B - b1", "A - a2", "A - a1", "NA - NA")			
 	)
 	expect_identical(res, resReference)
 			
 })
 
-test_that("parameter character variable(s) are order alphabetically when combined", {
+test_that("When character variables are combined, their levels are ordered alphabetically", {
 			
 	data <- data.frame(
-		var1 = factor(c("A", "A", "B", NA_character_)),
-		var2 = factor(c("a1", "a2", "b1", NA_character_))
+		var1 = factor(c("B", "A", "A", NA_character_)),
+		var2 = factor(c("b1", "a2", "a1", NA_character_))
 	)
 			
 	res <- patientProfilesVis:::interactionWithMissing(
@@ -84,17 +84,17 @@ test_that("parameter character variable(s) are order alphabetically when combine
 		vars = c("var1", "var2")
 	)
 	resReference <- factor(
-		c("A - a1", "A - a2", "B - b1", "NA - NA"),
-		c("A - a1", "A - a2", "B - b1", "NA - NA")			
+		x = c("B - b1", "A - a2", "A - a1", "NA - NA"),
+		levels = c("A - a1", "A - a2", "B - b1", "NA - NA")			
 	)
 	expect_identical(res, resReference)
 			
 })
 
-test_that("a variable is formatted to be used as an aesthetic in a plot", {
+test_that("A variable used for a plot aesthetic is formatted correctly", {
 			
 	data <- data.frame(
-		TEST = c("A", "B", "A", "", NA_character_),
+		TEST = c("B", "A", "A", "", NA_character_),
 		stringsAsFactors = FALSE
 	)
 	expect_message(
@@ -104,7 +104,7 @@ test_that("a variable is formatted to be used as an aesthetic in a plot", {
 	expect_is(varAes, "factor")
 	expect_equal(
 		as.character(varAes),
-		c("A", "B", "A", NA_character_, NA_character_)
+		c("B", "A", "A", NA_character_, NA_character_)
 	)
 	expect_equal(levels(varAes), c("A", "B", NA_character_))
 			
