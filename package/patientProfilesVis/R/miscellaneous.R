@@ -121,7 +121,6 @@ getNLinesSubjectProfile <- function(gg){
 #' @return integer with (approximated) number of lines
 #' @author Laure Cougnaud
 #' @importFrom ggplot2 ggplot_gtable ggplot_build
-#' @importFrom dplyr n_distinct
 getNLinesLegend <- function(gg, values, title){
 	
 	if(!missing(gg)){
@@ -142,7 +141,7 @@ getNLinesLegend <- function(gg, values, title){
 				nLinesLegend <- vapply(seq_along(idxLegendGuides), function(i){
 					grobLegendI <- grobLegend$grobs[[i]]
 					idxLegendILabels <- grep("^label", grobLegendI$layout$name)
-					nLinesLegendILabels <- n_distinct(grobLegendI$layout[idxLegendILabels, "t"])
+					nLinesLegendILabels <- length(unique(grobLegendI$layout[idxLegendILabels, "t"]))
 					nLinesLegendILabels <- nLinesLegendILabels + 0.8 * (nLinesLegendILabels -1)
 					nLinesLegendITitle <- sum(grobLegendI$layout$name == "title")
 					nLinesLegendILabels + nLinesLegendITitle

@@ -128,7 +128,6 @@ RUN R -e "remotes::install_version('vctrs', version = '0.3.6', upgrade = FALSE)"
 RUN R -e "remotes::install_version('pkgload', version = '1.2.0', upgrade = FALSE)" && \
     R -e "remotes::install_version('shiny', version = '1.6.0', upgrade = FALSE)" && \
     R -e "remotes::install_version('tibble', version = '3.1.0', upgrade = FALSE)" && \
-    R -e "remotes::install_version('dplyr', version = '1.0.4', upgrade = FALSE)" && \
     R -e "remotes::install_version('ggplot2', version = '3.3.3', upgrade = FALSE)" && \
     R -e "remotes::install_version('rematch2', version = '2.1.2', upgrade = FALSE)" && \
     R -e "remotes::install_version('roxygen2', version = '7.1.1', upgrade = FALSE)" && \

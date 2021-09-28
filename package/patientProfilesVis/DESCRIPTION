@@ -2,7 +2,7 @@ Package: patientProfilesVis
 Type: Package
 Title: Visualization of Patient Profiles
 Version: 2.0.2
-Date: 2021-08-11
+Date: 2021-09-28
 Authors@R: c(
   person(given = "Laure", family = "Cougnaud", 
   role = c("aut", "cre"), email = "laure.cougnaud@openanalytics.eu"), 
@@ -30,7 +30,6 @@ Imports:
   reshape2, 
   knitr, 
   grid, 
-  dplyr, 
   stringr, 
   parallel, 
   gridExtra, 
@@ -47,6 +46,6 @@ Suggests:
 URL: https://github.com/openanalytics/patientProfilesVis
 BugReports: https://github.com/openanalytics/patientProfilesVis/issues
 License: MIT + file LICENSE
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 VignetteBuilder: knitr
 SystemRequirements: latex
