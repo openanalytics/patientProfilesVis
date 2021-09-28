@@ -1,4 +1,4 @@
-context("Miscellaneous utility functions for the subject profiles")
+context("Test miscellaneous functions")
 
 test_that("The path of the subject profiles is correctly retrieved", {
 

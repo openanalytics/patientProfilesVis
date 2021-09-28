@@ -1,4 +1,4 @@
-context("time limits are extracted based on time alignment policy")
+context("Set time limits")
 
 test_that("Plots are correctly aligned across modules and subjects", {
 			

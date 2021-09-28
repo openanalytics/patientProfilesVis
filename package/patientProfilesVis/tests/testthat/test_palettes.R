@@ -1,4 +1,4 @@
-context("Palettes")
+context("Get palettes")
 
 library(viridisLite)
 

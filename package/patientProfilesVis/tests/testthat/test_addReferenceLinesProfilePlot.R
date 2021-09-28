@@ -1,4 +1,4 @@
-context("add reference lines to a subject profile plot")
+context("Add reference lines to a subject profile plot")
 
 library(ggplot2)
 

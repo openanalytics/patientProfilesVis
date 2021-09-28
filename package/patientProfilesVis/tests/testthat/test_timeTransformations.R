@@ -1,4 +1,4 @@
-context("time transformers for subject profiles")
+context("Set a time transformation")
 
 test_that("A hyperbolic arc-sin transformation is correctly extracted", {
 			

@@ -1,4 +1,4 @@
-context("Subject profiles are combined")
+context("Combine subject profiles")
 
 library(ggplot2)
 library(shiny)
