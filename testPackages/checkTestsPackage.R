@@ -3,7 +3,7 @@
 # Author: Laure Cougnaud
 ###############################################################################
 
-packagePath <- "../package/patientProfilesVis/"
+packagePath <- "../patientProfilesVis/"
 
 ## create reference figures for vdiffr::expect_doppelganger
 
