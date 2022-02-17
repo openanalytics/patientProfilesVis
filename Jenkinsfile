@@ -1,6 +1,7 @@
 pipeline {
     agent any
     options {
+        copyArtifactPermission('/git/clinDataReview/*');
         buildDiscarder(logRotator(numToKeepStr: '3'))
     }
     environment {
