@@ -109,3 +109,138 @@ test_that("A variable used for a plot aesthetic is formatted correctly", {
 	expect_equal(levels(varAes), c("A", "B", NA_character_))
 			
 })
+
+test_that("The number of lines considered for the plot height is extracted correctly for a line subject profile plot", {
+  
+  data <- data.frame(
+    TEST = "a1",
+    DY = 1,
+    USUBJID = "1",
+    AVAL = 1
+  )
+  
+  gg <- subjectProfileLinePlot(
+    data = data,
+    paramNameVar = "TEST",
+    paramValueVar = "AVAL",
+    timeVar = "DY",
+  )[[1]][[1]]
+  
+  expect_equal(
+    object = getNLinesSubjectProfile(gg),
+    expected = 4 + 3 + 2 # plot (parameter) + title + xLab 
+  )
+  
+})
+
+test_that("The number of lines considered for the plot height is extracted correctly for a line subject profile plot without title", {
+  
+  data <- data.frame(
+    TEST = "a1",
+    DY = 1,
+    USUBJID = "1",
+    AVAL = 1
+  )
+  
+  gg <- subjectProfileLinePlot(
+    data = data,
+    paramNameVar = "TEST",
+    paramValueVar = "AVAL",
+    timeVar = "DY",
+    title = NULL
+  )[[1]][[1]]
+  
+  expect_equal(
+    object = getNLinesSubjectProfile(gg),
+    expected = 4 + 2 # plot (parameter) + xLab
+  )
+  
+})
+
+test_that("The number of lines considered for the plot height is extracted correctly for a line subject profile plot without label for the x-axis", {
+  
+  data <- data.frame(
+    TEST = "a1",
+    DY = 1,
+    USUBJID = "1",
+    AVAL = 1
+  )
+  
+  gg <- subjectProfileLinePlot(
+    data = data,
+    paramNameVar = "TEST",
+    paramValueVar = "AVAL",
+    timeVar = "DY",
+    xLab = ""
+  )[[1]][[1]]
+  
+  expect_equal(
+    object = getNLinesSubjectProfile(gg),
+    expected = 4 + 3 # plot (parameter) + title
+  )
+  
+})
+
+test_that("The number of lines considered for the plot height is extracted correctly for a text subject profile plot", {
+  
+  data <- data.frame(
+    AEDECOD = paste(sample(LETTERS, 500, replace = TRUE), collapse = " "),
+    USUBJID = "1"
+  ) # 6 lines
+  
+  gg <- subjectProfileTextPlot(
+    data = data,
+    paramValueVar = "AEDECOD",
+    table = FALSE
+  )[[1]][[1]]
+  
+  expect_equal(
+    object = getNLinesSubjectProfile(gg),
+    expected = 6 + 3 # plot (parameters) + title
+  )
+  
+})
+
+test_that("The number of lines considered for the plot height is extracted correctly for an interval subject profile plot", {
+  
+  data <- data.frame(
+    TEST = c(1, 1, 2),
+    START = c(1, 3, 5),
+    END = c(2, 4, 6),
+    USUBJID = "1"
+  )
+  
+  gg <- subjectProfileIntervalPlot(
+    data = data,
+    timeStartVar = "START",
+    timeEndVar = "END",
+    paramVar = "TEST"
+  )[[1]][[1]] # 4 lines for the legend
+  
+  expect_equal(
+    object = getNLinesSubjectProfile(gg),
+    expected = (3 + 2*0.8 + 1) + 3 + 2 + 2 # legend + title + xLab + caption
+  )
+  
+})
+
+test_that("The number of lines considered for the plot height is extracted correctly for an event subject profile plot", {
+  
+  data <- data.frame(
+    TEST = seq(3),
+    DY = seq(3),
+    USUBJID = "1"
+  )
+
+  gg <- subjectProfileEventPlot(
+    data = data,
+    timeVar = "DY",
+    paramVar = "TEST"
+  )[[1]][[1]]
+  
+  expect_equal(
+    object = getNLinesSubjectProfile(gg),
+    expected = (3 + 2 * 0.8) + 3 + 2 # plot (parameters) + title + xLab
+  )
+  
+})

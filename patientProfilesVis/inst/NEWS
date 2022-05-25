@@ -1,3 +1,5 @@
+2.0.3
+    o add tests for getNLinesSubjectProfile
 2.0.2
     o fix issue empty page start report
     o fix issue figure overflows page for parameter var with multiple lines
