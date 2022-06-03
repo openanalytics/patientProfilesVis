@@ -49,7 +49,7 @@ test_that("Parameter variables and values are correctly displayed for each subje
 		TEST = factor(rep(c("A", "B"), each = 5), levels = c("B", "A")),
 		AVAL = rnorm(10),
 		DY = sample.int(10),
-		USUBJID = sample(c("a", "b"), 10, replace = TRUE)
+		USUBJID = factor(rep(c("a", "b"), length = 10, replace = TRUE))
 	)
 			
 	plots <- subjectProfileLinePlot(
@@ -80,7 +80,7 @@ test_that("Parameter variables and values are correctly displayed for each subje
 					ggDataAes <- layer_data(gg, which(isGeomAes))
 					ggDataAes$PANEL <- as.character(ggDataAes$PANEL)
 					ggDataAes <- ggDataAes[, c("PANEL", "x", "y")]
-					a <- ggDataAes[do.call(order, ggDataAes), ]
+					ggDataAes[do.call(order, ggDataAes), ]
 								
 				},
 				expected = {
@@ -90,7 +90,7 @@ test_that("Parameter variables and values are correctly displayed for each subje
 						dataReference[, c("PANEL", "DY", "AVAL")], 
 						c("PANEL", "x", "y")
 					)
-					b <- dataReference[do.call(order, dataReference), ]
+					dataReference[do.call(order, dataReference), ]
 				},
 				check.attributes = FALSE # (rownames differ),
 			)

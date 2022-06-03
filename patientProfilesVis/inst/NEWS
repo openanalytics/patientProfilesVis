@@ -1,3 +1,5 @@
+2.0.4
+    o subject profile line plot: fix unit test random generation of subject IDs
 2.0.3
     o add tests for getNLinesSubjectProfile
 2.0.2
