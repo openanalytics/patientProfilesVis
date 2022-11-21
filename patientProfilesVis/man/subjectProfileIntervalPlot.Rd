@@ -42,8 +42,8 @@ subjectProfileIntervalPlot(
   timeStartShapeVar = NULL,
   timeEndShapeVar = NULL,
   shapePalette = NULL,
-  shapeLab = toString(unique(getLabelVar(c(timeStartShapeVar, timeEndShapeVar),
-    labelVars = labelVars))),
+  shapeLab = toString(unique(getLabelVar(c(timeStartShapeVar, timeEndShapeVar), labelVars
+    = labelVars))),
   shapeSize = rel(3),
   title = toString(getLabelVar(paramVar, labelVars = labelVars, label = paramLab)),
   label = title,

@@ -131,6 +131,13 @@ test_that("Reference lines are correctly set from a specified data set with a cu
 		paramVar = "TEST"
 	)
 	
+	getGeomLineData <- function(gg){
+		isGeomLine <- sapply(gg$layers, function(l) inherits(l$geom, "GeomVline"))
+		ggDataLine <- lapply(which(isGeomLine), layer_data, plot = gg)
+		ggDataLine <- do.call(rbind, ggDataLine)
+		return(ggDataLine)
+	}
+	
 	# specification of subject variable
 	expect_equal(
 		# custom subject variable
@@ -140,13 +147,14 @@ test_that("Reference lines are correctly set from a specified data set with a cu
 				visitName = c("First Visit", "Last Visit"),
 				SUBJID = "1"
 			)
-			patientProfilesVis:::addReferenceLinesProfilePlot(
+			gg1 <- patientProfilesVis:::addReferenceLinesProfilePlot(
 				gg = plots[["1"]][[1]],
 				refLinesData = dataVS,
 				refLinesTimeVar = "DY",
 				refLinesLabelVar = "visitName",
 				subjectVar = "SUBJID"
 			)
+			getGeomLineData(gg1)
 		}, 
 		# default subject variable
 		expected = {
@@ -155,12 +163,13 @@ test_that("Reference lines are correctly set from a specified data set with a cu
 				visitName = c("First Visit", "Last Visit"),
 				USUBJID = "1"
 			)
-			patientProfilesVis:::addReferenceLinesProfilePlot(
+			gg2 <- patientProfilesVis:::addReferenceLinesProfilePlot(
 				gg = plots[["1"]][[1]],
 				refLinesData = dataVS,
 				refLinesTimeVar = "DY",
 				refLinesLabelVar = "visitName"
 			)
+			getGeomLineData(gg2)
 		}
 	)
 			

@@ -18,7 +18,9 @@ subjectProfileLinePlot(
   colorLab = getLabelVar(colorVar, labelVars = labelVars),
   colorPalette = NULL,
   shapeVar = colorVar,
-  shapeLab = if (isTRUE(colorVar == shapeVar)) {     colorLab } else
+  shapeLab = if (isTRUE(colorVar == shapeVar)) {
+     colorLab
+ } else
     getLabelVar(shapeVar, labelVars = labelVars),
   shapePalette = NULL,
   paramGroupVar = NULL,

@@ -36,6 +36,7 @@
 #' @author Laure Cougnaud
 #' @import ggplot2
 #' @importFrom stats setNames
+#' @importFrom utils packageVersion
 addReferenceLinesProfilePlot <- function(
 	gg, 
 	subjectVar = "USUBJID",
@@ -99,13 +100,15 @@ addReferenceLinesProfilePlot <- function(
 		
 		# add vertical lines
 		for(i in seq_along(refLinesTime)){
-			gg <- gg + geom_vline(
+			argsGeomVLine <- list(
 				xintercept = refLinesTime[i], 
 				color = refLinesColor[i],
 				linetype = refLinesLinetype[i], 
-				alpha = 0.5,
-				size = 1
+				alpha = 0.5
 			)
+			aesLineSize <- ifelse(packageVersion("ggplot2") >= "3.4.0", "linewidth", "size")
+			argsGeomVLine[[aesLineSize]] <- 1
+			gg <- gg + do.call(geom_vline, argsGeomVLine)
 		}
 		
 		# add label at the bottom of the plot
