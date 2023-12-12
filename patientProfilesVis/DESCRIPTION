@@ -1,8 +1,8 @@
 Package: patientProfilesVis
 Type: Package
 Title: Visualization of Patient Profiles
-Version: 2.0.5.9000
-Date: 2023-12-08
+Version: 2.0.6
+Date: 2023-12-12
 Authors@R: c(
   person(given = "Laure", family = "Cougnaud", 
   role = c("aut", "cre"), email = "laure.cougnaud@openanalytics.eu"), 
@@ -49,4 +49,4 @@ BugReports: https://github.com/openanalytics/patientProfilesVis/issues
 License: MIT + file LICENSE
 RoxygenNote: 7.2.3
 VignetteBuilder: knitr
-SystemRequirements: latex
+SystemRequirements: latex, cairo (for report creation)

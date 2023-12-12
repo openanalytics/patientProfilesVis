@@ -1,6 +1,7 @@
-2.0.5.9000:
+2.0.6
   o tests - time transformation: fix for scales 1.3.0
   o doc: remove description-like items in itemize (R-devel 11/10/2023)
+  o add Cairo to system requirements (for creation of pdf report)
 2.0.5
     o reference lines - updates for ggplot2 >= 3.4.0:
       - unit test for 'custom subject variable' more generic
