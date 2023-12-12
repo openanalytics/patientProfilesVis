@@ -342,7 +342,7 @@ subjectProfileIntervalPlot <- function(
 #' \itemize{
 #' \item{'minimal' (by default): 
 #' \itemize{
-#' \item{if the start and the end of the interval are missing: }{
+#' \item{if the start and the end of the interval are missing: 
 #' no imputation is done, only the label is displayed}
 #' \item{if the start time is missing and the end time is not missing: 
 #' start time is imputed with end time, and status is set to 'Missing start'}
