@@ -307,8 +307,8 @@ prepareSubjectProfile <- function(
 #' @param listPlots list of list of \code{subjectProfile[X]Plot} plots
 #' @param timeAlign Character vector with time alignment across modules/subjects, either:
 #' \itemize{
-#' \item{'all' (by default): }{all plots have the same time limits}
-#' \item{'none': }{each of the plot (module*subject) has its own time limits}
+#' \item{'all' (by default): all plots have the same time limits}
+#' \item{'none': each of the plot (module*subject) has its own time limits}
 #' \item{character vector with names of the modules which
 #' should have the same time limits
 #' (should correspond to the names of \code{listPlots})}
@@ -316,9 +316,9 @@ prepareSubjectProfile <- function(
 #' @param timeAlignPerSubject Character vector, specifying if the plots
 #' should be aligned (or not) across subjects
 #' \itemize{
-#' \item{'none' (by default): }{all modules to align
+#' \item{'none' (by default): all modules to align
 #' have the same time limit across subjects}
-#' \item{'all': }{all modules to align
+#' \item{'all': all modules to align
 #'  have different time limits per subject}
 #' \item{character vector with subset of the modules to align per subject
 #' (should correspond to the names of \code{listPlots})}

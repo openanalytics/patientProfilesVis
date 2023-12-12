@@ -15,9 +15,9 @@ getTimeTrans(
 \arguments{
 \item{type}{String with transformation type, either:
 \itemize{
-\item{'asinh': }{hyperbolic arc-sine (\code{\link{asinh}}) transformation}
-\item{'asinh-neg': }{hyperbolic arc-sine transformation only for the negative values,
-otherwise linear scale}
+\item{'asinh': hyperbolic arc-sine (\code{\link{asinh}}) transformation}
+\item{'asinh-neg': hyperbolic arc-sine transformation only for the negative 
+values, otherwise linear scale}
 }}
 
 \item{scale}{Numeric vector of length 1 (1 by default)

@@ -23,10 +23,10 @@
 #' for the colors and the filling of the points.
 #' @param yLimFrom String with specification on the limits of the y-axis, either:
 #' \itemize{
-#' \item{'all' (by default): }{for each parameter (\code{paramNameVar}), 
+#' \item{'all' (by default): for each parameter (\code{paramNameVar}), 
 #' the y-axis range contains the minimum/maximum value of 
 #' the reference range (\code{paramValueRangeVar}) or data}
-#' \item{'value': }{for each parameter (\code{paramNameVar}), 
+#' \item{'value': for each parameter (\code{paramNameVar}), 
 #' the y-axis minimum/maximum value is restricted to the data range only.
 #' Please note that the ribbon visualizing the reference range is also restricted
 #' to the data range if wider.}

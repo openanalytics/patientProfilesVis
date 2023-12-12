@@ -37,8 +37,7 @@ This is a simple wrapper around
 with different defaults:
 \itemize{
 \item{inclusion of missing values
-by default (\code{includeNA} set to \code{TRUE})
-}
+by default (\code{includeNA} set to \code{TRUE})}
 }
 }
 \seealso{

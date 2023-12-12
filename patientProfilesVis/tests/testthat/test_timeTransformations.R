@@ -1,9 +1,11 @@
 context("Set a time transformation")
 
+classTrans <- ifelse(packageVersion("scales") >= "1.3.0", "transform", "trans")
+
 test_that("A hyperbolic arc-sin transformation is correctly extracted", {
 			
 	timeTrans <- getTimeTrans(type = "asinh")
-	expect_is(timeTrans, "trans")
+	expect_s3_class(object = timeTrans, class = classTrans)
 	expect_equal(timeTrans$name, "asinh")
 	
 	x <- c(-100, -10, 1, 0, 1, 10, 100)
@@ -16,7 +18,7 @@ test_that("A hyperbolic arc-sin transformation is correctly extracted", {
 test_that("A hyperbolic arc-sin transformation handling negative values is correctly extracted", {
 			
 	timeTrans <- getTimeTrans(type = "asinh-neg")
-	expect_is(timeTrans, "trans")
+	expect_s3_class(object = timeTrans, class = classTrans)
 	expect_equal(timeTrans$name, "asinh_neg")
 			
 	x <- c(-100, -10, 1, 0, 1, 10, 100)

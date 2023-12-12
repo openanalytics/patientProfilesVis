@@ -56,8 +56,8 @@ the time goes above/below specified \code{timeLim} (the segment is cut).}
 
 \item{timeAlign}{Character vector with time alignment across modules/subjects, either:
 \itemize{
-\item{'all' (by default): }{all plots have the same time limits}
-\item{'none': }{each of the plot (module*subject) has its own time limits}
+\item{'all' (by default): all plots have the same time limits}
+\item{'none': each of the plot (module*subject) has its own time limits}
 \item{character vector with names of the modules which
 should have the same time limits
 (should correspond to the names of \code{listPlots})}
@@ -66,9 +66,9 @@ should have the same time limits
 \item{timeAlignPerSubject}{Character vector, specifying if the plots
 should be aligned (or not) across subjects
 \itemize{
-\item{'none' (by default): }{all modules to align
+\item{'none' (by default): all modules to align
 have the same time limit across subjects}
-\item{'all': }{all modules to align
+\item{'all': all modules to align
  have different time limits per subject}
 \item{character vector with subset of the modules to align per subject
 (should correspond to the names of \code{listPlots})}
@@ -79,11 +79,11 @@ can be aligned by subject.}
 \item{refLines}{(optional) nested list with details for reference line(s).
 Each sublist contains:
 \itemize{
-\item{(required) 'label': }{string with label for the reference line}
-\item{(required) 'time': }{unique time (x) coordinate for the reference line}
-\item{(optional) 'color': }{color for the reference line,
+\item{(required) 'label': string with label for the reference line}
+\item{(required) 'time': unique time (x) coordinate for the reference line}
+\item{(optional) 'color': color for the reference line,
 'black' by default}
-\item{(optional) 'linetype': }{linetype for the reference line,
+\item{(optional) 'linetype': linetype for the reference line,
 'dotted' by default}
 }}
 

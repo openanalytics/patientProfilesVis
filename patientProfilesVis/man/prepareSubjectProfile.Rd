@@ -28,11 +28,11 @@ prepareSubjectProfile(
 \item{refLines}{(optional) nested list with details for reference line(s).
 Each sublist contains:
 \itemize{
-\item{(required) 'label': }{string with label for the reference line}
-\item{(required) 'time': }{unique time (x) coordinate for the reference line}
-\item{(optional) 'color': }{color for the reference line,
+\item{(required) 'label': string with label for the reference line}
+\item{(required) 'time': unique time (x) coordinate for the reference line}
+\item{(optional) 'color': color for the reference line,
 'black' by default}
-\item{(optional) 'linetype': }{linetype for the reference line,
+\item{(optional) 'linetype': linetype for the reference line,
 'dotted' by default}
 }}
 

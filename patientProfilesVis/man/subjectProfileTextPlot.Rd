@@ -41,7 +41,7 @@ of the y-axis.\cr
 Multiple variables can be concatenated in the same line by specifying them,
 as an unique string separated by a 'pipe', e.g 'SEX|AGE'. Variable
 label(s) are concatenated (with ', ') and displayed in the y-axis.}
-\item{if \code{paramNameVar} is specified: }{
+\item{if \code{paramNameVar} is specified: 
 \itemize{
 \item{character vector with names of variable(s) (multiple possible) 
 of \code{data} with values to represent in the plot area.

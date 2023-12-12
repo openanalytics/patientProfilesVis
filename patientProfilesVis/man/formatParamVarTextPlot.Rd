@@ -32,9 +32,9 @@ If specified, the parameters will be grouped by this(these) variable(s) in the y
 
 \item{revert}{logical, if TRUE revert the order of the levels of the variable}
 
-\item{width}{max number of characters in the code{paramVar} parameter.}
+\item{width}{max number of characters in the \code{paramVar} parameter.}
 
-\item{widthValue}{max number of characters in the code{paramValueVar} parameter.}
+\item{widthValue}{max number of characters in the \code{paramValueVar} parameter.}
 
 \item{formatReport}{list with parameters used to specify the format of the report,
 e.g. output of the \code{\link{subjectProfileReportFormat}} function}

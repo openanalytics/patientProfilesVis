@@ -5,11 +5,11 @@
 #' @param refLines (optional) nested list with details for reference line(s).
 #' Each sublist contains:
 #' \itemize{
-#' \item{(required) 'label': }{string with label for the reference line}
-#' \item{(required) 'time': }{unique time (x) coordinate for the reference line}
-#' \item{(optional) 'color': }{color for the reference line,
+#' \item{(required) 'label': string with label for the reference line}
+#' \item{(required) 'time': unique time (x) coordinate for the reference line}
+#' \item{(optional) 'color': color for the reference line,
 #' 'black' by default}
-#' \item{(optional) 'linetype': }{linetype for the reference line,
+#' \item{(optional) 'linetype': linetype for the reference line,
 #' 'dotted' by default}
 #' }
 #' @param refLinesData data.frame with data from which the reference line(s) should be extracted
@@ -25,13 +25,13 @@
 #' @return 
 #' If \code{addLabel} is:
 #' \itemize{ 
-#' \item{\code{TRUE}: }{list with:
+#' \item{\code{TRUE}: list with:
 #' \itemize{
-#' \item{'gg': }{\code{\link[ggplot2]{ggplot2}} plot with reference lines}
-#' \item{'ggRefLines': }{\code{\link[ggplot2]{ggplot2}} plot containing only 
+#' \item{'gg': \code{\link[ggplot2]{ggplot2}} plot with reference lines}
+#' \item{'ggRefLines': \code{\link[ggplot2]{ggplot2}} plot containing only 
 #' the labels at the specified position}
 #' }}
-#' \item{\code{FALSE}: }{\code{\link[ggplot2]{ggplot2}} plot with reference lines}
+#' \item{\code{FALSE}: \code{\link[ggplot2]{ggplot2}} plot with reference lines}
 #' }
 #' @author Laure Cougnaud
 #' @import ggplot2

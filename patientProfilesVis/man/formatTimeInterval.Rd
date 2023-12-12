@@ -85,23 +85,26 @@ specified.}
 \value{
 list with:
 \itemize{
-\item{'data': }{Data with:
+\item{'data': Data with:
 \itemize{
 \item{imputed \code{timeStartVar} and \code{timeEndVar}}
-\item{new column 'timeStartStatus': }{
+\item{new column 'timeStartStatus': 
 character vector containing status of \code{timeStartVar} variable:
  'Complete' or 'Missing start' or NA}
-\item{new column 'timeEndStatus': }{
+\item{new column 'timeEndStatus': 
 character vector containing status of \code{timeEndVar} variable:
  'Complete' or 'Missing end' or NA}
 }}
-\item{'timeLim': }{vector of length 2 with minimum/maximum time limits across subjects.}
-\item{'timeLimSpecified': }{vector of length 2 with time limits as specified by the user,
-either extracted from \code{timeLim} or from \code{timeLimData}.
+\item{'timeLim': vector of length 2 with minimum/maximum time limits 
+across subjects.}
+\item{'timeLimSpecified': vector of length 2 with time limits as specified 
+by the user, either extracted from \code{timeLim} or from \code{timeLimData}.
 If missing value within \code{timeLim}, the corresponding minimum/maximum
 value in the (updated) data is used.}
-\item{'timeShapePalette': }{Named character vector with symbols for the different time status}
-\item{'caption': }{String with extra explanation concerning imputation that could be included in plot caption.}
+\item{'timeShapePalette': Named character vector with symbols for the 
+different time status}
+\item{'caption': String with extra explanation concerning imputation that 
+could be included in plot caption.}
 }
 }
 \description{
@@ -112,50 +115,55 @@ Set missing start/end time variable in the data.
 In case the start or the end of the time interval contain missing values:
 \itemize{
 \item{if a dataset (\code{timeLimData}), start (\code{timeLimStartVar})
-and end (\code{timeLimEndVar}) variables are specified: }{
+and end (\code{timeLimEndVar}) variables are specified: 
 \enumerate{
-\item{for each subject: }{
+\item{for each subject: 
 \itemize{
-\item{the minimum and maximum time values across these specified time variables are extracted}
+\item{the minimum and maximum time values across these specified time 
+variables are extracted}
 \item{missing start values are replaced by the minimum time}
 \item{missing start values are replaced by the maximum time}
 }}
 \item{if all values are missing for this subject, they are taken across subjects}
 }}
-\item{otherwise, depending on the imputation type (\code{timeImpType}): }{
+\item{otherwise, depending on the imputation type (\code{timeImpType}):
 \itemize{
-\item{'minimal' (by default): }{
+\item{'minimal' (by default): 
 \itemize{
-\item{if the start and the end of the interval are missing: }{no imputation is done, only the label is displayed}
-\item{if the start time is missing and the end time is not missing: }{
+\item{if the start and the end of the interval are missing: }{
+no imputation is done, only the label is displayed}
+\item{if the start time is missing and the end time is not missing: 
 start time is imputed with end time, and status is set to 'Missing start'}
-\item{if the end time is missing and the start time is not missing: }{
+\item{if the end time is missing and the start time is not missing: 
 end time is imputed with start time, and status is set to 'Missing end'}
 }}
-\item{'data-based' (default in version < 1.0.0): }{
+\item{'data-based' (default in version < 1.0.0): 
 minimum/maximum values in the start/end time variables in the data are considered
 for the specific subject (if available). If there are missing for a specific subject,
 they are taken across subjects. If all time are missings, the range is set to 0 and Inf}
-\item{'none': }{no imputation is done}
+\item{'none': no imputation is done}
 }}}
 The symbols displayed at the start and end of the interval are:
 \itemize{
-\item{by default: }{
+\item{by default: 
 \itemize{
 \item{a filled square labelled 'Complete' if the time is not missing}
 \item{a filled left-directed arrow in case of missing start time}
 \item{a filled right-directed arrow in case of missing end time}
 }}
 \item{if the variable(s) used for the shape of the start or end 
-of the interval are specified (via \code{timeStartShapeVar}/\code{timeEndShapeVar}): }{
+of the interval are specified (via 
+\code{timeStartShapeVar}/\code{timeEndShapeVar}): 
 labels are based on these variables, and a standard shape palette is used}
 }
 The time limits are the same across subjects, and set to:
 \itemize{
 \item{\code{timeLim} if specified}
-\item{maximum time range in \code{timeLimStartVar} and \code{timeLimEndVar} in \code{timeLimData} 
+\item{maximum time range in \code{timeLimStartVar} and 
+\code{timeLimEndVar} in \code{timeLimData} 
 if specified}
-\item{the maximum range on the data obtained after imputation of missing values}
+\item{the maximum range on the data obtained after imputation of missing 
+values}
 }
 }
 

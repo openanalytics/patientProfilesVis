@@ -476,6 +476,7 @@ interactionWithMissing <- function(data, vars, varSep = " - "){
 #' larger than the specified width.
 #' If not specified, column width is optimized
 #' based on the max length of the character in each column.
+#' @param width max number of characters in the \code{paramVar} parameter.
 #' @inheritParams clinUtils::formatVarForPlotLabel
 #' @inheritParams getOptimalColWidth
 #' @inheritParams patientProfilesVis-common-args
@@ -558,7 +559,7 @@ formatParamVarTextPlot <- function(data,
 #' and median number of characters in each column.
 #' @param data Data.frame with columns for which optimal width should be extracted.
 #' @param labels (optional) Character vector with column labels for \code{data}.
-#' @param widthValue max number of characters in the code{paramValueVar} parameter.
+#' @param widthValue max number of characters in the \code{paramValueVar} parameter.
 #' @inheritParams patientProfilesVis-common-args
 #' @return Numeric vector of \code{length(ncol(data))} with optimal widths.
 #' @importFrom stats median

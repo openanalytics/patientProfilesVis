@@ -15,7 +15,7 @@ getOptimalColWidth(
 \arguments{
 \item{data}{Data.frame with columns for which optimal width should be extracted.}
 
-\item{widthValue}{max number of characters in the code{paramValueVar} parameter.}
+\item{widthValue}{max number of characters in the \code{paramValueVar} parameter.}
 
 \item{labels}{(optional) Character vector with column labels for \code{data}.}
 
