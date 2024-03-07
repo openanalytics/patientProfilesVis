@@ -408,7 +408,7 @@ test_that("A warning is generated if the inverse of a transformation is not a fu
 	listPlots <- list(A = listPlotsA, B = listPlotsB)	
 	
 	expect_warning(
-		try(timeLim <- getTimeLimSubjectProfilePlots(listPlots), silent = TRUE),
+		try(timeLim <- patientProfilesVis:::getTimeLimSubjectProfilePlots(listPlots), silent = TRUE),
 		"transformation.*not available as a function"
 	)
 	
@@ -442,7 +442,7 @@ test_that("Time limits are correctly set for a subset of the modules", {
 	listPlots <- list(A = listPlotsA, B = listPlotsB)	
 			
 	expect_silent(
-		timeLim <- getTimeLimSubjectProfilePlots(listPlots)
+		timeLim <- patientProfilesVis:::getTimeLimSubjectProfilePlots(listPlots)
 	)
 	expect_length(timeLim, 2)
 	expect_equal(timeLim[["A"]], timeLimA)
