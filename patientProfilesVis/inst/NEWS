@@ -1,6 +1,7 @@
 2.0.6.9000
   o tests:
     - add explicit package name for non exported functions
+  o combine vertically ggplot: fix for extraction margin widths (ggplot >= 3.5.0)
 2.0.6
   o tests - time transformation: fix for scales 1.3.0
   o doc: remove description-like items in itemize (R-devel 11/10/2023)

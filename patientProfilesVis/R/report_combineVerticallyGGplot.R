@@ -30,6 +30,7 @@
 #' @importFrom ggplot2 ggplotGrob
 #' @importFrom cowplot ggdraw draw_grob
 #' @importFrom grDevices graphics.off
+#' @importFrom grid unit.c
 combineVerticallyGGplot <- function(
 	listPlots, 
 	maxNLines = NULL, 
@@ -80,7 +81,7 @@ combineVerticallyGGplot <- function(
 		lapply(x, function(y){
 					
 			sizes <- y$widths
-			idxNull <- grep("null", sizes) # this delimit the position of the margin
+			idxNull <- which(grid::unitType(sizes) == "null") # this delimit the position of the margin
 			if(length(idxNull) > 1)
 				stop("Multiple 'null' objects.")
 			idxLeftMargin <- seq_len(min(idxNull)-1)
