@@ -15,6 +15,14 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     make \
     pandoc \
     zlib1g-dev \
+	# for latex
+    texinfo \
+    texlive-latex-base \
+    texlive-latex-recommended \
+    texlive-latex-extra \
+    # for creation manual (R CMD check)
+    texlive-fonts-recommended \
+    texlive-fonts-extra \
     && rm -rf /var/lib/apt/lists/*
 
 RUN R -e "cat(\"local(options(repos = c(CRAN = 'https://cloud.r-project.org')))\n\", file = R.home('etc/Rprofile.site'), append = TRUE)"
