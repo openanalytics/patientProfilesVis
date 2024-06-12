@@ -260,9 +260,10 @@ subjectProfileTextPlot <- function(
 			
 			}else{
 			
+			  aesText <- list(x = 0, y = sym("variable"), label = sym("value"))
 				gg <- ggplot(data = dataSubjectPage) + 
 					geom_text(
-						aes_string(x = 0, y = "variable", label = "value"),
+						mapping = do.call(aes, aesText),
 						hjust = 0,
 						size = rel(3)
 					)

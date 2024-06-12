@@ -196,8 +196,8 @@ subjectProfileLinePlot <- function(
 		listPlots <- dlply(dataSubject, "pagePlot", function(dataSubjectPage){
 			
 			# create the plot
-			aesArgs <- list(x = timeVar, y = "yVar")
-			gg <- ggplot(data = dataSubjectPage, do.call(aes_string, aesArgs))
+			aesArgs <- list(x = sym(timeVar), y = sym("yVar"))
+			gg <- ggplot(data = dataSubjectPage, do.call(aes, aesArgs))
 			
 			# range of the variable
 			if(!is.null(paramValueRangeVar)){
@@ -207,13 +207,14 @@ subjectProfileLinePlot <- function(
 				), ]
 				if(length(dataRibbon) > 0){
 					# use geom_ribbon instead of geom_rect in case different intervals for different time points
-					gg <- gg + 
+					aesRibbon <- list(
+					  x = sym(timeVar), 
+					  ymin = sym(paramValueRangeVar[1]), 
+            ymax = sym(paramValueRangeVar[2])
+					)
+				  gg <- gg + 
 						geom_ribbon(
-							mapping = aes_string(
-								x = timeVar, 
-								ymin = paramValueRangeVar[1], 
-								ymax = paramValueRangeVar[2]
-							),
+							mapping = do.call(aes, aesRibbon),
 							data = dataRibbon,
 							fill = colorValueRange, 
 							alpha = 0.1
@@ -235,13 +236,15 @@ subjectProfileLinePlot <- function(
 			
 			# point
 			aesArgsPoint <- c(
-				if(!is.null(colorVar))	list(color = colorVar, fill = colorVar),
-				if(!is.null(shapeVar))	list(shape = shapeVar)
+				if(!is.null(colorVar))	list(color = sym(colorVar), fill = sym(colorVar)),
+				if(!is.null(shapeVar))	list(shape = sym(shapeVar))
 			)
 			
 			if(length(aesArgsPoint) > 0){
-				gg <- gg + geom_point(do.call(aes_string, aesArgsPoint), 
-					alpha = alpha, size = shapeSize)
+				gg <- gg + geom_point(
+				  mapping = do.call(aes, aesArgsPoint), 
+					alpha = alpha, size = shapeSize
+				)
 			}else{
 				gg <- gg + geom_point(alpha = alpha, size = shapeSize)
 			}

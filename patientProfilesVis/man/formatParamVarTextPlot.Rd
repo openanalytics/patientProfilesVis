@@ -27,8 +27,9 @@ formatParamVarTextPlot(
 
 \item{paramValueLab}{Character vector with labels for \code{paramValueVar}.}
 
-\item{paramGroupVar}{(optional) character vector with variable(s) of \code{data} with grouping.
-If specified, the parameters will be grouped by this(these) variable(s) in the y-axis.}
+\item{paramGroupVar}{(optional) character vector with variable(s) of 
+\code{data} with grouping.\cr If specified, the parameters will be 
+grouped by this(these) variable(s) in the y-axis.}
 
 \item{revert}{logical, if TRUE revert the order of the levels of the variable}
 

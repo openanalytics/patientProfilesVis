@@ -120,15 +120,15 @@ subjectProfileEventPlot <- function(
 		listPlots <- dlply(dataSubject, "pagePlot", function(dataSubjectPage){
 					
 			aesArgs <- c(
-				list(x = timeVar, y = "yVar"),
-				if(!is.null(colorVar))	list(fill = colorVar, color = colorVar),
-				if(!is.null(shapeVar))	list(shape = shapeVar)
+				list(x = sym(timeVar), y = sym("yVar")),
+				if(!is.null(colorVar))	list(fill = sym(colorVar), color = sym(colorVar)),
+				if(!is.null(shapeVar))	list(shape = sym(shapeVar))
 			)
 				
 			# create the plot
 			gg <- ggplot(data = dataSubjectPage) +
 				geom_point(
-					do.call(aes_string, aesArgs),
+					do.call(aes, aesArgs),
 					size = 3, alpha = alpha
 				) +
 				scale_y_discrete(drop = TRUE) +

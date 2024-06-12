@@ -122,8 +122,11 @@ addReferenceLinesProfilePlot <- function(
 			# add label(s)
 			colors <- setNames(refLinesColor, refLinesLabels)
 			dataText <- data.frame(x = refLinesTime, label = refLinesLabels)
+			aesRefLines <- list(x = sym("x"), label = sym("label"), 
+			   colour = sym("label"), y = 0)
 			ggRefLines <- ggplot(data = dataText) +
-				geom_text(aes_string(x = "x", label = "label", colour = "label", y = 0), 
+				geom_text(
+				  mapping = do.call(aes, aesRefLines), 
 					angle = 90, hjust = 0.5, show.legend = FALSE
 				) + theme_void() +
 				scale_color_manual(values = colors, limits = names(colors))
