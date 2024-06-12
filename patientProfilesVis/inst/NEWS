@@ -1,4 +1,4 @@
-2.0.7.9000
+2.0.8
   o fixes for ggplot2 updates:
     - no use of aes_string
     - geom_line: use of linewidth instead of size
