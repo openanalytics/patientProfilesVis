@@ -47,6 +47,7 @@ subjectProfileIntervalPlot(
   shapeSize = rel(3),
   title = toString(getLabelVar(paramVar, labelVars = labelVars, label = paramLab)),
   label = title,
+  caption,
   labelVars = NULL,
   formatReport = subjectProfileReportFormat(),
   paging = TRUE
@@ -204,6 +205,10 @@ from the \code{subjectProfile[]Plot} function.\cr
 This label is displayed in the final profile
 report, in case no data is available for
 for a specific patient, as: 'No [label] available.'}
+
+\item{caption}{(optional) String with caption (NULL for no caption). 
+By default the caption contains information on the imputation strategy 
+for missing time.}
 
 \item{labelVars}{Named character vector with variable labels 
 (names are the variable code)}

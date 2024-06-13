@@ -13,6 +13,9 @@
 #' If set to FALSE, this is not compatible with 
 #' the specification of \code{timeLim}.
 #' @param title String with title, label of the parameter variable by default.
+#' @param caption (optional) String with caption (NULL for no caption). 
+#' By default the caption contains information on the imputation strategy 
+#' for missing time. 
 #' @inheritParams patientProfilesVis-common-args
 #' @inheritParams filterData
 #' @inheritParams clinUtils::formatVarForPlotLabel
@@ -58,6 +61,7 @@ subjectProfileIntervalPlot <- function(
 	shapeSize = rel(3),
 	title = toString(getLabelVar(paramVar, labelVars = labelVars, label = paramLab)),
 	label = title,
+	caption,
 	labelVars = NULL,
 	formatReport = subjectProfileReportFormat(),
 	paging = TRUE){
@@ -96,7 +100,7 @@ subjectProfileIntervalPlot <- function(
 	timeLim <- resMSED$timeLim
 	timeLimInit <- resMSED$timeLimSpecified
 	timeShapePalette <- resMSED$timeShapePalette
-	caption <- resMSED$caption
+	caption <- if(!missing(caption)){caption}else{resMSED$caption}
 	
 	# specify the time limits if not specified
 	# otherwise if missing values for start/end for all records of a patient

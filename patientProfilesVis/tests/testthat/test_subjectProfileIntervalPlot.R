@@ -1446,3 +1446,53 @@ test_that("Labels for aesthetic, plot or axis title are correctly extracted from
 	
 })
 
+test_that("A caption is correctly included if specified", {
+  
+  data <- data.frame(
+    TEST = c("A", "B", "C"),
+    DY = c(1, 2, 3),
+    START = c(1, 2, 3),
+    END = c(2, 3, 4),
+    SUBJID = c("a", "a", "a")
+  )
+  
+  caption <- "No missing data is imputed"
+  plots <- subjectProfileIntervalPlot(
+    data = data, 
+    timeStartVar = "START",
+    timeEndVar = "END",
+    paramVar = "TEST",
+    subjectVar = "SUBJID",
+    caption = caption
+  )
+  
+  gg <- plots[[1]][[1]]
+  
+  expect_equal(object = gg$labels$caption, expected = caption)
+  
+})
+
+test_that("No caption is included if requested", {
+  
+  data <- data.frame(
+    TEST = c("A", "B", "C"),
+    DY = c(1, 2, 3),
+    START = c(1, 2, 3),
+    END = c(2, 3, 4),
+    SUBJID = c("a", "a", "a")
+  )
+  
+  plots <- subjectProfileIntervalPlot(
+    data = data, 
+    timeStartVar = "START",
+    timeEndVar = "END",
+    paramVar = "TEST",
+    subjectVar = "SUBJID",
+    caption = NULL
+  )
+  
+  gg <- plots[[1]][[1]]
+  
+  expect_null(object = gg$labels$caption)
+  
+})
