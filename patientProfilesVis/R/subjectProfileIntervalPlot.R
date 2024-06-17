@@ -206,7 +206,7 @@ subjectProfileIntervalPlot <- function(
 					list(x = sym(xVar), y = sym("yVar"), shape = sym(shapeVar)), 
 					if(!is.null(colorVar))	list(color = sym(colorVar))
 				)
-				gg + geom_point(
+				argsGeomPoint <- list(
 					data = dataSubjectPage, 
 					mapping = do.call(aes, aesPC), 
 					fill = "white",
@@ -214,6 +214,13 @@ subjectProfileIntervalPlot <- function(
 					position = position_nudge(y = -0.01),
 					alpha = alpha
 				)
+				if(packageVersion("ggplot2") >= "3.5.0"){
+				  argsGeomPoint[["show.legend"]] <- c(
+				    shape = TRUE, 
+				    if(!is.null(colorVar)) c(color = TRUE)
+				  )
+				}
+		    gg + do.call(geom_point, argsGeomPoint)
 			}
 			
 			gg <- geomPointCustom(gg, xVar = timeStartVar, shapeVar = timeStartShapeVar)

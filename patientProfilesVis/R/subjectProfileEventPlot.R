@@ -124,13 +124,23 @@ subjectProfileEventPlot <- function(
 				if(!is.null(colorVar))	list(fill = sym(colorVar), color = sym(colorVar)),
 				if(!is.null(shapeVar))	list(shape = sym(shapeVar))
 			)
+			
+			argsGeomPoint <- list(
+			  mapping = do.call(aes, aesArgs),
+			  size = 3, alpha = alpha
+			)
+			if(packageVersion("ggplot2") >= "3.5.0"){
+			  showLegend <- c(
+			    if(!is.null(colorVar)) c(color = TRUE, fill = TRUE),
+			    if(!is.null(shapeVar))	c(shape = TRUE)
+			  )
+			  if(length(showLegend) > 0)
+			    argsGeomPoint[["show.legend"]] <- showLegend
+			}
 				
 			# create the plot
 			gg <- ggplot(data = dataSubjectPage) +
-				geom_point(
-					do.call(aes, aesArgs),
-					size = 3, alpha = alpha
-				) +
+			  do.call(geom_point, argsGeomPoint) +
 				scale_y_discrete(drop = TRUE) +
 				subjectProfileTheme()
 		

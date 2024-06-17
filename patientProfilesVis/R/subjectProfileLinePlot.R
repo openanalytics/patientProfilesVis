@@ -241,10 +241,19 @@ subjectProfileLinePlot <- function(
 			)
 			
 			if(length(aesArgsPoint) > 0){
-				gg <- gg + geom_point(
-				  mapping = do.call(aes, aesArgsPoint), 
-					alpha = alpha, size = shapeSize
-				)
+			  argsGeomPoint <- list(
+			    mapping = do.call(aes, aesArgsPoint), 
+			    alpha = alpha, size = shapeSize
+			  )
+			  if(packageVersion("ggplot2") >= "3.5.0"){
+			    showLegend <- c(
+			      if(!is.null(colorVar)) c(color = TRUE, fill = TRUE),
+			      if(!is.null(shapeVar))	c(shape = TRUE)
+			    )
+			    if(length(showLegend) > 0)
+			      argsGeomPoint[["show.legend"]] <- showLegend
+			  }
+				gg <- gg + do.call(geom_point, argsGeomPoint)
 			}else{
 				gg <- gg + geom_point(alpha = alpha, size = shapeSize)
 			}
