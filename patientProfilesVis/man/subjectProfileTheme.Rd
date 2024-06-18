@@ -2,17 +2,17 @@
 % Please edit documentation in R/miscellaneous.R
 \name{subjectProfileTheme}
 \alias{subjectProfileTheme}
-\title{Custom \code{\link{ggplot2}[theme]} for subject profile plot.
+\title{Custom \code{\link[ggplot2]{theme}} for subject profile plot.
 Currently classic dark-on-light ggplot2 theme with alternated 
 grey color for vertical grid lines}
 \usage{
 subjectProfileTheme()
 }
 \value{
-\code{\link{ggplot2}[theme]} object
+\code{\link[ggplot2]{theme}} object
 }
 \description{
-Custom \code{\link{ggplot2}[theme]} for subject profile plot.
+Custom \code{\link[ggplot2]{theme}} for subject profile plot.
 Currently classic dark-on-light ggplot2 theme with alternated 
 grey color for vertical grid lines
 }

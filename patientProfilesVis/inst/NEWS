@@ -1,5 +1,6 @@
 2.0.9
   o fix ggplot2 >= 3.5.0: include all palette elements in legend if specified
+  o fix links in Rd files
 2.0.8
   o fixes for ggplot2 updates:
     - no use of aes_string

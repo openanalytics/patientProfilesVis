@@ -6,14 +6,14 @@
 #' @inheritParams patientProfilesVis-common-args
 #' @return list with elements:
 #' \itemize{
-#' \item{'indexDef': string with LaTeX code for creation of index, 
+#' \item{'indexMake': string with LaTeX code for creation of index, 
 #' to be included directly with \code{\link{cat}} in a knitr document
 #' (two backslashes)
 #' }
-#' \item{'indexInfo': character vector, named with named with subject ID,
+#' \item{'indexEntry': character vector, named with named with subject ID,
 #'  containing LaTeX code for index for each subject
-#' specified in \code{subjects} parameter, to be passed to the 
-#' \code{\link{knit}} function as text (four backslashes)}
+#' specified in \code{subjects} parameter, to be included in a knitr document
+#'  as text (four backslashes)}
 #' \item{'indexPrint': string with LaTeX code for printing/inclusion of index, 
 #' to be included directly with \code{\link{cat}} in a knitr document
 #' (two backslashes)}

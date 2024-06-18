@@ -368,14 +368,17 @@ getWidthPlot <- function(
 
 }
 
-#' Custom \code{\link{ggplot2}[theme]} for subject profile plot.
+#' Custom \code{\link[ggplot2]{theme}} for subject profile plot.
 #' Currently classic dark-on-light ggplot2 theme with alternated 
 #' grey color for vertical grid lines
-#' @return \code{\link{ggplot2}[theme]} object
+#' @return \code{\link[ggplot2]{theme}} object
+#' @importFrom ggplot2 theme_bw theme element_line
 #' @author Laure Cougnaud
 subjectProfileTheme <- function(){
 	customTheme <- theme_bw() +
-		theme(panel.grid.major.y = element_line(colour = c("grey80", theme_bw()$panel.grid$colour)))
+		theme(panel.grid.major.y = element_line(
+		  colour = c("grey80", theme_bw()$panel.grid$colour))
+		)
 	return(customTheme)
 }
 
