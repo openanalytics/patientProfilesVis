@@ -54,8 +54,8 @@ combineVerticallyGGplot <- function(
 			X = names(listPlots),
 			FUN = function(subjID){	
 				if(verbose)	message(paste0("Combine profile: ", subjID, " across modules."))
-				lapply(listPlots[[subjID]], ggplotGrob)
 			}, 
+				lapply(listPlots[[subjID]], ggplot2::ggplotGrob)
 			simplify = FALSE
 		)
 		stopCluster(cl = cl)
