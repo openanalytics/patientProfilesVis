@@ -293,8 +293,8 @@ subjectProfileTextPlot <- function(
 				gg <- gg + ylab(yLab)
 			
 			if(is.null(xLab) || xLab == ""){
-				marDefault <- theme_bw()$plot.margin
-				marNew <- margin(t = marDefault[1], r = marDefault[2], 
+				marDefault <- calc_element("plot.margin", theme_bw())
+				marNew <- margin(t = marDefault[1], r = marDefault[2],
 					b = 0, l = marDefault[4], unit = "pt")
 				gg <- gg + theme(plot.margin = marNew)
 			}
