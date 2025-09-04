@@ -1,3 +1,5 @@
+2.0.9.9000
+  o fixes for ggplot2 4.0.0
 2.0.9
   o fix ggplot2 >= 3.5.0: include all palette elements in legend if specified
   o fix links in Rd files
