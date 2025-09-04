@@ -1,0 +1,121 @@
+pipeline {
+    agent none
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '3'))
+    }
+    environment {
+        IMAGE = 'patientprofilesvis'
+        NS = 'shared'
+        REGISTRY = 'registry.openanalytics.eu'
+        TAG = env.BRANCH_NAME.toLowerCase().replaceAll(/[^a-z0-9._-]/, '.').trim()
+        REGION = 'eu-west-1'
+        NOT_CRAN = 'true'
+        _R_CHECK_TESTS_NLINES_ = 0
+    }
+    stages {
+        stage('Build Image') {
+            agent {
+                kubernetes {
+                  yaml '''
+                    spec:
+                      containers:
+                        - name: kaniko
+                          resources:
+                            requests:
+                              memory: 5Gi
+                            limits:
+                              memory: 10Gi
+                  '''
+                  inheritFrom 'kaniko'
+                  yamlMergeStrategy merge()
+                }
+            }
+            steps {
+                container('kaniko') {
+                    sh """/kaniko/executor \
+                    	-v info \
+                    	--log-timestamp=true \
+                    	--context ${env.WORKSPACE} \
+                    	--cache=true \
+                    	--cache-ttl=8760h0m0s \
+                    	--cache-repo ${env.REGISTRY}/${env.NS}/${env.IMAGE} \
+                    	--cleanup \
+                    	--destination ${env.REGISTRY}/${env.NS}/${env.IMAGE}:${env.TAG} \
+                    	--registry-mirror ${env.REGISTRY}"""
+                }
+            }
+            post {
+                always {
+                    sh "cp /kaniko/jenkins/mem*.log ${env.WORKSPACE}"
+                    archiveArtifacts artifacts: 'mem*.log', fingerprint: true
+                }
+            }
+        }
+        stage('Packages') {
+            agent {
+                kubernetes {
+                    yaml """
+                    apiVersion: v1
+                    kind: Pod
+                    spec:
+                      containers:
+                        - name: r
+                          image: ${env.REGISTRY}/${env.NS}/${env.IMAGE}:${env.TAG}
+                          resources:
+                            limits:
+                              cpu: 250m
+                              memory: 1Gi
+                            requests:
+                              cpu: 250m
+                              memory: 250Mi"""
+                    inheritFrom 'r'
+                    yamlMergeStrategy merge()
+                    defaultContainer 'r'
+                }
+            }
+            stages {
+                stage('patientProfilesVis') {
+                    stages {
+                        stage('Roxygen') {
+                            steps {
+                                sh 'R -q -e \'roxygen2::roxygenize("patientProfilesVis")\''
+                            }
+                        }
+                        stage('Build') {
+                            steps {
+                                sh 'R CMD build patientProfilesVis'
+                            }
+                        }
+                        stage('Check') {
+                            steps {
+                                script() {
+                                    switch(sh(script: 'ls patientProfilesVis_*.tar.gz && R CMD check patientProfilesVis_*.tar.gz --as-cran', returnStatus: true)) {
+                                        case 0: currentBuild.result = 'SUCCESS'
+                                        default: currentBuild.result = 'FAILURE'; error('script exited with failure status')
+                                    }
+                                }
+                            }
+                        }
+                        stage('Install') {
+                            steps {
+                                sh 'R -q -e \'install.packages(list.files(".", "patientProfilesVis_.*.tar.gz"), repos = NULL)\''
+                            }
+                        }
+                    }
+                }
+                stage('Archive artifacts') {
+                    steps {
+                        archiveArtifacts artifacts: '*.tar.gz, *.pdf', fingerprint: true
+                    }
+                }
+            }
+            post {
+                always {
+                    sh "cp /mem_r.log ${env.WORKSPACE}"
+                    archiveArtifacts artifacts: '**/00check.log, mem*.log', fingerprint: true, allowEmptyArchive: true
+                }
+            }
+        }
+    }
+}
+
