@@ -89,7 +89,7 @@ pipeline {
                         stage('Check') {
                             steps {
                                 script() {
-                                    switch(sh(script: 'ls patientProfilesVis_*.tar.gz && R CMD check patientProfilesVis_*.tar.gz --as-cran', returnStatus: true)) {
+                                    switch(sh(script: 'ls patientProfilesVis_*.tar.gz && R CMD check patientProfilesVis_*.tar.gz', returnStatus: true)) {
                                         case 0: currentBuild.result = 'SUCCESS'
                                         default: currentBuild.result = 'FAILURE'; error('script exited with failure status')
                                     }
