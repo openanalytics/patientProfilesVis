@@ -772,6 +772,128 @@ test_that("Data points are correctly set transparent", {
 	
 })
 
+test_that("Lines are correctly colored based on a specified variable", {
+      
+  data <- data.frame(
+    TEST = c("A", "A", "B", "B"),
+    DY = seq(4),
+    CAT = c("CAT A", "CAT A", "CAT B", "CAT B"),
+    AVAL = rnorm(4),
+    USUBJID = "1"
+  )
+      
+  plots <- subjectProfileLinePlot(
+    data = data,
+    timeVar = "DY",
+    paramNameVar = "TEST",
+    paramValueVar = "AVAL",
+    colorLineVar = "CAT"
+  )
+      
+  gg <- plots[["1"]][[1]]
+      
+  # extract data behind the point
+  isGeomLine <- sapply(gg$layers, function(l) inherits(l$geom, "GeomLine"))
+  ggDataLine <- layer_data(gg, which(isGeomLine))
+  ggDataLine$PANEL <- as.character(ggDataLine$PANEL)
+      
+  # format reference data
+  dataReference <- data
+  dataReference$PANEL <- as.character(as.numeric(as.factor(dataReference$TEST)))
+      
+  ggDataLineWithInput <- merge(
+    x = ggDataLine, by.x = c("PANEL", "x", "y"),
+    y = dataReference, by.y = c("PANEL", "DY", "AVAL"),
+    all = TRUE
+  )
+      
+  # all data is represented
+  expect_equal(nrow(ggDataLineWithInput), nrow(data))
+  # color scale based on data
+  colorScaleData <- c(with(ggDataLineWithInput, tapply(colour, CAT, unique)))
+      
+  # extract color palette of the plot
+  ggScales <- gg$scales$scales
+  isColorAes <- sapply(ggScales, function(x) 
+    all(x[["aesthetics"]] == "colour")
+  )
+  colorScale <- ggScales[[which(isColorAes)]]
+  colorScalePlot <- colorScale$palette(2)
+      
+  expect_equal(colorScaleData, colorScalePlot)
+     
+  ## line: colour only used for the lines, not the points
+      
+  isGeomPoint <- sapply(gg$layers, function(l) inherits(l$geom, "GeomPoint"))
+  ggDataPoint <- layer_data(gg, which(isGeomPoint))
+  expect_setequal(ggDataPoint$colour, "black")
+      
+})
+
+test_that("Lines are correctly colored with a specified palette", {
+      
+  data <- data.frame(
+    TEST = c("A", "A", "B", "B"),
+    DY = seq(4),
+    CAT = c("CAT A", "CAT A", "CAT B", "CAT B"),
+    AVAL = rnorm(4),
+    USUBJID = "1"
+  )
+  
+  colorPalette <- c(`CAT A` = "orange", `CAT B` = "blue")
+  
+  plots <- subjectProfileLinePlot(
+    data = data,
+    timeVar = "DY",
+    paramNameVar = "TEST",
+    paramValueVar = "AVAL",
+    colorLineVar = "CAT", colorPalette = colorPalette
+  )
+  
+  gg <- plots[["1"]][[1]]
+      
+  # extract color palette of the plot
+  ggScales <- gg$scales$scales
+  isColorAes <- sapply(ggScales, function(x) 
+    all(x[["aesthetics"]] == "colour")
+  )
+  colorScale <- ggScales[[which(isColorAes)]]
+  colorScalePlot <- colorScale$palette(2)
+  expect_equal(colorScalePlot, colorPalette)
+      
+})
+
+test_that("A specified label for the color line variable is correctly set", {
+
+  data <- data.frame(
+    TEST = c("A", "A", "B", "B"),
+    DY = seq(4),
+    CAT = c("CAT A", "CAT A", "CAT B", "CAT B"),
+    AVAL = rnorm(4),
+    USUBJID = "1"
+  )
+
+  plots <- subjectProfileLinePlot(
+    data = data,
+    timeVar = "DY",
+    paramNameVar = "TEST",
+    paramValueVar = "AVAL",
+    colorLineVar = "CAT", colorLab = "Category"
+  )
+  
+  gg <- plots[["1"]][[1]]
+  ggScales <- gg$scales$scales
+      
+  # extract color scale
+  isColorAes <- sapply(ggScales, function(x) 
+    all(x[["aesthetics"]] == "colour")
+  )
+  colorScale <- ggScales[[which(isColorAes)]]
+  expect_equal(colorScale$name, "Category")
+      
+})
+
+
 test_that("A title is correctly set", {
 	
 	data <- data.frame(

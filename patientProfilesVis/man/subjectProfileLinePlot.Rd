@@ -15,6 +15,7 @@ subjectProfileLinePlot(
   colorValueRange = "lightgreen",
   yLimFrom = c("all", "value"),
   colorVar = NULL,
+  colorLineVar = NULL,
   colorLab = getLabelVar(colorVar, labelVars = labelVars),
   colorPalette = NULL,
   shapeVar = colorVar,
@@ -88,6 +89,10 @@ to the data range if wider.}
 \item{colorVar}{String, variable of \code{data} with color.
 This variable is used
 for the colors and the filling of the points.}
+
+\item{colorLineVar}{String, variable of \code{data} with color
+for the lines. \code{colorVar} or \code{colorLineVar} (not both)
+should be specified.}
 
 \item{colorLab}{String, label for \code{colorVar}.}
 

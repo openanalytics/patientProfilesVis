@@ -1,3 +1,5 @@
+2.0.10.9000
+  o subjectProfileLinePlot: add colorLineVar
 2.0.10
   o fixes for ggplot2 4.0.0
 2.0.9

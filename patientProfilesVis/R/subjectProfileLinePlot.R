@@ -1,5 +1,8 @@
 #' Visualize subject profiles of the evolution of 
 #' continuous parameters versus time (spaghetti plot).
+#' @param colorLineVar String, variable of \code{data} with color
+#' for the lines. \code{colorVar} or \code{colorLineVar} (not both)
+#' should be specified.
 #' @param paramValueVar String, variable of \code{data} 
 #' with parameter value to represent.\cr
 #' Records with missing values are discarded.
@@ -56,7 +59,8 @@ subjectProfileLinePlot <- function(
 	paramNameVar = NULL, paramVarSep = " - ",
 	paramValueRangeVar = NULL, colorValueRange = "lightgreen",
 	yLimFrom = c("all", "value"),
-	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
+	colorVar = NULL, colorLineVar = NULL, 
+ colorLab = getLabelVar(colorVar, labelVars = labelVars),
 	colorPalette = NULL,
 	shapeVar = colorVar, 
 	shapeLab = if(isTRUE(colorVar == shapeVar)){
@@ -97,6 +101,7 @@ subjectProfileLinePlot <- function(
 	checkVar(var = paramGroupVar, data = data)
 	checkVar(var = timeVar, data = data)
 	checkVar(var = colorVar, data = data)
+ checkVar(var = colorLineVar, data = data)
 	checkVar(var = shapeVar, data = data)
 	
 	# concatenate variable(s) if multiple are specified
@@ -129,11 +134,12 @@ subjectProfileLinePlot <- function(
 	)
 		
 	# convert aesthetic variables to factor
-	if(!is.null(colorVar)){
-		data[, colorVar] <- convertAesVar(data, colorVar)
-		if(is.null(colorPalette))	colorPalette <- getColorPalettePatientProfile(x = data[, colorVar])
+	if(!is.null(colorVar) | !is.null(colorLineVar)){
+    cVar <- ifelse(!is.null(colorVar), colorVar, colorLineVar)
+    data[, cVar] <- convertAesVar(data, cVar)
+	   if(is.null(colorPalette))	colorPalette <- getColorPalettePatientProfile(x = data[, cVar])
 	}else	colorPalette <- getColorPalettePatientProfile(n = 1)
-	if(!is.null(shapeVar)){
+ if(!is.null(shapeVar)){
 		data[, shapeVar] <- convertAesVar(data, var = shapeVar)
 		if(is.null(shapePalette))	shapePalette <- getShapePalettePatientProfile(x = data[, shapeVar])
 	}
@@ -231,8 +237,13 @@ subjectProfileLinePlot <- function(
 				paramNameRetained <- nPointsPerParamName[which(nPointsPerParamName$V1 > 1), "paramFacetVar"]
 				dataLine <- dataSubjectPage[which(dataSubjectPage[, "paramFacetVar"] %in% paramNameRetained), ]
 			}else	dataLine <- dataSubjectPage
-			if(nrow(dataLine) > 0)
-				gg <- gg + geom_line(data = dataLine, alpha = alpha)
+			if(nrow(dataLine) > 0){
+     argsLine <- c(
+      list(data = dataLine, alpha = alpha),
+      if(!is.null(colorLineVar))  list(mapping = aes(color = !!sym(colorLineVar)))
+    )
+    gg <- gg + do.call(geom_line, argsLine)
+  }
 			
 			# point
 			aesArgsPoint <- c(
@@ -300,12 +311,16 @@ subjectProfileLinePlot <- function(
 				gg <- gg + 
 					getAesScaleManual(lab = colorLab, palette = colorPalette, type = "color") +
 					getAesScaleManual(lab = colorLab, palette = colorPalette, type = "fill")
-			}else{
-				gg <- gg + 
-					scale_color_manual(values = colorPalette) +
-					scale_fill_manual(values = colorPalette)
+			}else if(is.null(colorLineVar)){
+				gg <- gg + scale_fill_manual(values = colorPalette)
 			}
-		
+   if(!is.null(colorLineVar)){
+     gg <- gg + 
+      getAesScaleManual(lab = colorLab, palette = colorPalette, type = "color")
+   }
+   if(is.null(colorVar) & is.null(colorLineVar))
+   		gg <- gg <- gg + scale_color_manual(values = colorPalette)
+   
 			if(!is.null(shapeVar))
 				gg <- gg + 
 					getAesScaleManual(lab = shapeLab, palette = shapePalette, type = "shape")	
@@ -327,23 +342,28 @@ subjectProfileLinePlot <- function(
 			## extract number of lines
 			
 			# legend:
-			nLinesLegendColor <- if(!is.null(colorVar)){
+			nLinesLegendColor <- if(!is.null(colorVar) | !is.null(colorLineVar)){
 				getNLinesLegend(values = colorPalette, title = colorLab)
 			}else	0
 			nLinesLegendShape <- if(!is.null(shapeVar)){
 				getNLinesLegend(values = shapePalette, title = shapeLab)
 			}else	0
 			nLinesLegend <- 0 +
-				if(!is.null(colorVar) & !is.null(shapeVar)){
+				if((!is.null(colorVar) | !is.null(colorLineVar)) & !is.null(shapeVar)){
 					# one legend (ggplot will create separate legend if the title differ)
-					if(colorVar == shapeVar && !is.null(colorLab) & !is.null(shapeLab) && shapeLab == colorLab){
+					if(
+      (
+        (!is.null(colorVar) && colorVar == shapeVar) | 
+        (!is.null(colorLineVar) && colorLineVar == shapeVar)
+      ) && 
+      !is.null(colorLab) & !is.null(shapeLab) && shapeLab == colorLab){
 						nLinesLegendColor 
 						# two legends
 					}else{
 						# 1 line to separate the two legends if color and shape are specified and different
 						nLinesLegendColor + nLinesLegendShape + 1
 					}
-				}else	if(!is.null(colorVar)){
+				}else	if(!is.null(colorVar) | !is.null(colorLineVar)){
 					nLinesLegendColor
 				}else	if(!is.null(shapeVar)){
 					nLinesLegendShape
